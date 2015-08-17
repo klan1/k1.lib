@@ -4,9 +4,10 @@ This is the initial branch.
 
 ## Requirements
 - Apache with rewrite enabled
+- Optional: MySQL Database
 - PHP 5.6 with at least 16MB in memory allowed
- - Optional: MySQL Database
-- Optional: MemCached PHP Extension
+    - Optional: MemCached PHP Extension
+    - Maybe Tidy extension
 
 ## LICENSE
 Apache License Version 2.0, January 2004
