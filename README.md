@@ -1,6 +1,6 @@
 # k1.lib
 
-This is the initial branch.
+This is the initial branch. The first push will be on a branch 0.9 be cause is the actual branch to share.
 
 ## Requirements
 - Apache with rewrite enabled.
