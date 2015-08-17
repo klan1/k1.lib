@@ -33,7 +33,7 @@ class html_tag {
         $this->has_child = true;
     }
 
-    public function get_child($n) {
+    public function &get_child($n) {
         if (isset($this->childs[$n])) {
             return $this->childs[$n];
         } else {
@@ -101,8 +101,7 @@ class html_tag {
             $html_code .= " /";
         }
         $html_code .= ">";
-
-        if (($with_childs) && (count($this->childs) > 1)) {
+        if (($with_childs) && (count($this->childs) >= 1)) {
             //lets move with index numbers begining from 0
             $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
 //            d($this->childs,true);
@@ -138,6 +137,143 @@ class html_tag {
 
     public function get_tag_code() {
         return $this->tag_code;
+    }
+
+}
+
+class table_tag extends html_tag {
+
+//    private $data_array = array();
+
+    function __construct($class = "", $id = "") {
+        parent::__construct("table", false);
+//        $this->data_array &= $data_array;
+        $this->set_attrib("class", $class, true);
+        $this->set_attrib("id", $id);
+    }
+
+    /**
+     * 
+     * @param String $class
+     * @param String $id
+     * @return \k1lib\html\classes\thead_tag
+     */
+    function &append_thead($class = "", $id = "") {
+        $child_object = new thead_tag($class, $id);
+        parent::append_child($child_object);
+        return $child_object;
+    }
+
+    /**
+     * 
+     * @param String $class
+     * @param String $id
+     * @return \k1lib\html\classes\tbody_tag
+     */
+    function &append_tbody($class = "", $id = "") {
+        $child_object = new tbody_tag($class, $id);
+        parent::append_child($child_object);
+        return $child_object;
+    }
+
+}
+
+class thead_tag extends html_tag {
+
+    function __construct($class = "", $id = "") {
+        parent::__construct("thead", false);
+        $this->set_attrib("class", $class, true);
+        $this->set_attrib("id", $id);
+    }
+
+    /**
+     * 
+     * @param String $class
+     * @param String $id
+     * @return \k1lib\html\classes\tr_tag
+     */
+    function append_tr($class = "", $id = "") {
+        $child_object = new tr_tag($class, $id);
+        parent::append_child($child_object);
+        return $child_object;
+    }
+
+}
+
+class tbody_tag extends html_tag {
+
+    function __construct($class = "", $id = "") {
+        parent::__construct("tbody", false);
+        $this->set_attrib("class", $class, true);
+        $this->set_attrib("id", $id);
+    }
+
+    /**
+     * 
+     * @param String $class
+     * @param String $id
+     * @return \k1lib\html\classes\tr_tag
+     */
+    function append_tr($class = "", $id = "") {
+        $child_object = new tr_tag($class, $id);
+        parent::append_child($child_object);
+        return $child_object;
+    }
+
+}
+
+class tr_tag extends html_tag {
+
+    function __construct($class = "", $id = "") {
+        parent::__construct("tr", false);
+        $this->set_attrib("class", $class, true);
+        $this->set_attrib("id", $id);
+    }
+
+    /**
+     * 
+     * @param String $class
+     * @param String $id
+     * @return \k1lib\html\classes\th_tag
+     */
+    function append_th($value, $class = "", $id = "") {
+        $child_object = new th_tag($value, $class, $id);
+        parent::append_child($child_object);
+        return $child_object;
+    }
+
+    /**
+     * 
+     * @param String $class
+     * @param String $id
+     * @return \k1lib\html\classes\td_tag
+     */
+    function append_td($value, $class = "", $id = "") {
+        $child_object = new td_tag($value, $class, $id);
+        parent::append_child($child_object);
+        return $child_object;
+    }
+
+}
+
+class th_tag extends html_tag {
+
+    function __construct($value, $class = "", $id = "") {
+        parent::__construct("th", false);
+        $this->set_value($value);
+        $this->set_attrib("class", $class, true);
+        $this->set_attrib("id", $id);
+    }
+
+}
+
+class td_tag extends html_tag {
+
+    function __construct($value, $class = "", $id = "") {
+        parent::__construct("td", false);
+        $this->set_value($value);
+        $this->set_attrib("class", $class, true);
+        $this->set_attrib("id", $id);
     }
 
 }
@@ -179,6 +315,7 @@ class select_tag extends html_tag {
     function append_option($value, $label, $selected = false, $class = "", $id = "") {
         $child_object = new option_tag($value, $label, $selected, $class, $id);
         parent::append_child($child_object);
+        return $child_object;
     }
 
 }

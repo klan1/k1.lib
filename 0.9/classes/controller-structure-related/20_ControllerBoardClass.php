@@ -390,7 +390,7 @@ class net_klan1_dev_BoardViewAll extends k1_board_general_class {
     function __construct(k1_general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
 
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
-        $this->HtmlTableObject = new k1_HtmlTableV3($this->controllerObject->getBoardID());
+        $this->HtmlTableObject = new html_table_with_table_config($this->controllerObject->getBoardID());
         $this->controllerObject->setUrlLevel("table-action", false);
         $this->controllerObject->setUrlLevel("page-number", false);
     }
