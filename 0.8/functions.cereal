@@ -1,0 +1,37 @@
+<?php
+
+function k1_check_user_on_url($sesion_user , $url_user  ){
+    if($sesion_user  != $url_user){
+        k1_unset_app_session();
+        k1_js_go("/forms/cliente");
+}
+}
+
+
+function fibogay($terminos) {
+   $fibonaci = "";
+   $ant = 0;
+   $ini = 1;
+   for ($x = 1; $x <= $terminos; $x++) {
+      $fibonaci .= "$ini, ";
+      $ini = $ini + $ant;
+      $ant = $ini - $ant;
+   }
+   return $fibonaci;
+}
+
+function fibogay1($terminos, $ant = 0, $ini = 1) {
+   $fibonaci = "";
+   if ($terminos != 1) 
+      $fibonaci = fibogay1(($terminos - 1), ($ini), ($ini + $ant));
+      return ($fibonaci != "") ? "$ini, $fibonaci" : $ini; 
+}
+
+function fibogay2($terminos, $ant = 0, $ini = 1) {
+   $fibonaci = "";
+    if ($terminos != 1) 
+      $fibonaci = fibogay1(($terminos - 1), ($ini), ($ini + $ant));
+      return ($fibonaci != "") ? "$ini, $fibonaci" : $ini; 
+}
+
+?>
