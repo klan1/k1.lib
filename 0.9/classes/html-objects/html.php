@@ -130,7 +130,7 @@ class html_tag {
         $current_attribute = 0;
         $attributes_code = "";
 
-        if ($attributes_count == false) {
+        if ($attributes_count != 0) {
             foreach ($this->attributes as $attribute => $value) {
                 $current_attribute++;
                 if (!is_bool($value)) {
