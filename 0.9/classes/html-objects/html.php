@@ -2,17 +2,40 @@
 
 namespace k1lib\html\classes;
 
+/**
+ * HTML Tag abstraction
+ */
 class html_tag {
 
+    /** @var String */
     private $tag_name = null;
+
+    /** @var String */
     private $tag_code = "";
+
+    /** @var Boolean */
     private $is_selfclosed = false;
+
+    /** @var Array */
     private $attributes = array();
+
+    /** @var String */
     private $attributes_code = "";
+
+    /** @var Boolean */
     private $has_child = false;
+
+    /** @var Array */
     private $childs = array();
+
+    /** @var String */
     private $value = "";
 
+    /**
+     * Constructor with $tag_name and $selfclosed options for beginning
+     * @param String $tag_name
+     * @param Boolean $selfclosed Is self closed as <tag /> or tag closed one <tag></tag>
+     */
     function __construct($tag_name, $selfclosed = true) {
         if (!empty($tag_name) && is_string($tag_name)) {
             $this->tag_name = $tag_name;
@@ -28,11 +51,20 @@ class html_tag {
         $this->set_attrib("class", "k1-{$tag_name}-object");
     }
 
-    public function append_child($chlid_object) {
+    /**
+     * Chains an html tag into the actual html tag
+     * @param html_tag $chlid_object
+     */
+    public function append_child(&$chlid_object) {
         $this->childs[] = $chlid_object;
         $this->has_child = true;
     }
 
+    /**
+     * Return the reference for chained html tag object
+     * @param Int $n Index beginning from 0
+     * @return html_tag Returns FALSE if is not set
+     */
     public function &get_child($n) {
         if (isset($this->childs[$n])) {
             return $this->childs[$n];
@@ -41,6 +73,12 @@ class html_tag {
         }
     }
 
+    /**
+     * Set an attribute with its value always overwriting if $append is not set TRUE to append old value with the recieved one.
+     * @param String $attribute
+     * @param String $value
+     * @param Boolean $append
+     */
     public function set_attrib($attribute, $value, $append = false) {
         if (!empty($attribute) && is_string($attribute)) {
             $this->attributes[$attribute] = ($append === true) ? ($this->attributes[$attribute] . " " . $value) : ($value);
@@ -49,6 +87,11 @@ class html_tag {
         }
     }
 
+    /**
+     * If the attribute was set returns its value
+     * @param String $attribute
+     * @return String Returns FALSE if is not set
+     */
     public function get_attribute($attribute) {
         if (isset($this->attributes[$attribute])) {
             return $this->attributes[$attribute];
@@ -57,14 +100,27 @@ class html_tag {
         }
     }
 
+    /**
+     * Set the VALUE for the TAG, as <TAG value="$value" /> or <TAG>$value</TAG>
+     * @param String $value
+     */
     public function set_value($value) {
         $this->value = $value;
     }
 
+    /**
+     * Gets the VALUE for the TAG, as <TAG value="$value" /> or <TAG>$value</TAG>
+     * @return String
+     */
     public function get_value() {
         return $this->value;
     }
 
+    /**
+     * VALUE for the TAG, as <TAG attribute1="value1" .. attributeN="valueN" /> or <TAG attribute1="value1" .. attributeN="valueN">$value</TAG>
+     * @param Boolean $do_echo
+     * @return string Returns FALSE if is not attributes to generate
+     */
     public function generate_attributes_code($do_echo = false) {
         if ($this->is_selfclosed) {
             $this->set_attrib("value", $this->value);
@@ -73,27 +129,39 @@ class html_tag {
         $attributes_count = count($this->attributes);
         $current_attribute = 0;
         $attributes_code = "";
-        foreach ($this->attributes as $attribute => $value) {
-            $current_attribute++;
-            if (!is_bool($value)) {
-                if (!empty($value)) {
-                    $attributes_code .= "{$attribute}=\"{$value}\"";
+
+        if ($attributes_count == false) {
+            foreach ($this->attributes as $attribute => $value) {
+                $current_attribute++;
+                if (!is_bool($value)) {
+                    if (!empty($value)) {
+                        $attributes_code .= "{$attribute}=\"{$value}\"";
+                    }
+                } else {
+                    if ($value === true) {
+                        $attributes_code .= "{$attribute}";
+                    }
                 }
-            } else {
-                if ($value === true) {
-                    $attributes_code .= "{$attribute}";
-                }
+                $attributes_code .= ($current_attribute < $attributes_count) ? " " : "";
             }
-            $attributes_code .= ($current_attribute < $attributes_count) ? " " : "";
-        }
-        $this->attributes_code = $attributes_code;
-        if ($do_echo) {
-            echo $this->attributes_code;
+            $this->attributes_code = $attributes_code;
+            if ($do_echo) {
+                echo $this->attributes_code;
+            } else {
+                return $this->attributes_code;
+            }
         } else {
-            return $this->attributes_code;
+            return false;
         }
     }
 
+    /**
+     * This will generate the HTML TAG with ALL his childs by default. If the TAG is not SELF CLOSED will generate all as <TAG attributeN="valueN">$value</TAG>
+     * @param Boolean $do_echo Do ECHO action or RETURN HTML
+     * @param Boolean $with_childs
+     * @param Int $n_childs
+     * @return string Won't return any if is set $do_echo = TRUE
+     */
     public function generate_tag($do_echo = false, $with_childs = true, $n_childs = 0) {
         $html_code = "\n<{$this->tag_name} ";
         $html_code .= $this->generate_attributes_code();
@@ -126,6 +194,11 @@ class html_tag {
         }
     }
 
+    /**
+     * This will generate the HTML CLOSE TAG 
+     * @param Boolean $do_echo Do ECHO action or RETURN HTML
+     * @return string Won't return any if is set $do_echo = TRUE
+     */
     public function generate_close_tag($do_echo = false) {
         $html_code = "</{$this->tag_name}>";
         if ($do_echo) {
@@ -141,10 +214,37 @@ class html_tag {
 
 }
 
+class a_tag extends html_tag {
+
+    /**
+     * 
+     * @param String $src
+     * @param String $label <TAG>$label</TAG>
+     * @param String $target
+     * @param String $alt
+     * @param String $class
+     * @param String $id
+     */
+    function __construct($src, $label, $target = "", $alt = "", $class = "", $id = "") {
+        parent::__construct("a", false);
+//        $this->data_array &= $data_array;
+        $this->set_attrib("src", $src, true);
+        $this->set_value($label);
+        $this->set_attrib("target", $target, true);
+        $this->set_attrib("alt", $alt, true);
+        $this->set_attrib("class", $class, true);
+        $this->set_attrib("id", $id);
+    }
+
+}
+
 class table_tag extends html_tag {
 
 //    private $data_array = array();
-
+    /**
+     * @param String $class
+     * @param String $id
+     */
     function __construct($class = "", $id = "") {
         parent::__construct("table", false);
 //        $this->data_array &= $data_array;
@@ -153,7 +253,7 @@ class table_tag extends html_tag {
     }
 
     /**
-     * 
+     * Chains a new <THEAD> HTML TAG
      * @param String $class
      * @param String $id
      * @return \k1lib\html\classes\thead_tag
@@ -165,7 +265,7 @@ class table_tag extends html_tag {
     }
 
     /**
-     * 
+     * Chains a new <TBODY> HTML TAG
      * @param String $class
      * @param String $id
      * @return \k1lib\html\classes\tbody_tag
@@ -180,6 +280,10 @@ class table_tag extends html_tag {
 
 class thead_tag extends html_tag {
 
+    /**
+     * @param String $class
+     * @param String $id
+     */
     function __construct($class = "", $id = "") {
         parent::__construct("thead", false);
         $this->set_attrib("class", $class, true);
@@ -187,7 +291,7 @@ class thead_tag extends html_tag {
     }
 
     /**
-     * 
+     * Chains a new <TR> HTML TAG
      * @param String $class
      * @param String $id
      * @return \k1lib\html\classes\tr_tag
@@ -202,6 +306,10 @@ class thead_tag extends html_tag {
 
 class tbody_tag extends html_tag {
 
+    /**
+     * @param String $class
+     * @param String $id
+     */
     function __construct($class = "", $id = "") {
         parent::__construct("tbody", false);
         $this->set_attrib("class", $class, true);
@@ -209,7 +317,7 @@ class tbody_tag extends html_tag {
     }
 
     /**
-     * 
+     * Chains a new <TR> HTML TAG
      * @param String $class
      * @param String $id
      * @return \k1lib\html\classes\tr_tag
@@ -224,6 +332,10 @@ class tbody_tag extends html_tag {
 
 class tr_tag extends html_tag {
 
+    /**
+     * @param String $class
+     * @param String $id
+     */
     function __construct($class = "", $id = "") {
         parent::__construct("tr", false);
         $this->set_attrib("class", $class, true);
@@ -231,7 +343,8 @@ class tr_tag extends html_tag {
     }
 
     /**
-     * 
+     * Chains a new <TH> HTML TAG
+     * @param String $value <TAG>$value</TAG>
      * @param String $class
      * @param String $id
      * @return \k1lib\html\classes\th_tag
@@ -243,7 +356,8 @@ class tr_tag extends html_tag {
     }
 
     /**
-     * 
+     * Chains a new <TD> HTML TAG
+     * @param String $value <TAG>$value</TAG>
      * @param String $class
      * @param String $id
      * @return \k1lib\html\classes\td_tag
@@ -258,6 +372,11 @@ class tr_tag extends html_tag {
 
 class th_tag extends html_tag {
 
+    /**
+     * @param String $value <TAG>$value</TAG>
+     * @param String $class
+     * @param String $id
+     */
     function __construct($value, $class = "", $id = "") {
         parent::__construct("th", false);
         $this->set_value($value);
@@ -269,6 +388,11 @@ class th_tag extends html_tag {
 
 class td_tag extends html_tag {
 
+    /**
+     * @param String $value <TAG>$value</TAG>
+     * @param String $class
+     * @param String $id
+     */
     function __construct($value, $class = "", $id = "") {
         parent::__construct("td", false);
         $this->set_value($value);
@@ -280,6 +404,13 @@ class td_tag extends html_tag {
 
 class input_tag extends html_tag {
 
+    /**
+     * @param String $type Should be HTML standars: text, button.... 
+     * @param String $name
+     * @param String $value <TAG value='$value' />
+     * @param String $class
+     * @param String $id
+     */
     function __construct($type, $name, $value, $class = "", $id = "") {
         parent::__construct("input", true);
         $this->set_attrib("type", $type);
@@ -293,6 +424,12 @@ class input_tag extends html_tag {
 
 class label_tag extends html_tag {
 
+    /**
+     * @param String $label <TAG>$value</TAG>
+     * @param String $for
+     * @param String $class
+     * @param String $id
+     */
     function __construct($label, $for, $class = "", $id = "") {
         parent::__construct("label", false);
         $this->set_value($label);
@@ -305,6 +442,11 @@ class label_tag extends html_tag {
 
 class select_tag extends html_tag {
 
+    /**
+     * @param String $name
+     * @param String $class
+     * @param String $id
+     */
     function __construct($name, $class = "", $id = "") {
         parent::__construct("select", false);
         $this->set_attrib("name", $name);
@@ -312,6 +454,15 @@ class select_tag extends html_tag {
         $this->set_attrib("id", $id);
     }
 
+    /**
+     * Chains a new <OPTION> HTML TAG
+     * @param String $value
+     * @param String $label
+     * @param Boolean $selected
+     * @param String $class
+     * @param String $id
+     * @return \k1lib\html\classes\option_tag
+     */
     function append_option($value, $label, $selected = false, $class = "", $id = "") {
         $child_object = new option_tag($value, $label, $selected, $class, $id);
         parent::append_child($child_object);
@@ -322,6 +473,13 @@ class select_tag extends html_tag {
 
 class option_tag extends html_tag {
 
+    /**
+     * @param String $value <TAG value='$value' />
+     * @param String $label <TAG>$label</TAG>
+     * @param Boolean $selected
+     * @param String $class
+     * @param String $id
+     */
     function __construct($value, $label, $selected = false, $class = "", $id = "") {
         parent::__construct("option", false);
         $this->set_value($value);
@@ -332,17 +490,10 @@ class option_tag extends html_tag {
     }
 
 }
-
+/**
+ * NOT USED YET
+ */
 class form_tag extends html_tag {
-
-//    use k1_object_execution_control;
-
-
-    /*     * *****************
-     * 
-     * K1LIB_OEXEC_PHASE_CONSTRUCTION
-     * 
-     * ***************** */
 
     function __construct($id = "", $action = "") {
         parent::__construct("form", false);

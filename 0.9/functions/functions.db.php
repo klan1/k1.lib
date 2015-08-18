@@ -303,13 +303,13 @@ function k1_get_table_label(&$table_config_array) {
 
 function k1_get_fk_field_label($fkFieldName, $table_name, $url_key_array = Array()) {
     if (!is_string($fkFieldName)) {
-        die(__FUNCTION__ . ": \$fkFieldName must to be a String");
+        trigger_error(__FUNCTION__ . ": \$fkFieldName must to be a String", E_USER_ERROR);
     }
     if (!is_string($table_name)) {
-        die(__FUNCTION__ . ": \$table_name must to be a String");
+        trigger_error(__FUNCTION__ . ": \$table_name must to be a String", E_USER_ERROR);
     }
     if (!is_array($url_key_array)) {
-        die(__FUNCTION__ . ": need an array to work on \$url_key_array");
+        trigger_error(__FUNCTION__ . ": need an array to work on \$url_key_array", E_USER_ERROR);
     }
     global $db;
     $fkTableConfig = k1_get_table_config($db, $table_name);

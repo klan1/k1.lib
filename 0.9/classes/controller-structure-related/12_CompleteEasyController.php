@@ -57,6 +57,11 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         }
     }
 
+    public function setBoardViewToLoad($boardName, $BoardViewToLoadOption) {
+        $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
+        $this->boardViewToLoadArray[$boardName] = $BoardViewToLoadOption;
+    }
+
     public function setBoardLevelAccess($boardName, $accessLevelCSV = true) {
         $this->boardLevelAccessArray [$boardName] = $accessLevelCSV;
     }
@@ -326,11 +331,6 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         } else {
             return k1_load_view($boardViewToLoadValue, APP_VIEWS_GENERAL_PATH);
         }
-    }
-
-    public function setBoardViewToLoad($boardName, $BoardViewToLoadOption) {
-        $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_LAUNCHING, __METHOD__);
-        $this->boardViewToLoadArray[$boardName] = $BoardViewToLoadOption;
     }
 
     public function getBoardViewToLoad($boardName) {
