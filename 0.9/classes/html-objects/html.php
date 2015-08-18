@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * HTML Classes for general propouses use
+ */
+
 namespace k1lib\html\classes;
 
 /**
@@ -490,6 +494,7 @@ class option_tag extends html_tag {
     }
 
 }
+
 /**
  * NOT USED YET
  */
