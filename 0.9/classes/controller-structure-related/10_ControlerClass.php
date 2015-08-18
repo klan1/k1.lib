@@ -201,6 +201,10 @@ class k1_general_controller_class {
         $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
         $this->sessionControl = $sessionControl;
     }
+    public function getSessionControl() {
+        $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
+        return $this->sessionControl;
+    }
 
     public function setIsReturnPoint($isReturnPoint) {
         $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
@@ -210,6 +214,16 @@ class k1_general_controller_class {
     public function setDefaultAuthLevelAccess($defaultAuthLevelAccess) {
         $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
         $this->defaultAuthLevelAccess = $defaultAuthLevelAccess;
+    }
+
+    public function getDefaultAuthLevelAccess() {
+        $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
+        return $this->defaultAuthLevelAccess;
+    }
+
+    public function getControllerType() {
+        $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
+        return $this->controllerType;
     }
 
     public function getControllerUrlRoot() {
@@ -231,6 +245,7 @@ class k1_general_controller_class {
         $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
         return $this->controllerID;
     }
+
     public function clearReturnPoint() {
         $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_CONFIG, __METHOD__);
 
@@ -244,20 +259,6 @@ class k1_general_controller_class {
      * 
      * ***************** */
 
-    public function getSessionControl() {
-        $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_LAUNCHING, __METHOD__);
-        return $this->sessionControl;
-    }
-
-    public function getControllerType() {
-        $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_LAUNCHING, __METHOD__);
-        return $this->controllerType;
-    }
-
-    public function getDefaultAuthLevelAccess() {
-        $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_LAUNCHING, __METHOD__);
-        return $this->defaultAuthLevelAccess;
-    }
 
     public function getIsReturnPoint() {
         $this->test_object_exec_phase(K1LIB_OEXEC_PHASE_LAUNCHING, __METHOD__);
@@ -278,7 +279,6 @@ class k1_general_controller_class {
             k1_serialize_var($this->getControllerID(), "k1_return_point_id");
         }
     }
-
 
     /*     * ******************
      * 
