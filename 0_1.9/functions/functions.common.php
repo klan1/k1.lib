@@ -95,7 +95,7 @@ function k1_get_error($e, $title = "ERROR") {
 }
 
 /**
- * Takes an Array and transform in key1
+ *
  * @param type $guide_array
  * @param type $data_array
  * @return string 
