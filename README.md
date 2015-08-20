@@ -1,6 +1,6 @@
 # k1.lib
 
-This is the initial branch. The first push will be on a branch 0.9 be cause is the actual branch to share.
+This is the branch 0.8. the first branch used on production-like app. Is not maintained any more and the apps are being migrated to "master" branch that should be "0.9" very soon
 
 ## Requirements
 - Apache with rewrite enabled.
