@@ -21,7 +21,7 @@ function fb_check_permissions($permissions, $url_to_login, $redirect = true) {
             continue;
         } else {
             if ($redirect) {
-                k1_js_go($url_to_login);
+                \k1lib\html\js_go($url_to_login);
                 return false;
             }
         }
@@ -85,7 +85,7 @@ function do_facebook_connect($fb_login_config, $js_redirect= true) {
 
     $loginUrl = $facebook->getLoginUrl($fb_login_config);
     if ($js_redirect) {
-        k1_js_go($loginUrl, "top", false);
+        \k1lib\html\js_go($loginUrl, "top", false);
         return true;
     } else {
         return $loginUrl;
@@ -119,14 +119,14 @@ function do_facebook_init() {
     if ($fb_user) {
         $fb_connected = true;
     } else {
-//        k1_js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=/{$_GET['url']}"), "top", false);
-        k1_js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=" . \k1lib\urlrewrite\make_url_from_rewrite("this")), "top", false);
+//        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=/{$_GET['url']}"), "top", false);
+        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=" . \k1lib\urlrewrite\make_url_from_rewrite("this")), "top", false);
     }
 
     /*
      * USER STORE
      */
-    if (STORE_USERS && (APP_MODE != 'ajax')) {
+    if (STORE_USERS && (\k1app\APP_MODE != 'ajax')) {
         if (check_fbid($fb_uid)) {
             if ($_SESSION['fb_user_updated'] != true) {
                 $_SESSION['fb_user_updated'] = true;

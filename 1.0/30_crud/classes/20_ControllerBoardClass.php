@@ -329,14 +329,14 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
                 $form_errors = \k1lib\forms\form_check_values($form_vars, $this->controllerObject->getControllerTableConfig(), $this->controllerObject->db);
                 if ($form_errors === false) {
                     if (\k1lib\sql\sql_insert($this->controllerObject->db, $this->controllerObject->getDbTableMainName(), $form_vars)) {
-//                        k1_html_header_go(\k1lib\urlrewrite\make_url_from_rewrite(-2));
+//                        \k1lib\html\html_header_go(\k1lib\urlrewrite\make_url_from_rewrite(-2));
                         // TODO: implement the after action behavior
                         // UNSET ALL FOR NO FUTURE PROBLEMS ;)
                         \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId());
                         \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardErrorId());
                         \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormErrorId());
                         \k1lib\forms\unset_serialize_var("{$this->controllerObject->getBoardFormId()}-fkData");
-                        k1_html_header_go($this->controllerObject->getControllerUrlRoot() . "/view-all");
+                        \k1lib\html\html_header_go($this->controllerObject->getControllerUrlRoot() . "/view-all");
                     } else {
                         $do_check = true;
                         $controller_errors[] = "No se ha podido insertar el registro.";
@@ -363,7 +363,7 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
             \k1lib\forms\serialize_var($form_errors, $this->controllerObject->getBoardFormErrorId());
             $form_check_url = "{$this->controllerObject->getBoardRootUrl()}/check";
 //            \k1lib\common\d($form_check_url);
-            k1_html_header_go($form_check_url);
+            \k1lib\html\html_header_go($form_check_url);
             exit;
         }
     }
@@ -500,8 +500,8 @@ class net_klan1_dev_BoardDelete extends k1_board_general_class {
         $sql_query = "DELETE FROM {$this->controllerObject->getDbTableMainName()} WHERE " . $this->getBoardSqlWherefromParameters();
         $record_deleted = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, false);
         if ($record_deleted === null) {
-            k1_html_header_go($this->getFormAfterActionUrl('delete'));
-//            k1_html_header_go($this->controllerObject->getBoardRootUrl() . "/view-all");
+            \k1lib\html\html_header_go($this->getFormAfterActionUrl('delete'));
+//            \k1lib\html\html_header_go($this->controllerObject->getBoardRootUrl() . "/view-all");
         } else {
             global $controller_errors;
             $controller_errors[] = "No se pude borrar el registro, posiblemente esta en uso";
@@ -703,7 +703,7 @@ class net_klan1_dev_BoardEdit extends k1_board_general_class {
                             \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-sqlResult");
                             \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-sqlOriginalResult");
                             \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-tableKeys");
-                            k1_html_header_go($actionUrl, true);
+                            \k1lib\html\html_header_go($actionUrl, true);
                         } else {
                             $controller_errors[] = "No se pudo hacer el update, Posiblemente los datos no han cambiado";
                             $do_check = true;
@@ -725,7 +725,7 @@ class net_klan1_dev_BoardEdit extends k1_board_general_class {
             \k1lib\forms\serialize_var($form_errors, $this->controllerObject->getBoardFormErrorId());
             $form_check_url = "{$this->controllerObject->getBoardRootUrl()}/check";
 //            echo \k1lib\html\get_link_button($form_check_url, $form_check_url);
-            k1_html_header_go($form_check_url);
+            \k1lib\html\html_header_go($form_check_url);
         }
     }
 

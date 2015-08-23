@@ -98,9 +98,9 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         if (is_string($defaultBoardUrlValue)) {
             if (empty($this->boardUrlValue)) {
                 if ($this->getControllerType() == \k1lib\crud\CONTROLLER_TYPE_MAIN) {
-                    k1_html_header_go("{$this->getControllerUrlRoot()}/{$defaultBoardUrlValue}/");
+                    \k1lib\html\html_header_go("{$this->getControllerUrlRoot()}/{$defaultBoardUrlValue}/");
                 } elseif ($this->getControllerType() == \k1lib\crud\CONTROLLER_TYPE_FOREIGN) {
-                    k1_html_header_go("{$this->getControllerUrlRoot()}/{$this->getBoardFkUrlValue()}/{$defaultBoardUrlValue}/");
+                    \k1lib\html\html_header_go("{$this->getControllerUrlRoot()}/{$this->getBoardFkUrlValue()}/{$defaultBoardUrlValue}/");
                 } else {
                     die("K1LIB_CONTROLLER_TYPE no recognized on " . __METHOD__);
                 }
@@ -329,9 +329,9 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__);
         $boardViewToLoadValue = $this->boardViewToLoadArray[$this->getBoardUrlValue()];
         if ($boardViewToLoadValue != $this->getBoardUrlValue()) {
-            return k1_load_view($boardViewToLoadValue, APP_VIEWS_PATH);
+            return \k1lib\templates\load_view($boardViewToLoadValue, APP_VIEWS_PATH);
         } else {
-            return k1_load_view($boardViewToLoadValue, APP_VIEWS_GENERAL_PATH);
+            return \k1lib\templates\load_view($boardViewToLoadValue, APP_VIEWS_GENERAL_PATH);
         }
     }
 
@@ -517,7 +517,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
      * ***************** */
 
     public function checkBoardLevelAccess($boardName) {
-        return k1_check_user_level($this->getBoardLevelAccess($boardName));
+        return \k1lib\session\check_user_level($this->getBoardLevelAccess($boardName));
     }
 
 }

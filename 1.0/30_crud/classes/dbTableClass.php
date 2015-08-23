@@ -1,4 +1,5 @@
 <?php
+
 namespace k1lib\crud\classes;
 
 class net_klan1_dev_dbTableClass {
@@ -50,15 +51,8 @@ class net_klan1_dev_dbTableClass {
     );
 
     public function __construct(\PDO $db, $tableName) {
-
-// Check DB Type
-        if (get_class($db) == "PDO") {
-            $this->db = $db;
-        } else {
-            die("\$db is not a PDO object type - called from: " . __CLASS__);
-        };
-
-// check $tableName type
+        $this->db = $db;
+        // check $tableName type
         if (is_string($tableName)) {
             $this->tableName = $tableName;
         } else {
