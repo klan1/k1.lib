@@ -48,6 +48,7 @@ function set_url_rewrite_var($level, $name, $required = true) {
         }
         //convert the URL string into an array separated by "/" character
         $exploded_url = explode("/", $_GET[\k1lib\URL_REWRITE_VAR_NAME]);
+
         //the level requested can't be lower than the count of the items returned from the explode
         if ($level < count($exploded_url)) {
             $url_data_level_value = $exploded_url[$level];
@@ -59,6 +60,7 @@ function set_url_rewrite_var($level, $name, $required = true) {
 
                 $this_url = \k1lib\urlrewrite\get_this_url();
                 \k1lib\urlrewrite\set_last_url($this_url);
+
 
                 return $url_data_level_value;
             } else {

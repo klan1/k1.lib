@@ -10,8 +10,8 @@ namespace k1lib\common;
  *  @return boolean 
  */
 function check_on_app() {
-    if (!defined("IN_K1APP")) {
-        die("haking attemp '^_^");
+    if (!defined("\k1app\IN_K1APP")) {
+        \trigger_error("hacking attemp '^_^", E_USER_ERROR);
     } else {
         return true;
     }
@@ -26,7 +26,7 @@ function check_on_app() {
 function d($d, $dump = false, $inline = true) {
 //    trigger_error(__FILE__, E_USER_ERROR);
     $msg = ( ($dump) ? var_export($d, true) : print_r($d, true) );
-    if (APP_MODE == "shell") {
+    if (\k1app\APP_MODE == "shell") {
         echo "\n{$msg}\n";
     } else {
         if ($inline) {
@@ -67,7 +67,7 @@ function show_error($e, $title = "ERROR", $exit = false) {
     if ($exit) {
 // $app_fatal_error = true;
 // desactivated by jd
-//    k1_set_place_value("bottom_script", "<script type='text/javascript'>k1_clear_controller_content()</script>");
+//    \k1lib\templates\set_place_value("bottom_script", "<script type='text/javascript'>k1_clear_controller_content()</script>");
         exit();
     }
 }
@@ -87,8 +87,8 @@ function get_error($e, $title = "ERROR") {
     } else {
         $msg = $e;
     }
-    if ((APP_MODE == 'web') || (APP_MODE == 'ajax')) {
-        include k1_load_template("app.messages");
+    if ((\k1app\APP_MODE == 'web') || (\k1app\APP_MODE == 'ajax')) {
+        include \k1lib\templates\load_template("app.messages");
         $msg_error = str_replace("%title%", $title, $msg_error);
         $msg_error = str_replace("%message%", $msg, $msg_error);
     } else {
@@ -140,8 +140,8 @@ function show_message($msg, $title = "") {
 }
 
 function k1_get_message($msg, $title = "") {
-    if ((APP_MODE == 'web') || (APP_MODE == 'ajax')) {
-        include k1_load_template("app.messages");
+    if ((\k1app\APP_MODE == 'web') || (\k1app\APP_MODE == 'ajax')) {
+        include \k1lib\templates\load_template("app.messages");
         if (empty($title)) {
             $msg_alert_no_title = str_replace("%message%", $msg, $msg_alert_no_title);
             return $msg_alert_no_title;
@@ -286,4 +286,27 @@ function XmlToJson($xml, $append = "") {
     $simpleXml->append = htmlentities($append);
     $json = json_encode($simpleXml);
     return $json;
+}
+
+function get_file_extension($file_name, $to_lower = false) {
+    if (!is_string($file_name)) {
+        \k1lib\common\show_error("The file name to check only can be a string", __FUNCTION__, true);
+    }
+    $last_dot_pos = strrpos($file_name, ".");
+    if ($last_dot_pos !== false) {
+        //trim the ?query url
+        $last_question_pos = strrpos($file_name, "?");
+        if ($last_question_pos !== false) {
+            $file_name = substr($file_name, 0, $last_question_pos);
+        }
+        //extension
+        $file_extension = substr($file_name, $last_dot_pos + 1);
+        if ($to_lower) {
+            return strtolower($file_extension);
+        } else {
+            return $file_extension;
+        }
+    } else {
+        return false;
+    }
 }

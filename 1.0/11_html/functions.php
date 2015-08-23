@@ -1,10 +1,12 @@
 <?php
 
-function k1_js_back() {
+namespace k1lib\html;
+
+function js_back() {
     die("<body><script type='text/javascript''>history.back();</script>");
 }
 
-function k1_get_back_link($text_link = "Regresar", $target = "_self", $id = "", $class = "", $app_format = false, $keep_vars = true, $vars_to_keep = "") {
+function get_back_link($text_link = "Regresar", $target = "_self", $id = "", $class = "", $app_format = false, $keep_vars = true, $vars_to_keep = "") {
     if (isset($_SERVER['HTTP_REFERER']) && (!empty($_SERVER['HTTP_REFERER']))) {
         $back_link = $_SERVER['HTTP_REFERER'];
     } elseif (isset($_SESSION['K1_LAST_URL']) && (!empty($_SESSION['K1_LAST_URL']))) {
@@ -12,12 +14,12 @@ function k1_get_back_link($text_link = "Regresar", $target = "_self", $id = "", 
     } else {
         $back_link = "javascript:history.back()";
     }
-    $back_link = k1_generate_link($back_link, $text_link, $target, $id, $class, $app_format, $keep_vars, $vars_to_keep);
+    $back_link = \k1lib\html\generate_link($back_link, $text_link, $target, $id, $class, $app_format, $keep_vars, $vars_to_keep);
 
     return $back_link;
 }
 
-function k1_back_link($text_link = "< Volver", $return = true, $url = false, $use_div = true, $class = "k1-back-link") {
+function back_link($text_link = "< Volver", $return = true, $url = false, $use_div = true, $class = "k1-back-link") {
     if ($url) {
         $back_link = "<a href=\"{$url}\" \">{$text_link}</a>";
     } else {
@@ -33,7 +35,7 @@ function k1_back_link($text_link = "< Volver", $return = true, $url = false, $us
     }
 }
 
-function k1_generate_link($url, $text_link, $target = "_self", $id = "", $class = "", $app_format = true, $keep_vars = true, $vars_to_keep = "") {
+function generate_link($url, $text_link, $target = "_self", $id = "", $class = "", $app_format = true, $keep_vars = true, $vars_to_keep = "") {
     if ($app_format) {
         $url = \k1lib\urlrewrite\get_app_link($url, $keep_vars, $vars_to_keep);
     }
@@ -45,12 +47,13 @@ function k1_generate_link($url, $text_link, $target = "_self", $id = "", $class 
  * @param string $url
  * @param bolean $app_format 
  */
-function k1_html_header_go($url, $app_format = true, $keep_vars = true, $get_vars_to_keep = "") {
+function html_header_go($url, $app_format = true, $keep_vars = true, $get_vars_to_keep = "") {
 //    die("Redirecting... [$url]");
     ob_clean();
     if ($app_format) {
         $url = \k1lib\urlrewrite\get_app_link($url, $keep_vars, $get_vars_to_keep);
     }
+//    trigger_error("No se que pasa!! " . __FUNCTION__, E_USER_ERROR);
 //    echo "$file - $line";
     header("X-K1.LIB-Message : Redirecting...");
 //    $html = <<<HTML
@@ -73,8 +76,10 @@ function k1_html_header_go($url, $app_format = true, $keep_vars = true, $get_var
  * @param string $root The DOM object to redirect
  * @param bolean $app_format 
  */
-function k1_js_go($url, $root = "window", $app_format = true, $keep_vars = true, $get_vars_to_keep = "") {
+function js_go($url, $root = "window", $app_format = true, $keep_vars = true, $get_vars_to_keep = "") {
     ob_clean();
+//    trigger_error("No se que pasa!! " . __FUNCTION__, E_USER_ERROR);
+
     if ($app_format) {
         $url = \k1lib\urlrewrite\get_app_link($url, $keep_vars, $get_vars_to_keep);
     }
@@ -82,13 +87,13 @@ function k1_js_go($url, $root = "window", $app_format = true, $keep_vars = true,
     die("<script type='text/javascript'>{$root}.location.href = '{$url}';</script>");
 }
 
-function k1_js_alert($msg) {
+function js_alert($msg) {
     if (is_string($msg)) {
         echo "\n<script type=\"text/javascript\">\nalert(\"$msg\");</script>";
     }
 }
 
-function k1_array_to_ul($array) {
+function array_to_ul($array) {
     if (!is_array($array)) {
         die(__FUNCTION__ . " need an array to work on \$array");
     }
@@ -103,5 +108,3 @@ function k1_array_to_ul($array) {
     $htlm .= "<ul>\n";
     return $htlm;
 }
-
-

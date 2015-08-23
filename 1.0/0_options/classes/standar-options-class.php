@@ -16,6 +16,11 @@ namespace k1lib\options\classes;
 class standar_options_class {
 
     private $options = array();
+    private $option_name;
+
+    function __construct($option_name) {
+        $this->option_name = $option_name;
+    }
 
     public function add_option($option_name, $option_value) {
         $this->options[$option_name] = $option_value;
@@ -31,3 +36,4 @@ class standar_options_class {
 
 //put your code here
 }
+

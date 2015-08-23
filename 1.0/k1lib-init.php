@@ -21,16 +21,15 @@
 
 namespace k1lib;
 
-define("IN_K1LIB", true);
-
+const IN_K1LIB = true;
 
 $app_init_time = microtime(true);
 
-$db_querys = 0;
-$db_query_cached_true = 0;
-$db_query_cached_false = 0;
-$db_query_cached_total = 0;
-$sql_profiles = array();
+//$db_querys = 0;
+//$db_query_cached_true = 0;
+//$db_query_cached_false = 0;
+//$db_query_cached_total = 0;
+//$sql_profiles = array();
 
 $fbq_calls = 0;
 $fb_api_calls = 0;
@@ -54,10 +53,12 @@ $k1lib_directory_name = basename($k1lib_local_dir);
 define("K1LIB_BASE_PATH", $k1lib_local_dir);
 
 const VERSION = "1.0";
+/**
+ * This MUST to be reflected on the .htaccess, IF NOT rewriting WONT work!
+ */
+const URL_REWRITE_VAR_NAME = "K1LIB_URL";
 const BASE_PATH = \K1LIB_BASE_PATH;
 const HTML_TEMPLATES_PATH = BASE_PATH . "/html-templates";
-
-const URL_REWRITE_VAR_NAME = "K1_URL";
 
 $files_lv1 = scandir(BASE_PATH);
 
