@@ -144,7 +144,7 @@ class html_table_with_table_config {
 
     public function getTotalPages() {
         $totalPages = $this->rowCount / $this->pageSize;
-//        \k1lib\common\d($totalPages);
+//        d($totalPages);
         return ceil($totalPages);
     }
 

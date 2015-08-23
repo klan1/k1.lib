@@ -195,10 +195,10 @@ function getFromCarvajal($cedula) {
         curl_setopt($ch1, CURLOPT_TIMEOUT, 4); //timeout in seconds
         if (!empty($proxy_list_array[$i])) {
             $actual_proxy = $proxy_list_array[$i];
-            \k1lib\common\d("Using proxy: " . $actual_proxy);
+            d("Using proxy: " . $actual_proxy);
             curl_setopt($ch1, CURLOPT_PROXY, $actual_proxy);
         } else {
-            \k1lib\common\d("Using local IP");
+            d("Using local IP");
         }
         curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch1, CURLOPT_BINARYTRANSFER, true);
@@ -223,21 +223,21 @@ function getFromCarvajal($cedula) {
             } else {
                 $i++;
             }
-            \k1lib\common\d($content1, true);
-            \k1lib\common\d($content1_info);
+            d($content1, true);
+            d($content1_info);
         }
     } while ($form_name == false);
 
     if ($content1_info['http_code'] == 200) {
 
-//\k1lib\common\d($form_name);
+//d($form_name);
         /**
          * J_ID
          */
         $pattern_j_id = '/<input id="f1:j_idt(.*?)"/i';
         preg_match_all($pattern_j_id, $content1, $matches_j_id);
         $j_id = $matches_j_id[1][0];
-//\k1lib\common\d($j_id);
+//d($j_id);
 //die();
         /**
          * javax.faces.ViewState
@@ -279,7 +279,7 @@ function getFromCarvajal($cedula) {
 
         $content2 = curl_exec($ch2);
         $content2_info = curl_getinfo($ch2);
-//\k1lib\common\d(curl_getinfo($ch2));
+//d(curl_getinfo($ch2));
         curl_close($ch2);
         if ($content2_info['http_code'] == 200) {
 
@@ -292,7 +292,7 @@ function getFromCarvajal($cedula) {
             preg_match_all($pattern_datos_censo, $content2, $matches1);
 
             if (isset($matches1[2][0])) {
-//        \k1lib\common\d($matches1);
+//        d($matches1);
                 $return_array['censo']['cedula'] = $matches1[2][0];
                 $return_array['censo']['fecha_ingreso'] = $matches1[1][0];
                 $return_array['censo']['nombres'] = $matches1[3][0];
@@ -332,7 +332,7 @@ function getFromCarvajal($cedula) {
                         $return_array['inscripcion']['clase'] = $matches2[8][0];
                         $return_array['inscripcion']['estado'] = $matches2[9][0];
                     }
-//                            \k1lib\common\d($matches2);
+//                            d($matches2);
                 }
                 if (!empty($matches2[2][0])) {
                     \k1lib\sql\sql_insert($db, "CENSO2015_INSCRIPCIONES", $return_array['inscripcion']);
@@ -342,12 +342,12 @@ function getFromCarvajal($cedula) {
             $return = TRUE;
         } else {
             trigger_error("La peticion de la pagina de fuente ha retornado error: " . $content1_info["http_code"]);
-            \k1lib\common\d($content1_info);
+            d($content1_info);
         }
 // http_code $content1 
     } else {
         trigger_error("La peticion de la pagina de fuente ha retornado error: " . $content1_info["http_code"]);
-        \k1lib\common\d($content2_info);
+        d($content2_info);
     }
     if ($return) {
         return $return_array;

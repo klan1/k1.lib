@@ -170,7 +170,7 @@ function form_check_values($form_array, $table_array_config, $db = null) {
                     $options_fliped = array_flip($options);
                     if (!isset($options_fliped[$value])) {
                         $error_type = print_r($options_fliped, true) . " value: '$value'";
-                        \k1lib\common\d($value, true);
+                        d($value, true);
                     }
                     break;
                 case 'email':
@@ -297,7 +297,7 @@ function form_check_values($form_array, $table_array_config, $db = null) {
         } else if (!empty($error_type) && !empty($error_msg)) {
             $error_array[$key] = "$error_msg - $error_type";
         } else {
-//            \k1lib\common\d("$value is {$table_array_config[$key]['validation']}");
+//            d("$value is {$table_array_config[$key]['validation']}");
         }
     }
     if (count($error_array) > 0) {
@@ -424,7 +424,7 @@ function make_form_input_from_serialized($table_name, $field_name, $table_config
         } elseif (($table_config_array[$field_name]['type'] == "enum") || ($table_config_array[$field_name]['sql'] != "")) {
             return \k1lib\forms\make_form_select_list($field_name, $value, $table_config_array, $error_msg);
         } else {
-            \k1lib\common\d($field_name);
+            d($field_name);
         }
         return $html_code;
     } elseif (($mode == "view") || ($mode == "none")) {

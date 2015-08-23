@@ -357,8 +357,8 @@ class completeEasyController extends k1_controller_with_dbtables_class {
          * WTF fix ?? --> FOUND !!
          */
 //        return $this->getControllerUrlRoot() . "/" . $this->boardUrlParameterValue;
-//        \k1lib\common\d($this->getControllerUrlRoot());
-//        \k1lib\common\d($this->boardRootUrl);
+//        d($this->getControllerUrlRoot());
+//        d($this->boardRootUrl);
         $boardRootURL = null;
 
         if (!empty($this->getBoardUrlParameterValue())) {
@@ -390,10 +390,10 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         $this->boardErrorId = $this->boardID . "-errors";
 // FORM (POST) SPECIFIC ERRORS will use this ID
         $this->boardFormErrorId = $this->boardID . "-form";
-//        \k1lib\common\d($this->boardID);
+//        d($this->boardID);
         $this->boardUrlParameterValueArray = \k1lib\sql\table_url_text_to_keys($this->boardUrlParameterValue, $this->dbTableMainObject->getTableFieldConfig());
         $this->boardUrlParameterWhereCondition = \k1lib\sql\table_keys_to_where_condition($this->boardUrlParameterValueArray, $this->dbTableMainObject->getTableFieldConfig());
-//        \k1lib\common\d($this->dbTableMainObject->getTableFieldConfig());
+//        d($this->dbTableMainObject->getTableFieldConfig());
     }
 
     /**

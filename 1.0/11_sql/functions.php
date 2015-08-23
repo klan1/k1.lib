@@ -213,7 +213,7 @@ AND table_name = '{$table}'";
 //ROW attrib_value FIXES
 // yes -> true no -> false
         foreach ($field_row as $key => $value) {
-//            \k1lib\common\d("$key -> $value");
+//            d("$key -> $value");
             if ($field_row[$key] == "yes") {
                 $field_row[$key] = true;
             } elseif ($field_row[$key] == "no") {
@@ -298,7 +298,7 @@ function k1_get_table_keys(&$table_config_array) {
  * @return null
  */
 function get_table_label(&$table_config_array) {
-//    \k1lib\common\d("From V0.8 depreated no you have to use k1_get_field_label() instead"); -->> WHHHYYYYY ????
+//    d("From V0.8 depreated no you have to use k1_get_field_label() instead"); -->> WHHHYYYYY ????
     if (!is_array($table_config_array)) {
         die(__FUNCTION__ . ": need an array to work on \$table_config_array");
     }
@@ -392,8 +392,8 @@ function table_url_text_to_keys($url_text, $table_config_array) {
 // data type check
     $errors = \k1lib\forms\form_check_values($key_data, $table_config_array);
     if (!empty($errors)) {
-        \k1lib\common\d($key_data);
-        \k1lib\common\d($errors);
+        d($key_data);
+        d($errors);
         trigger_error(__FUNCTION__ . ": Value types on the received \$url_text do not match with \$table_config_array", E_USER_ERROR);
     }
     return $key_data;
@@ -468,7 +468,7 @@ function sql_value_increment(\PDO $db, $table, $key_name, $key_value, $field_nam
         }
     } else {
         \k1lib\common\show_error("The value to increment coundn't be query" . __FUNCTION__);
-        \k1lib\common\d($sql);
+        d($sql);
     }
 }
 
@@ -542,7 +542,7 @@ function sql_query(\PDO $db, $sql, $return_all = true, $do_fields = false, $use_
         profiler::set_is_cached($sql_profile_id, TRUE);
     } else {
         profiler::set_is_cached($sql_profile_id, FALSE);
-        $query_result = $db->query($sql) or ( (K1_DEBUG) ? \k1lib\common\d(print_r($db->errorInfo(), true) . "SQL: $sql") : "SQL Error" );
+        $query_result = $db->query($sql) or ( (K1_DEBUG) ? d(print_r($db->errorInfo(), true) . "SQL: $sql") : "SQL Error" );
     }
     if (profiler::is_enabled()) {
         profiler::stop_time_count($sql_profile_id);
@@ -581,7 +581,7 @@ function sql_query(\PDO $db, $sql, $return_all = true, $do_fields = false, $use_
                     return $queryReturn[1];
                 }
             } else {
-//                \k1lib\common\d($sql);
+//                d($sql);
             }
         } else {
             return null;
@@ -733,7 +733,7 @@ function array_to_sql_values($array) {
                 }
                 $data_string .= ") ";
             } else {
-                \k1lib\common\show_error("wrong values count of array on " . __FUNCTION__ . \k1lib\common\d($array));
+                \k1lib\common\show_error("wrong values count of array on " . __FUNCTION__ . d($array));
                 exit();
             }
         }

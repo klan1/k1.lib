@@ -67,7 +67,7 @@ class k1_board_general_class {
             }
             $this->boardParameterKeyArray = \k1lib\sql\table_url_text_to_keys($url_parameter, $this->controllerObject->getControllerTableConfig());
             $this->boardSqlWhereCondition = \k1lib\sql\table_keys_to_where_condition($this->boardParameterKeyArray, $this->controllerObject->getControllerTableConfig());
-//            \k1lib\common\d($this->boardSqlWhereCondition);
+//            d($this->boardSqlWhereCondition);
         }
         return $this->boardSqlWhereCondition;
     }
@@ -97,7 +97,7 @@ class k1_board_general_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
 //        $this->formActionUrl = \k1lib\urlrewrite\get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
 //        $formActionUrl = $this->controllerObject->parseUrlTag($formActionUrl);
-//        \k1lib\common\d($this->controllerObject->getBoardRootUrl());
+//        d($this->controllerObject->getBoardRootUrl());
         $this->formActionUrl = \k1lib\urlrewrite\get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
         $this->formSubmitLabel = $formSubmitLabel;
     }
@@ -345,7 +345,7 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
 //                        die;
                     }
                 } else {
-//                    \k1lib\common\d($form_errors);
+//                    d($form_errors);
 //                    die('si errores');
 
                     $do_check = true;
@@ -362,7 +362,7 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
             \k1lib\forms\serialize_var($controller_errors, $this->controllerObject->getBoardErrorId());
             \k1lib\forms\serialize_var($form_errors, $this->controllerObject->getBoardFormErrorId());
             $form_check_url = "{$this->controllerObject->getBoardRootUrl()}/check";
-//            \k1lib\common\d($form_check_url);
+//            d($form_check_url);
             \k1lib\html\html_header_go($form_check_url);
             exit;
         }
@@ -597,8 +597,8 @@ class net_klan1_dev_BoardView extends k1_board_general_class {
 
     public function getControllerFKDetatilButton() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__);
-//        \k1lib\common\d($url);
-//        \k1lib\common\d($this->controllerObject->getBoardUrlParameterValue());
+//        d($url);
+//        d($this->controllerObject->getBoardUrlParameterValue());
         $controllerFKDetatilLink = $this->getControllerFKDetatilLink();
         if (!empty($controllerFKDetatilLink)) {
             $url = (sprintf($this->getControllerFKDetatilLink(), "{$this->controllerObject->getBoardUrlParameterValue()}"));
