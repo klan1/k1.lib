@@ -71,7 +71,7 @@ class k1_general_controller_class {
         $this->controllerUrlName = "url_controller";
         $this->controllerUrlValue = $this->setUrlLevel($this->controllerUrlName, false);
         $this->setControllerUrlRoot(\k1lib\urlrewrite\make_url_from_rewrite());
-//        \k1lib\common\d($this->controllerUrlRoot);
+//        d($this->controllerUrlRoot);
         $this->controllerID = \k1lib\urlrewrite\get_this_controller_id();
     }
 

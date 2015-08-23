@@ -23,21 +23,21 @@ function check_on_app() {
  * @param boolean $dump
  * @param boolean $inline 
  */
-function d($d, $dump = false, $inline = true) {
-//    trigger_error(__FILE__, E_USER_ERROR);
-    $msg = ( ($dump) ? var_export($d, true) : print_r($d, true) );
-    if (\k1app\APP_MODE == "shell") {
-        echo "\n{$msg}\n";
-    } else {
-        if ($inline) {
-            echo "<pre>\n";
-            echo $msg;
-            echo "\n</pre>\n";
-        } else {
-            \k1lib\common\show_message("$msg", "DUMP");
-        }
-    }
-}
+//function d($d, $dump = false, $inline = true) {
+////    trigger_error(__FILE__, E_USER_ERROR);
+//    $msg = ( ($dump) ? var_export($d, true) : print_r($d, true) );
+//    if (\k1app\APP_MODE == "shell") {
+//        echo "\n{$msg}\n";
+//    } else {
+//        if ($inline) {
+//            echo "<pre>\n";
+//            echo $msg;
+//            echo "\n</pre>\n";
+//        } else {
+//            \k1lib\common\show_message("$msg", "DUMP");
+//        }
+//    }
+//}
 
 /**
  * Only receive arrays to show them 
@@ -108,7 +108,7 @@ function array_to_url_parameters($data_array, $guide_array = false, $use_json = 
     if (!is_array($guide_array)) {
         $guide_array = \k1lib\forms\make_guide_array($data_array);
     }
-    \k1lib\common\d($guide_array);
+    d($guide_array);
     foreach ($guide_array as $key => $value) {
         if (!is_array($value)) {
             if (isset($data_array[$value])) {

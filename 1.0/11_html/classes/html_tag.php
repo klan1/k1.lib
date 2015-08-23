@@ -176,7 +176,7 @@ namespace k1lib\html\classes {
             if (($with_childs) && (count($this->childs) >= 1)) {
                 //lets move with index numbers begining from 0
                 $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
-//            \k1lib\common\d($this->childs,true);
+//            d($this->childs,true);
                 foreach ($this->childs as $index => &$child_object) {
                     if ($index > $n_childs) {
                         break;

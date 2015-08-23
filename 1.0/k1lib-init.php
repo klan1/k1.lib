@@ -31,10 +31,10 @@ $app_init_time = microtime(true);
 //$db_query_cached_total = 0;
 //$sql_profiles = array();
 
-$fbq_calls = 0;
-$fb_api_calls = 0;
-$fbq_profiles = array();
-$fbapi_profiles = array();
+//$fbq_calls = 0;
+//$fb_api_calls = 0;
+//$fbq_profiles = array();
+//$fbapi_profiles = array();
 
 /*
  * GENERAL VARIABLE DECLARATIONS

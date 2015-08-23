@@ -24,7 +24,7 @@ function k1_mail($to, $subject, $message, $from = "", $data = null) {
 
 function k1_array_to_text($data, $html = false) {
    if (!is_array($data)) {
-      \k1lib\common\d($data);
+      d($data);
       die("Solo arreglos!");
    }
 
