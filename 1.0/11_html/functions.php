@@ -6,7 +6,7 @@ function js_back() {
     die("<body><script type='text/javascript''>history.back();</script>");
 }
 
-function get_back_link($text_link = "Regresar", $target = "_self", $id = "", $class = "", $app_format = false, $keep_vars = true, $vars_to_keep = "") {
+function get_back_link($text_link = "Regresar", $target = "_self", $id = "", $class = "", $app_format = FALSE, $keep_vars = TRUE, $vars_to_keep = "") {
     if (isset($_SERVER['HTTP_REFERER']) && (!empty($_SERVER['HTTP_REFERER']))) {
         $back_link = $_SERVER['HTTP_REFERER'];
     } elseif (isset($_SESSION['K1_LAST_URL']) && (!empty($_SESSION['K1_LAST_URL']))) {
@@ -19,7 +19,7 @@ function get_back_link($text_link = "Regresar", $target = "_self", $id = "", $cl
     return $back_link;
 }
 
-function back_link($text_link = "< Volver", $return = true, $url = false, $use_div = true, $class = "k1-back-link") {
+function back_link($text_link = "< Volver", $return = TRUE, $url = FALSE, $use_div = TRUE, $class = "k1-back-link") {
     if ($url) {
         $back_link = "<a href=\"{$url}\" \">{$text_link}</a>";
     } else {
@@ -35,7 +35,7 @@ function back_link($text_link = "< Volver", $return = true, $url = false, $use_d
     }
 }
 
-function generate_link($url, $text_link, $target = "_self", $id = "", $class = "", $app_format = true, $keep_vars = true, $vars_to_keep = "") {
+function generate_link($url, $text_link, $target = "_self", $id = "", $class = "", $app_format = TRUE, $keep_vars = TRUE, $vars_to_keep = "") {
     if ($app_format) {
         $url = \k1lib\urlrewrite\get_app_link($url, $keep_vars, $vars_to_keep);
     }
@@ -47,7 +47,7 @@ function generate_link($url, $text_link, $target = "_self", $id = "", $class = "
  * @param string $url
  * @param bolean $app_format 
  */
-function html_header_go($url, $app_format = true, $keep_vars = true, $get_vars_to_keep = "") {
+function html_header_go($url, $app_format = TRUE, $keep_vars = TRUE, $get_vars_to_keep = "") {
 //    die("Redirecting... [$url]");
     ob_clean();
     if ($app_format) {
@@ -76,7 +76,7 @@ function html_header_go($url, $app_format = true, $keep_vars = true, $get_vars_t
  * @param string $root The DOM object to redirect
  * @param bolean $app_format 
  */
-function js_go($url, $root = "window", $app_format = true, $keep_vars = true, $get_vars_to_keep = "") {
+function js_go($url, $root = "window", $app_format = TRUE, $keep_vars = TRUE, $get_vars_to_keep = "") {
     ob_clean();
 //    trigger_error("No se que pasa!! " . __FUNCTION__, E_USER_ERROR);
 

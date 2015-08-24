@@ -8,9 +8,9 @@ namespace k1lib\controllers;
  * @param string $controller_name Just the file name 
  * @return string correct path to include the file name recived on $controller_name
  */
-function load_controller($controller_name, $query_auto_load = true) {
+function load_controller($controller_name, $query_auto_load = TRUE) {
     global $url_data, $controller_query_file;
-    $controller_query_file = false;
+    $controller_query_file = FALSE;
     if (is_string($controller_name)) {
         // Try with subfolder scheme
         $controller_subfix = \k1app\APP_CONTROLLERS_PATH . "/{$controller_name}";
@@ -60,9 +60,9 @@ function if_exist_controller($controller_name) {
     if (is_string($controller_name)) {
         $controller_to_load = APP_CONTROLLERS_PATH . "/{$controller_name}.php";
         if (file_exists($controller_to_load)) {
-            return true;
+            return TRUE;
         } else {
-            return false;
+            return FALSE;
         }
     }
 }

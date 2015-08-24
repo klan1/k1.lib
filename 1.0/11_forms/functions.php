@@ -47,7 +47,7 @@ function serialize_var($var_to_save, $save_name, $method = "session") {
     if ($method == "session") {
         $_SESSION['serialized_vars'][$save_name] = $var_to_save;
     }
-    return true;
+    return TRUE;
 }
 
 /**
@@ -65,7 +65,7 @@ function unserialize_var($saved_name, $method = "session") {
         if (isset($_SESSION['serialized_vars'][$saved_name])) {
             $saved_vars = $_SESSION['serialized_vars'][$saved_name];
         } else {
-            $saved_vars = false;
+            $saved_vars = FALSE;
         }
     }
     return $saved_vars;
@@ -77,9 +77,9 @@ function unset_serialize_var($saved_name, $method = "session") {
     }
     if (isset($_SESSION['serialized_vars'][$saved_name])) {
         unset($_SESSION['serialized_vars'][$saved_name]);
-        return true;
+        return TRUE;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -90,7 +90,7 @@ function unset_serialize_var($saved_name, $method = "session") {
  * @param string $default
  * @return mixed
  */
-function get_form_field_from_serialized($form_name, $field_name, $default = "", $compare = "--false--") {
+function get_form_field_from_serialized($form_name, $field_name, $default = "", $compare = "--FALSE--") {
     if (!is_string($form_name) || empty($form_name)) {
         die(__FUNCTION__ . " form_name should be an non empty string");
     }
@@ -101,33 +101,33 @@ function get_form_field_from_serialized($form_name, $field_name, $default = "", 
     if (isset($_SESSION['serialized_vars'][$form_name])) {
         if (isset($_SESSION['serialized_vars'][$form_name][$field_name])) {
             $field_value = $_SESSION['serialized_vars'][$form_name][$field_name];
-            if ($compare !== "--false--") {
+            if ($compare !== "--FALSE--") {
                 if ($field_value === $compare) {
-                    return true;
+                    return TRUE;
                 } else {
-                    return false;
+                    return FALSE;
                 }
             }
         } else {
-            if ($compare !== "--false--") {
+            if ($compare !== "--FALSE--") {
                 if ($default === $compare) {
-                    return true;
+                    return TRUE;
                 } else {
-                    return false;
+                    return FALSE;
                 }
             } else {
                 $field_value = $default;
             }
         }
     } else {
-        $field_value = false;
+        $field_value = FALSE;
 //        die(__FUNCTION__ . " serialized var '$form_name' do not exist! ");
     }
 
     return $field_value;
 }
 
-function form_check_values($form_array, $table_array_config, $db = null) {
+function form_check_values($form_array, $table_array_config, $db = NULL) {
     if (!is_array($form_array)) {
         die(__FUNCTION__ . " need an array to work on \$form_array");
     }
@@ -155,8 +155,8 @@ function form_check_values($form_array, $table_array_config, $db = null) {
         // email | letters (solo letras) | numbers (solo numeros) | mixed (alfanumerico) | letters-simbols (con simbolos ej. !#()[],.) | numbers-simbols | mixed-simbols - los simbols no lo implementare aun
         // the basic error, if is required on the table definition
         if (($value !== 0) && ($value !== '0') && empty($value)) {
-            if ($table_array_config[$key]['null'] === false) {
-                $error_msg = "$error_header_msg es requerido " . var_dump($value, true);
+            if ($table_array_config[$key]['NULL'] === FALSE) {
+                $error_msg = "$error_header_msg es requerido " . var_dump($value, TRUE);
             }
         } elseif ((strlen((string) $value) < (int) $min) || (strlen((string) $value) > (int) $max)) {
             $error_msg = "$error_header_msg debe ser de minimo $min y maximo $max caracteres";
@@ -169,8 +169,8 @@ function form_check_values($form_array, $table_array_config, $db = null) {
                     $options = \k1lib\sql\get_table_enum_values($db, $table_array_config[$key]['table'], $key);
                     $options_fliped = array_flip($options);
                     if (!isset($options_fliped[$value])) {
-                        $error_type = print_r($options_fliped, true) . " value: '$value'";
-                        d($value, true);
+                        $error_type = print_r($options_fliped, TRUE) . " value: '$value'";
+                        d($value, TRUE);
                     }
                     break;
                 case 'email':
@@ -303,7 +303,7 @@ function form_check_values($form_array, $table_array_config, $db = null) {
     if (count($error_array) > 0) {
         return $error_array;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -344,7 +344,7 @@ function make_form_select_list(&$field_name, &$value, &$table_config_array, &$er
         $select_data_array = \k1lib\sql\get_table_enum_values($db, $table_config_array[$field_name]['table'], $field_name);
     } elseif ($table_config_array[$field_name]['sql'] != "") {
         $table_config_array[$field_name]['sql'];
-        $sql_data = \k1lib\sql\sql_query($db, $table_config_array[$field_name]['sql'], true);
+        $sql_data = \k1lib\sql\sql_query($db, $table_config_array[$field_name]['sql'], TRUE);
         if (!empty($sql_data)) {
             foreach ($sql_data as $row) {
                 $select_data_array[$row['value']] = $row['label'];
@@ -356,16 +356,16 @@ function make_form_select_list(&$field_name, &$value, &$table_config_array, &$er
     $label_object = new html_classes\label_tag($table_config_array[$field_name]['label'], $field_name, "right inline");
 //    $select_object = new html_classes\select_tag($field_name);
 
-    if (empty($value) && (!$table_config_array[$field_name]['null'])) {
+    if (empty($value) && (!$table_config_array[$field_name]['NULL'])) {
         $value = $table_config_array[$field_name]['default'];
     }
 
     if (!empty($error_msg)) {
-        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null'], "error");
+        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['NULL'], "error");
         $html_template = html_functions\load_html_template("label_input_combo-error");
         $html_code = sprintf($html_template, $label_object->generate_tag(), $select_html, $error_msg);
     } else {
-        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null']);
+        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['NULL']);
         $html_template = html_functions\load_html_template("label_input_combo");
         $html_code = sprintf($html_template, $label_object->generate_tag(), $select_html);
     }
@@ -389,7 +389,7 @@ function make_form_input_from_serialized($table_name, $field_name, $table_config
      * WTF -- THIS WORKS ??
      * TODO: check this ! COD 1
      */
-    if (strstr($value, "function-") !== false) {
+    if (strstr($value, "function-") !== FALSE) {
         $function_to_execute = strstr($value, "k1");
         eval("\$value = $function_to_execute;");
     }
@@ -419,8 +419,8 @@ function make_form_input_from_serialized($table_name, $field_name, $table_config
          * NORMAL INPUT TEXT
          */
         $type_comparation = strstr("char,varchar,text,date,datetime,tinyint,smallint,mediumint,int,bigint,float,double'", $table_config_array[$field_name]['type']);
-        if (($type_comparation !== false) && ($table_config_array[$field_name]['sql'] == "")) {
-            return html_functions\label_input_text_combo($field_name, $value, $table_config_array[$field_name]['label'], $table_config_array[$field_name]['null'], $error_msg);
+        if (($type_comparation !== FALSE) && ($table_config_array[$field_name]['sql'] == "")) {
+            return html_functions\label_input_text_combo($field_name, $value, $table_config_array[$field_name]['label'], $table_config_array[$field_name]['NULL'], $error_msg);
         } elseif (($table_config_array[$field_name]['type'] == "enum") || ($table_config_array[$field_name]['sql'] != "")) {
             return \k1lib\forms\make_form_select_list($field_name, $value, $table_config_array, $error_msg);
         } else {
@@ -477,9 +477,9 @@ function get_labels_from_table($db, $table_name) {
             }
             return $label_array;
         } else {
-            return false;
+            return FALSE;
         }
     } else {
-        return false;
+        return FALSE;
     }
 }

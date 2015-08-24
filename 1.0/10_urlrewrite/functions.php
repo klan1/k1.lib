@@ -29,22 +29,22 @@ $this_url = "";
  * $url_data[$level]['value']
  * @param int $level Level deep to define
  * @param string $name Level name
- * @param boolean $required Required? is true the app will stop is the leves is not pressent on the APP_URL
+ * @param boolean $required Required? is TRUE the app will stop is the leves is not pressent on the APP_URL
  * @return boolean 
  * TODO: check level prerequisites 
  */
-function set_url_rewrite_var($level, $name, $required = true) {
+function set_url_rewrite_var($level, $name, $required = TRUE) {
     if (!empty($_GET[\k1lib\URL_REWRITE_VAR_NAME])) {
         global $url_data;
         // checks if the level variable is INT
         if (!is_int($level) || ($level < 0)) {
-            \k1lib\common\show_error("The level for URL REWRITE have to be numeric", __FUNCTION__, true);
+            \k1lib\common\show_error("The level for URL REWRITE have to be numeric", __FUNCTION__, TRUE);
         } elseif ($level == 0) { // if is the frist leves it must to be required
-            $required = true;
+            $required = TRUE;
         }
         // the name var has to have a value
         if ($name == "") {
-            \k1lib\common\show_error("The level name must have a value", __FUNCTION__, true);
+            \k1lib\common\show_error("The level name must have a value", __FUNCTION__, TRUE);
         }
         //convert the URL string into an array separated by "/" character
         $exploded_url = explode("/", $_GET[\k1lib\URL_REWRITE_VAR_NAME]);
@@ -67,19 +67,19 @@ function set_url_rewrite_var($level, $name, $required = true) {
                 if ($required) {
                     die("The URL value in the level {$level} is empty, the actual URL is bad formed " . __FUNCTION__);
                 } else {
-                    return false;
+                    return FALSE;
                 }
             }
         } else {
             if (!$required) {
-                $GLOBALS[$name] = null;
-                return false;
+                $GLOBALS[$name] = NULL;
+                return FALSE;
             } else {
-                \k1lib\common\show_error("The URL level {$level} requested do not exist and is required", __FUNCTION__, true);
+                \k1lib\common\show_error("The URL level {$level} requested do not exist and is required", __FUNCTION__, TRUE);
             }
         }
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -102,7 +102,7 @@ function get_url_level_index_by_name($level_name) {
                 return $index;
             }
         }
-        return false;
+        return FALSE;
     } else {
         trigger_error("The level value only can be STRING on " . __FUNCTION__);
     }
@@ -122,7 +122,7 @@ function get_url_level_value_by_name($level_name) {
                 return $array['value'];
             }
         }
-        return false;
+        return FALSE;
     } else {
         trigger_error("The level value only can be STRING on " . __FUNCTION__);
     }
@@ -171,7 +171,7 @@ function get_url_level_name($level = "this") {
  * @global array $url_data
  * @return string URL 
  */
-function get_this_url($complete_url = true) {
+function get_this_url($complete_url = TRUE) {
     if ($complete_url) {
         return \k1lib\urlrewrite\get_app_link(\k1lib\urlrewrite\make_url_from_rewrite("this"));
     } else {
@@ -238,7 +238,7 @@ function make_url_from_rewrite($level_to_built = 'this') {
  * @param string $link Link to build
  * @param string $text Text to print on the document
  * @param string $class CSS Class to use
- * @param string $extra OThers tag attributes that you want to add Ej. onclick='null'
+ * @param string $extra OThers tag attributes that you want to add Ej. onclick='NULL'
  */
 function print_link($link, $text, $class = "", $extra = "") {
     echo "<a href='$link' class='$class' $extra>$text</a>";
@@ -255,7 +255,7 @@ function get_link($link, $text, $class = "", $extra = "") {
  * @param string $get_vars_to_keep Coma separated value
  * @return string
  */
-function get_fb_app_link($url_to_link, $keep_get_vars = true, $get_vars_to_keep = GET_VARS_TO_KEEP) {
+function get_fb_app_link($url_to_link, $keep_get_vars = TRUE, $get_vars_to_keep = GET_VARS_TO_KEEP) {
     $link = \k1lib\urlrewrite\get_app_link($url_to_link, $keep_get_vars, $get_vars_to_keep);
     return str_replace(APP_URL, FB_APP_URL, $link);
 }
@@ -267,15 +267,15 @@ function get_fb_app_link($url_to_link, $keep_get_vars = true, $get_vars_to_keep 
  * @param type $get_vars_to_keep
  * @return string
  */
-function get_app_link($url_to_link, $keep_get_vars = true, $get_vars_to_keep = "") {
-    if ($url_to_link === null) {
-        return null;
+function get_app_link($url_to_link, $keep_get_vars = TRUE, $get_vars_to_keep = "") {
+    if ($url_to_link === NULL) {
+        return NULL;
     }
     if (!is_string($url_to_link)) {
-        \k1lib\common\show_error("The value to make the link have to be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The value to make the link have to be a string", __FUNCTION__, TRUE);
     }
     if (!is_string($get_vars_to_keep)) {
-        \k1lib\common\show_error("The value of get_vars_to_keep have to be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The value of get_vars_to_keep have to be a string", __FUNCTION__, TRUE);
     }
 
     if (($get_vars_to_keep == "") && defined("GLOBAL_GET_KEEP_VARS")) {
@@ -284,7 +284,7 @@ function get_app_link($url_to_link, $keep_get_vars = true, $get_vars_to_keep = "
     }
 
     //make the initial link
-    if (strstr($url_to_link, "https://") === false) {
+    if (strstr($url_to_link, "https://") === FALSE) {
         // if the url do not have / at start we must to put it
         if (substr($url_to_link, 0, 2) == './') {
             $page_url = $url_to_link;
@@ -300,7 +300,7 @@ function get_app_link($url_to_link, $keep_get_vars = true, $get_vars_to_keep = "
     $i = 0;
     // build the GET list whit only with the vars that the user needs to keep
     foreach ($_GET as $name => $value) {
-        if (strpos($get_vars_to_keep, $name) !== false) {
+        if (strpos($get_vars_to_keep, $name) !== FALSE) {
             $i++;
             if (strpos($page_url, "?")) {
                 $page_url .= "&{$name}={$value}";

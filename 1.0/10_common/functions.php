@@ -13,7 +13,7 @@ function check_on_app() {
     if (!defined("\k1app\IN_K1APP")) {
         \trigger_error("hacking attemp '^_^", E_USER_ERROR);
     } else {
-        return true;
+        return TRUE;
     }
 }
 
@@ -23,9 +23,9 @@ function check_on_app() {
  * @param boolean $dump
  * @param boolean $inline 
  */
-//function d($d, $dump = false, $inline = true) {
+//function d($d, $dump = FALSE, $inline = TRUE) {
 ////    trigger_error(__FILE__, E_USER_ERROR);
-//    $msg = ( ($dump) ? var_export($d, true) : print_r($d, true) );
+//    $msg = ( ($dump) ? var_export($d, TRUE) : print_r($d, TRUE) );
 //    if (\k1app\APP_MODE == "shell") {
 //        echo "\n{$msg}\n";
 //    } else {
@@ -47,7 +47,7 @@ function dump_array($array) {
     if (is_array($array)) {
         foreach ($array as $key => $value) {
             echo "<div id='array-dump'>\n";
-            \k1lib\common\show_message((is_array($value) ? "<pre>" . print_r($value, true) . "</pre>" : $value), $key);
+            \k1lib\common\show_message((is_array($value) ? "<pre>" . print_r($value, TRUE) . "</pre>" : $value), $key);
             echo "\n</div>\n";
         }
     } else {
@@ -62,10 +62,10 @@ function dump_array($array) {
  * @param string $title    Title for the messase window or baloon
  * @param bolean $exit  Tell the function if have to terminate the execution
  */
-function show_error($e, $title = "ERROR", $exit = false) {
+function show_error($e, $title = "ERROR", $exit = FALSE) {
     echo \k1lib\common\get_error($e, $title);
     if ($exit) {
-// $app_fatal_error = true;
+// $app_fatal_error = TRUE;
 // desactivated by jd
 //    \k1lib\templates\set_place_value("bottom_script", "<script type='text/javascript'>k1_clear_controller_content()</script>");
         exit();
@@ -83,7 +83,7 @@ function show_error($e, $title = "ERROR", $exit = false) {
 function get_error($e, $title = "ERROR") {
     $msg_error = "";
     if (is_object($e) || is_array($e)) {
-        $msg = print_r($e, true);
+        $msg = print_r($e, TRUE);
     } else {
         $msg = $e;
     }
@@ -103,7 +103,7 @@ function get_error($e, $title = "ERROR") {
  * @param type $data_array
  * @return string 
  */
-function array_to_url_parameters($data_array, $guide_array = false, $use_json = false, $upper_name = "") {
+function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = FALSE, $upper_name = "") {
     $url_parameters = "";
     if (!is_array($guide_array)) {
         $guide_array = \k1lib\forms\make_guide_array($data_array);
@@ -124,9 +124,9 @@ function array_to_url_parameters($data_array, $guide_array = false, $use_json = 
                     $url_parameters .= "$key=" . urlencode(json_encode($data_array[$key])) . "&";
                 } else {
                     if ($upper_name == "") {
-                        $url_parameters .= \k1lib\common\array_to_url_parameters($data_array[$key], $value, false, $key);
+                        $url_parameters .= \k1lib\common\array_to_url_parameters($data_array[$key], $value, FALSE, $key);
                     } else {
-                        $url_parameters .= \k1lib\common\array_to_url_parameters($data_array[$key], $value, false, "{$upper_name}[{$key}]");
+                        $url_parameters .= \k1lib\common\array_to_url_parameters($data_array[$key], $value, FALSE, "{$upper_name}[{$key}]");
                     }
                 }
             }
@@ -159,14 +159,14 @@ function k1_get_message($msg, $title = "") {
  * TODO: Do completely this function k1_for security
  */
 
-function check_incomming_var($var, $request = false, $url_decode = false) {
+function check_incomming_var($var, $request = FALSE, $url_decode = FALSE) {
     if ((is_string($var) || is_numeric($var)) && !is_array($var)) {
-        if (($request == true) && isset($_REQUEST[$var])) {
+        if (($request == TRUE) && isset($_REQUEST[$var])) {
             $value = $_REQUEST[$var];
-        } elseif (($request == false) && ($var != "")) {
+        } elseif (($request == FALSE) && ($var != "")) {
             $value = $var;
         } else {
-            $value = null;
+            $value = NULL;
         }
         if ($url_decode) {
             $value = urldecode($value);
@@ -188,7 +188,7 @@ function check_incomming_var($var, $request = false, $url_decode = false) {
         }
         return $value;
     } else {
-        return null;
+        return NULL;
     }
 }
 
@@ -205,10 +205,10 @@ function check_freedom_user($fb_uid = '') {
     if ($fb_uid == '') {
         $fb_uid = $GLOBALS['fb_uid'];
     }
-    if (array_search($fb_uid, $app_freedom_users) !== false) {
-        return true;
+    if (array_search($fb_uid, $app_freedom_users) !== FALSE) {
+        return TRUE;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -217,10 +217,10 @@ function check_blocked_user($fb_uid = '') {
     if ($fb_uid == '') {
         $fb_uid = $GLOBALS['fb_uid'];
     }
-    if (array_search($fb_uid, $app_blocked_user) !== false) {
-        return true;
+    if (array_search($fb_uid, $app_blocked_user) !== FALSE) {
+        return TRUE;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -229,12 +229,12 @@ function check_blocked_message($post = "") {
     foreach ($app_blocked_message as $msg) {
         $post = strtolower($post);
         $msg = strtolower($msg);
-        if (strpos($post, $msg) !== false) {
+        if (strpos($post, $msg) !== FALSE) {
             \k1lib\common\show_message("Entontrada la siguiente expresion NO permitida: {$msg}");
-            return true;
+            return TRUE;
         }
     }
-    return false;
+    return FALSE;
 }
 
 function get_magic_name($name) {
@@ -242,9 +242,9 @@ function get_magic_name($name) {
 }
 
 function set_magic_value($name) {
-    $secret = md5($name . microtime(true));
+    $secret = md5($name . microtime(TRUE));
     $_SESSION[\k1lib\common\get_magic_name($name)] = $secret;
-    $client_magic = md5(MAGIC_VALUE . $secret);
+    $client_magic = md5(\k1lib\MAGIC_VALUE . $secret);
     return $client_magic;
 }
 
@@ -254,14 +254,14 @@ function check_magic_value($name, $value_to_check) {
     } else {
         if (isset($_SESSION[\k1lib\common\get_magic_name($name)])) {
             $secret = $_SESSION[\k1lib\common\get_magic_name($name)];
-            $client_magic = md5(MAGIC_VALUE . $secret);
+            $client_magic = md5(\k1lib\MAGIC_VALUE . $secret);
             if ($client_magic == $value_to_check) {
                 return $client_magic;
             } else {
-                return false;
+                return FALSE;
             }
         } else {
-            return false;
+            return FALSE;
         }
     }
 }
@@ -273,9 +273,9 @@ function check_email_address($email) {
     if (!preg_match($regex, $email)) {
 // Email invalid because wrong number of characters 
 // in one board or wrong number of @ symbols.
-        return false;
+        return FALSE;
     }
-    return true;
+    return TRUE;
 }
 
 function XmlToJson($xml, $append = "") {
@@ -288,15 +288,15 @@ function XmlToJson($xml, $append = "") {
     return $json;
 }
 
-function get_file_extension($file_name, $to_lower = false) {
+function get_file_extension($file_name, $to_lower = FALSE) {
     if (!is_string($file_name)) {
-        \k1lib\common\show_error("The file name to check only can be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The file name to check only can be a string", __FUNCTION__, TRUE);
     }
     $last_dot_pos = strrpos($file_name, ".");
-    if ($last_dot_pos !== false) {
+    if ($last_dot_pos !== FALSE) {
         //trim the ?query url
         $last_question_pos = strrpos($file_name, "?");
-        if ($last_question_pos !== false) {
+        if ($last_question_pos !== FALSE) {
             $file_name = substr($file_name, 0, $last_question_pos);
         }
         //extension
@@ -307,6 +307,6 @@ function get_file_extension($file_name, $to_lower = false) {
             return $file_extension;
         }
     } else {
-        return false;
+        return FALSE;
     }
 }

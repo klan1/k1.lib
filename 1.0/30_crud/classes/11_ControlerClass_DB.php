@@ -12,7 +12,7 @@ class k1_controller_with_dbtables_class extends k1_general_controller_class {
      */
     public $dbTableMainObject;
     private $dbTableMainName;
-    private $dbTableMainSQLFilter = null;
+    private $dbTableMainSQLFilter = NULL;
 
     /**
      * @var net_klan1_dev_dbTableClass
@@ -55,7 +55,7 @@ class k1_controller_with_dbtables_class extends k1_general_controller_class {
      * 
      * ***************** */
 
-    public function setDbTable($tableName, $tableType, $initController = true) {
+    public function setDbTable($tableName, $tableType, $initController = TRUE) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__);
 
         switch ($tableType) {

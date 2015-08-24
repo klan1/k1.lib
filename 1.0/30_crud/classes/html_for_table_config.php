@@ -18,13 +18,13 @@ class html_table_with_table_config {
     private $rowCount = 0;
     // LIMIT
     private $pageSize = 50;
-    private $pageEnd = null;
+    private $pageEnd = NULL;
     private $pageActual = 0;
     private $tableConfigArray;
     private $tableFieldLinksArray;
-    private $htmlTableMode = null;
+    private $htmlTableMode = NULL;
     private $configViewRule;
-    private $doSearchSystem = false;
+    private $doSearchSystem = FALSE;
     // Atributos de TABLE (HTML)
     private $id;
     private $class;
@@ -36,11 +36,11 @@ class html_table_with_table_config {
     // codigo HTML
     private $html_code;
 
-    function __construct($boarID = null) {
+    function __construct($boarID = NULL) {
         $this->boardID = $boarID;
         $this->configViewRule = "show-table";
-        $this->form_object = false;
-        $this->numbering = false;
+        $this->form_object = FALSE;
+        $this->numbering = FALSE;
         $this->class = "";
         $this->other_attribs = "";
         $this->no_data = "No hay datos para mostrar";
@@ -49,19 +49,19 @@ class html_table_with_table_config {
     /**
      * Make and add the WHERE SQL stament for the filter (search)
      * @param Array $formVarsArray
-     * @return true 
+     * @return TRUE 
      */
     function makeSqlFilter(Array $formVarsArray) {
-        $doFilter = false;
+        $doFilter = FALSE;
         foreach ($formVarsArray as $searchValue) {
             if (!empty($searchValue)) {
-                $doFilter = true;
+                $doFilter = TRUE;
             }
         }
         if ($doFilter) {
             if ($this->htmlTableMode == "SQL") {
                 //looks if the SQL have the WHERE stament
-                if (strstr(strtolower($this->sqlQuery), "where") !== false) {
+                if (strstr(strtolower($this->sqlQuery), "where") !== FALSE) {
                     $this->sqlSearchFilter = " ";
                     $i = 1;
                 } else {
@@ -76,12 +76,12 @@ class html_table_with_table_config {
                         $i++;
                     }
                 }
-                return true;
+                return TRUE;
             } else {
-                return false;
+                return FALSE;
             }
         } else {
-            return false;
+            return FALSE;
         }
     }
 
@@ -89,25 +89,25 @@ class html_table_with_table_config {
         if (!empty($this->sqlSearchFilter)) {
             return $this->sqlSearchFilter;
         } else {
-            return false;
+            return FALSE;
         }
     }
 
     function nextPage() {
         if ($this->pageActual < $this->pageEnd) {
             $this->pageActual++;
-            return true;
+            return TRUE;
         } else {
-            return false;
+            return FALSE;
         }
     }
 
     function prevPage() {
         if ($this->pageActual > 0) {
             $this->pageActual--;
-            return true;
+            return TRUE;
         } else {
-            return false;
+            return FALSE;
         }
     }
 
@@ -128,9 +128,9 @@ class html_table_with_table_config {
             } else {
                 $this->sqlLimitStament = " LIMIT " . $this->pageActual * $this->pageSize . ", {$this->pageSize}";
             }
-            return true;
+            return TRUE;
         } else {
-            return false;
+            return FALSE;
         }
     }
 
@@ -154,7 +154,7 @@ class html_table_with_table_config {
         // TODO: regular expresion for get the table name
         $fromPosition = strpos(strtolower($sqlQuery), "from");
         $sqlCount = "SELECT count(*) as rows " . substr($sqlQuery, $fromPosition);
-        $countResult = \k1lib\sql\sql_query($db, $sqlCount, false);
+        $countResult = \k1lib\sql\sql_query($db, $sqlCount, FALSE);
         $this->rowCount = $countResult['rows'];
     }
 
@@ -169,7 +169,7 @@ class html_table_with_table_config {
             $this->sqlQuery = $sqlQuery;
         } else {
             \k1lib\common\show_error("La variable recibida no es un array ", __FILE__);
-            return false;
+            return FALSE;
         }
         $serializeSearchID = $this->boardID . '-search';
         $lastFormVars = \k1lib\forms\unserialize_var($serializeSearchID);
@@ -189,7 +189,7 @@ class html_table_with_table_config {
         $this->sqlQuery .= $this->sqlLimitStament;
 
         global $db;
-        $this->sqlResult = \k1lib\sql\sql_query($db, $this->sqlQuery, true, true);
+        $this->sqlResult = \k1lib\sql\sql_query($db, $this->sqlQuery, TRUE, TRUE);
         $this->sqlResultCount = count($this->sqlResult);
         if (empty($this->sqlSearchFilter)) {
             \k1lib\forms\serialize_var($this->sqlResult[0], $this->boardID . '-tableHeaders');
@@ -215,11 +215,11 @@ class html_table_with_table_config {
             $this->sqlResult = & $sqlResult;
         } else {
             \k1lib\common\show_error("La variable recibida no es un array", __FILE__);
-            return false;
+            return FALSE;
         }
     }
 
-    function doCode(net_klan1_dev_EasyControllerClass $controllerObject = null) {
+    function doCode(net_klan1_dev_EasyControllerClass $controllerObject = NULL) {
         $serializedTableHeaders = \k1lib\forms\unserialize_var($this->boardID . '-tableHeaders');
         $serializedFormVars = \k1lib\forms\unserialize_var($this->boardID . '-search');
         if (empty($this->sqlResult) && empty($this->sqlSearchFilter)) {
@@ -235,7 +235,7 @@ class html_table_with_table_config {
         $thead = $table_object->append_thead();
         $tr = $thead->append_tr();
 
-        if (strstr($this->form_object, 'radio,checkbox') !== false) {
+        if (strstr($this->form_object, 'radio,checkbox') !== FALSE) {
             $tr->append_th("Selector");
         } else {
             
@@ -266,7 +266,7 @@ class html_table_with_table_config {
 //            if ($this->doSearchSystem) {
 //                $this->html_code.= "\t\t<tr>\n";
 //                // <th></th> -- html object
-//                if (strstr($this->form_object, 'radio,checkbox') !== false) {
+//                if (strstr($this->form_object, 'radio,checkbox') !== FALSE) {
 //                    $this->html_code.= "\t\t<th></th>\n";
 //                } else {
 //                    
@@ -320,7 +320,7 @@ class html_table_with_table_config {
 
             $tr = $tbody->append_tr();
 
-            if (strstr($this->form_object, 'radio,checkbox') !== false) {
+            if (strstr($this->form_object, 'radio,checkbox') !== FALSE) {
                 $tr->append_td("<input type='{$this->form_object}' name='__TABLE_KEYS__' value='$actualRowKeysText'>");
             }
             if ($this->numbering == 1) {
@@ -333,18 +333,18 @@ class html_table_with_table_config {
 //                        $rowValue = number_format($rowValue);
                     }
                     // php Function apply from SQL 
-                    if (strstr($rowValue, "function-") !== false) {
+                    if (strstr($rowValue, "function-") !== FALSE) {
                         $function_to_execute = strstr($rowValue, "k1");
                         eval("\$rowValue = $function_to_execute;");
                     }
                     /**
                      * TODO: make this better and DO NOT repeat the code
                      */
-                    $configViewValue = true;
+                    $configViewValue = TRUE;
                     if (isset($this->tableConfigArray[$rowFieldName][$this->configViewRule])) {
                         $configViewValue = $this->tableConfigArray[$rowFieldName][$this->configViewRule];
                     }
-                    if ($configViewValue === false) {
+                    if ($configViewValue === FALSE) {
                         continue;
                     } else {
                         // especific code for view:yes  
@@ -352,13 +352,13 @@ class html_table_with_table_config {
                     if (array_key_exists($rowFieldName, $this->tableFieldLinksArray)) {
                         if (substr($this->tableFieldLinksArray[$rowFieldName], 0, 12) == '[field-self]') {
                             $sprintf_url = $rowValue;
-                            if (strstr($this->tableFieldLinksArray[$rowFieldName], ",") !== false) {
+                            if (strstr($this->tableFieldLinksArray[$rowFieldName], ",") !== FALSE) {
                                 list($dummy, $rowValue) = explode(",", $this->tableFieldLinksArray[$rowFieldName]);
                             }
                         } else {
                             $sprintf_url = sprintf($this->tableFieldLinksArray[$rowFieldName], $actualRowKeysText);
                         }
-                        if ($controllerObject !== null) {
+                        if ($controllerObject !== NULL) {
                             $sprintf_url = \k1lib\crud\parseUrlTag($sprintf_url, $controllerObject);
                         }
                         $link = \k1lib\urlrewrite\get_app_link($sprintf_url);
@@ -384,7 +384,7 @@ class html_table_with_table_config {
         return $this->tableFieldLinksArray;
     }
 
-    public function setTableFieldLinksArray($tableFieldLinksArray = Array(), $defaultUrlLink = null) {
+    public function setTableFieldLinksArray($tableFieldLinksArray = Array(), $defaultUrlLink = NULL) {
         if (!is_array($tableFieldLinksArray)) {
             die(__METHOD__ . " need an array to work on \$tableFieldLinksArray");
         }
@@ -397,7 +397,7 @@ class html_table_with_table_config {
             }
         } else {
             foreach ($tableFieldLinksArray as $key => $value) {
-                if ($value === null) {
+                if ($value === NULL) {
                     $this->tableFieldLinksArray[$key] = $defaultUrlLink;
                 } else {
                     global $controllerObject;
@@ -422,7 +422,7 @@ class html_table_with_table_config {
         $this->doSearchSystem = $doSearchSystem;
     }
 
-    function doXml($resultData = null) {
+    function doXml($resultData = NULL) {
         if (empty($resultData)) {
             $resultData = $this->sqlResult;
         }

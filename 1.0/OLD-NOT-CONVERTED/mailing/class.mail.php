@@ -169,7 +169,7 @@ class email {
      * @return booleano 
      */
     function comprobar($direccion, $remitente) {
-        $this->comprobar = false;
+        $this->comprobar = FALSE;
         if ((@is_array($direccion)) && (@is_array($remitente))) {
 
             for ($i = 0; $i < @count($direccion); $i++) {
@@ -184,7 +184,7 @@ class email {
                                 $caracter = @substr($antes, @strlen($antes) - 1, 1);
                                 $caracter2 = @substr($antes2, @strlen($antes2) - 1, 1);
                                 if ($caracter != "@" && $caracter != "." && $caracter2 != "@" && $caracter2 != ".") {
-                                    $this->comprobar = true;
+                                    $this->comprobar = TRUE;
                                 }
                             }
                         }
@@ -193,9 +193,9 @@ class email {
             }
 
             if ($this->comprobar) {
-                return $this->comprobar = true;
+                return $this->comprobar = TRUE;
             } else {
-                return $this->comprobar = false;
+                return $this->comprobar = FALSE;
             }
         } else {
             if ((@strlen($direccion) >= 3) && (@substr_count($direccion, "@") == 1) && (@substr($direccion, 0, 1) != "@") && (@substr($direccion, @strlen($direccion) - 1, 1) != "@") && (@strlen($remitente) >= 6) && (@substr_count($remitente, "@") == 1) && (@substr($remitente, 0, 1) != "@") && (@substr($direccion, @strlen($remitente) - 1, 1) != "@")) {
@@ -209,16 +209,16 @@ class email {
                             $caracter = @substr($antes, @strlen($antes) - 1, 1);
                             $caracter2 = @substr($antes2, @strlen($antes2) - 1, 1);
                             if ($caracter != "@" && $caracter != "." && $caracter2 != "@" && $caracter2 != ".") {
-                                $this->comprobar = true;
+                                $this->comprobar = TRUE;
                             }
                         }
                     }
                 }
             }
             if ($this->comprobar) {
-                return $this->comprobar = true;
+                return $this->comprobar = TRUE;
             } else {
-                return $this->comprobar = false;
+                return $this->comprobar = FALSE;
             }
         }
     }
@@ -241,14 +241,14 @@ class email {
                     if (!@mail($this->direcciones[$i], $this->asunto[$i], $this->mensaje[$i], "FROM : " . $this->remitente[$i] . "\r\nReply To: " . $this->remitente[$i] . "\r\n")) {
                         return $this->error(4);
                     } else {
-                        return $this->enviado = true;
+                        return $this->enviado = TRUE;
                     }
                 }//fin for
             } else {
                 if (!@mail($this->direcciones, $this->asunto, $this->mensaje, "FROM : " . $this->remitente . "\r\nReply To: " . $this->remitente . "\r\n")) {
                     return $this->error(4);
                 } else {
-                    return $this->enviado = true;
+                    return $this->enviado = TRUE;
                 }
             }
         }

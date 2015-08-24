@@ -30,7 +30,7 @@ class standar_options_class {
         if (isset($this->options[$option_name])) {
             return $this->options[$option_name];
         } else {
-            return false;
+            return FALSE;
         }
     }
 

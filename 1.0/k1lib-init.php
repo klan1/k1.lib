@@ -21,16 +21,15 @@
 
 namespace k1lib;
 
-const IN_K1LIB = true;
+const IN_K1LIB = TRUE;
 
-$app_init_time = microtime(true);
+$app_init_time = microtime(TRUE);
 
 //$db_querys = 0;
 //$db_query_cached_true = 0;
 //$db_query_cached_false = 0;
 //$db_query_cached_total = 0;
 //$sql_profiles = array();
-
 //$fbq_calls = 0;
 //$fb_api_calls = 0;
 //$fbq_profiles = array();
@@ -48,11 +47,13 @@ $now = date("Y-m-d H:i:s");
  * PATH AUTO CONFIG
  */
 $k1lib_local_dir = dirname(__FILE__);
-$k1lib_directory_name = basename($k1lib_local_dir);
+//$k1lib_directory_name = basename($k1lib_local_dir);
 
 define("K1LIB_BASE_PATH", $k1lib_local_dir);
+unset($k1lib_local_dir);
 
 const VERSION = "1.0";
+
 /**
  * This MUST to be reflected on the .htaccess, IF NOT rewriting WONT work!
  */
@@ -60,13 +61,14 @@ const URL_REWRITE_VAR_NAME = "K1LIB_URL";
 const BASE_PATH = \K1LIB_BASE_PATH;
 const HTML_TEMPLATES_PATH = BASE_PATH . "/html-templates";
 
-$files_lv1 = scandir(BASE_PATH);
+const MAGIC_VALUE = "9d5042fd5925dfc995b7958a84a24ead";
 
+$files_lv1 = scandir(BASE_PATH);
 /**
  * Includes at last 2 sub directories levels on actual K1.lib directory.
  */
 foreach ($files_lv1 as $file_lv1) {
-    if ((substr($file_lv1, 0, 1) == '.') || (substr($file_lv1, 0, 1) == '_')) {
+    if ((substr($file_lv1, 0, 1) == '.') || (substr($file_lv1, 0, 1) == '_') || ($file_lv1 == 'index.php')) {
         continue;
     }
     $file_lv1 = BASE_PATH . "/" . $file_lv1;
@@ -98,6 +100,12 @@ foreach ($files_lv1 as $file_lv1) {
         }
     }
 }
+unset($files_lv1);
+unset($files_lv2);
+unset($files_lv3);
+unset($file_lv1);
+unset($file_lv2);
+unset($file_lv3);
 
 //set_include_path((\k1lib\BASE_PATH . '/_loaders') . PATH_SEPARATOR . get_include_path());
 

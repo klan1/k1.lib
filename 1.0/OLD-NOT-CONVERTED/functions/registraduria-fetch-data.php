@@ -7,14 +7,14 @@
  */
 
 function getCensoRegistraduria($cedula, $source = "full") {
-    $fetch_init_time = microtime(true);
+    $fetch_init_time = microtime(TRUE);
 
     global $db;
-    $return = false;
+    $return = FALSE;
 
     if (!is_numeric($cedula)) {
         trigger_error("La cedula recibida no es un numero valido");
-        return false;
+        return FALSE;
     }
 
 
@@ -30,12 +30,12 @@ function getCensoRegistraduria($cedula, $source = "full") {
     }
 
     if (!empty($result_cache_array) || (!empty($result_local_array))) {
-        $return = true;
+        $return = TRUE;
     }
     /**
      * LOG BUILT 
      */
-    $fetch_run_time = round((microtime(true) - $fetch_init_time), 5);
+    $fetch_run_time = round((microtime(TRUE) - $fetch_init_time), 5);
 
     $censo_log = array(
         'cedula' => $cedula,
@@ -50,13 +50,13 @@ function getCensoRegistraduria($cedula, $source = "full") {
     if ($return) {
         return $result_local_array;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
 function getFromLocalCache($cedula) {
     global $db;
-    $return = false;
+    $return = FALSE;
 
     $return_array = array();
 
@@ -64,27 +64,27 @@ function getFromLocalCache($cedula) {
      * Primero consultamos desde LOCAL
      */
     $local_sql_query = "SELECT * FROM CENSO2015_JULIO WHERE cedula={$cedula}";
-    $local_sql_query_result = \k1lib\sql\sql_query($db, $local_sql_query, false);
-    if ($local_sql_query_result !== null) {
+    $local_sql_query_result = \k1lib\sql\sql_query($db, $local_sql_query, FALSE);
+    if ($local_sql_query_result !== NULL) {
         $return_array['censo'] = $local_sql_query_result;
-        $return = true;
+        $return = TRUE;
     }
     $local_sql_query_insc = "SELECT * FROM CENSO2015_INSCRIPCIONES WHERE cedula={$cedula}";
-    $local_sql_query_result_insc = \k1lib\sql\sql_query($db, $local_sql_query_insc, true);
-    if ($local_sql_query_result_insc !== null) {
+    $local_sql_query_result_insc = \k1lib\sql\sql_query($db, $local_sql_query_insc, TRUE);
+    if ($local_sql_query_result_insc !== NULL) {
         $return_array['inscripcion'] = $local_sql_query_result_insc;
-        $return = true;
+        $return = TRUE;
     }
     if ($return) {
         return $return_array;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
 function getFromLocalCenso($cedula) {
     global $db;
-    $return = false;
+    $return = FALSE;
 
     $return_array = array();
 
@@ -92,47 +92,47 @@ function getFromLocalCenso($cedula) {
      * CONSULTA DE CENSO 2014
      */
     $local_sql_query_censo = "SELECT * FROM consultaCenso2014 WHERE NUIP={$cedula}";
-    $local_sql_query_censo_result = \k1lib\sql\sql_query($db, $local_sql_query_censo, false);
-    if ($local_sql_query_censo_result !== null) {
+    $local_sql_query_censo_result = \k1lib\sql\sql_query($db, $local_sql_query_censo, FALSE);
+    if ($local_sql_query_censo_result !== NULL) {
         $return_array['censo'] = $local_sql_query_censo_result;
-        $return = true;
+        $return = TRUE;
     }
     /**
      * CONSULTA DE BAJAS
      */
     $local_sql_query_baja = "SELECT * FROM `CENSO.BAJAS` WHERE NUIP={$cedula}";
-    $local_sql_query_baja_result = \k1lib\sql\sql_query($db, $local_sql_query_baja, false);
-    if ($local_sql_query_baja_result !== null) {
+    $local_sql_query_baja_result = \k1lib\sql\sql_query($db, $local_sql_query_baja, FALSE);
+    if ($local_sql_query_baja_result !== NULL) {
         $return_array['bajas'] = $local_sql_query_baja_result;
-        $return = true;
+        $return = TRUE;
     }
     /**
      * CONSULTA DE NOVEDADES
      */
     $local_sql_query_novedad = "SELECT * FROM consultaNovedad2014 WHERE NUIP={$cedula}";
-    $local_sql_query_novedad_result = \k1lib\sql\sql_query($db, $local_sql_query_novedad, false);
-    if ($local_sql_query_novedad_result !== null) {
+    $local_sql_query_novedad_result = \k1lib\sql\sql_query($db, $local_sql_query_novedad, FALSE);
+    if ($local_sql_query_novedad_result !== NULL) {
         $return_array['novedad'] = $local_sql_query_novedad_result;
-        $return = true;
+        $return = TRUE;
     }
     /**
      * TRANSHUMANCIAN 
      */
     $local_sql_query_transhumancia = "SELECT * FROM `CENSO.TRASHUMANCIAN` WHERE NUIP={$cedula}";
-    $local_sql_query_transhumancia_result = \k1lib\sql\sql_query($db, $local_sql_query_transhumancia, false);
-    if ($local_sql_query_transhumancia_result !== null) {
+    $local_sql_query_transhumancia_result = \k1lib\sql\sql_query($db, $local_sql_query_transhumancia, FALSE);
+    if ($local_sql_query_transhumancia_result !== NULL) {
         $return_array['transhumancia'] = $local_sql_query_transhumancia_result;
-        $return = true;
+        $return = TRUE;
     }
     /**
      * TRANSHUMANCIAN - punto de final
      */
     if (isset($return_array['transhumancia']['IDDIVIPOLI']) && !empty($return_array['transhumancia']['IDDIVIPOLI'])) {
         $local_sql_query_transhumancia_i = "SELECT * FROM `CENSO.DIVIPOLNOMBRES` WHERE IDDIVIPOL={$return_array['transhumancia']['IDDIVIPOLI']}";
-        $local_sql_query_transhumancia_i_result = \k1lib\sql\sql_query($db, $local_sql_query_transhumancia_i, false);
-        if ($local_sql_query_transhumancia_i_result !== null) {
+        $local_sql_query_transhumancia_i_result = \k1lib\sql\sql_query($db, $local_sql_query_transhumancia_i, FALSE);
+        if ($local_sql_query_transhumancia_i_result !== NULL) {
             $return_array['transhumancia']['IDDIVIPOLI'] = $local_sql_query_transhumancia_i_result;
-            $return = true;
+            $return = TRUE;
         }
     }
     /**
@@ -140,22 +140,22 @@ function getFromLocalCenso($cedula) {
      */
     if (isset($return_array['transhumancia']['IDDIVIPOLT']) && !empty($return_array['transhumancia']['IDDIVIPOLT'])) {
         $local_sql_query_transhumancia_t = "SELECT * FROM `CENSO.DIVIPOLNOMBRES` WHERE IDDIVIPOL={$return_array['transhumancia']['IDDIVIPOLT']}";
-        $local_sql_query_transhumancia_t_result = \k1lib\sql\sql_query($db, $local_sql_query_transhumancia_t, false);
-        if ($local_sql_query_transhumancia_t_result !== null) {
+        $local_sql_query_transhumancia_t_result = \k1lib\sql\sql_query($db, $local_sql_query_transhumancia_t, FALSE);
+        if ($local_sql_query_transhumancia_t_result !== NULL) {
             $return_array['transhumancia']['IDDIVIPOLT'] = $local_sql_query_transhumancia_t_result;
-            $return = true;
+            $return = TRUE;
         }
     }
 //    $local_sql_query_insc = "SELECT * FROM CENSO2015_INSCRIPCIONES WHERE cedula={$cedula}";
-//    $local_sql_query_result_insc = \k1lib\sql\sql_query($db, $local_sql_query_insc, true);
-//    if ($local_sql_query_result_insc !== null) {
+//    $local_sql_query_result_insc = \k1lib\sql\sql_query($db, $local_sql_query_insc, TRUE);
+//    if ($local_sql_query_result_insc !== NULL) {
 //        $return_array['inscripcion'] = $local_sql_query_result_insc;
-//        $return = true;
+//        $return = TRUE;
 //    }
     if ($return) {
         return $return_array;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -175,8 +175,8 @@ function getFromCarvajal($cedula) {
     $proxy_list_array = explode("\n", $proxy_file_content);
 //    }
 
-    $return = false;
-    $actual_proxy = null;
+    $return = FALSE;
+    $actual_proxy = NULL;
     $return_array['censo'] = array();
     $return_array['inscripcion'] = array();
 
@@ -200,9 +200,9 @@ function getFromCarvajal($cedula) {
         } else {
             d("Using local IP");
         }
-        curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch1, CURLOPT_BINARYTRANSFER, true);
-        curl_setopt($ch1, CURLOPT_HEADER, true);
+        curl_setopt($ch1, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch1, CURLOPT_BINARYTRANSFER, TRUE);
+        curl_setopt($ch1, CURLOPT_HEADER, TRUE);
         curl_setopt($ch1, CURLOPT_USERAGENT, $user_agents[$user_agents_index]);
         curl_setopt($ch1, CURLOPT_COOKIEJAR, "/tmp/{$rnd_cookie}.txt");
         curl_setopt($ch1, CURLOPT_COOKIEFILE, "/tmp/{$rnd_cookie}.txt");
@@ -217,16 +217,16 @@ function getFromCarvajal($cedula) {
         if (isset($matches_form[2][0]) && !empty($matches_form[2][0])) {
             $form_name = $matches_form[2][0];
         } else {
-            $form_name = false;
+            $form_name = FALSE;
             if (!isset($proxy_list_array[$i + 1])) {
                 $i = 0;
             } else {
                 $i++;
             }
-            d($content1, true);
+            d($content1, TRUE);
             d($content1_info);
         }
-    } while ($form_name == false);
+    } while ($form_name == FALSE);
 
     if ($content1_info['http_code'] == 200) {
 
@@ -250,10 +250,10 @@ function getFromCarvajal($cedula) {
          * FORM SEND
          */
         $ch2 = curl_init($registraduria_url2);
-        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch2, CURLOPT_BINARYTRANSFER, true);
+        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch2, CURLOPT_BINARYTRANSFER, TRUE);
         curl_setopt($ch2, CURLOPT_REFERER, $registraduria_url1);
-        curl_setopt($ch2, CURLOPT_POST, true);
+        curl_setopt($ch2, CURLOPT_POST, TRUE);
         curl_setopt($ch2, CURLOPT_USERAGENT, $user_agents[$user_agents_index]);
         curl_setopt($ch2, CURLOPT_COOKIEJAR, "/tmp/{$rnd_cookie}.txt");
         curl_setopt($ch2, CURLOPT_COOKIEFILE, "/tmp/{$rnd_cookie}.txt");
@@ -269,9 +269,9 @@ function getFromCarvajal($cedula) {
             "javax.faces.partial.render" => "@component",
             "org.richfaces.ajax.component" => "{$form_name}:j_idt{$j_id}",
             "{$form_name}:j_idt{$j_id}" => "{$form_name}:j_idt{$j_id}",
-            "rfExt" => "null",
+            "rfExt" => "NULL",
             "AJAX:EVENTS_COUNT" => "1",
-            "javax.faces.partial.ajax" => "true"
+            "javax.faces.partial.ajax" => "TRUE"
         );
 
         curl_setopt($ch2, CURLOPT_POSTFIELDS, $data);
@@ -352,6 +352,6 @@ function getFromCarvajal($cedula) {
     if ($return) {
         return $return_array;
     } else {
-        return false;
+        return FALSE;
     }
 }

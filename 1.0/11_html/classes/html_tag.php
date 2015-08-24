@@ -12,13 +12,13 @@ namespace k1lib\html\classes {
     class html_tag {
 
         /** @var String */
-        private $tag_name = null;
+        private $tag_name = NULL;
 
         /** @var String */
         private $tag_code = "";
 
         /** @var Boolean */
-        private $is_selfclosed = false;
+        private $is_selfclosed = FALSE;
 
         /** @var Array */
         private $attributes = array();
@@ -27,7 +27,7 @@ namespace k1lib\html\classes {
         private $attributes_code = "";
 
         /** @var Boolean */
-        private $has_child = false;
+        private $has_child = FALSE;
 
         /** @var Array */
         private $childs = array();
@@ -40,7 +40,7 @@ namespace k1lib\html\classes {
          * @param String $tag_name
          * @param Boolean $selfclosed Is self closed as <tag /> or tag closed one <tag></tag>
          */
-        function __construct($tag_name, $selfclosed = true) {
+        function __construct($tag_name, $selfclosed = TRUE) {
             if (!empty($tag_name) && is_string($tag_name)) {
                 $this->tag_name = $tag_name;
             } else {
@@ -61,7 +61,7 @@ namespace k1lib\html\classes {
          */
         public function append_child(&$chlid_object) {
             $this->childs[] = $chlid_object;
-            $this->has_child = true;
+            $this->has_child = TRUE;
         }
 
         /**
@@ -73,7 +73,7 @@ namespace k1lib\html\classes {
             if (isset($this->childs[$n])) {
                 return $this->childs[$n];
             } else {
-                return false;
+                return FALSE;
             }
         }
 
@@ -83,9 +83,9 @@ namespace k1lib\html\classes {
          * @param String $value
          * @param Boolean $append
          */
-        public function set_attrib($attribute, $value, $append = false) {
+        public function set_attrib($attribute, $value, $append = FALSE) {
             if (!empty($attribute) && is_string($attribute)) {
-                $this->attributes[$attribute] = (($append === true) && (!empty($this->attributes[$attribute])) ) ? ($this->attributes[$attribute] . " " . $value) : ($value);
+                $this->attributes[$attribute] = (($append === TRUE) && (!empty($this->attributes[$attribute])) ) ? ($this->attributes[$attribute] . " " . $value) : ($value);
             } else {
                 trigger_error("HTML ATTRIBUTE has to be string", E_USER_WARNING);
             }
@@ -100,7 +100,7 @@ namespace k1lib\html\classes {
             if (isset($this->attributes[$attribute])) {
                 return $this->attributes[$attribute];
             } else {
-                return false;
+                return FALSE;
             }
         }
 
@@ -125,7 +125,7 @@ namespace k1lib\html\classes {
          * @param Boolean $do_echo
          * @return string Returns FALSE if is not attributes to generate
          */
-        public function generate_attributes_code($do_echo = false) {
+        public function generate_attributes_code($do_echo = FALSE) {
             if ($this->is_selfclosed) {
                 $this->set_attrib("value", $this->value);
             }
@@ -142,7 +142,7 @@ namespace k1lib\html\classes {
                             $attributes_code .= "{$attribute}=\"{$value}\"";
                         }
                     } else {
-                        if ($value === true) {
+                        if ($value === TRUE) {
                             $attributes_code .= "{$attribute}";
                         }
                     }
@@ -155,7 +155,7 @@ namespace k1lib\html\classes {
                     return $this->attributes_code;
                 }
             } else {
-                return false;
+                return FALSE;
             }
         }
 
@@ -166,7 +166,7 @@ namespace k1lib\html\classes {
          * @param Int $n_childs
          * @return string Won't return any if is set $do_echo = TRUE
          */
-        public function generate_tag($do_echo = false, $with_childs = true, $n_childs = 0) {
+        public function generate_tag($do_echo = FALSE, $with_childs = TRUE, $n_childs = 0) {
             $html_code = "\n<{$this->tag_name} ";
             $html_code .= $this->generate_attributes_code();
             if ($this->is_selfclosed) {
@@ -176,7 +176,7 @@ namespace k1lib\html\classes {
             if (($with_childs) && (count($this->childs) >= 1)) {
                 //lets move with index numbers begining from 0
                 $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
-//            d($this->childs,true);
+//            d($this->childs,TRUE);
                 foreach ($this->childs as $index => &$child_object) {
                     if ($index > $n_childs) {
                         break;
@@ -203,7 +203,7 @@ namespace k1lib\html\classes {
          * @param Boolean $do_echo Do ECHO action or RETURN HTML
          * @return string Won't return any if is set $do_echo = TRUE
          */
-        public function generate_close_tag($do_echo = false) {
+        public function generate_close_tag($do_echo = FALSE) {
             $html_code = "</{$this->tag_name}>";
             if ($do_echo) {
                 echo $html_code;
@@ -230,13 +230,13 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($href, $label, $target = "", $alt = "", $class = "", $id = "") {
-            parent::__construct("a", false);
+            parent::__construct("a", FALSE);
 //        $this->data_array &= $data_array;
             $this->set_attrib("href", $href);
             $this->set_value($label);
             $this->set_attrib("target", $target);
             $this->set_attrib("alt", $alt);
-            $this->set_attrib("class", $class, true);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -250,9 +250,9 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($class = "", $id = "") {
-            parent::__construct("table", false);
+            parent::__construct("table", FALSE);
 //        $this->data_array &= $data_array;
-            $this->set_attrib("class", $class, true);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -289,8 +289,8 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($class = "", $id = "") {
-            parent::__construct("thead", false);
-            $this->set_attrib("class", $class, true);
+            parent::__construct("thead", FALSE);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -315,8 +315,8 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($class = "", $id = "") {
-            parent::__construct("tbody", false);
-            $this->set_attrib("class", $class, true);
+            parent::__construct("tbody", FALSE);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -341,8 +341,8 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($class = "", $id = "") {
-            parent::__construct("tr", false);
-            $this->set_attrib("class", $class, true);
+            parent::__construct("tr", FALSE);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -382,9 +382,9 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($value, $class = "", $id = "") {
-            parent::__construct("th", false);
+            parent::__construct("th", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class, true);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -398,9 +398,9 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($value, $class = "", $id = "") {
-            parent::__construct("td", false);
+            parent::__construct("td", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class, true);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -416,11 +416,11 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($type, $name, $value, $class = "", $id = "") {
-            parent::__construct("input", true);
+            parent::__construct("input", TRUE);
             $this->set_attrib("type", $type);
             $this->set_attrib("name", $name);
             $this->set_value($value);
-            $this->set_attrib("class", $class, true);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -435,10 +435,10 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($label, $for, $class = "", $id = "") {
-            parent::__construct("label", false);
+            parent::__construct("label", FALSE);
             $this->set_value($label);
             $this->set_attrib("for", $for);
-            $this->set_attrib("class", $class, true);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -452,9 +452,9 @@ namespace k1lib\html\classes {
          * @param String $id
          */
         function __construct($name, $class = "", $id = "") {
-            parent::__construct("select", false);
+            parent::__construct("select", FALSE);
             $this->set_attrib("name", $name);
-            $this->set_attrib("class", $class, true);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -467,7 +467,7 @@ namespace k1lib\html\classes {
          * @param String $id
          * @return \k1lib\html\classes\option_tag
          */
-        function append_option($value, $label, $selected = false, $class = "", $id = "") {
+        function append_option($value, $label, $selected = FALSE, $class = "", $id = "") {
             $child_object = new option_tag($value, $label, $selected, $class, $id);
             parent::append_child($child_object);
             return $child_object;
@@ -484,12 +484,12 @@ namespace k1lib\html\classes {
          * @param String $class
          * @param String $id
          */
-        function __construct($value, $label, $selected = false, $class = "", $id = "") {
-            parent::__construct("option", false);
+        function __construct($value, $label, $selected = FALSE, $class = "", $id = "") {
+            parent::__construct("option", FALSE);
             $this->set_value($value);
             $this->set_attrib("label", $label);
             $this->set_attrib("selected", $selected);
-            $this->set_attrib("class", $class, true);
+            $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
         }
 
@@ -501,7 +501,7 @@ namespace k1lib\html\classes {
     class form_tag extends html_tag {
 
         function __construct($id = "", $action = "") {
-            parent::__construct("form", false);
+            parent::__construct("form", FALSE);
             $this->phase_config();
             $this->set_attrib("action", (!empty($action)) ? $action : "./");
             $this->set_attrib("id", (!empty($id)) ? $id : "k1-form");
@@ -509,7 +509,7 @@ namespace k1lib\html\classes {
             $this->set_attrib("method", "post");
             $this->set_attrib("autocomplete", "yes");
             $this->set_attrib("enctype", "application/x-www-form-urlencoded");
-            $this->set_attrib("novalidate", false);
+            $this->set_attrib("novalidate", FALSE);
             $this->set_attrib("target", "_self");
         }
 

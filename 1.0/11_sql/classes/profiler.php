@@ -8,7 +8,7 @@ trait common_code {
      * Enable state
      * @var Boolean 
      */
-    static private $enabled = false;
+    static private $enabled = FALSE;
 
     /**
      *
@@ -26,7 +26,7 @@ trait common_code {
      * Enable the engenie
      */
     static public function enable() {
-        self::$enabled = true;
+        self::$enabled = TRUE;
     }
 
     /**
@@ -65,7 +65,7 @@ class profiler {
      * @param Int $profile_id Profile ID
      */
     static public function start_time_count($profile_id) {
-        self::$data[$profile_id]['start_time'] = microtime(true);
+        self::$data[$profile_id]['start_time'] = microtime(TRUE);
     }
 
     /**
@@ -73,7 +73,7 @@ class profiler {
      * @param Int $profile_id Profile ID
      */
     static public function stop_time_count($profile_id) {
-        self::$data[$profile_id]['stop_time'] = microtime(true);
+        self::$data[$profile_id]['stop_time'] = microtime(TRUE);
         self::$data[$profile_id]['total_time'] = self::$data[self::$data_count]['stop_time'] - self::$data[self::$data_count]['start_time'];
     }
 
@@ -138,7 +138,7 @@ class local_cache {
         if (isset(self::$data[md5($sql_query)])) {
             return (self::$data[md5($sql_query)]);
         } else {
-            return false;
+            return FALSE;
         }
     }
 
