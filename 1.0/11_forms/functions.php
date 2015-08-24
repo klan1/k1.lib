@@ -155,7 +155,7 @@ function form_check_values($form_array, $table_array_config, $db = NULL) {
         // email | letters (solo letras) | numbers (solo numeros) | mixed (alfanumerico) | letters-simbols (con simbolos ej. !#()[],.) | numbers-simbols | mixed-simbols - los simbols no lo implementare aun
         // the basic error, if is required on the table definition
         if (($value !== 0) && ($value !== '0') && empty($value)) {
-            if ($table_array_config[$key]['NULL'] === FALSE) {
+            if ($table_array_config[$key]['null'] === FALSE) {
                 $error_msg = "$error_header_msg es requerido " . var_dump($value, TRUE);
             }
         } elseif ((strlen((string) $value) < (int) $min) || (strlen((string) $value) > (int) $max)) {
@@ -356,16 +356,16 @@ function make_form_select_list(&$field_name, &$value, &$table_config_array, &$er
     $label_object = new html_classes\label_tag($table_config_array[$field_name]['label'], $field_name, "right inline");
 //    $select_object = new html_classes\select_tag($field_name);
 
-    if (empty($value) && (!$table_config_array[$field_name]['NULL'])) {
+    if (empty($value) && (!$table_config_array[$field_name]['null'])) {
         $value = $table_config_array[$field_name]['default'];
     }
 
     if (!empty($error_msg)) {
-        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['NULL'], "error");
+        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null'], "error");
         $html_template = html_functions\load_html_template("label_input_combo-error");
         $html_code = sprintf($html_template, $label_object->generate_tag(), $select_html, $error_msg);
     } else {
-        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['NULL']);
+        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null']);
         $html_template = html_functions\load_html_template("label_input_combo");
         $html_code = sprintf($html_template, $label_object->generate_tag(), $select_html);
     }
@@ -420,7 +420,7 @@ function make_form_input_from_serialized($table_name, $field_name, $table_config
          */
         $type_comparation = strstr("char,varchar,text,date,datetime,tinyint,smallint,mediumint,int,bigint,float,double'", $table_config_array[$field_name]['type']);
         if (($type_comparation !== FALSE) && ($table_config_array[$field_name]['sql'] == "")) {
-            return html_functions\label_input_text_combo($field_name, $value, $table_config_array[$field_name]['label'], $table_config_array[$field_name]['NULL'], $error_msg);
+            return html_functions\label_input_text_combo($field_name, $value, $table_config_array[$field_name]['label'], $table_config_array[$field_name]['null'], $error_msg);
         } elseif (($table_config_array[$field_name]['type'] == "enum") || ($table_config_array[$field_name]['sql'] != "")) {
             return \k1lib\forms\make_form_select_list($field_name, $value, $table_config_array, $error_msg);
         } else {
