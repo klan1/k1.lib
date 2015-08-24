@@ -24,7 +24,7 @@ class net_klan1_dev_dbTableClass {
         'bigint' => 19,
         'float' => 34,
         'double' => 64,
-        'enum' => null,
+        'enum' => NULL,
     );
     private $mysql_default_validation = array(
         'char' => 'mixed-simbols',

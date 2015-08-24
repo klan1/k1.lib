@@ -1,6 +1,6 @@
 <?php
 
-function k1_mail($to, $subject, $message, $from = "", $data = null) {
+function k1_mail($to, $subject, $message, $from = "", $data = NULL) {
    // require_once "Mail.php";
 
    $from = "$from <" . SMTP_ACCOUT . ">";
@@ -9,7 +9,7 @@ function k1_mail($to, $subject, $message, $from = "", $data = null) {
        'To' => $to,
        'Subject' => $subject);
    $smtp = Mail::factory('smtp', array('host' => SMTP_SERVER,
-               'auth' => true,
+               'auth' => TRUE,
                'username' => SMTP_ACCOUT,
                'password' => SMTP_PASSWORD));
 
@@ -18,11 +18,11 @@ function k1_mail($to, $subject, $message, $from = "", $data = null) {
    if (PEAR::isError($mail)) {
       \k1lib\common\show_error($mail->getMessage());
    } else {
-      return true;
+      return TRUE;
    }
 }
 
-function k1_array_to_text($data, $html = false) {
+function k1_array_to_text($data, $html = FALSE) {
    if (!is_array($data)) {
       d($data);
       die("Solo arreglos!");

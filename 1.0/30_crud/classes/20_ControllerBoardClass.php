@@ -9,26 +9,26 @@ class k1_board_general_class {
     public $controllerObject;
     public $HtmlTableObject;
     // Board standar display config
-    private $boardInternalName = null;
-    private $boardTitle = null;
-    private $boardDescripction = null;
-    private $boardKeyWords = null;
-    private $singleItemName = null;
+    private $boardInternalName = NULL;
+    private $boardTitle = NULL;
+    private $boardDescripction = NULL;
+    private $boardKeyWords = NULL;
+    private $singleItemName = NULL;
     // SQL Related
     private $boardSqlWhereCondition = "";
     private $boardParameterKeyArray = Array();
     // FK related
-    private $fkBoardUrl = null;
-    private $fkBoardLabel = null;
+    private $fkBoardUrl = NULL;
+    private $fkBoardLabel = NULL;
     // Form related
-    private $formActionUrl = null;
+    private $formActionUrl = NULL;
     private $formAfterActionUrl = Array(
         'delete' => '[board-view-all]',
         'new' => '[board-view]',
         'edit' => '[board-view]',
     );
-    private $formMagicValue = null;
-    private $formSubmitLabel = null;
+    private $formMagicValue = NULL;
+    private $formSubmitLabel = NULL;
 
     /*     * *****************
      * 
@@ -108,7 +108,7 @@ class k1_board_general_class {
         $this->formAfterActionUrl = $formAfterActionUrl;
     }
 
-    public function getFormAfterActionUrl($source = null) {
+    public function getFormAfterActionUrl($source = NULL) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
         if (!empty($source) && isset($this->formAfterActionUrl[$source])) {
             return \k1lib\crud\parseUrlTag($this->formAfterActionUrl[$source], $this->controllerObject);
@@ -225,7 +225,7 @@ class k1_board_general_class {
 //        }
     }
 
-    public function getControllerBackButton($customBackLink = null, $buttonText = "Volver", $mini = true, $inline = true) {
+    public function getControllerBackButton($customBackLink = NULL, $buttonText = "Volver", $mini = TRUE, $inline = TRUE) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
         if (empty($customBackLink)) {
             $backUrl = $this->getControllerBackLink();
@@ -235,17 +235,17 @@ class k1_board_general_class {
         return \k1lib\html\get_link_button($backUrl, $buttonText, $mini, $inline);
     }
 
-    public function getControllerSubmitButton($buttonText = "Enviar", $mini = true, $inline = true) {
+    public function getControllerSubmitButton($buttonText = "Enviar", $mini = TRUE, $inline = TRUE) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
         $label = $this->getFormSubmitLabel();
         // BLANK input name for not problems 
         $button_object = new \k1lib\html\classes\input_tag("submit", "submit", $buttonText, "button success fi-check");
 
         if ($inline) {
-            $button_object->set_attrib("class", "inline", true);
+            $button_object->set_attrib("class", "inline", TRUE);
         }
         if ($mini) {
-            $button_object->set_attrib("class", "tiny", true);
+            $button_object->set_attrib("class", "tiny", TRUE);
         }
 
         return $button_object->generate_tag();
@@ -321,13 +321,13 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
             //Magic test 
             $magic_test = \k1lib\common\check_magic_value("k1-form-{$this->controllerObject->getBoardFormId()}", $form_vars['magic_value']);
 
-            if ($magic_test == true) {
+            if ($magic_test == TRUE) {
                 //remove the magic value from the data array
 //                unset($form_vars['magic_value']);
                 //php check for the data
                 $form_vars = \k1lib\forms\clean_array_with_guide($form_vars, $this->controllerObject->getControllerTableConfig());
                 $form_errors = \k1lib\forms\form_check_values($form_vars, $this->controllerObject->getControllerTableConfig(), $this->controllerObject->db);
-                if ($form_errors === false) {
+                if ($form_errors === FALSE) {
                     if (\k1lib\sql\sql_insert($this->controllerObject->db, $this->controllerObject->getDbTableMainName(), $form_vars)) {
 //                        \k1lib\html\html_header_go(\k1lib\urlrewrite\make_url_from_rewrite(-2));
                         // TODO: implement the after action behavior
@@ -338,7 +338,7 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
                         \k1lib\forms\unset_serialize_var("{$this->controllerObject->getBoardFormId()}-fkData");
                         \k1lib\html\html_header_go($this->controllerObject->getControllerUrlRoot() . "/view-all");
                     } else {
-                        $do_check = true;
+                        $do_check = TRUE;
                         $controller_errors[] = "No se ha podido insertar el registro.";
                         $db_error = $this->controllerObject->db->errorInfo();
                         $controller_errors[] = $db_error[2];
@@ -348,14 +348,14 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
 //                    d($form_errors);
 //                    die('si errores');
 
-                    $do_check = true;
+                    $do_check = TRUE;
                 }
             } else {
-                $do_check = true;
+                $do_check = TRUE;
                 $controller_errors[] = "Bad Magic !!";
             }
         } else {
-            $do_check = true;
+            $do_check = TRUE;
             $controller_errors[] = "No Magic !!";
         }
         if ($do_check) {
@@ -406,8 +406,8 @@ class net_klan1_dev_BoardViewAll extends k1_board_general_class {
 
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
         $this->HtmlTableObject = new \k1lib\html\classes\html_table_with_table_config($this->controllerObject->getBoardID());
-        $this->controllerObject->setUrlLevel("table-action", false);
-        $this->controllerObject->setUrlLevel("page-number", false);
+        $this->controllerObject->setUrlLevel("table-action", FALSE);
+        $this->controllerObject->setUrlLevel("page-number", FALSE);
     }
 
     /*     * ******************
@@ -498,8 +498,8 @@ class net_klan1_dev_BoardDelete extends k1_board_general_class {
 
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
         $sql_query = "DELETE FROM {$this->controllerObject->getDbTableMainName()} WHERE " . $this->getBoardSqlWherefromParameters();
-        $record_deleted = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, false);
-        if ($record_deleted === null) {
+        $record_deleted = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, FALSE);
+        if ($record_deleted === NULL) {
             \k1lib\html\html_header_go($this->getFormAfterActionUrl('delete'));
 //            \k1lib\html\html_header_go($this->controllerObject->getBoardRootUrl() . "/view-all");
         } else {
@@ -550,7 +550,7 @@ class net_klan1_dev_BoardView extends k1_board_general_class {
 
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
         $sql_query = "SELECT * FROM {$this->controllerObject->getDbTableMainName()} WHERE " . $this->getBoardSqlWherefromParameters();
-        $sql_result = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, false);
+        $sql_result = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, FALSE);
         \k1lib\forms\serialize_var($sql_result, $this->controllerObject->getBoardId());
     }
 
@@ -591,7 +591,7 @@ class net_klan1_dev_BoardView extends k1_board_general_class {
         if ($fkBoardUrl) {
             return \k1lib\urlrewrite\get_app_link($this->getfkBoardUrl());
         } else {
-            return false;
+            return FALSE;
         }
     }
 
@@ -651,7 +651,7 @@ class net_klan1_dev_BoardEdit extends k1_board_general_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
         parent::initFormAction();
         $sql_query = "SELECT * FROM {$this->controllerObject->getDbTableMainName()} WHERE " . $this->getBoardSqlWherefromParameters();
-        $sql_result = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, false);
+        $sql_result = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, FALSE);
         \k1lib\forms\serialize_var($sql_result, $this->controllerObject->getBoardFormId() . "-sqlResult");
         \k1lib\forms\serialize_var($sql_result, $this->controllerObject->getBoardFormId() . "-sqlOriginalResult");
         \k1lib\forms\serialize_var($this->getBoardParameterKeyArray(), "{$this->controllerObject->getBoardFormId()}-tableKeys");
@@ -681,19 +681,19 @@ class net_klan1_dev_BoardEdit extends k1_board_general_class {
             //Magic test 
 
             $magic_test = \k1lib\common\check_magic_value("k1-form-{$this->controllerObject->getBoardFormId()}", $form_vars['magic_value']);
-            if ($magic_test == true) {
+            if ($magic_test == TRUE) {
                 $form_vars = \k1lib\forms\clean_array_with_guide($form_vars, $this->controllerObject->getControllerTableConfig());
                 $form_errors = \k1lib\forms\form_check_values($form_vars, $this->controllerObject->getControllerTableConfig(), $this->controllerObject->db);
-                $do_check = false;
-                if ($form_errors === false) {
+                $do_check = FALSE;
+                if ($form_errors === FALSE) {
                     //unserialize the keys array to append to the data array arrived by POST
                     $table_keys_array = \k1lib\forms\unserialize_var("{$this->controllerObject->getBoardFormId()}-tableKeys");
-                    if ($table_keys_array === false) {
+                    if ($table_keys_array === FALSE) {
                         $controller_errors[] = "Haz intentado actualizar otro registro moficando el codigo HTML " . "{$this->controllerObject->getBoardFormId()}-tableKeys";
-                        $do_check = true;
+                        $do_check = TRUE;
                     } else {
                         $record_updated = \k1lib\sql\sql_update($this->controllerObject->db, $this->controllerObject->getDbTableMainName(), $form_vars, $table_keys_array, $this->controllerObject->getControllerTableConfig());
-                        if ($record_updated !== false) {
+                        if ($record_updated !== FALSE) {
                             $actionUrl = sprintf($this->getFormAfterActionUrl('edit'), $this->controllerObject->getBoardUrlParameterValue());
 
                             // UNSET ALL FOR NO FUTURE PROBLEMS ;)
@@ -703,21 +703,21 @@ class net_klan1_dev_BoardEdit extends k1_board_general_class {
                             \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-sqlResult");
                             \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-sqlOriginalResult");
                             \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-tableKeys");
-                            \k1lib\html\html_header_go($actionUrl, true);
+                            \k1lib\html\html_header_go($actionUrl, TRUE);
                         } else {
                             $controller_errors[] = "No se pudo hacer el update, Posiblemente los datos no han cambiado";
-                            $do_check = true;
+                            $do_check = TRUE;
                         }
                     }
                 } else {
-                    $do_check = true;
+                    $do_check = TRUE;
                 }
             } else {
-                $do_check = true;
+                $do_check = TRUE;
                 $controller_errors[] = "Bad Magic !!";
             }
         } else {
-            $do_check = true;
+            $do_check = TRUE;
             $controller_errors[] = "No Magic !!";
         }
         if ($do_check) {

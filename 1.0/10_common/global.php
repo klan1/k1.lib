@@ -6,9 +6,9 @@
  * @param boolean $dump
  * @param boolean $inline 
  */
-function d($d, $dump = false, $inline = true) {
+function d($d, $dump = FALSE, $inline = TRUE) {
 //    trigger_error(__FILE__, E_USER_ERROR);
-    $msg = ( ($dump) ? var_export($d, true) : print_r($d, true) );
+    $msg = ( ($dump) ? var_export($d, TRUE) : print_r($d, TRUE) );
     if (defined("\k1app\APP_MODE") && (\k1app\APP_MODE == "shell")) {
         echo "\n{$msg}\n";
     } else {

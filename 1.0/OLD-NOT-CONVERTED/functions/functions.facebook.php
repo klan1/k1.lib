@@ -4,7 +4,7 @@
 //  $pics = $facebook->api(array("method"=>"users.getInfo","uids"=>$fbID,"fields"=>array("pic","pic_square")));
 //
 
-function fb_check_permissions($permissions, $url_to_login, $redirect = true) {
+function fb_check_permissions($permissions, $url_to_login, $redirect = TRUE) {
     global $fb_uid;
 
     if (!is_string($permissions)) {
@@ -14,7 +14,7 @@ function fb_check_permissions($permissions, $url_to_login, $redirect = true) {
         \k1lib\common\show_error("var \$url_to_login has to be a string", __FUNCTION__, $exit);
     }
 
-    $fb_user_permissions = fbq("SELECT {$permissions}  FROM permissions WHERE uid = {$fb_uid}", false);
+    $fb_user_permissions = fbq("SELECT {$permissions}  FROM permissions WHERE uid = {$fb_uid}", FALSE);
 
     foreach ($fb_user_permissions as $permission => $value) {
         if ($value == "1") {
@@ -22,29 +22,29 @@ function fb_check_permissions($permissions, $url_to_login, $redirect = true) {
         } else {
             if ($redirect) {
                 \k1lib\html\js_go($url_to_login);
-                return false;
+                return FALSE;
             }
         }
     }
     return $fb_user_permissions;
 }
 
-function is_fb_developer($fb_uid = null) {
+function is_fb_developer($fb_uid = NULL) {
     global $facebook, $db;
-    if ($fb_uid == null) {
+    if ($fb_uid == NULL) {
         $fb_uid = $GLOBALS['fb_uid'];
     }
     $isDev = fbq("SELECT developer_id FROM developer WHERE developer_id = '{$fb_uid}' AND application_id = '" . FB_APP_ID . "'");
     if (isset($isDev['developer_id']) && $isDev['developer_id'] == $fb_uid) {
-        return true;
+        return TRUE;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
-function fbq($fbql, $use_cache = true) {
-    if (USE_MEMCACHE !== true) {
-        $use_cache = false;
+function fbq($fbql, $use_cache = TRUE) {
+    if (USE_MEMCACHE !== TRUE) {
+        $use_cache = FALSE;
     }
     global $fb_connected, $facebook;
     if ($fb_connected) {
@@ -52,7 +52,7 @@ function fbq($fbql, $use_cache = true) {
             if (FB_PROFILE) {
                 global $fbq_profiles, $fbq_calls;
                 $fbq_calls++;
-                $fbq_start_time = microtime(true);
+                $fbq_start_time = microtime(TRUE);
             }
             $parameters = array("method" => "fql.query", "query" => $fbql);
             if ($use_cache) {
@@ -61,7 +61,7 @@ function fbq($fbql, $use_cache = true) {
                 $result = $facebook->api($parameters);
             }
             if (FB_PROFILE) {
-                $fbq_end_time = microtime(true);
+                $fbq_end_time = microtime(TRUE);
                 $fbq_profiles[$fbq_calls]['fbq'] = $fbql;
                 $fbq_profiles[$fbq_calls]['time'] = $fbq_end_time - $fbq_start_time;
             }
@@ -69,24 +69,24 @@ function fbq($fbql, $use_cache = true) {
             if (isset($result[0])) {
                 return $result[0];
             } else {
-                return false;
+                return FALSE;
             }
         } catch (FacebookApiException $e) {
             \k1lib\common\show_error($e . " SQL: {$fbql}", __FUNCTION__);
-            return false;
+            return FALSE;
         }
     } else {
-        \k1lib\common\show_error("The FBQ needs to be connected to Facebook", __FUNCTION__, true);
+        \k1lib\common\show_error("The FBQ needs to be connected to Facebook", __FUNCTION__, TRUE);
     }
 }
 
-function do_facebook_connect($fb_login_config, $js_redirect= true) {
+function do_facebook_connect($fb_login_config, $js_redirect= TRUE) {
     global $facebook;
 
     $loginUrl = $facebook->getLoginUrl($fb_login_config);
     if ($js_redirect) {
-        \k1lib\html\js_go($loginUrl, "top", false);
-        return true;
+        \k1lib\html\js_go($loginUrl, "top", FALSE);
+        return TRUE;
     } else {
         return $loginUrl;
     }
@@ -98,9 +98,9 @@ function do_facebook_init() {
      */
     global $facebook, $fb_connected, $fb_session, $fb_uid, $fb_user;
 
-    $fb_session = null;
-    $fb_uid = null;
-    $fb_user = null;
+    $fb_session = NULL;
+    $fb_uid = NULL;
+    $fb_user = NULL;
 
     $fb_uid = $facebook->getUser();
 
@@ -117,10 +117,10 @@ function do_facebook_init() {
     }
     // login or logout url will be needed depending on current user state.
     if ($fb_user) {
-        $fb_connected = true;
+        $fb_connected = TRUE;
     } else {
-//        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=/{$_GET['url']}"), "top", false);
-        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=" . \k1lib\urlrewrite\make_url_from_rewrite("this")), "top", false);
+//        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=/{$_GET['url']}"), "top", FALSE);
+        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=" . \k1lib\urlrewrite\make_url_from_rewrite("this")), "top", FALSE);
     }
 
     /*
@@ -128,8 +128,8 @@ function do_facebook_init() {
      */
     if (STORE_USERS && (\k1app\APP_MODE != 'ajax')) {
         if (check_fbid($fb_uid)) {
-            if ($_SESSION['fb_user_updated'] != true) {
-                $_SESSION['fb_user_updated'] = true;
+            if ($_SESSION['fb_user_updated'] != TRUE) {
+                $_SESSION['fb_user_updated'] = TRUE;
                 update_user($fb_user);
             }
         } else {
@@ -138,11 +138,11 @@ function do_facebook_init() {
     }
 }
 
-function load_friends($fb_uid = null) {
+function load_friends($fb_uid = NULL) {
 
     global $facebook, $friends;
 
-    if ($fb_uid == null) {
+    if ($fb_uid == NULL) {
         $fb_uid = $GLOBALS['fb_uid'];
     }
 
@@ -151,15 +151,15 @@ function load_friends($fb_uid = null) {
         return $friends;
     } catch (FacebookApiException $e) {
         \k1lib\common\show_error($e, __FUNCTION__);
-        return false;
+        return FALSE;
     }
 }
 
-function load_wall($fb_uid = null) {
+function load_wall($fb_uid = NULL) {
 
     global $facebook;
 
-    if ($fb_uid == null) {
+    if ($fb_uid == NULL) {
         $fb_uid = $GLOBALS['fb_uid'];
     }
 
@@ -168,15 +168,15 @@ function load_wall($fb_uid = null) {
         return $feeds;
     } catch (FacebookApiException $e) {
         \k1lib\common\show_error($e, __FUNCTION__);
-        return false;
+        return FALSE;
     }
 }
 
-function load_statuses($fb_uid = null, $limit = 1) {
+function load_statuses($fb_uid = NULL, $limit = 1) {
 
     global $facebook, $friends;
 
-    if ($fb_uid == null) {
+    if ($fb_uid == NULL) {
         $fb_uid = $GLOBALS['fb_uid'];
     }
 
@@ -185,15 +185,15 @@ function load_statuses($fb_uid = null, $limit = 1) {
         return $statuses;
     } catch (FacebookApiException $e) {
         \k1lib\common\show_error($e, __FUNCTION__);
-        return false;
+        return FALSE;
     }
 }
 
-function load_object($object_id = null) {
+function load_object($object_id = NULL) {
 
     global $facebook, $friends;
 
-    if ($fb_uid == null) {
+    if ($fb_uid == NULL) {
         $fb_uid = $GLOBALS['fb_uid'];
     }
 
@@ -202,11 +202,11 @@ function load_object($object_id = null) {
         return $object;
     } catch (FacebookApiException $e) {
         \k1lib\common\show_error($e, __FUNCTION__);
-        return false;
+        return FALSE;
     }
 }
 
-function do_post($fb_uid, $message, $extra = null) {
+function do_post($fb_uid, $message, $extra = NULL) {
 
     /* $extra example
 
@@ -219,7 +219,7 @@ function do_post($fb_uid, $message, $extra = null) {
       //'actions'=> "caption here",
       'privacy'=> '{"value": "ALL_FRIENDS"}', );
      *
-     * RETURNS: array(1) { ["id"]=> string(25) "611852525_174283085931236" } bool(true)
+     * RETURNS: array(1) { ["id"]=> string(25) "611852525_174283085931236" } bool(TRUE)
      */
     if (FB_EMU_SEND) {
         return rand(0, 1);
@@ -238,11 +238,11 @@ function do_post($fb_uid, $message, $extra = null) {
                 //$statusUpdate = $facebook->api(array("method" => "stream.publish", "uid" => $fb_uid, "message" => $message));
                 //$statusUpdate = $facebook->api(array("method"=>"status.set","uid"=>$fb_uid,"status"=> $message . " via old rest api set to uid: $fb_uid"));
             } catch (FacebookApiException $e) {
-                return false;
+                return FALSE;
             }
         } else {
             \k1lib\common\show_error("Values array is not valid or has too much values", __FUNCTION__);
-            return false;
+            return FALSE;
         }
     }
 }
@@ -258,7 +258,7 @@ function do_set_status($fb_uid, $message) {
             return $statusUpdate;
         } catch (FacebookApiException $e) {
             \k1lib\common\show_error($e, __FUNCTION__);
-            return false;
+            return FALSE;
         }
     }
 }
@@ -269,7 +269,7 @@ function get_last_status($fb_uid) {
     if ($result['status_id']) {
         return $result['status_id'];
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -284,21 +284,21 @@ function fb_comment_status($fb_uid, $message) {
             try {
                 $status_id_to_post = $fb_uid . '_' . $last_status_id;
                 $statusUpdate = $facebook->api("/{$status_id_to_post}/comments", 'post', $extra);
-                if ($statusUpdate !== false) {
+                if ($statusUpdate !== FALSE) {
                     if (isset($statusUpdate['id'])) {
                         return $statusUpdate['id'];
                     } else {
                         return $statusUpdate;
                     }
                 } else {
-                    return false;
+                    return FALSE;
                 }
             } catch (FacebookApiException $e) {
                 \k1lib\common\show_error($e, __FUNCTION__);
-                return false;
+                return FALSE;
             }
         } else {
-            return false;
+            return FALSE;
         }
     }
 }
@@ -317,14 +317,14 @@ function do_comment_status($fb_uid, $message) {
                 if ($statusUpdate != "") {
                     return $statusUpdate;
                 } else {
-                    return false;
+                    return FALSE;
                 }
             } catch (FacebookApiException $e) {
                 \k1lib\common\show_error($e, __FUNCTION__);
-                return false;
+                return FALSE;
             }
         } else {
-            return false;
+            return FALSE;
         }
     }
 }
@@ -332,10 +332,10 @@ function do_comment_status($fb_uid, $message) {
 function check_fbid($fb_uid) {
     global $db;
     if ($fb_uid != '') {
-        if (\k1lib\sql\sql_check_id($db, "usuarios", "uid", $fb_uid, true)) {
-            return true;
+        if (\k1lib\sql\sql_check_id($db, "usuarios", "uid", $fb_uid, TRUE)) {
+            return TRUE;
         } else {
-            return false;
+            return FALSE;
         }
     } else {
         \k1lib\common\show_error("UID has no value to check ", __FUNCTION__);

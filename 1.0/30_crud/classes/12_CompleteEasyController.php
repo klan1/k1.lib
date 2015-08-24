@@ -8,17 +8,17 @@ class completeEasyController extends k1_controller_with_dbtables_class {
     private $boardFormId;
     private $boardErrorId;
     private $boardFormErrorId;
-    private $boardRootUrl = null;
-    private $boardUrlValue = false;
-    private $boardUrlName = false;
-    private $boardUrlParameterValue = null;
+    private $boardRootUrl = NULL;
+    private $boardUrlValue = FALSE;
+    private $boardUrlName = FALSE;
+    private $boardUrlParameterValue = NULL;
     private $boardUrlParameterValueArray = array();
-    private $boardUrlParameterName = null;
+    private $boardUrlParameterName = NULL;
     private $boardUrlParameterWhereCondition = "";
-    private $boardUrlActionValue = false;
-    private $boardUrlActionName = false;
-    private $boardFkUrlValue = false;
-    private $boardFkUrlName = false;
+    private $boardUrlActionValue = FALSE;
+    private $boardUrlActionName = FALSE;
+    private $boardFkUrlValue = FALSE;
+    private $boardFkUrlName = FALSE;
     private $boardLevelAccessArray = Array();
     private $boardAvailabilityArray = Array();
     private $boardViewToLoadArray = Array();
@@ -47,7 +47,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
      * 
      * ***************** */
 
-    public function setBoardAvailability($boardName, $availabilityOption = true) {
+    public function setBoardAvailability($boardName, $availabilityOption = TRUE) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
 
         $this->boardAvailabilityArray[$boardName] = $availabilityOption;
@@ -64,7 +64,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         $this->boardViewToLoadArray[$boardName] = $BoardViewToLoadOption;
     }
 
-    public function setBoardLevelAccess($boardName, $accessLevelCSV = true) {
+    public function setBoardLevelAccess($boardName, $accessLevelCSV = TRUE) {
         $this->boardLevelAccessArray [$boardName] = $accessLevelCSV;
     }
 
@@ -119,7 +119,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
 //            $this->initBoardFkUrl();
 //        }
         $this->boardUrlName = "url_board";
-        $this->boardUrlValue = $this->setUrlLevel($this->boardUrlName, false);
+        $this->boardUrlValue = $this->setUrlLevel($this->boardUrlName, FALSE);
 
         $this->boardRootUrl = ($this->getControllerUrlRoot() . "/" . $this->getBoardUrlValue());
         $this->boardID = \k1lib\urlrewrite\get_this_controller_id();
@@ -132,19 +132,19 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         // Defauts
         // Avialibility of controllers and boards
         if ($this->getBoardAvailability("view-all") !== FALSE) {
-            $this->setBoardAvailability("view-all", true);
+            $this->setBoardAvailability("view-all", TRUE);
         }
         if ($this->getBoardAvailability("view") !== FALSE) {
-            $this->setBoardAvailability("view", true);
+            $this->setBoardAvailability("view", TRUE);
         }
         if ($this->getBoardAvailability("delete") !== FALSE) {
-            $this->setBoardAvailability("delete", true);
+            $this->setBoardAvailability("delete", TRUE);
         }
         if ($this->getBoardAvailability("new") !== FALSE) {
-            $this->setBoardAvailability("new", true);
+            $this->setBoardAvailability("new", TRUE);
         }
         if ($this->getBoardAvailability("edit") !== FALSE) {
-            $this->setBoardAvailability("edit", true);
+            $this->setBoardAvailability("edit", TRUE);
         }
         // sets de URL on each one with Avaliability arrays
 //        $this->setBoardTableListUrl("view-all");
@@ -158,10 +158,10 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__, TRUE);
 
         $this->boardFkUrlName = "foreing_key";
-        $this->boardFkUrlValue = $this->setUrlLevel($this->boardFkUrlName, false);
+        $this->boardFkUrlValue = $this->setUrlLevel($this->boardFkUrlName, FALSE);
 
 
-        if ($this->boardFkUrlValue !== false) {
+        if ($this->boardFkUrlValue !== FALSE) {
 //    $foreign_table = "empresas";
 //    $foreign_table_config = \k1lib\sql\get_table_config($db, $foreign_table);
             $this->boardFkUrlValueArray = \k1lib\sql\table_url_text_to_keys(
@@ -186,7 +186,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         if (isset($this->boardAvailabilityArray[$boardName])) {
             return $this->boardAvailabilityArray[$boardName];
         } else {
-            return null;
+            return NULL;
         }
     }
 
@@ -196,7 +196,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         if (isset($this->boardLevelAccessArray [$boardName])) {
             return $this->boardLevelAccessArray [$boardName];
         } else {
-            return null;
+            return NULL;
         }
     }
 
@@ -225,7 +225,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         if (!empty($this->boardFkUrlValue)) {
             return $this->boardFkUrlValue;
         } else {
-            return null;
+            return NULL;
         }
     }
 
@@ -234,7 +234,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         if (!empty($this->boardFkUrlValueArray)) {
             return $this->boardFkUrlValueArray;
         } else {
-            return null;
+            return NULL;
         }
     }
 
@@ -294,12 +294,12 @@ class completeEasyController extends k1_controller_with_dbtables_class {
                     if (!empty($fk_label)) {
                         $this->foreignLabelValue = $fk_label;
                     } else {
-                        $this->foreignLabelValue = null;
+                        $this->foreignLabelValue = NULL;
                     }
                 }
             }
             if ($this->foreignLabelValue === "") {
-                $this->foreignLabelValue = false;
+                $this->foreignLabelValue = FALSE;
             }
         }
         return $this->foreignLabelValue;
@@ -359,7 +359,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
 //        return $this->getControllerUrlRoot() . "/" . $this->boardUrlParameterValue;
 //        d($this->getControllerUrlRoot());
 //        d($this->boardRootUrl);
-        $boardRootURL = null;
+        $boardRootURL = NULL;
 
         if (!empty($this->getBoardUrlParameterValue())) {
             return $this->boardRootUrl . "/" . $this->getBoardUrlParameterValue();
@@ -371,14 +371,14 @@ class completeEasyController extends k1_controller_with_dbtables_class {
     public function initBoardUrlAction() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__, TRUE);
         $this->boardUrlActionName = "url_BoardAction";
-        $this->boardUrlActionValue = $this->setUrlLevel($this->boardUrlActionName, false);
+        $this->boardUrlActionValue = $this->setUrlLevel($this->boardUrlActionName, FALSE);
     }
 
     public function initBoardUrlParameter() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__, TRUE);
 
         $this->boardUrlParameterName = "url_BoardParameter";
-        $this->boardUrlParameterValue = $this->setUrlLevel($this->boardUrlParameterName, false);
+        $this->boardUrlParameterValue = $this->setUrlLevel($this->boardUrlParameterName, FALSE);
         /**
          * WTF fix !!
           $this->setBoardRootUrl($this->getBoardRootUrl() . "/" . $this->boardUrlParameterValue);
@@ -401,10 +401,10 @@ class completeEasyController extends k1_controller_with_dbtables_class {
      */
     public function setBoardTableListUrl($BoardTableListUrl) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
-        if (isset($this->boardAvailabilityArray[$BoardTableListUrl]) && ($this->boardAvailabilityArray[$BoardTableListUrl] == true)) {
+        if (isset($this->boardAvailabilityArray[$BoardTableListUrl]) && ($this->boardAvailabilityArray[$BoardTableListUrl] == TRUE)) {
             $this->BoardTableListUrl = $this->getControllerUrlRoot() . "/{$BoardTableListUrl}/";
         } else {
-            $this->BoardTableListUrl = null;
+            $this->BoardTableListUrl = NULL;
         }
     }
 
@@ -418,11 +418,11 @@ class completeEasyController extends k1_controller_with_dbtables_class {
      */
     public function setBoardDetailUrl($BoardDetailUrl) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
-        if (isset($this->boardAvailabilityArray[$BoardDetailUrl]) && ($this->boardAvailabilityArray[$BoardDetailUrl] == true)) {
+        if (isset($this->boardAvailabilityArray[$BoardDetailUrl]) && ($this->boardAvailabilityArray[$BoardDetailUrl] == TRUE)) {
             $this->BoardDetailUrl = $this->getControllerUrlRoot() . "/{$BoardDetailUrl}/%s";
         } else {
             trigger_error("DetailURL is no set by AvaliavilityArray command");
-            $this->BoardDetailUrl = null;
+            $this->BoardDetailUrl = NULL;
         }
     }
 
@@ -447,10 +447,10 @@ class completeEasyController extends k1_controller_with_dbtables_class {
      */
     public function setBoardNewUrl($BoardNewUrl) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
-        if (isset($this->boardAvailabilityArray[$BoardNewUrl]) && ($this->boardAvailabilityArray[$BoardNewUrl] == true)) {
+        if (isset($this->boardAvailabilityArray[$BoardNewUrl]) && ($this->boardAvailabilityArray[$BoardNewUrl] == TRUE)) {
             $this->BoardNewUrl = $this->getControllerUrlRoot() . "/{$BoardNewUrl}/";
         } else {
-            $this->BoardNewUrl = null;
+            $this->BoardNewUrl = NULL;
         }
     }
 
@@ -474,10 +474,10 @@ class completeEasyController extends k1_controller_with_dbtables_class {
      */
     public function setBoardEditUrl($BoardEditUrl) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
-        if (isset($this->boardAvailabilityArray[$BoardEditUrl]) && ($this->boardAvailabilityArray[$BoardEditUrl] == true)) {
+        if (isset($this->boardAvailabilityArray[$BoardEditUrl]) && ($this->boardAvailabilityArray[$BoardEditUrl] == TRUE)) {
             $this->BoardEditUrl = $this->getControllerUrlRoot() . "/{$BoardEditUrl}/%s";
         } else {
-            $this->BoardEditUrl = null;
+            $this->BoardEditUrl = NULL;
         }
     }
 
@@ -492,10 +492,10 @@ class completeEasyController extends k1_controller_with_dbtables_class {
     public function setBoardDeleteUrl($BoardDeleteUrl) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
 
-        if (isset($this->boardAvailabilityArray[$BoardDeleteUrl]) && ($this->boardAvailabilityArray[$BoardDeleteUrl] == true)) {
+        if (isset($this->boardAvailabilityArray[$BoardDeleteUrl]) && ($this->boardAvailabilityArray[$BoardDeleteUrl] == TRUE)) {
             $this->BoardDeleteUrl = $this->getControllerUrlRoot() . "/{$BoardDeleteUrl}/%s";
         } else {
-            $this->BoardDeleteUrl = null;
+            $this->BoardDeleteUrl = NULL;
         }
     }
 

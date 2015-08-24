@@ -7,19 +7,19 @@ $output_places = array();
 function is_place_registered($place_name) {
     global $output_places;
     if (!is_string($place_name)) {
-        \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
     }
     if (isset($output_places[$place_name])) {
-        return true;
+        return TRUE;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
 function register_place($place_name) {
     global $output_places;
     if (!is_string($place_name)) {
-        \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
     }
     $output_places[$place_name] = array();
 }
@@ -54,7 +54,7 @@ function set_template_place($place_name) {
     }
     // only strings for the place name
     if (!is_string($place_name)) {
-        \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
     }
     // prints the place html code
     echo \k1lib\templates\convert_place_name($place_name) . "\n";
@@ -67,14 +67,14 @@ function set_template_place($place_name) {
  */
 function convert_place_name($place_name) {
     if (!is_string($place_name)) {
-        \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
     }
     return "<!-- K1_TEMPLATE_PLACE_" . strtoupper($place_name) . "-->";
 }
 
-function register_header($url, $relative = false, $type = "auto") {
+function register_header($url, $relative = FALSE, $type = "auto") {
     if (!is_string($url)) {
-        \k1lib\common\show_error("The URL HAS to be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The URL HAS to be a string", __FUNCTION__, TRUE);
     }
     if ($type == "auto") {
         $file_extension = \k1lib\common\get_file_extension($url);
@@ -82,7 +82,7 @@ function register_header($url, $relative = false, $type = "auto") {
         $file_extension = $type;
     }
     if (!$file_extension) {
-        return false;
+        return FALSE;
     }
     switch ($file_extension) {
         case 'js':
@@ -92,8 +92,8 @@ function register_header($url, $relative = false, $type = "auto") {
             $code = "<link href=\"%url%\" rel=\"stylesheet\" type=\"text/css\"/>";
             break;
         default:
-            \k1lib\common\show_error("no extension detected on [$url] ", __FUNCTION__, true);
-            return false;
+            \k1lib\common\show_error("no extension detected on [$url] ", __FUNCTION__, TRUE);
+            return FALSE;
             break;
     }
     if ($relative) {
@@ -104,9 +104,9 @@ function register_header($url, $relative = false, $type = "auto") {
     return \k1lib\templates\set_place_value("header", $code);
 }
 
-function register_footer($url, $relative = false, $type = "auto") {
+function register_footer($url, $relative = FALSE, $type = "auto") {
     if (!is_string($url)) {
-        \k1lib\common\show_error("The URL HAS to be a string", __FUNCTION__, true);
+        \k1lib\common\show_error("The URL HAS to be a string", __FUNCTION__, TRUE);
     }
     if ($type == "auto") {
         $file_extension = \k1lib\common\get_file_extension($url);
@@ -114,7 +114,7 @@ function register_footer($url, $relative = false, $type = "auto") {
         $file_extension = $type;
     }
     if (!$file_extension) {
-        return false;
+        return FALSE;
     }
     switch ($file_extension) {
         case 'js':
@@ -124,8 +124,8 @@ function register_footer($url, $relative = false, $type = "auto") {
             $code = "<link href=\"%url%\" rel=\"stylesheet\" type=\"text/css\"/>";
             break;
         default:
-            \k1lib\common\show_error("no extension detected on [$url] ", __FUNCTION__, true);
-            return false;
+            \k1lib\common\show_error("no extension detected on [$url] ", __FUNCTION__, TRUE);
+            return FALSE;
             break;
     }
     if ($relative) {
@@ -139,7 +139,7 @@ function register_footer($url, $relative = false, $type = "auto") {
 function parse_template_places($buffer) {
     global $output_places;
     if (!isset($buffer)) {
-        \k1lib\common\show_error("The BUFFER is empty!", __FUNCTION__, true);
+        \k1lib\common\show_error("The BUFFER is empty!", __FUNCTION__, TRUE);
     }
     if (count($output_places) > 0) {
         foreach ($output_places as $place_name => $place_data) {
@@ -179,10 +179,10 @@ function template_exist($template_name) {
             }
         }
     }
-    return false;
+    return FALSE;
 }
 
-function load_view($view_name, $view_path = APP_VIEWS_PATH, $js_auto_load = true) {
+function load_view($view_name, $view_path = APP_VIEWS_PATH, $js_auto_load = TRUE) {
     if (is_string($view_name)) {
         // Try with subfolder scheme
         $view_subfix = $view_path . "/{$view_name}";

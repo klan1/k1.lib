@@ -25,9 +25,9 @@ function flush_output($buffer) {
  * @global type $app_init_time
  * @param type $show_stats 
  */
-function end_app($show_stats = false) {
+function end_app($show_stats = FALSE) {
     global $app_init_time;
-    $app_run_time = round((microtime(true) - $app_init_time), 5);
+    $app_run_time = round((microtime(TRUE) - $app_init_time), 5);
     if (\k1app\APP_MODE == "web") {
         if ($show_stats) {
             \k1lib\templates\set_place_value("footer", "Runtime: {$app_run_time} Seg - K1.lib V" . \k1lib\VERSION);

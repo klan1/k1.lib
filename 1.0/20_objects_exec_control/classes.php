@@ -31,7 +31,7 @@ trait object_execution_control {
         }
     }
 
-    protected function test_object_exec_phase($requiredOExecPhase, $method, $strict = false, $prerequisite = false) {
+    protected function test_object_exec_phase($requiredOExecPhase, $method, $strict = FALSE, $prerequisite = FALSE) {
         if ($strict) {
             if ($requiredOExecPhase !== $this->get_object_exec_phase()) {
                 trigger_error("{$method}() llamado en la fase de ejecucion erronea, llamado en fase " . $this->get_object_exec_phase() . " y se esperaba " . $requiredOExecPhase, E_USER_ERROR);

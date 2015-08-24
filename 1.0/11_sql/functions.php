@@ -16,10 +16,10 @@ use k1lib\sql\classes\local_cache;
 function get_tables_config_from_sql($sqlQuery) {
     global $db;
     $sqlQuery = "EXPLAIN " . $sqlQuery;
-    $explainResult = sql_query($db, $sqlQuery, true);
+    $explainResult = sql_query($db, $sqlQuery, TRUE);
     if ($explainResult) {
         $presentTablesArray = Array();
-        $tableConfig = null;
+        $tableConfig = NULL;
         foreach ($explainResult as $row) {
             if (isset($row['table']) && (!empty($row['table'])) && (!strstr($row['table'], '<')) && ($row['select_type'] != 'DEPENDENT SUBQUERY')) {
                 $tableConfig = get_table_config($db, $row['table']);
@@ -31,10 +31,10 @@ function get_tables_config_from_sql($sqlQuery) {
         if (!empty($presentTablesArray)) {
             return $presentTablesArray;
         } else {
-            return null;
+            return NULL;
         }
     } else {
-        return null;
+        return NULL;
     }
 }
 
@@ -47,11 +47,11 @@ function get_db_database_name(\PDO $db) {
 
 
     $db_name_sql = "SELECT DATABASE() as DB_NAME;";
-    $result = sql_query($db, $db_name_sql, false);
+    $result = sql_query($db, $db_name_sql, FALSE);
     if (isset($result['DB_NAME'])) {
         return $result['DB_NAME'];
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -76,14 +76,14 @@ function get_table_config(\PDO $db, $table, $recursion = 1) {
 
 // SQL to get info about a table
     $columns_info_query = "SHOW FULL COLUMNS FROM {$table}";
-    $columns_info_result = sql_query($db, $columns_info_query, true);
+    $columns_info_result = sql_query($db, $columns_info_query, TRUE);
     if (empty($columns_info_query)) {
         die(__FUNCTION__ . ": The table '$table' do not exist");
     }
     $dsn_db = get_db_database_name($db);
     $INFORMATION_SCHEMA_query = "SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '{$dsn_db}'
 AND table_name = '{$table}'";
-    $INFORMATION_SCHEMA_result = sql_query($db, $INFORMATION_SCHEMA_query, true);
+    $INFORMATION_SCHEMA_result = sql_query($db, $INFORMATION_SCHEMA_query, TRUE);
     if (empty($INFORMATION_SCHEMA_result)) {
         die(__FUNCTION__ . ": The table '$table' do not exist - $INFORMATION_SCHEMA_query");
     }
@@ -110,7 +110,7 @@ AND table_name = '{$table}'";
              * parameter1:value1,...,parameterN:valueN
              */
             if ($key == "comment") {
-                if (!empty($value) && (strstr($value, ":") !== false)) {
+                if (!empty($value) && (strstr($value, ":") !== FALSE)) {
                     $parameters = explode(",", $field_row['Comment']);
                     if (count($parameters) != 0) {
                         foreach ($parameters as $parameter_value) {
@@ -133,13 +133,13 @@ AND table_name = '{$table}'";
                     $referenced_table_config = get_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion - 1);
                     $field_row ['refereced_column_config'] = $referenced_table_config[$info_row['REFERENCED_COLUMN_NAME']];
                 } else {
-                    $field_row ['refereced_column_config'] = false;
+                    $field_row ['refereced_column_config'] = FALSE;
                 }
                 break;
             } else {
-                $field_row ['refereced_table_name'] = false;
-                $field_row ['refereced_column_name'] = false;
-                $field_row ['refereced_column_config'] = false;
+                $field_row ['refereced_table_name'] = FALSE;
+                $field_row ['refereced_column_name'] = FALSE;
+                $field_row ['refereced_column_config'] = FALSE;
             }
         }
         /*
@@ -148,18 +148,18 @@ AND table_name = '{$table}'";
 // MAX - THIS ONE IS ALWAYS AUTO GENERATED FROM FIELD DEFINITION
         $field_type = $field_row['type'];
 // manage the unsigned
-        if (strstr($field_type, "unsigned") !== false) {
+        if (strstr($field_type, "unsigned") !== FALSE) {
             $field_type = str_replace(" unsigned", "", $field_type);
-            $field_row['unsigned'] = true;
+            $field_row['unsigned'] = TRUE;
         } else {
-            $field_row['unsigned'] = false;
+            $field_row['unsigned'] = FALSE;
         }
-        if (strstr($field_type, "(") !== false) {
+        if (strstr($field_type, "(") !== FALSE) {
 // extract the number from type definition
             list($field_type, $max_legth) = explode("(", $field_type);
             if (!empty($max_legth)) {
                 $max_legth = substr($max_legth, 0, -1);
-                if (strstr($max_legth, ",") !== false) {
+                if (strstr($max_legth, ",") !== FALSE) {
                     list($number, $decimal) = explode(",", $max_legth);
                     $max_legth = $number + $decimal;
                 }
@@ -180,7 +180,7 @@ AND table_name = '{$table}'";
                 'bigint' => 19,
                 'float' => 34,
                 'double' => 64,
-                'enum' => null,
+                'enum' => NULL,
             );
             $max_legth = $mysql_max_length_defaults[$field_type];
         }
@@ -211,13 +211,13 @@ AND table_name = '{$table}'";
 
 
 //ROW attrib_value FIXES
-// yes -> true no -> false
+// yes -> TRUE no -> FALSE
         foreach ($field_row as $key => $value) {
 //            d("$key -> $value");
             if ($field_row[$key] == "yes") {
-                $field_row[$key] = true;
+                $field_row[$key] = TRUE;
             } elseif ($field_row[$key] == "no") {
-                $field_row[$key] = false;
+                $field_row[$key] = FALSE;
             }
         }
 // IF no label so capitalize the FIELD NAME
@@ -225,19 +225,19 @@ AND table_name = '{$table}'";
             $field_row['label'] = strtoupper(substr($field_name, 0, 1)) . (substr($field_name, 1));
         }
         if (!isset($field_row['min'])) {
-            $field_row['min'] = false;
+            $field_row['min'] = FALSE;
             /**
              * TODO: Make option system for this
              */
-//            $field_row['min'] = defined(DB_MIN_FIELD_LENGTH) ? DB_MIN_FIELD_LENGTH : false;
+//            $field_row['min'] = defined(DB_MIN_FIELD_LENGTH) ? DB_MIN_FIELD_LENGTH : FALSE;
         }
 // LABEL-FIELD
         if (!isset($field_row['label-field'])) {
-            $field_row['label-field'] = false;
+            $field_row['label-field'] = FALSE;
         }
 // LINK-FIELD
         if (!isset($field_row['link-field'])) {
-            $field_row['link-field'] = false;
+            $field_row['link-field'] = FALSE;
         }
 // show board
         $show_array_attribs[] = 'show-table';
@@ -246,14 +246,14 @@ AND table_name = '{$table}'";
         $show_array_attribs[] = 'show-view';
 //there is not show-all defined
         if (!isset($field_row['show-all'])) {
-            $field_row['show-all'] = true;
+            $field_row['show-all'] = TRUE;
         }
         foreach ($show_array_attribs as $show_attrib) {
             if (!isset($field_row[$show_attrib])) {
                 if ($field_row['show-all']) {
-                    $field_row[$show_attrib] = true;
+                    $field_row[$show_attrib] = TRUE;
                 } else {
-                    $field_row[$show_attrib] = false;
+                    $field_row[$show_attrib] = FALSE;
                 }
             }
         }
@@ -286,7 +286,7 @@ function k1_get_table_keys(&$table_config_array) {
         }
     }
     if (empty($keys)) {
-        return false;
+        return FALSE;
     } else {
         return $keys;
     }
@@ -295,7 +295,7 @@ function k1_get_table_keys(&$table_config_array) {
 /**
  * From V0.8 depreated no you have to use k1_get_field_label() instead -->> WHHHYYYYY ????
  * @param type $table_config_array
- * @return null
+ * @return NULL
  */
 function get_table_label(&$table_config_array) {
 //    d("From V0.8 depreated no you have to use k1_get_field_label() instead"); -->> WHHHYYYYY ????
@@ -307,7 +307,7 @@ function get_table_label(&$table_config_array) {
             return $field;
         }
     }
-    return null;
+    return NULL;
 }
 
 function get_fk_field_label($fkFieldName, $table_name, $url_key_array = Array()) {
@@ -327,10 +327,10 @@ function get_fk_field_label($fkFieldName, $table_name, $url_key_array = Array())
     if (!empty($fkTableLabelField)) {
         $fkWhereCondition = table_keys_to_where_condition($url_key_array, $fkTableConfig);
         $fkSqlQuery = "SELECT {$fkTableLabelField} FROM $table_name WHERE $fkWhereCondition";
-        $sql_result = sql_query($db, $fkSqlQuery, false);
+        $sql_result = sql_query($db, $fkSqlQuery, FALSE);
         return $sql_result[$fkTableLabelField];
     } else {
-        return null;
+        return NULL;
     }
 }
 
@@ -347,7 +347,7 @@ function get_table_refereces(&$table_config_array) {
         }
     }
     if (empty($keys)) {
-        return false;
+        return FALSE;
     } else {
         return $keys;
     }
@@ -416,7 +416,7 @@ function table_keys_to_where_condition(&$row_data, $table_config_array) {
         }
     }
 
-    $first_value = true;
+    $first_value = TRUE;
     $where_condition = "";
     foreach ($key_values as $key => $value) {
 //        if ($table_config_array[$key]['type'])
@@ -424,39 +424,39 @@ function table_keys_to_where_condition(&$row_data, $table_config_array) {
             $where_condition .= " AND ";
         }
         $where_condition .= "$key = '$value'";
-        $first_value = false;
+        $first_value = FALSE;
     }
     return $where_condition;
 }
 
 function sql_del_row(\PDO $db, $table, $key_name, $key_value) {
     $sql = "DELETE FROM `$table` WHERE `$key_name` = " . ( is_numeric($key_value) ? $key_value : "'$key_value'") . " ";
-    if ($db->exec($sql) !== false) {
-        return true;
+    if ($db->exec($sql) !== FALSE) {
+        return TRUE;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
-function sql_check_id(\PDO $db, $table, $key_name, $key_value, $use_cache = false) {
+function sql_check_id(\PDO $db, $table, $key_name, $key_value, $use_cache = FALSE) {
 
     $sql = "SELECT COUNT(*) AS num_keys FROM `$table` WHERE `$key_name` = " . ( is_numeric($key_value) ? $key_value : "'$key_value'") . " ";
     if ($use_cache) {
-        $sql_count = sql_query_cached($db, $sql, false);
+        $sql_count = sql_query_cached($db, $sql, FALSE);
     } else {
-        $sql_count = sql_query($db, $sql, false);
+        $sql_count = sql_query($db, $sql, FALSE);
     }
     if ($sql_count['num_keys'] > 0) {
-        return true;
+        return TRUE;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
 function sql_value_increment(\PDO $db, $table, $key_name, $key_value, $field_name, $step = 1) {
 
     $sql = "SELECT `$field_name` FROM `$table` WHERE `$key_name` = " . ( is_numeric($key_value) ? $key_value : "'$key_value'") . " ";
-    if ($sql_result = sql_query($db, $sql, false)) {
+    if ($sql_result = sql_query($db, $sql, FALSE)) {
 // make the 'step' increment on the field to rise
         $sql_result[$field_name] += $step;
 // add to the data array the key command to use the sql_update function
@@ -464,7 +464,7 @@ function sql_value_increment(\PDO $db, $table, $key_name, $key_value, $field_nam
         if (sql_update($db, $table, $sql_result)) {
             return $sql_result[$field_name];
         } else {
-            return false;
+            return FALSE;
         }
     } else {
         \k1lib\common\show_error("The value to increment coundn't be query" . __FUNCTION__);
@@ -477,22 +477,22 @@ function sql_count($data_array) {
     return ($count >= 0) ? $count : 0;
 }
 
-function sql_table_count(\PDO $db, $table, $condition = "", $use_memcache = false, $expire_time = 60) {
+function sql_table_count(\PDO $db, $table, $condition = "", $use_memcache = FALSE, $expire_time = 60) {
 
     $sql = "SELECT COUNT(*) AS counted FROM `$table` " . ( ($condition != "") ? "WHERE $condition" : "");
     if ($use_memcache) {
-        $result = sql_query_cached($db, $sql, false, false, $expire_time);
+        $result = sql_query_cached($db, $sql, FALSE, FALSE, $expire_time);
     } else {
-        $result = sql_query($db, $sql, false);
+        $result = sql_query($db, $sql, FALSE);
     }
     if ($result) {
         return $result['counted'];
     } else {
-        false;
+        FALSE;
     }
 }
 
-function sql_query_cached(\PDO $db, $sql, $return_all = true, $do_fields = false, $expiration_time = 1800) {
+function sql_query_cached(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $expiration_time = 1800) {
 
     global $db_query_cached_total, $db_query_cached_true, $db_query_cached_false, $memcache, $memcache_connected;
     $db_query_cached_total++;
@@ -502,16 +502,16 @@ function sql_query_cached(\PDO $db, $sql, $return_all = true, $do_fields = false
         if (!$memcache_result) {
             $db_query_cached_false++;
             $sql_result = sql_query($db, $sql, $return_all, $do_fields);
-            if ($sql_result == null) {
+            if ($sql_result == NULL) {
                 $sql_result = "r::e";
             }
-            $memcache->set($sql_md5, $sql_result, false, $expiration_time) or die("Failed to save data at the server");
+            $memcache->set($sql_md5, $sql_result, FALSE, $expiration_time) or die("Failed to save data at the server");
         } else {
             $db_query_cached_true++;
             if ($memcache_result != "r::e") {
                 $sql_result = $memcache_result;
             } else {
-                $sql_result = null;
+                $sql_result = NULL;
             }
         }
     } else {
@@ -530,9 +530,9 @@ function sql_query_cached(\PDO $db, $sql, $return_all = true, $do_fields = false
  * @return Array NULL on empty result and FALSE on failure.
  * TODO: Fix the NON optional cache isue !!
  */
-function sql_query(\PDO $db, $sql, $return_all = true, $do_fields = false, $use_cache = true) {
+function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE) {
 //$query_result = new PDOStatement();
-    $queryReturn = null;
+    $queryReturn = NULL;
     if (profiler::is_enabled()) {
         $sql_profile_id = profiler::add($sql);
         profiler::start_time_count($sql_profile_id);
@@ -542,7 +542,7 @@ function sql_query(\PDO $db, $sql, $return_all = true, $do_fields = false, $use_
         profiler::set_is_cached($sql_profile_id, TRUE);
     } else {
         profiler::set_is_cached($sql_profile_id, FALSE);
-        $query_result = $db->query($sql) or ( (K1_DEBUG) ? d(print_r($db->errorInfo(), true) . "SQL: $sql") : "SQL Error" );
+        $query_result = $db->query($sql) or ( (K1_DEBUG) ? d(print_r($db->errorInfo(), TRUE) . "SQL: $sql") : "SQL Error" );
     }
     if (profiler::is_enabled()) {
         profiler::stop_time_count($sql_profile_id);
@@ -553,14 +553,14 @@ function sql_query(\PDO $db, $sql, $return_all = true, $do_fields = false, $use_
     }
     $fields = array();
     $i = 1;
-    if ($query_result !== false) {
+    if ($query_result !== FALSE) {
         if ($query_result->rowCount() > 0) {
             while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
                 if ($do_fields && $return_all) {
                     foreach ($row as $key => $value) {
                         $fields[] = $key;
                     }
-                    $do_fields = false;
+                    $do_fields = FALSE;
                     $queryReturn[0] = $fields;
                 }
                 $queryReturn[$i] = $row;
@@ -584,10 +584,10 @@ function sql_query(\PDO $db, $sql, $return_all = true, $do_fields = false, $use_
 //                d($sql);
             }
         } else {
-            return null;
+            return NULL;
         }
     } else {
-        return false;
+        return FALSE;
     }
 }
 
@@ -621,7 +621,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $table_confi
                 $data_string = array_to_sql_set($data);
                 $update_sql = "UPDATE $table SET $data_string WHERE $keys_where_condition;";
 //                $controller_errors[] = $update_sql;
-//                $controller_errors[] = print_r($data, true);
+//                $controller_errors[] = print_r($data, TRUE);
             } else {
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
@@ -633,7 +633,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $table_confi
                 if (K1_DEBUG) {
                     \k1lib\common\show_error($update_sql);
                 }
-                return false;
+                return FALSE;
             }
         } else {
             die(__FUNCTION__ . ": has not received an arrany to do his work");
@@ -667,14 +667,14 @@ function sql_insert(\PDO $db, $table, $data) {
             $controller_errors[] = $insert_sql;
             if ($insert) {
                 $last_insert_sql = "SELECT LAST_INSERT_ID() as 'LAST_ID'";
-                $last_insert_result = sql_query($db, $last_insert_sql, false);
+                $last_insert_result = sql_query($db, $last_insert_sql, FALSE);
                 if (isset($last_insert_result['LAST_ID']) && (!empty($last_insert_result['LAST_ID']))) {
                     return $last_insert_result['LAST_ID'];
                 } else {
-                    return true;
+                    return TRUE;
                 }
             } else {
-                return false;
+                return FALSE;
             }
         } else {
             die(__FUNCTION__ . ": has not received an arrany to do his work");
@@ -688,7 +688,7 @@ function sql_insert(\PDO $db, $table, $data) {
 
 function array_to_sql_values($array) {
     if (is_array($array) && (count($array) > 1)) {
-        $first = true;
+        $first = TRUE;
         $data_string = "";
 // construct the field row
         $headers_count = count($array[0]);
@@ -699,7 +699,7 @@ function array_to_sql_values($array) {
                 if (!$first) {
                     $data_string .= ", ";
                 } else {
-                    $first = false;
+                    $first = FALSE;
                 }
                 $data_string .= trim($field_name);
             }
@@ -710,23 +710,23 @@ function array_to_sql_values($array) {
 // remove the headers to only work with the values - lazzy code :P
         unset($array[0]);
 // build the data
-        $first_group = true;
+        $first_group = TRUE;
         foreach ($array as $values_array) {
             $values_count = count($values_array);
             if (!$first_group) {
                 $data_string .= ", ";
             } else {
-                $first_group = false;
+                $first_group = FALSE;
             }
             if ($values_count == $headers_count) {
                 $data_string .= "(";
-                $first = true;
+                $first = TRUE;
                 foreach ($values_array as $value) {
 //put the , to the string
                     if (!$first) {
                         $data_string .= ", ";
                     } else {
-                        $first = false;
+                        $first = FALSE;
                     }
                     $value = \k1lib\common\check_incomming_var($value);
                     $data_string .= ( is_numeric($value) ? $value : "'$value'");
@@ -747,7 +747,7 @@ function array_to_sql_values($array) {
 
 function array_to_sql_set($array) {
     if (is_array($array) && (count($array) >= 1)) {
-        $first = true;
+        $first = TRUE;
         $data_string = "";
         foreach ($array as $field => $value) {
 // ZERO FIX !!
@@ -758,7 +758,7 @@ function array_to_sql_set($array) {
             if (!$first) {
                 $data_string .= ", ";
             } else {
-                $first = false;
+                $first = FALSE;
             }
             $field = trim($field);
             $value = \k1lib\common\check_incomming_var($value);
@@ -778,7 +778,7 @@ function get_table_enum_values(\PDO $db, $table, $field) {
 
     $dsn_db = get_db_database_name($db);
     $enum_sql = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '{$dsn_db}' AND TABLE_NAME = '{$table}' AND COLUMN_NAME = '{$field}'";
-    $enum_result = sql_query($db, $enum_sql, false);
+    $enum_result = sql_query($db, $enum_sql, FALSE);
     $type = $enum_result['COLUMN_TYPE'];
     $matches = array();
     preg_match('/^enum\((.*)\)$/', $type, $matches);

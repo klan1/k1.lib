@@ -22,7 +22,7 @@ function load_html_template($function_name) {
         return $template_content;
     }
     \trigger_error("No se ha podido cargar: {$file_to_load}", E_USER_WARNING);
-    return false;
+    return FALSE;
 }
 
 /**
@@ -34,7 +34,7 @@ function load_html_template($function_name) {
  * @param String $error_msg
  * @return String
  */
-function label_input_text_combo($field_name, $value, $label, $required = false, $error_msg = "") {
+function label_input_text_combo($field_name, $value, $label, $required = FALSE, $error_msg = "") {
 
 //    function \k1lib\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
     if ($required) {
@@ -47,7 +47,7 @@ function label_input_text_combo($field_name, $value, $label, $required = false, 
     $input_object->set_attrib("required", (!empty($required_class)) ? TRUE : FALSE);
 
     if (!empty($error_msg)) {
-        $input_object->set_attrib("class", "error", true);
+        $input_object->set_attrib("class", "error", TRUE);
         $html_template = load_html_template("label_input_combo-error");
         $html_code = sprintf($html_template, $label_object->generate_tag(), $input_object->generate_tag(), $error_msg);
     } else {
@@ -67,9 +67,9 @@ function label_input_text_combo($field_name, $value, $label, $required = false, 
  * @param String $id
  * @return String
  */
-function select_list_from_array($name, $data_array, $default_value = "", $allow_empty = false, $class = "", $id = "") {
+function select_list_from_array($name, $data_array, $default_value = "", $allow_empty = FALSE, $class = "", $id = "") {
     $select_object = new html_classes\select_tag($name);
-    $select_object->set_attrib("class", $class, true);
+    $select_object->set_attrib("class", $class, TRUE);
     $select_object->set_attrib("id", $id);
 
     if ($allow_empty) {
@@ -90,10 +90,10 @@ function select_list_from_array($name, $data_array, $default_value = "", $allow_
  * @param String $id
  * @return String
  */
-function table_from_array(&$data_array, $has_header = true, $class = "", $id = "") {
+function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "") {
     if ((count($data_array) == 0) || (count(current($data_array)) == 0)) {
         trigger_error("Array to build HTML table is empty", E_USER_NOTICE);
-        return false;
+        return FALSE;
     }
     $table_object = new html_classes\table_tag($class, $id);
 
@@ -119,9 +119,9 @@ function table_from_array(&$data_array, $has_header = true, $class = "", $id = "
     return $table_object->generate_tag();
 }
 
-function get_link_button($linkTo, $label, $mini = true, $inline = true) {
-    if ($linkTo == null) {
-        return null;
+function get_link_button($linkTo, $label, $mini = TRUE, $inline = TRUE) {
+    if ($linkTo == NULL) {
+        return NULL;
     } elseif (!(is_string($linkTo) && is_string($label))) {
         die(__FUNCTION__ . " The parameters are not string");
     }
@@ -188,14 +188,14 @@ function get_link_button($linkTo, $label, $mini = true, $inline = true) {
     $possible_action = "";
     foreach ($possible_strings as $possible_action_loop => $words) {
         foreach ($words as $word) {
-            if (strstr($label_low, $word) !== false) {
+            if (strstr($label_low, $word) !== FALSE) {
                 $possible_action = $possible_action_loop;
                 break 2;
             }
         }
     }
 
-    $js_confirm_dialog = false;
+    $js_confirm_dialog = FALSE;
     switch ($possible_action) {
         case "export":
             $button_icon = "fi-download";
@@ -232,7 +232,7 @@ function get_link_button($linkTo, $label, $mini = true, $inline = true) {
         case "delete":
             $button_icon = "fi-page-delete";
             $theme = "alert";
-            $js_confirm_dialog = true;
+            $js_confirm_dialog = TRUE;
             break;
         default:
             $button_icon = "fi-widget";
@@ -240,20 +240,20 @@ function get_link_button($linkTo, $label, $mini = true, $inline = true) {
             break;
     }
 
-    if ((strstr($linkTo, "http") === false) && (strstr($linkTo, "javascript:") === false)) {
+    if ((strstr($linkTo, "http") === FALSE) && (strstr($linkTo, "javascript:") === FALSE)) {
         $linkTo = \k1lib\urlrewrite\get_app_link($linkTo);
     }
     $button_object = new \k1lib\html\classes\a_tag($linkTo, " " . $label, "_self", "App link", "button");
-    $button_object->set_attrib("class", "$button_icon", true);
-    $button_object->set_attrib("class", "$theme", true);
+    $button_object->set_attrib("class", "$button_icon", TRUE);
+    $button_object->set_attrib("class", "$theme", TRUE);
     if ($js_confirm_dialog) {
         $button_object->set_attrib("onclick", "return confirm('Esta seguro que desea hacer esto ?\\n\\nEsta accion no se podra deshacer.')");
     }
     if ($inline) {
-        $button_object->set_attrib("class", "inline", true);
+        $button_object->set_attrib("class", "inline", TRUE);
     }
     if ($mini) {
-        $button_object->set_attrib("class", "tiny", true);
+        $button_object->set_attrib("class", "tiny", TRUE);
     }
 
     return $button_object->generate_tag();

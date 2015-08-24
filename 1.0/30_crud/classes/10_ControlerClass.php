@@ -28,14 +28,14 @@ class k1_general_controller_class {
     private $controllerType;
 // actual board or action name
 // URL vars
-    private $controllerUrlValue = false;
-    private $controllerUrlName = false;
+    private $controllerUrlValue = FALSE;
+    private $controllerUrlName = FALSE;
     private $controllerUrlLevel;
     private $actualUrlLevel;
     private $nextUrlLevel;
     private $controllerUrlRoot;
 // SESSION CONTROL
-    private $sessionControl = true;
+    private $sessionControl = TRUE;
     private $defaultAuthLevelAccess = '0';
 
     /**
@@ -69,7 +69,7 @@ class k1_general_controller_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONSTRUCTION, __METHOD__, TRUE);
 
         $this->controllerUrlName = "url_controller";
-        $this->controllerUrlValue = $this->setUrlLevel($this->controllerUrlName, false);
+        $this->controllerUrlValue = $this->setUrlLevel($this->controllerUrlName, FALSE);
         $this->setControllerUrlRoot(\k1lib\urlrewrite\make_url_from_rewrite());
 //        d($this->controllerUrlRoot);
         $this->controllerID = \k1lib\urlrewrite\get_this_controller_id();
@@ -177,7 +177,7 @@ class k1_general_controller_class {
     public function saveReturnPoint() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
 
-        if ($this->getIsReturnPoint() === true) {
+        if ($this->getIsReturnPoint() === TRUE) {
             \k1lib\forms\serialize_var(\k1lib\urlrewrite\make_url_from_rewrite('this'), "k1_return_point");
             \k1lib\forms\serialize_var($this->getControllerID(), "k1_return_point_id");
         }
