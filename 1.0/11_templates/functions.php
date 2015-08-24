@@ -97,7 +97,7 @@ function register_header($url, $relative = FALSE, $type = "auto") {
             break;
     }
     if ($relative) {
-        $code = str_replace("%url%", \k1lib\urlrewrite\get_app_link($url), $code);
+        $code = str_replace("%url%", \k1lib\urlrewrite\classes\url_manager::get_app_link($url), $code);
     } else {
         $code = str_replace("%url%", $url, $code);
     }
@@ -129,7 +129,7 @@ function register_footer($url, $relative = FALSE, $type = "auto") {
             break;
     }
     if ($relative) {
-        $code = str_replace("%url%", \k1lib\urlrewrite\get_app_link($url), $code);
+        $code = str_replace("%url%", \k1lib\urlrewrite\classes\url_manager::get_app_link($url), $code);
     } else {
         $code = str_replace("%url%", $url, $code);
     }

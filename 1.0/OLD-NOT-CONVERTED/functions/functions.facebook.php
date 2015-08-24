@@ -120,7 +120,7 @@ function do_facebook_init() {
         $fb_connected = TRUE;
     } else {
 //        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=/{$_GET['url']}"), "top", FALSE);
-        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=" . \k1lib\urlrewrite\make_url_from_rewrite("this")), "top", FALSE);
+        \k1lib\html\js_go(\k1lib\urlrewrite\get_fb_app_link("/fb-connect/basic?return=" . \k1lib\urlrewrite\classes\url_manager::make_url_from_rewrite("this")), "top", FALSE);
     }
 
     /*

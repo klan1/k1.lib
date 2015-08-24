@@ -1,6 +1,7 @@
 <?php
 
 namespace k1lib\crud\classes;
+use k1lib\session\classes\session_plain as k1lib_session;
 
 class completeEasyController extends k1_controller_with_dbtables_class {
 
@@ -97,16 +98,10 @@ class completeEasyController extends k1_controller_with_dbtables_class {
 
         if (is_string($defaultBoardUrlValue)) {
             if (empty($this->boardUrlValue)) {
-                if ($this->getControllerType() == \k1lib\crud\CONTROLLER_TYPE_MAIN) {
-                    \k1lib\html\html_header_go("{$this->getControllerUrlRoot()}/{$defaultBoardUrlValue}/");
-                } elseif ($this->getControllerType() == \k1lib\crud\CONTROLLER_TYPE_FOREIGN) {
-                    \k1lib\html\html_header_go("{$this->getControllerUrlRoot()}/{$this->getBoardFkUrlValue()}/{$defaultBoardUrlValue}/");
-                } else {
-                    die("K1LIB_CONTROLLER_TYPE no recognized on " . __METHOD__);
-                }
+                \k1lib\html\html_header_go("{$this->getControllerUrlRoot()}{$defaultBoardUrlValue}/");
             }
         } else {
-            die("\$defaultBoardUrlValue must to be a string on " . __METHOD__);
+            trigger_error("\$defaultBoardUrlValue must to be a string on " . __METHOD__, E_USER_ERROR);
         }
     }
 
@@ -122,7 +117,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         $this->boardUrlValue = $this->setUrlLevel($this->boardUrlName, FALSE);
 
         $this->boardRootUrl = ($this->getControllerUrlRoot() . "/" . $this->getBoardUrlValue());
-        $this->boardID = \k1lib\urlrewrite\get_this_controller_id();
+        $this->boardID = \k1lib\urlrewrite\classes\url_manager::get_this_controller_id();
 // DATA FROM SQL will use this ID
         $this->boardFormId = $this->boardID . "-data";
 // CONTROLLER SPECIFIC ERRORS will use this ID
@@ -383,7 +378,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
          * WTF fix !!
           $this->setBoardRootUrl($this->getBoardRootUrl() . "/" . $this->boardUrlParameterValue);
          */
-        $this->boardID = \k1lib\urlrewrite\get_this_controller_id();
+        $this->boardID = \k1lib\urlrewrite\classes\url_manager::get_this_controller_id();
         // DATA FROM SQL will use this ID
         $this->boardFormId = $this->boardID . "-data";
 // CONTROLLER SPECIFIC ERRORS will use this ID
@@ -434,7 +429,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
 
     public function getBoardDetailLink() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
-        return \k1lib\urlrewrite\get_app_link($this->BoardDetailUrl);
+        return \k1lib\urlrewrite\classes\url_manager::get_app_link($this->BoardDetailUrl);
     }
 
     public function getBoardDetailButton($buttonText = "Ver") {
@@ -461,7 +456,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
 
     public function getBoardNewLink() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
-        return \k1lib\urlrewrite\get_app_link($this->BoardNewUrl);
+        return \k1lib\urlrewrite\classes\url_manager::get_app_link($this->BoardNewUrl);
     }
 
     public function getBoardNewButton($buttonText = "Nuevo ítem") {
@@ -517,7 +512,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
      * ***************** */
 
     public function checkBoardLevelAccess($boardName) {
-        return \k1lib\session\check_user_level($this->getBoardLevelAccess($boardName));
+        return k1lib_session::check_user_level($this->getBoardLevelAccess($boardName));
     }
 
 }

@@ -56,7 +56,6 @@ function load_controller($controller_name, $query_auto_load = TRUE) {
  * @return boolean tell if exist or not the file on $controller_name
  */
 function if_exist_controller($controller_name) {
-    global $url_data;
     if (is_string($controller_name)) {
         $controller_to_load = APP_CONTROLLERS_PATH . "/{$controller_name}.php";
         if (file_exists($controller_to_load)) {

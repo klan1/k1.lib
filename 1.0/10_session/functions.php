@@ -16,30 +16,7 @@ namespace k1lib\session;
  * @return boolean 
  */
 function start_app_session() {
-    if (!defined("\k1app\IN_K1APP")) {
-        die("You are not on K1FW " . __FUNCTION__);
-        return FALSE;
-    }
-
-    if (!defined("APP_SESSION_NAME")) {
-        define("APP_SESSION_NAME", "K1SID");
-    }
-
-    //PHP session system
-    session_name(\k1app\APP_SESSION_NAME);
-    session_start();
-
-    if (!\k1lib\session\on_app_session(FALSE)) {
-        // Begin the app session vars
-        $_SESSION['k1lib_session']['started'] = TRUE;
-        $_SESSION['k1lib_session']['loged'] = NULL;
-        $_SESSION['k1lib_session']['user_id'] = NULL;
-        $_SESSION['k1lib_session']['user_data'] = NULL;
-        $_SESSION['k1lib_session']['user_name'] = NULL;
-        $_SESSION['k1lib_session']['user_level'] = 0;
-        $_SESSION['k1lib_session']['user_hash'] = NULL;
-    }
-    return TRUE;
+    k1_deprecated(__FUNCTION__);
 }
 
 /**
@@ -53,35 +30,7 @@ function start_app_session() {
  * @return boolean 
  */
 function on_app_session($redirect = TRUE, $url_to_redirect = "/") {
-    global $k1_user_logged, $k1_user_id, $k1_user_name, $k1_user_data, $k1_user_level;
-    if ($redirect) {
-        global $url_save_flag, $last_url;
-        $url_save_flag = \k1lib\forms\unserialize_var("url-save-flag");
-        $last_url = \k1lib\urlrewrite\get_app_link(str_replace(APP_DIR, "", $_SERVER['REQUEST_URI']));
-        \k1lib\forms\serialize_var($url_save_flag, "url-save-flag");
-        \k1lib\forms\serialize_var($last_url, "last-url");
-    }
-    if (isset($_SESSION['k1lib_session']['started']) && ($_SESSION['k1lib_session']['started'] == TRUE)) {
-        if ($_SESSION['k1lib_session']['user_hash'] == \k1lib\session\get_client_hash($_SESSION['k1lib_session']['user_id'])) {
-            $k1_user_id = $_SESSION['k1lib_session']['user_id'];
-            $k1_user_data = $_SESSION['k1lib_session']['user_data'];
-            $k1_user_name = $_SESSION['k1lib_session']['user_name'];
-            $k1_user_level = $_SESSION['k1lib_session']['user_level'];
-            $k1_user_logged = TRUE;
-            return TRUE;
-        } else {
-            $actual_session_id = session_id();
-            if (empty($actual_session_id)) {
-                \k1lib\session\unset_app_session();
-            }
-        }
-    }
-    if ($redirect) {
-//        setcookie("K1_LAST_URL", APP_DOMAIN_URL . $_SERVER['REQUEST_URI'], 0, APP_DIR);
-        \k1lib\html\html_header_go(APP_LOGIN_URL . "?error=not-logged", FALSE);
-        exit;
-    }
-    return FALSE;
+    k1_deprecated(__FUNCTION__);
 }
 
 /**
@@ -92,21 +41,7 @@ function on_app_session($redirect = TRUE, $url_to_redirect = "/") {
  * @param type $k1_user_level 
  */
 function set_app_session($k1_user_data, $k1_user_id, $k1_user_name = FALSE, $k1_user_level = 0) {
-    if (is_array($k1_user_data)) {
-        $_SESSION['k1lib_session']['user_data'] = $k1_user_data;
-    } else {
-        die("user_data MUST be an array with user data" . __FUNCTION__);
-    }
-    $_SESSION['k1lib_session']['started'] = TRUE;
-    $_SESSION['k1lib_session']['loged'] = TRUE;
-    $_SESSION['k1lib_session']['user_id'] = $k1_user_id;
-    $_SESSION['k1lib_session']['user_name'] = $k1_user_name;
-    $_SESSION['k1lib_session']['user_level'] = $k1_user_level;
-    $_SESSION['k1lib_session']['user_hash'] = \k1lib\session\get_client_hash($k1_user_id);
-
-    global $url_save_flag;
-    $url_save_flag = TRUE;
-    \k1lib\forms\serialize_var($url_save_flag, "url-save-flag");
+    k1_deprecated(__FUNCTION__);
 }
 
 /**
@@ -117,29 +52,14 @@ function set_app_session($k1_user_data, $k1_user_id, $k1_user_name = FALSE, $k1_
  * @param type $k1_user_level 
  */
 function set_app_session_group($k1_user_data, $k1_user_id, $k1_user_name = FALSE, $k1_user_group = NULL, $permision_array = NULL) {
-    if (is_array($k1_user_data)) {
-        $_SESSION['k1lib_session']['user_data'] = $k1_user_data;
-    } else {
-        die("user_data MUST be an array with user data" . __FUNCTION__);
-    }
-    $_SESSION['k1lib_session']['started'] = TRUE;
-    $_SESSION['k1lib_session']['loged'] = TRUE;
-    $_SESSION['k1lib_session']['user_id'] = $k1_user_id;
-    $_SESSION['k1lib_session']['user_name'] = $k1_user_name;
-    $_SESSION['k1lib_session']['user_level'] = $k1_user_level;
-    $_SESSION['k1lib_session']['user_hash'] = \k1lib\session\get_client_hash($k1_user_id);
-
-    global $url_save_flag;
-    $url_save_flag = TRUE;
-    \k1lib\forms\serialize_var($url_save_flag, "url-save-flag");
+    k1_deprecated(__FUNCTION__);
 }
 
 /**
  *  Uses the PHP session functions 
  */
 function unset_app_session() {
-    session_destroy();
-    session_unset();
+    k1_deprecated(__FUNCTION__);
 }
 
 /**
@@ -148,10 +68,7 @@ function unset_app_session() {
  * @return type 
  */
 function get_client_hash($k1_user_id = " ") {
-    if (isset($_SESSION['k1lib_session']['user_id'])) {
-        $k1_user_id = $_SESSION['k1lib_session']['user_id'];
-    }
-    return md5($k1_user_id . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\MAGIC_VALUE);
+    k1_deprecated(__FUNCTION__);
 }
 
 /**
@@ -160,46 +77,6 @@ function get_client_hash($k1_user_id = " ") {
  * @return boolean
  */
 function check_user_level($levels_to_check) {
-    if (!isset($_SESSION['k1lib_session']['user_level'])) {
-        die("No session to check");
-    }
-//    if (empty($levels_to_check) || (!is_string($levels_to_check) && !is_numeric($levels_to_check))) {
-    // EMPTY fails with '0'
-    if (!is_string($levels_to_check) && !is_numeric($levels_to_check)) {
-        die("level_to_check have to be a string or numeric");
-    }
-    $levels = explode(",", $levels_to_check);
-    $has_access = FALSE;
-    foreach ($levels as $level) {
-        if ($_SESSION['k1lib_session']['user_level'] == $level) {
-            $has_access = TRUE;
-        }
-    }
-    return $has_access;
+    k1_deprecated(__FUNCTION__);
 }
 
-function check_self_id($self_id, $compare_id, $self_level) {
-    if (empty($self_id)) {
-        die(__FUNCTION__ . ': $selft_id cant be empty');
-    }
-    if (empty($compare_id)) {
-        die(__FUNCTION__ . ': $compare_id cant be empty');
-    }
-    if (empty($self_level) || (!is_string($self_level) && !is_numeric($self_level))) {
-        die(__FUNCTION__ . ': $self_level cant be empty and must to be string');
-    }
-    if (\k1lib\session\check_user_level($self_level)) {
-        $self_user = TRUE;
-    } else {
-        $self_user = FALSE;
-    }
-    if ($self_user) {
-        if ($self_id === $self_level) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    } else {
-        return TRUE;
-    }
-}
