@@ -95,10 +95,10 @@ class k1_board_general_class {
 
     public function setFormActionUrl($formActionUrl, $formSubmitLabel) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
-//        $this->formActionUrl = \k1lib\urlrewrite\get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
+//        $this->formActionUrl = \k1lib\urlrewrite\classes\url_manager::get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
 //        $formActionUrl = $this->controllerObject->parseUrlTag($formActionUrl);
 //        d($this->controllerObject->getBoardRootUrl());
-        $this->formActionUrl = \k1lib\urlrewrite\get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
+        $this->formActionUrl = \k1lib\urlrewrite\classes\url_manager::get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
         $this->formSubmitLabel = $formSubmitLabel;
     }
 
@@ -218,7 +218,7 @@ class k1_board_general_class {
 //            case \k1lib\crud\CONTROLLER_TYPE_MAIN:
 //                break;
 //            case \k1lib\crud\CONTROLLER_TYPE_FOREIGN:
-//                return \k1lib\urlrewrite\get_app_link($this->getfkBoardUrl());
+//                return \k1lib\urlrewrite\classes\url_manager::get_app_link($this->getfkBoardUrl());
 //                break;
 //            default:
 //                die("There is no Board Type Defined on " . __CLASS__);
@@ -329,7 +329,7 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
                 $form_errors = \k1lib\forms\form_check_values($form_vars, $this->controllerObject->getControllerTableConfig(), $this->controllerObject->db);
                 if ($form_errors === FALSE) {
                     if (\k1lib\sql\sql_insert($this->controllerObject->db, $this->controllerObject->getDbTableMainName(), $form_vars)) {
-//                        \k1lib\html\html_header_go(\k1lib\urlrewrite\make_url_from_rewrite(-2));
+//                        \k1lib\html\html_header_go(\k1lib\urlrewrite\classes\url_manager::make_url_from_rewrite(-2));
                         // TODO: implement the after action behavior
                         // UNSET ALL FOR NO FUTURE PROBLEMS ;)
                         \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId());
@@ -589,7 +589,7 @@ class net_klan1_dev_BoardView extends k1_board_general_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__);
         $fkBoardUrl = $this->getfkBoardUrl();
         if ($fkBoardUrl) {
-            return \k1lib\urlrewrite\get_app_link($this->getfkBoardUrl());
+            return \k1lib\urlrewrite\classes\url_manager::get_app_link($this->getfkBoardUrl());
         } else {
             return FALSE;
         }

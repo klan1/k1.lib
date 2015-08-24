@@ -241,7 +241,7 @@ function get_link_button($linkTo, $label, $mini = TRUE, $inline = TRUE) {
     }
 
     if ((strstr($linkTo, "http") === FALSE) && (strstr($linkTo, "javascript:") === FALSE)) {
-        $linkTo = \k1lib\urlrewrite\get_app_link($linkTo);
+        $linkTo = \k1lib\urlrewrite\classes\url_manager::get_app_link($linkTo);
     }
     $button_object = new \k1lib\html\classes\a_tag($linkTo, " " . $label, "_self", "App link", "button");
     $button_object->set_attrib("class", "$button_icon", TRUE);
