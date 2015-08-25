@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\sql\classes;
+namespace k1lib\sql;
 
 class common_code {
 
@@ -104,7 +104,7 @@ class profiler extends common_code {
         self::is_enabled(true);
         $data_filtered = array();
         foreach (self::$data as $id => $profile_data) {
-            if ($profile_data['md5'] == $md5) {
+            if (isset($profile_data['md5']) && ($profile_data['md5'] == $md5)) {
                 $data_filtered[] = $profile_data;
             }
         }

@@ -4,7 +4,7 @@
  * HTML Classes for general propouses use
  */
 
-namespace k1lib\html\classes {
+namespace k1lib\html {
 
     /**
      * HTML Tag abstraction
@@ -260,7 +260,7 @@ namespace k1lib\html\classes {
          * Chains a new <THEAD> HTML TAG
          * @param String $class
          * @param String $id
-         * @return \k1lib\html\classes\thead_tag
+         * @return \k1lib\html\thead_tag
          */
         function &append_thead($class = "", $id = "") {
             $child_object = new thead_tag($class, $id);
@@ -272,7 +272,7 @@ namespace k1lib\html\classes {
          * Chains a new <TBODY> HTML TAG
          * @param String $class
          * @param String $id
-         * @return \k1lib\html\classes\tbody_tag
+         * @return \k1lib\html\tbody_tag
          */
         function &append_tbody($class = "", $id = "") {
             $child_object = new tbody_tag($class, $id);
@@ -298,7 +298,7 @@ namespace k1lib\html\classes {
          * Chains a new <TR> HTML TAG
          * @param String $class
          * @param String $id
-         * @return \k1lib\html\classes\tr_tag
+         * @return \k1lib\html\tr_tag
          */
         function append_tr($class = "", $id = "") {
             $child_object = new tr_tag($class, $id);
@@ -324,7 +324,7 @@ namespace k1lib\html\classes {
          * Chains a new <TR> HTML TAG
          * @param String $class
          * @param String $id
-         * @return \k1lib\html\classes\tr_tag
+         * @return \k1lib\html\tr_tag
          */
         function append_tr($class = "", $id = "") {
             $child_object = new tr_tag($class, $id);
@@ -351,7 +351,7 @@ namespace k1lib\html\classes {
          * @param String $value <TAG>$value</TAG>
          * @param String $class
          * @param String $id
-         * @return \k1lib\html\classes\th_tag
+         * @return \k1lib\html\th_tag
          */
         function append_th($value, $class = "", $id = "") {
             $child_object = new th_tag($value, $class, $id);
@@ -364,7 +364,7 @@ namespace k1lib\html\classes {
          * @param String $value <TAG>$value</TAG>
          * @param String $class
          * @param String $id
-         * @return \k1lib\html\classes\td_tag
+         * @return \k1lib\html\td_tag
          */
         function append_td($value, $class = "", $id = "") {
             $child_object = new td_tag($value, $class, $id);
@@ -465,7 +465,7 @@ namespace k1lib\html\classes {
          * @param Boolean $selected
          * @param String $class
          * @param String $id
-         * @return \k1lib\html\classes\option_tag
+         * @return \k1lib\html\option_tag
          */
         function append_option($value, $label, $selected = FALSE, $class = "", $id = "") {
             $child_object = new option_tag($value, $label, $selected, $class, $id);

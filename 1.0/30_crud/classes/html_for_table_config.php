@@ -1,9 +1,9 @@
 <?php
 
 /* HTML 4.01 TABLE VER2 */
-namespace k1lib\html\classes;
+namespace k1lib\html;
 
-use k1lib\html\classes as html_classes;
+use k1lib\html as html_classes;
 use k1lib\html as html_functions;
 
 class html_table_with_table_config {
@@ -113,8 +113,8 @@ class html_table_with_table_config {
 
     function makeLimitStament() {
         if ($this->htmlTableMode == "SQL") {
-            $tableAction = \k1lib\urlrewrite\classes\url_manager::get_url_level_value_by_name("table-action");
-            $pageNumber = \k1lib\urlrewrite\classes\url_manager::get_url_level_value_by_name("page-number");
+            $tableAction = \k1lib\urlrewrite\url_manager::get_url_level_value_by_name("table-action");
+            $pageNumber = \k1lib\urlrewrite\url_manager::get_url_level_value_by_name("page-number");
             if ($pageNumber > 0) {
                 $this->pageActual = $pageNumber - 1;
             } else {
@@ -219,7 +219,7 @@ class html_table_with_table_config {
         }
     }
 
-    function doCode(net_klan1_dev_EasyControllerClass $controllerObject = NULL) {
+    function doCode(EasyControllerClass $controllerObject = NULL) {
         $serializedTableHeaders = \k1lib\forms\unserialize_var($this->boardID . '-tableHeaders');
         $serializedFormVars = \k1lib\forms\unserialize_var($this->boardID . '-search');
         if (empty($this->sqlResult) && empty($this->sqlSearchFilter)) {
@@ -361,7 +361,7 @@ class html_table_with_table_config {
                         if ($controllerObject !== NULL) {
                             $sprintf_url = \k1lib\crud\parseUrlTag($sprintf_url, $controllerObject);
                         }
-                        $link = \k1lib\urlrewrite\classes\url_manager::get_app_link($sprintf_url);
+                        $link = \k1lib\urlrewrite\url_manager::get_app_link($sprintf_url);
                         $tr->append_td("<a href='{$link}' rel='external'>{$rowValue}</a>");
                     } else {
                         $tr->append_td($rowValue);

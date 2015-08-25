@@ -8,11 +8,8 @@ $mem_usage['loaded'] = memory_get_usage() / 1024;
 $mem_usage['k1lib'] = $mem_usage['loaded'] - $mem_usage['init'];
 
 $total_load_time = microtime(TRUE) - $start;
+unset($start);
 
-function convert($size) {
-    $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
-    return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
-}
 ?>
 <html>
     <head>
@@ -41,7 +38,7 @@ function convert($size) {
         d($k1_functions['user']);
         unset($k1_functions);
         ?>
-        <h4>DEBUG DATA</h4>
+        <h4>$_GLOBALS DATA</h4>
         <?php
         unset($mem_usage);
         unset($total_load_time);

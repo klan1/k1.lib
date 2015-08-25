@@ -2,7 +2,7 @@
 
 namespace k1lib\crud;
 
-function parseUrlTag($urlString, \k1lib\crud\classes\completeEasyController $contollerObject) {
+function parseUrlTag($urlString, \k1lib\crud\completeEasyController $contollerObject) {
     $urlString = str_replace("[controller-key]", $contollerObject->getBoardUrlParameterValue(), $urlString);
     $urlString = str_replace("[controller-fk]", $contollerObject->getBoardFkUrlValue(), $urlString);
     $urlString = str_replace("[board]", $contollerObject->getControllerUrlRoot(), $urlString);

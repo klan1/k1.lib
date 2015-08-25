@@ -1,21 +1,21 @@
 <?php
 
-namespace k1lib\crud\classes;
+namespace k1lib\crud;
 
-class k1_controller_with_dbtables_class extends k1_general_controller_class {
+class controller_with_dbtables_class extends general_controller_class {
 
 // TODO: make this private... some day :P
     public $db;
 // table objects references 
     /**
-     * @var net_klan1_dev_dbTableClass
+     * @var dbTableClass
      */
     public $dbTableMainObject;
     private $dbTableMainName;
     private $dbTableMainSQLFilter = NULL;
 
     /**
-     * @var net_klan1_dev_dbTableClass
+     * @var dbTableClass
      */
     public $dbTableForeignObject;
     private $dbTableForeignName;
@@ -61,14 +61,14 @@ class k1_controller_with_dbtables_class extends k1_general_controller_class {
         switch ($tableType) {
             case \k1lib\crud\CONTROLLER_TYPE_MAIN: // case "main":
                 $this->setControllerType(\k1lib\crud\CONTROLLER_TYPE_MAIN);
-                $this->dbTableMainObject = new \k1lib\crud\classes\net_klan1_dev_dbTableClass($this->db, $tableName);
+                $this->dbTableMainObject = new \k1lib\crud\dbTableClass($this->db, $tableName);
                 $this->dbTableMainName = $tableName;
 
                 break;
             case \k1lib\crud\CONTROLLER_TYPE_FOREIGN: // case "foreign":
                 if ($this->getControllerType() === \k1lib\crud\CONTROLLER_TYPE_MAIN) {
                     $this->setControllerType(\k1lib\crud\CONTROLLER_TYPE_FOREIGN);
-                    $this->dbTableForeignObject = new net_klan1_dev_dbTableClass($this->db, $tableName);
+                    $this->dbTableForeignObject = new dbTableClass($this->db, $tableName);
                     $this->dbTableForeignName = $tableName;
 //foreingKey URL must be setted before set the tables
                 } else {

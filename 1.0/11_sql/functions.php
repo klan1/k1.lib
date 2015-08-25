@@ -2,8 +2,8 @@
 
 namespace k1lib\sql;
 
-use k1lib\sql\classes\profiler;
-use k1lib\sql\classes\local_cache;
+use k1lib\sql\profiler;
+use k1lib\sql\local_cache;
 
 /*
  * Autor: Alejandro Trujillo J.

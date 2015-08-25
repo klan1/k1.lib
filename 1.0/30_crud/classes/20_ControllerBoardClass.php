@@ -1,10 +1,10 @@
 <?php
 
-namespace k1lib\crud\classes;
+namespace k1lib\crud;
 
-class k1_board_general_class {
+class board_general_class {
 
-    use \k1lib\oexec\classes\object_execution_control;
+    use \k1lib\oexec\object_execution_control;
 
     public $controllerObject;
     public $HtmlTableObject;
@@ -36,7 +36,7 @@ class k1_board_general_class {
      * 
      * ***************** */
 
-    function __construct(k1_general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
+    function __construct(general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
         $this->phase_contruct();
 //        $this->phase_config();
         $this->controllerObject = $controllerObject;
@@ -95,10 +95,10 @@ class k1_board_general_class {
 
     public function setFormActionUrl($formActionUrl, $formSubmitLabel) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
-//        $this->formActionUrl = \k1lib\urlrewrite\classes\url_manager::get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
+//        $this->formActionUrl = \k1lib\urlrewrite\url_manager::get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
 //        $formActionUrl = $this->controllerObject->parseUrlTag($formActionUrl);
 //        d($this->controllerObject->getBoardRootUrl());
-        $this->formActionUrl = \k1lib\urlrewrite\classes\url_manager::get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
+        $this->formActionUrl = \k1lib\urlrewrite\url_manager::get_app_link("{$this->controllerObject->getBoardRootUrl()}/$formActionUrl");
         $this->formSubmitLabel = $formSubmitLabel;
     }
 
@@ -218,7 +218,7 @@ class k1_board_general_class {
 //            case \k1lib\crud\CONTROLLER_TYPE_MAIN:
 //                break;
 //            case \k1lib\crud\CONTROLLER_TYPE_FOREIGN:
-//                return \k1lib\urlrewrite\classes\url_manager::get_app_link($this->getfkBoardUrl());
+//                return \k1lib\urlrewrite\url_manager::get_app_link($this->getfkBoardUrl());
 //                break;
 //            default:
 //                die("There is no Board Type Defined on " . __CLASS__);
@@ -239,7 +239,7 @@ class k1_board_general_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
         $label = $this->getFormSubmitLabel();
         // BLANK input name for not problems 
-        $button_object = new \k1lib\html\classes\input_tag("submit", "submit", $buttonText, "button success fi-check");
+        $button_object = new \k1lib\html\input_tag("submit", "submit", $buttonText, "button success fi-check");
 
         if ($inline) {
             $button_object->set_attrib("class", "inline", TRUE);
@@ -264,14 +264,14 @@ class k1_board_general_class {
      * ***************** */
 }
 
-class net_klan1_dev_BoardNew extends k1_board_general_class {
+class BoardNew extends board_general_class {
     /*     * *****************
      * 
      * \k1lib\oexec\OEXEC_PHASE_CONSTRUCTION
      * 
      * ***************** */
 
-    function __construct(k1_general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
+    function __construct(general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
     }
 
@@ -329,7 +329,7 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
                 $form_errors = \k1lib\forms\form_check_values($form_vars, $this->controllerObject->getControllerTableConfig(), $this->controllerObject->db);
                 if ($form_errors === FALSE) {
                     if (\k1lib\sql\sql_insert($this->controllerObject->db, $this->controllerObject->getDbTableMainName(), $form_vars)) {
-//                        \k1lib\html\html_header_go(\k1lib\urlrewrite\classes\url_manager::make_url_from_rewrite(-2));
+//                        \k1lib\html\html_header_go(\k1lib\urlrewrite\url_manager::make_url_from_rewrite(-2));
                         // TODO: implement the after action behavior
                         // UNSET ALL FOR NO FUTURE PROBLEMS ;)
                         \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId());
@@ -395,17 +395,17 @@ class net_klan1_dev_BoardNew extends k1_board_general_class {
      * ***************** */
 }
 
-class net_klan1_dev_BoardViewAll extends k1_board_general_class {
+class BoardViewAll extends board_general_class {
     /*     * *****************
      * 
      * \k1lib\oexec\OEXEC_PHASE_CONSTRUCTION
      * 
      * ***************** */
 
-    function __construct(k1_general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
+    function __construct(general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
 
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
-        $this->HtmlTableObject = new \k1lib\html\classes\html_table_with_table_config($this->controllerObject->getBoardID());
+        $this->HtmlTableObject = new \k1lib\html\html_table_with_table_config($this->controllerObject->getBoardID());
         $this->controllerObject->setUrlLevel("table-action", FALSE);
         $this->controllerObject->setUrlLevel("page-number", FALSE);
     }
@@ -487,14 +487,14 @@ class net_klan1_dev_BoardViewAll extends k1_board_general_class {
      */
 }
 
-class net_klan1_dev_BoardDelete extends k1_board_general_class {
+class BoardDelete extends board_general_class {
     /*     * *****************
      * 
      * \k1lib\oexec\OEXEC_PHASE_CONSTRUCTION
      * 
      * ***************** */
 
-    function __construct(k1_general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
+    function __construct(general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
 
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
         $sql_query = "DELETE FROM {$this->controllerObject->getDbTableMainName()} WHERE " . $this->getBoardSqlWherefromParameters();
@@ -539,14 +539,14 @@ class net_klan1_dev_BoardDelete extends k1_board_general_class {
      * ***************** */
 }
 
-class net_klan1_dev_BoardView extends k1_board_general_class {
+class BoardView extends board_general_class {
     /*     * *****************
      * 
      * \k1lib\oexec\OEXEC_PHASE_CONSTRUCTION
      * 
      * ***************** */
 
-    function __construct(k1_general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
+    function __construct(general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
 
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
         $sql_query = "SELECT * FROM {$this->controllerObject->getDbTableMainName()} WHERE " . $this->getBoardSqlWherefromParameters();
@@ -589,7 +589,7 @@ class net_klan1_dev_BoardView extends k1_board_general_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__);
         $fkBoardUrl = $this->getfkBoardUrl();
         if ($fkBoardUrl) {
-            return \k1lib\urlrewrite\classes\url_manager::get_app_link($this->getfkBoardUrl());
+            return \k1lib\urlrewrite\url_manager::get_app_link($this->getfkBoardUrl());
         } else {
             return FALSE;
         }
@@ -626,14 +626,14 @@ class net_klan1_dev_BoardView extends k1_board_general_class {
      * ***************** */
 }
 
-class net_klan1_dev_BoardEdit extends k1_board_general_class {
+class BoardEdit extends board_general_class {
     /*     * *****************
      * 
      * \k1lib\oexec\OEXEC_PHASE_CONSTRUCTION
      * 
      * ***************** */
 
-    function __construct(k1_general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
+    function __construct(general_controller_class $controllerObject, $boardTitle, $boardInternalName, $boardDescription = '', $boardKeywords = Array()) {
 
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
 

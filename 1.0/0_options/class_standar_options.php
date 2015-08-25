@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\options\classes;
+namespace k1lib\options;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

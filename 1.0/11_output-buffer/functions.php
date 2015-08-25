@@ -17,7 +17,7 @@ function start_app() {
  * @return string 
  */
 function flush_output($buffer) {
-    return \k1lib\templates\parse_template_places($buffer);
+    return \k1lib\templates\temply::parse_template_places($buffer);
 }
 
 /**
@@ -30,7 +30,7 @@ function end_app($show_stats = FALSE) {
     $app_run_time = round((microtime(TRUE) - $app_init_time), 5);
     if (\k1app\APP_MODE == "web") {
         if ($show_stats) {
-            \k1lib\templates\set_place_value("footer", "Runtime: {$app_run_time} Seg - K1.lib V" . \k1lib\VERSION);
+            \k1lib\templates\temply::set_place_value("footer", "Runtime: {$app_run_time} Seg - K1.lib V" . \k1lib\VERSION);
         }
 
         \ob_end_flush();

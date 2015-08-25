@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\oexec\classes;
+namespace k1lib\oexec;
 
 
 trait object_execution_control {
