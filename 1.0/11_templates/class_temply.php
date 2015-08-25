@@ -1,20 +1,14 @@
 <?php
 
-namespace k1lib\templates\classes;
+namespace k1lib\templates;
 
-class simple_template {
+class temply {
 
     /**
      * Enable state
      * @var Boolean 
      */
     static private $enabled = FALSE;
-
-    /**
-     * Actual URL level 
-     * @var Int
-     */
-    static private $levels_count;
 
     /**
      * URL data array
@@ -27,7 +21,6 @@ class simple_template {
      */
     static public function enable() {
         self::$enabled = TRUE;
-        self::$levels_count = null;
         self::$output_places = array();
     }
 
@@ -43,43 +36,46 @@ class simple_template {
     }
 
     static public function get_data() {
+        self::is_enabled(true);
         return self::$output_places;
     }
 
-    static public function  is_place_registered($place_name) {
-        global $output_places;
+    static public function is_place_registered($place_name) {
+        self::is_enabled(true);
+
         if (!is_string($place_name)) {
             \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
         }
-        if (isset($output_places[$place_name])) {
+        if (isset(self::$output_places[$place_name])) {
             return TRUE;
         } else {
             return FALSE;
         }
     }
 
-    static public function  register_place($place_name) {
-        global $output_places;
+    static public function register_place($place_name) {
+        self::is_enabled(true);
         if (!is_string($place_name)) {
             \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
         }
-        $output_places[$place_name] = array();
+        self::$output_places[$place_name] = array();
     }
 
     /**
      * set the value for a place name
-     * @global array $output_places
+     * @global array self::$output_places
      * @param string $place
      * @param string $value
      * @return none
      */
-    static public function  set_place_value($place_name, $value) {
-        global $output_places;
+    static public function set_place_value($place_name, $value) {
+        self::is_enabled(true);
+
         if ((!is_string($place_name) || !is_string($value))) {
             die("The OUTPUT PLACE '{$place_name}' couldn't be registered with a value diferent a string " . __FUNCTION__);
         }
-        if (isset($output_places[$place_name])) {
-            $output_places[$place_name][] = $value;
+        if (isset(self::$output_places[$place_name])) {
+            self::$output_places[$place_name][] = $value;
         } else {
             die("The OUTPUT PLACE '{$place_name}' is not defined yet " . __FUNCTION__);
         }
@@ -89,17 +85,18 @@ class simple_template {
      * output the place name string on the template
      * Rev 1: Now register the place name if is not registererd
      */
-    static public function  set_template_place($place_name) {
+    static public function set_template_place($place_name) {
+        self::is_enabled(true);
         //check if the place name exist
-        if (!\k1lib\templates\is_place_registered($place_name)) {
-            \k1lib\templates\register_place($place_name);
+        if (!self::is_place_registered($place_name)) {
+            self::register_place($place_name);
         }
         // only strings for the place name
         if (!is_string($place_name)) {
             \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
         }
         // prints the place html code
-        echo \k1lib\templates\convert_place_name($place_name) . "\n";
+        echo self::convert_place_name($place_name) . "\n";
     }
 
     /**
@@ -107,14 +104,16 @@ class simple_template {
      * @param string $place_name
      * @return type string
      */
-    static public function  convert_place_name($place_name) {
+    static public function convert_place_name($place_name) {
+        self::is_enabled(true);
         if (!is_string($place_name)) {
             \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
         }
         return "<!-- K1_TEMPLATE_PLACE_" . strtoupper($place_name) . "-->";
     }
 
-    static public function  register_header($url, $relative = FALSE, $type = "auto") {
+    static public function register_header($url, $relative = FALSE, $type = "auto") {
+        self::is_enabled(true);
         if (!is_string($url)) {
             \k1lib\common\show_error("The URL HAS to be a string", __FUNCTION__, TRUE);
         }
@@ -139,14 +138,15 @@ class simple_template {
                 break;
         }
         if ($relative) {
-            $code = str_replace("%url%", \k1lib\urlrewrite\classes\url_manager::get_app_link($url), $code);
+            $code = str_replace("%url%", \k1lib\urlrewrite\url_manager::get_app_link($url), $code);
         } else {
             $code = str_replace("%url%", $url, $code);
         }
-        return \k1lib\templates\set_place_value("header", $code);
+        return self::set_place_value("header", $code);
     }
 
-    static public function  register_footer($url, $relative = FALSE, $type = "auto") {
+    static public function register_footer($url, $relative = FALSE, $type = "auto") {
+        self::is_enabled(true);
         if (!is_string($url)) {
             \k1lib\common\show_error("The URL HAS to be a string", __FUNCTION__, TRUE);
         }
@@ -171,21 +171,22 @@ class simple_template {
                 break;
         }
         if ($relative) {
-            $code = str_replace("%url%", \k1lib\urlrewrite\classes\url_manager::get_app_link($url), $code);
+            $code = str_replace("%url%", \k1lib\urlrewrite\url_manager::get_app_link($url), $code);
         } else {
             $code = str_replace("%url%", $url, $code);
         }
-        return \k1lib\templates\set_place_value("footer", $code);
+        return self::set_place_value("footer", $code);
     }
 
-    static public function  parse_template_places($buffer) {
-        global $output_places;
+    static public function parse_template_places($buffer) {
+        self::is_enabled(true);
+
         if (!isset($buffer)) {
             \k1lib\common\show_error("The BUFFER is empty!", __FUNCTION__, TRUE);
         }
-        if (count($output_places) > 0) {
-            foreach ($output_places as $place_name => $place_data) {
-                $template_place_name = \k1lib\templates\convert_place_name($place_name);
+        if (count(self::$output_places) > 0) {
+            foreach (self::$output_places as $place_name => $place_data) {
+                $template_place_name = self::convert_place_name($place_name);
                 $place_code = "\n";
                 foreach ($place_data as $place_value) {
                     $place_code .= "\t" . $place_value . "\n";
@@ -196,9 +197,10 @@ class simple_template {
         return $buffer;
     }
 
-    static public function  load_template($template_name) {
+    static public function load_template($template_name) {
+        self::is_enabled(true);
         if (is_string($template_name)) {
-            if ($template_to_load = \k1lib\templates\template_exist($template_name)) {
+            if ($template_to_load = self::template_exist($template_name)) {
                 return$template_to_load;
             }
         } else {
@@ -207,7 +209,8 @@ class simple_template {
         }
     }
 
-    static public function  template_exist($template_name) {
+    static public function template_exist($template_name) {
+        self::is_enabled(true);
         if (is_string($template_name)) {
             // Try with subfolder scheme
             $template_to_load = APP_TEMPLATE_PATH . "/{$template_name}/index.php";
@@ -224,7 +227,8 @@ class simple_template {
         return FALSE;
     }
 
-    static public function  load_view($view_name, $view_path = APP_VIEWS_PATH, $js_auto_load = TRUE) {
+    static public function load_view($view_name, $view_path, $js_auto_load = TRUE) {
+        self::is_enabled(true);
         if (is_string($view_name)) {
             // Try with subfolder scheme
             $view_subfix = $view_path . "/{$view_name}";
@@ -239,7 +243,7 @@ class simple_template {
                     $js_to_load = "{$js_view_subfix}/js/{$last_controles_name}.js";
                     $js_file_to_check = "{$view_subfix}/js/{$last_controles_name}.js";
                     if (file_exists($js_file_to_check)) {
-                        \k1lib\templates\register_header($js_to_load);
+                        self::register_header($js_to_load);
                     }
                 }
                 return $view_to_load;
@@ -253,7 +257,7 @@ class simple_template {
                         $js_to_load = dirname($js_view_subfix) . "/js/{$last_controles_name}.js";
                         $js_file_to_check = dirname($view_subfix) . "/js/{$last_controles_name}.js";
                         if (file_exists($js_file_to_check)) {
-                            \k1lib\templates\register_header($js_to_load);
+                            self::register_header($js_to_load);
                         }
                     }
                     return $view_to_load;

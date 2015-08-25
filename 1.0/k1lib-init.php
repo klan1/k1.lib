@@ -23,25 +23,13 @@ namespace k1lib;
 
 const IN_K1LIB = TRUE;
 
-$app_init_time = microtime(TRUE);
-
-//$db_querys = 0;
-//$db_query_cached_true = 0;
-//$db_query_cached_false = 0;
-//$db_query_cached_total = 0;
-//$sql_profiles = array();
-//$fbq_calls = 0;
-//$fb_api_calls = 0;
-//$fbq_profiles = array();
-//$fbapi_profiles = array();
-
 /*
  * GENERAL VARIABLE DECLARATIONS
  */
-date_default_timezone_set("America/Bogota");
-$date = date("Y-m-d");
-$time = date("H:i:s");
-$now = date("Y-m-d H:i:s");
+//date_default_timezone_set("America/Bogota");
+//$date = date("Y-m-d");
+//$time = date("H:i:s");
+//$now = date("Y-m-d H:i:s");
 
 /*
  * PATH AUTO CONFIG

@@ -6,7 +6,7 @@
 
 namespace k1lib\html;
 
-use k1lib\html\classes as html_classes;
+use k1lib\html as html_classes;
 
 /**
  * Loads files and get contents from templates directory from k1.lib no from the app template directory.
@@ -241,9 +241,9 @@ function get_link_button($linkTo, $label, $mini = TRUE, $inline = TRUE) {
     }
 
     if ((strstr($linkTo, "http") === FALSE) && (strstr($linkTo, "javascript:") === FALSE)) {
-        $linkTo = \k1lib\urlrewrite\classes\url_manager::get_app_link($linkTo);
+        $linkTo = \k1lib\urlrewrite\url_manager::get_app_link($linkTo);
     }
-    $button_object = new \k1lib\html\classes\a_tag($linkTo, " " . $label, "_self", "App link", "button");
+    $button_object = new \k1lib\html\a_tag($linkTo, " " . $label, "_self", "App link", "button");
     $button_object->set_attrib("class", "$button_icon", TRUE);
     $button_object->set_attrib("class", "$theme", TRUE);
     if ($js_confirm_dialog) {

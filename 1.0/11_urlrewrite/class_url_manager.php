@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\urlrewrite\classes;
+namespace k1lib\urlrewrite;
 
 use k1lib_common as k1lib_common;
 

@@ -37,7 +37,7 @@ function back_link($text_link = "< Volver", $return = TRUE, $url = FALSE, $use_d
 
 function generate_link($url, $text_link, $target = "_self", $id = "", $class = "", $app_format = TRUE, $keep_vars = TRUE, $vars_to_keep = "") {
     if ($app_format) {
-        $url = \k1lib\urlrewrite\classes\url_manager::get_app_link($url, $keep_vars, $vars_to_keep);
+        $url = \k1lib\urlrewrite\url_manager::get_app_link($url, $keep_vars, $vars_to_keep);
     }
     return $back_link = "<a href=\"{$url}\" id=\"{$id}\" class=\"{$class}\" target=\"{$target}\" \">{$text_link}</a>";
 }
@@ -51,7 +51,7 @@ function html_header_go($url, $app_format = TRUE, $keep_vars = TRUE, $get_vars_t
 //    die("Redirecting... [$url]");
     ob_clean();
     if ($app_format) {
-        $url = \k1lib\urlrewrite\classes\url_manager::get_app_link($url, $keep_vars, $get_vars_to_keep);
+        $url = \k1lib\urlrewrite\url_manager::get_app_link($url, $keep_vars, $get_vars_to_keep);
     }
 //    trigger_error("No se que pasa!! " . __FUNCTION__, E_USER_ERROR);
 //    echo "$file - $line";
@@ -81,7 +81,7 @@ function js_go($url, $root = "window", $app_format = TRUE, $keep_vars = TRUE, $g
 //    trigger_error("No se que pasa!! " . __FUNCTION__, E_USER_ERROR);
 
     if ($app_format) {
-        $url = \k1lib\urlrewrite\classes\url_manager::get_app_link($url, $keep_vars, $get_vars_to_keep);
+        $url = \k1lib\urlrewrite\url_manager::get_app_link($url, $keep_vars, $get_vars_to_keep);
     }
 //    echo "$file - $line";
     die("<script type='text/javascript'>{$root}.location.href = '{$url}';</script>");

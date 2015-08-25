@@ -1,9 +1,9 @@
 <?php
 
-namespace k1lib\crud\classes;
-use k1lib\session\classes\session_plain as k1lib_session;
+namespace k1lib\crud;
+use k1lib\session\session_plain as k1lib_session;
 
-class completeEasyController extends k1_controller_with_dbtables_class {
+class completeEasyController extends controller_with_dbtables_class {
 
     private $boardID;
     private $boardFormId;
@@ -117,7 +117,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         $this->boardUrlValue = $this->setUrlLevel($this->boardUrlName, FALSE);
 
         $this->boardRootUrl = ($this->getControllerUrlRoot() . "/" . $this->getBoardUrlValue());
-        $this->boardID = \k1lib\urlrewrite\classes\url_manager::get_this_controller_id();
+        $this->boardID = \k1lib\urlrewrite\url_manager::get_this_controller_id();
 // DATA FROM SQL will use this ID
         $this->boardFormId = $this->boardID . "-data";
 // CONTROLLER SPECIFIC ERRORS will use this ID
@@ -324,9 +324,9 @@ class completeEasyController extends k1_controller_with_dbtables_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__);
         $boardViewToLoadValue = $this->boardViewToLoadArray[$this->getBoardUrlValue()];
         if ($boardViewToLoadValue != $this->getBoardUrlValue()) {
-            return \k1lib\templates\load_view($boardViewToLoadValue, APP_VIEWS_PATH);
+            return \k1lib\templates\temply::load_view($boardViewToLoadValue, APP_VIEWS_PATH);
         } else {
-            return \k1lib\templates\load_view($boardViewToLoadValue, APP_VIEWS_GENERAL_PATH);
+            return \k1lib\templates\temply::load_view($boardViewToLoadValue, APP_VIEWS_CRUD_PATH);
         }
     }
 
@@ -378,7 +378,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
          * WTF fix !!
           $this->setBoardRootUrl($this->getBoardRootUrl() . "/" . $this->boardUrlParameterValue);
          */
-        $this->boardID = \k1lib\urlrewrite\classes\url_manager::get_this_controller_id();
+        $this->boardID = \k1lib\urlrewrite\url_manager::get_this_controller_id();
         // DATA FROM SQL will use this ID
         $this->boardFormId = $this->boardID . "-data";
 // CONTROLLER SPECIFIC ERRORS will use this ID
@@ -429,7 +429,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
 
     public function getBoardDetailLink() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
-        return \k1lib\urlrewrite\classes\url_manager::get_app_link($this->BoardDetailUrl);
+        return \k1lib\urlrewrite\url_manager::get_app_link($this->BoardDetailUrl);
     }
 
     public function getBoardDetailButton($buttonText = "Ver") {
@@ -456,7 +456,7 @@ class completeEasyController extends k1_controller_with_dbtables_class {
 
     public function getBoardNewLink() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
-        return \k1lib\urlrewrite\classes\url_manager::get_app_link($this->BoardNewUrl);
+        return \k1lib\urlrewrite\url_manager::get_app_link($this->BoardNewUrl);
     }
 
     public function getBoardNewButton($buttonText = "Nuevo ítem") {

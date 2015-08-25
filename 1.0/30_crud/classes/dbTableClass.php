@@ -1,8 +1,8 @@
 <?php
 
-namespace k1lib\crud\classes;
+namespace k1lib\crud;
 
-class net_klan1_dev_dbTableClass {
+class dbTableClass {
 
     public $db;
     private $tableName = "";

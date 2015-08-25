@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\crud\classes;
+namespace k1lib\crud;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -17,9 +17,9 @@ namespace k1lib\crud\classes;
  * @version    0.9
  * @since      File available since Release 0.8
  */
-class k1_general_controller_class {
+class general_controller_class {
 
-    use \k1lib\oexec\classes\object_execution_control;
+    use \k1lib\oexec\object_execution_control;
 
 // EXECUTION CONTROL
 //    private
@@ -53,7 +53,7 @@ class k1_general_controller_class {
         $this->phase_contruct();
 // see the max URL Level
         $this->controllerType = \k1lib\crud\CONTROLLER_TYPE_PLAIN;
-        $this->controllerUrlLevel = \k1lib\urlrewrite\classes\url_manager::get_url_level_count() - 1;
+        $this->controllerUrlLevel = \k1lib\urlrewrite\url_manager::get_url_level_count() - 1;
         $this->actualUrlLevel = $this->controllerUrlLevel;
         $this->nextUrlLevel = $this->actualUrlLevel + 1;
 
@@ -70,9 +70,9 @@ class k1_general_controller_class {
 
         $this->controllerUrlName = "url_controller";
         $this->controllerUrlValue = $this->setUrlLevel($this->controllerUrlName, FALSE);
-        $this->setControllerUrlRoot(\k1lib\urlrewrite\classes\url_manager::make_url_from_rewrite());
+        $this->setControllerUrlRoot(\k1lib\urlrewrite\url_manager::make_url_from_rewrite());
 //        d($this->controllerUrlRoot);
-        $this->controllerID = \k1lib\urlrewrite\classes\url_manager::get_this_controller_id();
+        $this->controllerID = \k1lib\urlrewrite\url_manager::get_this_controller_id();
     }
 
     public function setUrlLevel($urlLevelName, $required) {
@@ -82,7 +82,7 @@ class k1_general_controller_class {
             die("The \$urlLevelName type has to be a String " . __METHOD__);
         }
 
-        $urlLevelValue = \k1lib\urlrewrite\classes\url_manager::set_url_rewrite_var($this->nextUrlLevel, $urlLevelName, $required);
+        $urlLevelValue = \k1lib\urlrewrite\url_manager::set_url_rewrite_var($this->nextUrlLevel, $urlLevelName, $required);
 
         $this->actualUrlLevel = $this->nextUrlLevel;
         $this->nextUrlLevel++;
@@ -178,7 +178,7 @@ class k1_general_controller_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
 
         if ($this->getIsReturnPoint() === TRUE) {
-            \k1lib\forms\serialize_var(\k1lib\urlrewrite\classes\url_manager::make_url_from_rewrite('this'), "k1_return_point");
+            \k1lib\forms\serialize_var(\k1lib\urlrewrite\url_manager::make_url_from_rewrite('this'), "k1_return_point");
             \k1lib\forms\serialize_var($this->getControllerID(), "k1_return_point_id");
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\session\classes;
+namespace k1lib\session;
 
 class session_plain {
 

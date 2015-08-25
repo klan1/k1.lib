@@ -2,7 +2,7 @@
 
 namespace k1lib\forms;
 
-use k1lib\html\classes as html_classes;
+use k1lib\html as html_classes;
 use k1lib\html as html_functions;
 
 /**

@@ -67,7 +67,7 @@ function show_error($e, $title = "ERROR", $exit = FALSE) {
     if ($exit) {
 // $app_fatal_error = TRUE;
 // desactivated by jd
-//    \k1lib\templates\set_place_value("bottom_script", "<script type='text/javascript'>k1_clear_controller_content()</script>");
+//    \k1lib\templates\temply::set_place_value("bottom_script", "<script type='text/javascript'>k1_clear_controller_content()</script>");
         exit();
     }
 }
@@ -88,7 +88,7 @@ function get_error($e, $title = "ERROR") {
         $msg = $e;
     }
     if ((\k1app\APP_MODE == 'web') || (\k1app\APP_MODE == 'ajax')) {
-        include \k1lib\templates\load_template("app.messages");
+        include \k1lib\templates\temply::load_template("app.messages");
         $msg_error = str_replace("%title%", $title, $msg_error);
         $msg_error = str_replace("%message%", $msg, $msg_error);
     } else {
@@ -141,7 +141,7 @@ function show_message($msg, $title = "") {
 
 function k1_get_message($msg, $title = "") {
     if ((\k1app\APP_MODE == 'web') || (\k1app\APP_MODE == 'ajax')) {
-        include \k1lib\templates\load_template("app.messages");
+        include \k1lib\templates\temply::load_template("app.messages");
         if (empty($title)) {
             $msg_alert_no_title = str_replace("%message%", $msg, $msg_alert_no_title);
             return $msg_alert_no_title;
