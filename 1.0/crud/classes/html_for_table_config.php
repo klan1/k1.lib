@@ -1,6 +1,7 @@
 <?php
 
 /* HTML 4.01 TABLE VER2 */
+
 namespace k1lib\html;
 
 use k1lib\html as html_classes;
@@ -168,7 +169,7 @@ class html_table_with_table_config {
         if (is_string($sqlQuery)) {
             $this->sqlQuery = $sqlQuery;
         } else {
-            \k1lib\common\show_error("La variable recibida no es un array ", __FILE__);
+            \trigger_error("La variable recibida no es un array ", E_USER_ERROR);
             return FALSE;
         }
         $serializeSearchID = $this->boardID . '-search';
@@ -214,7 +215,7 @@ class html_table_with_table_config {
         if (is_array($sqlResult) || empty($sqlResult)) {
             $this->sqlResult = & $sqlResult;
         } else {
-            \k1lib\common\show_error("La variable recibida no es un array", __FILE__);
+            \trigger_error("La variable recibida no es un array", E_USER_ERROR);
             return FALSE;
         }
     }

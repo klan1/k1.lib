@@ -307,31 +307,6 @@ function form_check_values($form_array, $table_array_config, $db = NULL) {
     }
 }
 
-/*
- * funcion para crear arreglo guia
- */
-
-function make_guide_array($data_array) {
-    $guide_array = array();
-    foreach ($data_array as $key => $value) {
-        if (!is_array($value)) {
-            $guide_array[] = $key;
-        } else {
-            $guide_array[$key] = \k1lib\forms\make_guide_array($value);
-        }
-    }
-    return $guide_array;
-}
-
-function clean_array_with_guide($array_to_clean, $guide_array) {
-    foreach ($array_to_clean as $clean_key => $clean_value) {
-        if (!isset($guide_array[$clean_key])) {
-            unset($array_to_clean[$clean_key]);
-        }
-    }
-    return $array_to_clean;
-}
-
 function make_form_select_list(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
     global $db;
 

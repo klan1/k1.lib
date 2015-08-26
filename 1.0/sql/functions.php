@@ -312,13 +312,13 @@ function get_table_label(&$table_config_array) {
 
 function get_fk_field_label($fkFieldName, $table_name, $url_key_array = Array()) {
     if (!is_string($fkFieldName)) {
-        trigger_error(__FUNCTION__ . ": \$fkFieldName must to be a String", E_USER_ERROR);
+        trigger_error("\$fkFieldName must to be a String", E_USER_ERROR);
     }
     if (!is_string($table_name)) {
-        trigger_error(__FUNCTION__ . ": \$table_name must to be a String", E_USER_ERROR);
+        trigger_error("\$table_name must to be a String", E_USER_ERROR);
     }
     if (!is_array($url_key_array)) {
-        trigger_error(__FUNCTION__ . ": need an array to work on \$url_key_array", E_USER_ERROR);
+        trigger_error("Need an array to work on \$url_key_array", E_USER_ERROR);
     }
     global $db;
     $fkTableConfig = get_table_config($db, $table_name);
@@ -394,7 +394,7 @@ function table_url_text_to_keys($url_text, $table_config_array) {
     if (!empty($errors)) {
         d($key_data);
         d($errors);
-        trigger_error(__FUNCTION__ . ": Value types on the received \$url_text do not match with \$table_config_array", E_USER_ERROR);
+        trigger_error("Value types on the received \$url_text do not match with \$table_config_array", E_USER_ERROR);
     }
     return $key_data;
 }
@@ -467,7 +467,7 @@ function sql_value_increment(\PDO $db, $table, $key_name, $key_value, $field_nam
             return FALSE;
         }
     } else {
-        \k1lib\common\show_error("The value to increment coundn't be query" . __FUNCTION__);
+        \trigger_error("The value to increment coundn't be query", E_USER_WARNING);
         d($sql);
     }
 }
@@ -626,21 +626,21 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $table_confi
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
 //show-message($insert_sql);
-            $update = $db->exec($update_sql) or ( \k1lib\common\show_error($db->errorInfo()));
+            $update = $db->exec($update_sql) or ( \trigger_error($db->errorInfo(), E_USER_WARNING));
             if ($update) {
                 return $update;
             } else {
                 if (K1_DEBUG) {
-                    \k1lib\common\show_error($update_sql);
+                    \trigger_error($update_sql, E_USER_NOTICE);
                 }
                 return FALSE;
             }
         } else {
-            die(__FUNCTION__ . ": has not received an arrany to do his work");
+            \trigger_error("Has not received an arrany to do his work", E_USER_ERROR);
             exit();
         }
     } else {
-        \k1lib\common\show_error("This App do not support databases");
+        \trigger_error("This App do not support databases", E_USER_ERROR);
         return FALSE;
     }
 }
@@ -681,7 +681,7 @@ function sql_insert(\PDO $db, $table, $data) {
             exit();
         }
     } else {
-        \k1lib\common\show_error("This App do not support databases");
+        \trigger_error("This App do not support databases", E_USER_ERROR);
         return FALSE;
     }
 }
@@ -705,7 +705,7 @@ function array_to_sql_values($array) {
             }
             $data_string .= ") VALUES ";
         } else {
-            \k1lib\common\show_error("wrong format in array on " . __FUNCTION__);
+            \trigger_error("wrong format in array", E_USER_ERROR);
         }
 // remove the headers to only work with the values - lazzy code :P
         unset($array[0]);
@@ -733,7 +733,7 @@ function array_to_sql_values($array) {
                 }
                 $data_string .= ") ";
             } else {
-                \k1lib\common\show_error("wrong values count of array on " . __FUNCTION__ . d($array));
+                \trigger_error("wrong values count of array" . print_r($array, true), E_USER_ERROR);
                 exit();
             }
         }
