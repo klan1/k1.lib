@@ -81,8 +81,7 @@ class session_plain {
     }
 
     static public function on_session() {
-        self::is_enabled(true);
-        if (self::$has_started) {
+        if (self::is_enabled() && self::$has_started) {
             return TRUE;
         } else {
             return FALSE;

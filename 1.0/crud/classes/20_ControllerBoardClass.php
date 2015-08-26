@@ -325,7 +325,7 @@ class BoardNew extends board_general_class {
                 //remove the magic value from the data array
 //                unset($form_vars['magic_value']);
                 //php check for the data
-                $form_vars = \k1lib\forms\clean_array_with_guide($form_vars, $this->controllerObject->getControllerTableConfig());
+                $form_vars = \k1lib\common\clean_array_with_guide($form_vars, $this->controllerObject->getControllerTableConfig());
                 $form_errors = \k1lib\forms\form_check_values($form_vars, $this->controllerObject->getControllerTableConfig(), $this->controllerObject->db);
                 if ($form_errors === FALSE) {
                     if (\k1lib\sql\sql_insert($this->controllerObject->db, $this->controllerObject->getDbTableMainName(), $form_vars)) {
@@ -682,7 +682,7 @@ class BoardEdit extends board_general_class {
 
             $magic_test = \k1lib\common\check_magic_value("k1-form-{$this->controllerObject->getBoardFormId()}", $form_vars['magic_value']);
             if ($magic_test == TRUE) {
-                $form_vars = \k1lib\forms\clean_array_with_guide($form_vars, $this->controllerObject->getControllerTableConfig());
+                $form_vars = \k1lib\common\clean_array_with_guide($form_vars, $this->controllerObject->getControllerTableConfig());
                 $form_errors = \k1lib\forms\form_check_values($form_vars, $this->controllerObject->getControllerTableConfig(), $this->controllerObject->db);
                 $do_check = FALSE;
                 if ($form_errors === FALSE) {

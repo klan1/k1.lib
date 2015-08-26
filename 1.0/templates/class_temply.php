@@ -44,7 +44,7 @@ class temply {
         self::is_enabled(true);
 
         if (!is_string($place_name)) {
-            \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
+            \trigger_error("The place name HAS to be a string", E_USER_ERROR);
         }
         if (isset(self::$output_places[$place_name])) {
             return TRUE;
@@ -56,7 +56,7 @@ class temply {
     static public function register_place($place_name) {
         self::is_enabled(true);
         if (!is_string($place_name)) {
-            \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
+            \trigger_error("The place name HAS to be a string", E_USER_ERROR);
         }
         self::$output_places[$place_name] = array();
     }
@@ -93,7 +93,7 @@ class temply {
         }
         // only strings for the place name
         if (!is_string($place_name)) {
-            \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
+            \trigger_error("The place name HAS to be a string", E_USER_ERROR);
         }
         // prints the place html code
         echo self::convert_place_name($place_name) . "\n";
@@ -107,7 +107,7 @@ class temply {
     static public function convert_place_name($place_name) {
         self::is_enabled(true);
         if (!is_string($place_name)) {
-            \k1lib\common\show_error("The place name HAS to be a string", __FUNCTION__, TRUE);
+            \trigger_error("The place name HAS to be a string", E_USER_ERROR);
         }
         return "<!-- K1_TEMPLATE_PLACE_" . strtoupper($place_name) . "-->";
     }
@@ -148,7 +148,7 @@ class temply {
     static public function register_footer($url, $relative = FALSE, $type = "auto") {
         self::is_enabled(true);
         if (!is_string($url)) {
-            \k1lib\common\show_error("The URL HAS to be a string", __FUNCTION__, TRUE);
+            \trigger_error("The URL HAS to be a string", E_USER_ERROR);
         }
         if ($type == "auto") {
             $file_extension = \k1lib\common\get_file_extension($url);
@@ -182,7 +182,7 @@ class temply {
         self::is_enabled(true);
 
         if (!isset($buffer)) {
-            \k1lib\common\show_error("The BUFFER is empty!", __FUNCTION__, TRUE);
+            \trigger_error("The BUFFER is empty", E_USER_ERROR);
         }
         if (count(self::$output_places) > 0) {
             foreach (self::$output_places as $place_name => $place_data) {
@@ -197,31 +197,28 @@ class temply {
         return $buffer;
     }
 
-    static public function load_template($template_name) {
+    static public function load_template($template_name, $path_to_use) {
         self::is_enabled(true);
         if (is_string($template_name)) {
-            if ($template_to_load = self::template_exist($template_name)) {
-                return$template_to_load;
+            if ($template_to_load = self::template_exist($template_name, $path_to_use)) {
+                return $template_to_load;
+            } else {
+                trigger_error("Template ($template_name) do not exist", E_USER_ERROR);
             }
         } else {
-            trigger_error("The template names value only can be string");
-            exit;
+            trigger_error("The template names value only can be string", E_USER_ERROR);
         }
     }
 
-    static public function template_exist($template_name) {
+    static public function template_exist($template_name, $path_to_use) {
         self::is_enabled(true);
         if (is_string($template_name)) {
             // Try with subfolder scheme
-            $template_to_load = APP_TEMPLATE_PATH . "/{$template_name}/index.php";
+            $template_to_load = $path_to_use . "/{$template_name}.php";
             if (file_exists($template_to_load)) {
                 return $template_to_load;
             } else {
-                // Try with single file scheme
-                $template_to_load = APP_TEMPLATE_PATH . "/{$template_name}.php";
-                if (file_exists($template_to_load)) {
-                    return $template_to_load;
-                }
+                trigger_error("Template ($template_to_load) is not on disk", E_USER_ERROR);
             }
         }
         return FALSE;
@@ -262,11 +259,11 @@ class temply {
                     }
                     return $view_to_load;
                 } else {
-                    die("The view '{$view_to_load}' could not be found " . __FUNCTION__);
+                    trigger_error("The view '{$view_to_load}' could not be found", E_USER_ERROR);
                 }
             }
         } else {
-            trigger_error("The view name value only can be string");
+            trigger_error("The view name value only can be string", E_USER_ERROR);
             exit;
         }
     }

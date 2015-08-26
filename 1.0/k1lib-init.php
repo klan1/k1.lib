@@ -56,7 +56,7 @@ $files_lv1 = scandir(BASE_PATH);
  * Includes at last 2 sub directories levels on actual K1.lib directory.
  */
 foreach ($files_lv1 as $file_lv1) {
-    if ((substr($file_lv1, 0, 1) == '.') || (substr($file_lv1, 0, 1) == '_') || ($file_lv1 == 'index.php')) {
+    if ((substr($file_lv1, 0, 1) == '.') || (substr($file_lv1, 0, 2) == '__') || ($file_lv1 == 'index.php')) {
         continue;
     }
     $file_lv1 = BASE_PATH . "/" . $file_lv1;
