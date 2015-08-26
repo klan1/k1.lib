@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Controller related functions, K1.lib.
+ * 
+ * This are my controller use propose.
+ * @author J0hnD03 <alejandro.trujillo@klan1.com>
+ * @version 1.0
+ * @package controllers
+ */
 namespace k1lib\controllers;
 
 /**
@@ -8,60 +15,28 @@ namespace k1lib\controllers;
  * @param string $controller_name Just the file name 
  * @return string correct path to include the file name recived on $controller_name
  */
-function load_controller($controller_name, $query_auto_load = TRUE) {
-    global $url_data, $controller_query_file;
+//function load_controller($controller_name, $query_auto_load = TRUE) {
+function load_controller($controller_name, $controllers_path) {
     $controller_query_file = FALSE;
     if (is_string($controller_name)) {
         // Try with subfolder scheme
-        $controller_subfix = \k1app\APP_CONTROLLERS_PATH . "/{$controller_name}";
+        $controller_subfix = $controllers_path . "/{$controller_name}";
 
-        $controller_to_load = $controller_subfix . "/index.php";
+        $controller_to_load = $controller_subfix . ".php";
         if (file_exists($controller_to_load)) {
-            // QUERY Auto load
-            if ($query_auto_load) {
-                $last_controles_name = basename($controller_name);
-                $query_to_load = "{$controller_subfix}/query/{$last_controles_name}.php";
-                if (file_exists($query_to_load)) {
-                    $controller_query_file = $query_to_load;
-                }
-            }
             return $controller_to_load;
         } else {
             // Try with single file scheme
-            $controller_to_load = $controller_subfix . ".php";
+            $controller_to_load = $controller_subfix . "/index.php";
             if (file_exists($controller_to_load)) {
                 // QUERY Auto load
-                if ($query_auto_load) {
-                    $last_controles_name = basename(($controller_name));
-                    $query_to_load = dirname($controller_subfix) . "/query/{$last_controles_name}.php";
-                    if (file_exists($query_to_load)) {
-                        $controller_query_file = $query_to_load;
-                    }
-                }
                 return $controller_to_load;
             } else {
-                die("The controller '{$controller_name}' could not be found " . __FUNCTION__);
+                \trigger_error("The controller '{$controller_name}' could not be found", E_USER_ERROR);
             }
         }
     } else {
-        die("The controller name value only can be string");
+        \trigger_error("The controller name value only can be string", E_USER_ERROR);
         exit;
-    }
-}
-
-/**
- * Check if the controller exist on the designed path on the K1FW config (APP_CONTROLLERS_PATH)
- * @global array $url_data url_rewrite data variable from K1FW
- * @param string $controller_name Just the file name 
- * @return boolean tell if exist or not the file on $controller_name
- */
-function if_exist_controller($controller_name) {
-    if (is_string($controller_name)) {
-        $controller_to_load = APP_CONTROLLERS_PATH . "/{$controller_name}.php";
-        if (file_exists($controller_to_load)) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
     }
 }
