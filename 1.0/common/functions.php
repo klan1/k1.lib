@@ -141,48 +141,6 @@ function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = 
     return $url_parameters;
 }
 
-/**
- * This SHOULD be used always to receive any kind of value from _GET _POST _REQUEST if it will be used on SQL staments.
- * @param String $var Value to check.
- * @param Boolean FALSE to check $var as is. Use TRUE if $var become an index as: $_REQUEST[$var]
- * @param Boolean $url_decode TRUE if the data should be URL decoded.
- * @return String Rerturn NULL on error This could be that $var IS NOT String, Number or IS Array.
- */
-function check_incomming_var($var, $request = FALSE, $url_decode = FALSE) {
-    if ((is_string($var) || is_numeric($var)) && !is_array($var)) {
-        if (($request == TRUE) && isset($_REQUEST[$var])) {
-            $value = $_REQUEST[$var];
-        } elseif (($request == FALSE) && ($var != "")) {
-            $value = $var;
-        } else {
-            $value = NULL;
-        }
-        if ($url_decode) {
-            $value = urldecode($value);
-        }
-        if (@json_decode($value) === NULL) {
-            $replace = array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"');
-            $search = array("\\", "\0", "\n", "\r", "\x1a", "'", '"');
-            $value = str_replace($search, $replace, $value);
-//            $value = mysql_escape_string($value);
-        } else {
-            
-        }
-        /**
-         * TODO: CHECK THIS !!
-         */
-        if (is_string($value) && is_numeric($value)) {
-            if (substr($value, 0, 1) != "0") {
-                $value += 0;
-            } elseif ((substr($value, 0, 1) == "0") && (strlen($value) == 1)) {
-                $value = 0;
-            }
-        }
-        return $value;
-    } else {
-        return NULL;
-    }
-}
 
 /**
  * Converts Booleans vars to text
@@ -253,6 +211,55 @@ function check_magic_value($name, $value_to_check) {
         }
     } else {
         trigger_error("Magic system REQUIRES the session system to be enabled and a session started", E_USER_ERROR);
+    }
+}
+/**
+ * Save a var to the selected method
+ * @param miexd $var_to_save
+ * @param string $save_name
+ * @param string $method
+ * @return boolean
+ */
+function serialize_var($var_to_save, $save_name, $method = "session") {
+    if (!is_string($save_name) || empty($save_name)) {
+        die(__FUNCTION__ . " save_name should be an non empty string");
+    }
+    if ($method == "session") {
+        $_SESSION['serialized_vars'][$save_name] = $var_to_save;
+    }
+    return TRUE;
+}
+
+/**
+ * Load the saved_name var from selected method
+ * @param string $saved_name
+ * @param string $method
+ * @return boolean
+ */
+function unserialize_var($saved_name, $method = "session") {
+    if (!is_string($saved_name) || empty($saved_name)) {
+        die(__FUNCTION__ . " saved_name should be an non empty string");
+    }
+    $saved_vars = array();
+    if ($method == "session") {
+        if (isset($_SESSION['serialized_vars'][$saved_name])) {
+            $saved_vars = $_SESSION['serialized_vars'][$saved_name];
+        } else {
+            $saved_vars = FALSE;
+        }
+    }
+    return $saved_vars;
+}
+
+function unset_serialize_var($saved_name, $method = "session") {
+    if (!is_string($saved_name) || empty($saved_name)) {
+        die(__FUNCTION__ . " saved_name should be an non empty string");
+    }
+    if (isset($_SESSION['serialized_vars'][$saved_name])) {
+        unset($_SESSION['serialized_vars'][$saved_name]);
+        return TRUE;
+    } else {
+        return FALSE;
     }
 }
 

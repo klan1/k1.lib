@@ -142,7 +142,7 @@ class board_general_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__);
         // MAGIC VALUE
         $this->setFormMagicValue(\k1lib\common\set_magic_value("k1-form-{$this->controllerObject->getBoardFormId()}"));
-        \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId());
+        \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormId());
     }
 
     public function getBoardInternalName() {
@@ -292,8 +292,8 @@ class BoardNew extends board_general_class {
         if ($this->controllerObject->getControllerType() == \k1lib\crud\CONTROLLER_TYPE_FOREIGN) {
             $this->boardParameterKeyArray = \k1lib\sql\table_url_text_to_keys($this->controllerObject->getBoardFkUrlValue(), $this->controllerObject->getControllerFkTableConfig());
             if (!empty($this->boardParameterKeyArray)) {
-                \k1lib\forms\serialize_var($this->boardParameterKeyArray, "{$this->controllerObject->getBoardFormId()}-fkData");
-                \k1lib\forms\serialize_var($this->boardParameterKeyArray, $this->controllerObject->getBoardFormId());
+                \k1lib\common\serialize_var($this->boardParameterKeyArray, "{$this->controllerObject->getBoardFormId()}-fkData");
+                \k1lib\common\serialize_var($this->boardParameterKeyArray, $this->controllerObject->getBoardFormId());
             }
         }
     }
@@ -311,11 +311,11 @@ class BoardNew extends board_general_class {
          */
         // check and serialize post vars
         $controller_errors = array();
-        $fkData = \k1lib\forms\unserialize_var("{$this->controllerObject->getBoardFormId()}-fkData");
+        $fkData = \k1lib\common\unserialize_var("{$this->controllerObject->getBoardFormId()}-fkData");
         if (!empty($fkData)) {
             $_POST = $fkData + $_POST;
         }
-        $form_vars = \k1lib\forms\get_all_request_vars($_POST, $this->controllerObject->getBoardFormId());
+        $form_vars = \k1lib\forms\check_all_incomming_vars($_POST, $this->controllerObject->getBoardFormId());
         $form_errors = array();
         if (isset($form_vars['magic_value'])) {
             //Magic test 
@@ -332,10 +332,10 @@ class BoardNew extends board_general_class {
 //                        \k1lib\html\html_header_go(\k1lib\urlrewrite\url_manager::make_url_from_rewrite(-2));
                         // TODO: implement the after action behavior
                         // UNSET ALL FOR NO FUTURE PROBLEMS ;)
-                        \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId());
-                        \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardErrorId());
-                        \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormErrorId());
-                        \k1lib\forms\unset_serialize_var("{$this->controllerObject->getBoardFormId()}-fkData");
+                        \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormId());
+                        \k1lib\common\unset_serialize_var($this->controllerObject->getBoardErrorId());
+                        \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormErrorId());
+                        \k1lib\common\unset_serialize_var("{$this->controllerObject->getBoardFormId()}-fkData");
                         \k1lib\html\html_header_go($this->controllerObject->getControllerUrlRoot() . "/view-all");
                     } else {
                         $do_check = TRUE;
@@ -359,8 +359,8 @@ class BoardNew extends board_general_class {
             $controller_errors[] = "No Magic !!";
         }
         if ($do_check) {
-            \k1lib\forms\serialize_var($controller_errors, $this->controllerObject->getBoardErrorId());
-            \k1lib\forms\serialize_var($form_errors, $this->controllerObject->getBoardFormErrorId());
+            \k1lib\common\serialize_var($controller_errors, $this->controllerObject->getBoardErrorId());
+            \k1lib\common\serialize_var($form_errors, $this->controllerObject->getBoardFormErrorId());
             $form_check_url = "{$this->controllerObject->getBoardRootUrl()}/check";
 //            d($form_check_url);
             \k1lib\html\html_header_go($form_check_url);
@@ -378,8 +378,8 @@ class BoardNew extends board_general_class {
          * TODO: DO NOT use global here!!
          */
         global $form_errors, $controller_errors;
-        $controller_errors = \k1lib\forms\unserialize_var($this->controllerObject->getBoardErrorId());
-        $form_errors = \k1lib\forms\unserialize_var($this->controllerObject->getBoardFormErrorId());
+        $controller_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardErrorId());
+        $form_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardFormErrorId());
     }
 
     /*     * ******************
@@ -551,7 +551,7 @@ class BoardView extends board_general_class {
         parent::__construct($controllerObject, $boardTitle, $boardDescription, $boardKeywords);
         $sql_query = "SELECT * FROM {$this->controllerObject->getDbTableMainName()} WHERE " . $this->getBoardSqlWherefromParameters();
         $sql_result = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, FALSE);
-        \k1lib\forms\serialize_var($sql_result, $this->controllerObject->getBoardId());
+        \k1lib\common\serialize_var($sql_result, $this->controllerObject->getBoardId());
     }
 
     /*     * ******************
@@ -652,9 +652,9 @@ class BoardEdit extends board_general_class {
         parent::initFormAction();
         $sql_query = "SELECT * FROM {$this->controllerObject->getDbTableMainName()} WHERE " . $this->getBoardSqlWherefromParameters();
         $sql_result = \k1lib\sql\sql_query($this->controllerObject->db, $sql_query, FALSE);
-        \k1lib\forms\serialize_var($sql_result, $this->controllerObject->getBoardFormId() . "-sqlResult");
-        \k1lib\forms\serialize_var($sql_result, $this->controllerObject->getBoardFormId() . "-sqlOriginalResult");
-        \k1lib\forms\serialize_var($this->getBoardParameterKeyArray(), "{$this->controllerObject->getBoardFormId()}-tableKeys");
+        \k1lib\common\serialize_var($sql_result, $this->controllerObject->getBoardFormId() . "-sqlResult");
+        \k1lib\common\serialize_var($sql_result, $this->controllerObject->getBoardFormId() . "-sqlOriginalResult");
+        \k1lib\common\serialize_var($this->getBoardParameterKeyArray(), "{$this->controllerObject->getBoardFormId()}-tableKeys");
     }
 
     /*     * ******************
@@ -676,7 +676,7 @@ class BoardEdit extends board_general_class {
          */
         // check and serialize post vars
 
-        $form_vars = \k1lib\forms\get_all_request_vars($_POST, $this->controllerObject->getBoardFormId() . "-sqlResult");
+        $form_vars = \k1lib\forms\check_all_incomming_vars($_POST, $this->controllerObject->getBoardFormId() . "-sqlResult");
         if (isset($form_vars['magic_value'])) {
             //Magic test 
 
@@ -687,7 +687,7 @@ class BoardEdit extends board_general_class {
                 $do_check = FALSE;
                 if ($form_errors === FALSE) {
                     //unserialize the keys array to append to the data array arrived by POST
-                    $table_keys_array = \k1lib\forms\unserialize_var("{$this->controllerObject->getBoardFormId()}-tableKeys");
+                    $table_keys_array = \k1lib\common\unserialize_var("{$this->controllerObject->getBoardFormId()}-tableKeys");
                     if ($table_keys_array === FALSE) {
                         $controller_errors[] = "Haz intentado actualizar otro registro moficando el codigo HTML " . "{$this->controllerObject->getBoardFormId()}-tableKeys";
                         $do_check = TRUE;
@@ -697,12 +697,12 @@ class BoardEdit extends board_general_class {
                             $actionUrl = sprintf($this->getFormAfterActionUrl('edit'), $this->controllerObject->getBoardUrlParameterValue());
 
                             // UNSET ALL FOR NO FUTURE PROBLEMS ;)
-                            \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId());
-                            \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardErrorId());
-                            \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormErrorId());
-                            \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-sqlResult");
-                            \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-sqlOriginalResult");
-                            \k1lib\forms\unset_serialize_var($this->controllerObject->getBoardFormId() . "-tableKeys");
+                            \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormId());
+                            \k1lib\common\unset_serialize_var($this->controllerObject->getBoardErrorId());
+                            \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormErrorId());
+                            \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormId() . "-sqlResult");
+                            \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormId() . "-sqlOriginalResult");
+                            \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormId() . "-tableKeys");
                             \k1lib\html\html_header_go($actionUrl, TRUE);
                         } else {
                             $controller_errors[] = "No se pudo hacer el update, Posiblemente los datos no han cambiado";
@@ -721,8 +721,8 @@ class BoardEdit extends board_general_class {
             $controller_errors[] = "No Magic !!";
         }
         if ($do_check) {
-            \k1lib\forms\serialize_var($controller_errors, $this->controllerObject->getBoardErrorId());
-            \k1lib\forms\serialize_var($form_errors, $this->controllerObject->getBoardFormErrorId());
+            \k1lib\common\serialize_var($controller_errors, $this->controllerObject->getBoardErrorId());
+            \k1lib\common\serialize_var($form_errors, $this->controllerObject->getBoardFormErrorId());
             $form_check_url = "{$this->controllerObject->getBoardRootUrl()}/check";
 //            echo \k1lib\html\get_link_button($form_check_url, $form_check_url);
             \k1lib\html\html_header_go($form_check_url);
@@ -737,8 +737,8 @@ class BoardEdit extends board_general_class {
          * TODO: DO NOT use global here!!
          */
         global $form_errors, $controller_errors;
-        $controller_errors = \k1lib\forms\unserialize_var($this->controllerObject->getBoardErrorId());
-        $form_errors = \k1lib\forms\unserialize_var($this->controllerObject->getBoardFormErrorId());
+        $controller_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardErrorId());
+        $form_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardFormErrorId());
     }
 
     /*     * ******************

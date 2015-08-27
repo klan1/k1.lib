@@ -173,12 +173,12 @@ class html_table_with_table_config {
             return FALSE;
         }
         $serializeSearchID = $this->boardID . '-search';
-        $lastFormVars = \k1lib\forms\unserialize_var($serializeSearchID);
-        $formVars = \k1lib\forms\get_all_request_vars($_POST, $serializeSearchID);
+        $lastFormVars = \k1lib\common\unserialize_var($serializeSearchID);
+        $formVars = \k1lib\forms\check_all_incomming_vars($_POST, $serializeSearchID);
 //        $formErrors = \k1lib\forms\form_check_values($formVars, $this->tableConfigArray, $db);
         if ((count($formVars) === 0) && (count($lastFormVars) > 0)) {
             $formVars = $lastFormVars;
-            \k1lib\forms\serialize_var($formVars, $serializeSearchID);
+            \k1lib\common\serialize_var($formVars, $serializeSearchID);
         }
 
         if (!empty($formVars)) {
@@ -193,7 +193,7 @@ class html_table_with_table_config {
         $this->sqlResult = \k1lib\sql\sql_query($db, $this->sqlQuery, TRUE, TRUE);
         $this->sqlResultCount = count($this->sqlResult);
         if (empty($this->sqlSearchFilter)) {
-            \k1lib\forms\serialize_var($this->sqlResult[0], $this->boardID . '-tableHeaders');
+            \k1lib\common\serialize_var($this->sqlResult[0], $this->boardID . '-tableHeaders');
         }
     }
 
@@ -221,8 +221,8 @@ class html_table_with_table_config {
     }
 
     function doCode(EasyControllerClass $controllerObject = NULL) {
-        $serializedTableHeaders = \k1lib\forms\unserialize_var($this->boardID . '-tableHeaders');
-        $serializedFormVars = \k1lib\forms\unserialize_var($this->boardID . '-search');
+        $serializedTableHeaders = \k1lib\common\unserialize_var($this->boardID . '-tableHeaders');
+        $serializedFormVars = \k1lib\common\unserialize_var($this->boardID . '-search');
         if (empty($this->sqlResult) && empty($this->sqlSearchFilter)) {
             if (!empty($this->no_data)) {
                 return "<p>{$this->no_data}</p>";
