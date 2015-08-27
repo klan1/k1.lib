@@ -1,17 +1,69 @@
 <?php
 
+/**
+ * Forms related functions, K1.lib.
+ * 
+ * Common needed actions on forms and special ideas implemented with this lib.
+ * @author J0hnD03 <alejandro.trujillo@klan1.com>
+ * @version 1.0
+ * @package forms
+ */
+
 namespace k1lib\forms;
 
 use k1lib\html as html_classes;
 use k1lib\html as html_functions;
 
 /**
- * Prevents SQL injection from any ARRAY, at the same time serialize the var into save_name
+ * This SHOULD be used always to receive any kind of value from _GET _POST _REQUEST if it will be used on SQL staments.
+ * @param String $var Value to check.
+ * @param Boolean FALSE to check $var as is. Use TRUE if $var become an index as: $_REQUEST[$var]
+ * @param Boolean $url_decode TRUE if the data should be URL decoded.
+ * @return String Rerturn NULL on error This could be that $var IS NOT String, Number or IS Array.
+ */
+function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE) {
+    if ((is_string($var) || is_numeric($var)) && !is_array($var)) {
+        if (($request == TRUE) && isset($_REQUEST[$var])) {
+            $value = $_REQUEST[$var];
+        } elseif (($request == FALSE) && ($var != "")) {
+            $value = $var;
+        } else {
+            $value = NULL;
+        }
+        if ($url_decode) {
+            $value = urldecode($value);
+        }
+        if (@json_decode($value) === NULL) {
+            $replace = array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"');
+            $search = array("\\", "\0", "\n", "\r", "\x1a", "'", '"');
+            $value = str_replace($search, $replace, $value);
+//            $value = mysql_escape_string($value);
+        } else {
+            
+        }
+        /**
+         * TODO: CHECK THIS !!
+         */
+        if (is_string($value) && is_numeric($value)) {
+            if (substr($value, 0, 1) != "0") {
+                $value += 0;
+            } elseif ((substr($value, 0, 1) == "0") && (strlen($value) == 1)) {
+                $value = 0;
+            }
+        }
+        return $value;
+    } else {
+        return NULL;
+    }
+}
+
+/**
+ * Prevents SQL injection from any ARRAY, at the same time serialize the var into save_name. This uses check_single_incomming_var() on each array item. Is recursive.
  * @param array $request_array
  * @param string $save_name
  * @return array checked values ready to work
  */
-function get_all_request_vars($request_array, $save_name) {
+function check_all_incomming_vars($request_array, $save_name) {
 //checks all the incomming vars
 // V0.8 forces the use of an non empty array
 //    if (empty($request_array)) {
@@ -24,63 +76,13 @@ function get_all_request_vars($request_array, $save_name) {
     $form = array();
     foreach ($request_array as $index => $value) {
         if (!is_array($value)) {
-            $form[$index] = \k1lib\common\check_incomming_var($value);
+            $form[$index] = \k1lib\forms\check_single_incomming_var($value);
         } else {
-            $form[$index] = get_all_request_vars($value);
+            $form[$index] = check_all_incomming_vars($value);
         }
     }
-    \k1lib\forms\serialize_var($form, $save_name);
+    \k1lib\common\serialize_var($form, $save_name);
     return $form;
-}
-
-/**
- * Save a var to the selected method
- * @param miexd $var_to_save
- * @param string $save_name
- * @param string $method
- * @return boolean
- */
-function serialize_var($var_to_save, $save_name, $method = "session") {
-    if (!is_string($save_name) || empty($save_name)) {
-        die(__FUNCTION__ . " save_name should be an non empty string");
-    }
-    if ($method == "session") {
-        $_SESSION['serialized_vars'][$save_name] = $var_to_save;
-    }
-    return TRUE;
-}
-
-/**
- * Load the saved_name var from selected method
- * @param string $saved_name
- * @param string $method
- * @return boolean
- */
-function unserialize_var($saved_name, $method = "session") {
-    if (!is_string($saved_name) || empty($saved_name)) {
-        die(__FUNCTION__ . " saved_name should be an non empty string");
-    }
-    $saved_vars = array();
-    if ($method == "session") {
-        if (isset($_SESSION['serialized_vars'][$saved_name])) {
-            $saved_vars = $_SESSION['serialized_vars'][$saved_name];
-        } else {
-            $saved_vars = FALSE;
-        }
-    }
-    return $saved_vars;
-}
-
-function unset_serialize_var($saved_name, $method = "session") {
-    if (!is_string($saved_name) || empty($saved_name)) {
-        die(__FUNCTION__ . " saved_name should be an non empty string");
-    }
-    if (isset($_SESSION['serialized_vars'][$saved_name])) {
-        unset($_SESSION['serialized_vars'][$saved_name]);
-        return TRUE;
-    } else {
-        return FALSE;
-    }
 }
 
 /**
@@ -127,6 +129,147 @@ function get_form_field_from_serialized($form_name, $field_name, $default = "", 
     return $field_value;
 }
 
+function check_enum_value_type($value, $table_name, $key, $db) {
+    $options = \k1lib\sql\get_table_enum_values($db, $table_name, $key);
+    $options_fliped = array_flip($options);
+    if (!isset($options_fliped[$value])) {
+        $error_type = print_r($options_fliped, TRUE) . " value: '$value'";
+//        d($value, TRUE);
+    }
+    return $error_type;
+}
+
+function check_value_type($value, $type) {
+    $error_type = "";
+    $preg_simbols = "-_@.,!#$%&'*\/+=?^`{\|}~";
+    switch ($type) {
+        case 'options':
+            trigger_error("This function can't check options type", E_USER_WARNING);
+            $error_type = " This vale can't be checked";
+            break;
+        case 'email':
+            $regex = "/[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,3})$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " Email invalido";
+            }
+            break;
+        case 'boolean':
+            $regex = "/^[01]$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = "$error_header_msg solo puede valer 0 o 1";
+            } else {
+                $error_msg = "";
+            }
+            break;
+        case 'date':
+            global $date, $month, $day, $year;
+            if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
+                if (!checkdate($matches['month'], $matches['day'], $matches['year'])) {
+                    $error_type = " valores de fecha in validos";
+                }
+            } else {
+                $error_type = " formato de fecha invalida";
+            }
+            break;
+        case 'date-past':
+            global $date, $month, $day, $year;
+            if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
+                if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
+                    $actual_date_number = juliantojd($month, $day, $year);
+                    $value_date_number = juliantojd($matches['month'], $matches['day'], $matches['year']);
+                    if ($value_date_number > $actual_date_number) {
+                        $error_type = " La fecha no puede ser mayor al dia de hoy: {$date}";
+                    }
+                } else {
+                    $error_type = " valores de fecha in validos";
+                }
+            } else {
+                $error_type = " formato de fecha invalida";
+            }
+            break;
+        case 'date-future':
+            global $date, $month, $day, $year;
+            if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
+                if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
+                    $actual_date_number = juliantojd($month, $day, $year);
+                    $value_date_number = juliantojd($matches['month'], $matches['day'], $matches['year']);
+                    if ($value_date_number <= $actual_date_number) {
+                        $error_type = " La fecha debe ser mayor al dia de hoy: {$date}";
+                    }
+                } else {
+                    $error_type = " valores de fecha in validos";
+                }
+            } else {
+                $error_type = " formato de fecha invalida";
+            }
+            break;
+        case 'datetime':
+            // TODO
+            break;
+        case 'time':
+            // TODO
+            break;
+        case 'letters':
+            $regex = "/^[a-zA-Z\s]*$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " deber ser solo letras de la a-z y A-Z sin simbolos";
+            }
+            break;
+        case 'letters-simbols':
+            $regex = "/^[a-zA-Z\s{$preg_simbols}]*$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " deber ser solo letras de la a-z y A-Z y simbolos: $preg_simbols";
+            }
+            break;
+        case 'decimals':
+            $regex = "/^[0-9.]*$/";
+            if (!(preg_match($regex, $value) && is_numeric($value))) {
+                $error_type .= " deber ser solo numeros y decimales positivos";
+            }
+            break;
+        case 'decimals-unsigned':
+            $regex = "/^[\-0-9.]*$/";
+            if (!(preg_match($regex, $value) && is_numeric($value))) {
+                $error_type = " debe contener solo numeros y decimales";
+            }
+            break;
+        case 'numbers':
+            $regex = "/^[0-9]*$/";
+            if (!(preg_match($regex, $value) && is_numeric($value))) {
+                $error_type .= " deber ser solo numeros positivos";
+            }
+            break;
+        case 'numbers-unsigned':
+            $regex = "/^[\-0-9]*$/";
+            if (!(preg_match($regex, $value) && is_numeric($value))) {
+                $error_type = " debe contener solo numeros";
+            }
+            break;
+        case 'numbers-simbols':
+            $regex = "/^[\-0-9\s{$preg_simbols}]*$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " debe contener solo numeros y simbolos: $preg_simbols";
+            }
+            break;
+        case 'mixed':
+            $regex = "/^[\-a-zA-Z0-9\s]*$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " deber ser solo letras de la a-z y A-Z y numeros";
+            }
+            break;
+        case 'mixed-simbols':
+            $regex = "/^[a-zA-Z0-9\s{$preg_simbols}]*$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " deber ser solo letras de la a-z y A-Z, numeros y simbolos: $preg_simbols";
+            }
+            break;
+        default:
+            $error_type = "Not defined VALIDATION on Type '{$type}' from field '{$label}' ";
+            break;
+    }
+    return $error_type;
+}
+
 function form_check_values($form_array, $table_array_config, $db = NULL) {
     if (!is_array($form_array)) {
         die(__FUNCTION__ . " need an array to work on \$form_array");
@@ -161,133 +304,13 @@ function form_check_values($form_array, $table_array_config, $db = NULL) {
         } elseif ((strlen((string) $value) < (int) $min) || (strlen((string) $value) > (int) $max)) {
             $error_msg = "$error_header_msg debe ser de minimo $min y maximo $max caracteres";
         }
-        if (($value === 0) || !empty($value)) {
 
-            $preg_simbols = "-_@.,!#$%&'*\/+=?^`{\|}~";
-            switch ($table_array_config[$key]['validation']) {
-                case 'options':
-                    $options = \k1lib\sql\get_table_enum_values($db, $table_array_config[$key]['table'], $key);
-                    $options_fliped = array_flip($options);
-                    if (!isset($options_fliped[$value])) {
-                        $error_type = print_r($options_fliped, TRUE) . " value: '$value'";
-                        d($value, TRUE);
-                    }
-                    break;
-                case 'email':
-                    $regex = "/[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,3})$/";
-                    if (!preg_match($regex, $value)) {
-                        $error_type = " Email invalido";
-                    }
-                    break;
-                case 'boolean':
-                    $regex = "/^[01]$/";
-                    if (!preg_match($regex, $value)) {
-                        $error_type = "$error_header_msg solo puede valer 0 o 1";
-                    } else {
-                        $error_msg = "";
-                    }
-                    break;
-                case 'date':
-                    global $date, $month, $day, $year;
-                    if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
-                        if (!checkdate($matches['month'], $matches['day'], $matches['year'])) {
-                            $error_type = " valores de fecha in validos";
-                        }
-                    } else {
-                        $error_type = " formato de fecha invalida";
-                    }
-                    break;
-                case 'date-past':
-                    global $date, $month, $day, $year;
-                    if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
-                        if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
-                            $actual_date_number = juliantojd($month, $day, $year);
-                            $value_date_number = juliantojd($matches['month'], $matches['day'], $matches['year']);
-                            if ($value_date_number > $actual_date_number) {
-                                $error_type = " La fecha no puede ser mayor al dia de hoy: {$date}";
-                            }
-                        } else {
-                            $error_type = " valores de fecha in validos";
-                        }
-                    } else {
-                        $error_type = " formato de fecha invalida";
-                    }
-                    break;
-                case 'date-future':
-                    global $date, $month, $day, $year;
-                    if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
-                        if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
-                            $actual_date_number = juliantojd($month, $day, $year);
-                            $value_date_number = juliantojd($matches['month'], $matches['day'], $matches['year']);
-                            if ($value_date_number <= $actual_date_number) {
-                                $error_type = " La fecha debe ser mayor al dia de hoy: {$date}";
-                            }
-                        } else {
-                            $error_type = " valores de fecha in validos";
-                        }
-                    } else {
-                        $error_type = " formato de fecha invalida";
-                    }
-                    break;
-                case 'datetime':
-                    // TODO
-                    break;
-                case 'time':
-                    // TODO
-                    break;
-                case 'letters':
-                    $regex = "/^[a-zA-Z\s]*$/";
-                    if (!preg_match($regex, $value)) {
-                        $error_type = " deber ser solo letras de la a-z y A-Z sin simbolos";
-                    }
-                    break;
-                case 'letters-simbols':
-                    $regex = "/^[a-zA-Z\s{$preg_simbols}]*$/";
-                    if (!preg_match($regex, $value)) {
-                        $error_type = " deber ser solo letras de la a-z y A-Z y simbolos: $preg_simbols";
-                    }
-                    break;
-                case 'decimals':
-                    $regex = "/^[\-0-9.]*$/";
-                    if (!(preg_match($regex, $value) && is_numeric($value))) {
-                        $error_type = " debe contener solo numeros y decimales";
-                    } elseif ($table_array_config[$key]['unsigned']) {
-                        if (($value + 0) < 0) {
-                            $error_type .= " deber ser solo numeros y decimales positivos";
-                        }
-                    }
-                    break;
-                case 'numbers':
-                    $regex = "/^[\-0-9]*$/";
-                    if (!(preg_match($regex, $value) && is_numeric($value))) {
-                        $error_type = " debe contener solo numeros";
-                    } elseif ($table_array_config[$key]['unsigned']) {
-                        if (($value + 0) < 0) {
-                            $error_type .= " deber ser solo numeros positivos";
-                        }
-                    }
-                    break;
-                case 'numbers-simbols':
-                    $regex = "/^[\-0-9\s{$preg_simbols}]*$/";
-                    if (!preg_match($regex, $value)) {
-                        $error_type = " debe contener solo numeros y simbolos: $preg_simbols";
-                    }
-                    break;
-                case 'mixed':
-                    $regex = "/^[\-a-zA-Z0-9\s]*$/";
-                    if (!preg_match($regex, $value)) {
-                        $error_type = " deber ser solo letras de la a-z y A-Z y numeros";
-                    }
-                    break;
-                case 'mixed-simbols':
-                    $regex = "/^[a-zA-Z0-9\s{$preg_simbols}]*$/";
-                    if (!preg_match($regex, $value)) {
-                        $error_type = " deber ser solo letras de la a-z y A-Z, numeros y simbolos: $preg_simbols";
-                    }
-                    break;
-                default:
-                    $error_type = "Not defined VALIDATION on Type '{$table_array_config[$key]['type']}' from field '{$label}' ";
-                    break;
+        if (($value === 0) || !empty($value)) {
+            if ($table_array_config[$key]['validation'] == 'options') {
+                $error_type = check_enum_value_type($value, $table_array_config[$key]['table'], $key, $db);
+            } else {
+                $unsigned_type = ($table_array_config[$key]['unsigned']) ? "-unsigned" : "";
+                $error_type = check_value_type($value, $table_array_config[$key]['validation'] . $unsigned_type);
             }
         }
         if (empty($error_type) && !empty($error_msg)) {
