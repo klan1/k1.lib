@@ -728,7 +728,7 @@ function array_to_sql_values($array) {
                     } else {
                         $first = FALSE;
                     }
-                    $value = \k1lib\common\check_incomming_var($value);
+                    $value = \k1lib\forms\check_single_incomming_var($value);
                     $data_string .= ( is_numeric($value) ? $value : "'$value'");
                 }
                 $data_string .= ") ";
@@ -761,7 +761,7 @@ function array_to_sql_set($array) {
                 $first = FALSE;
             }
             $field = trim($field);
-            $value = \k1lib\common\check_incomming_var($value);
+            $value = \k1lib\forms\check_single_incomming_var($value);
             if (!is_int($value) && !is_float($value)) {
                 $value = "'$value'";
             }
