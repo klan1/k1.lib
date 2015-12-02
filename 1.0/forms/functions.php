@@ -25,10 +25,17 @@ function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE)
     if ((is_string($var) || is_numeric($var)) && !is_array($var)) {
         if (($request == TRUE) && isset($_REQUEST[$var])) {
             $value = $_REQUEST[$var];
-        } elseif (($request == FALSE) && ($var != "")) {
+        } elseif ($request == FALSE) {
             $value = $var;
         } else {
             $value = NULL;
+        }
+        if ($value === '') {
+            return NULL;
+        } elseif (($value === 0)) {
+            return 0;
+        } elseif (($value === '0')) {
+            return '0';
         }
         if ($url_decode) {
             $value = urldecode($value);
@@ -38,18 +45,6 @@ function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE)
             $search = array("\\", "\0", "\n", "\r", "\x1a", "'", '"');
             $value = str_replace($search, $replace, $value);
 //            $value = mysql_escape_string($value);
-        } else {
-            
-        }
-        /**
-         * TODO: CHECK THIS !!
-         */
-        if (is_string($value) && is_numeric($value)) {
-            if (substr($value, 0, 1) != "0") {
-                $value += 0;
-            } elseif ((substr($value, 0, 1) == "0") && (strlen($value) == 1)) {
-                $value = 0;
-            }
         }
         return $value;
     } else {
@@ -63,7 +58,7 @@ function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE)
  * @param string $save_name
  * @return array checked values ready to work
  */
-function check_all_incomming_vars($request_array, $save_name) {
+function check_all_incomming_vars($request_array, $save_name = null) {
 //checks all the incomming vars
 // V0.8 forces the use of an non empty array
 //    if (empty($request_array)) {
@@ -81,7 +76,9 @@ function check_all_incomming_vars($request_array, $save_name) {
             $form[$index] = check_all_incomming_vars($value);
         }
     }
-    \k1lib\common\serialize_var($form, $save_name);
+    if (!empty($save_name)) {
+        \k1lib\common\serialize_var($form, $save_name);
+    }
     return $form;
 }
 
@@ -96,11 +93,13 @@ function get_form_field_from_serialized($form_name, $field_name, $default = "", 
     if (!is_string($form_name) || empty($form_name)) {
         die(__FUNCTION__ . " form_name should be an non empty string");
     }
-    if (!is_string($field_name) || empty($field_name)) {
+    if (empty($field_name)) {
         die(__FUNCTION__ . " field_name should be an non empty string");
     }
     $field_value = "";
+    //FORM EXISTS
     if (isset($_SESSION['serialized_vars'][$form_name])) {
+        // FIELD EXISTS
         if (isset($_SESSION['serialized_vars'][$form_name][$field_name])) {
             $field_value = $_SESSION['serialized_vars'][$form_name][$field_name];
             if ($compare !== "--FALSE--") {
@@ -129,19 +128,35 @@ function get_form_field_from_serialized($form_name, $field_name, $default = "", 
     return $field_value;
 }
 
-function check_enum_value_type($value, $table_name, $key, $db) {
-    $options = \k1lib\sql\get_table_enum_values($db, $table_name, $key);
+/**
+ * Checks with this function if a received value matchs with a item on a ENUM field on a table
+ * @param String $value Value to check
+ * @param String  $table_name SQL table name
+ * @param String $table_field SQL table field to check
+ * @param \PDO $db DB connection object
+ * @return string
+ */
+function check_enum_value_type($received_value, $table_name, $table_field, \PDO $db) {
+    $options = \k1lib\sql\get_table_enum_values($db, $table_name, $table_field);
     $options_fliped = array_flip($options);
-    if (!isset($options_fliped[$value])) {
-        $error_type = print_r($options_fliped, TRUE) . " value: '$value'";
-//        d($value, TRUE);
+    if (!isset($options_fliped[$received_value])) {
+        $error_type = print_r($options_fliped, TRUE) . " value: '$received_value'";
+//        d($received_value, TRUE);
     }
     return $error_type;
 }
 
 function check_value_type($value, $type) {
+
+    //dates for use
+    $date = date("Y-m-d");
+    $day = date("d");
+    $month = date("m");
+    $year = date("Y");
+    //funcitons vars
     $error_type = "";
-    $preg_simbols = "-_@.,!#$%&'*\/+=?^`{\|}~";
+    $preg_simbols = "-_@.,!#$%&'*\/+=?^`{\|}~ÁÉÍÓÚáéíóuñÑ";
+
     switch ($type) {
         case 'options':
             trigger_error("This function can't check options type", E_USER_WARNING);
@@ -162,7 +177,6 @@ function check_value_type($value, $type) {
             }
             break;
         case 'date':
-            global $date, $month, $day, $year;
             if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
                 if (!checkdate($matches['month'], $matches['day'], $matches['year'])) {
                     $error_type = " valores de fecha in validos";
@@ -172,7 +186,6 @@ function check_value_type($value, $type) {
             }
             break;
         case 'date-past':
-            global $date, $month, $day, $year;
             if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
                 if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
                     $actual_date_number = juliantojd($month, $day, $year);
@@ -188,7 +201,6 @@ function check_value_type($value, $type) {
             }
             break;
         case 'date-future':
-            global $date, $month, $day, $year;
             if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
                 if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
                     $actual_date_number = juliantojd($month, $day, $year);
@@ -371,18 +383,18 @@ function make_form_select_list(&$field_name, &$value, &$table_config_array, &$er
     return $html_code;
 }
 
-function make_form_input_from_serialized($table_name, $field_name, $table_config_array, $mode = "view", $data_theme = 'b', $url_key_array = Array()) {
+function make_form_input_from_serialized($table_name, $field_name, $table_config_array, $mode = "view", $link_to_search = NULL) {
     global $form_errors;
     $error_msg = "";
 
     $html_template = html_functions\load_html_template("board-view-unit");
 
     if (!is_string($table_name) || empty($table_name)) {
-        die(__FUNCTION__ . " \$table_name should be an non empty string");
+        die(__FUNCTION__ . " \$table_name should be an non empty string.");
     }
     $value = \k1lib\forms\get_form_field_from_serialized($table_name, $field_name);
-    // php Function apply from SQL 
 
+// php Function apply from SQL 
     /**
      * WTF -- THIS WORKS ??
      * TODO: check this ! COD 1
@@ -418,7 +430,21 @@ function make_form_input_from_serialized($table_name, $field_name, $table_config
          */
         $type_comparation = strstr("char,varchar,text,date,datetime,tinyint,smallint,mediumint,int,bigint,float,double'", $table_config_array[$field_name]['type']);
         if (($type_comparation !== FALSE) && ($table_config_array[$field_name]['sql'] == "")) {
-            return html_functions\label_input_text_combo($field_name, $value, $table_config_array[$field_name]['label'], $table_config_array[$field_name]['null'], $error_msg);
+            /**
+             * FK SEARCH SYSTEM
+             */
+            if (!empty($table_config_array[$field_name]['refereced_table_name'])) {
+                $link_to_search_with_table = $link_to_search . "/{$table_config_array[$field_name]['refereced_table_name']}";
+            } else {
+                $link_to_search_with_table = NULL;
+            }
+
+            return html_functions\label_input_text_combo(
+                    $field_name, $value, $table_config_array[$field_name]['label']
+                    , $table_config_array[$field_name]['null']
+                    , $error_msg
+                    , $link_to_search_with_table
+            );
         } elseif (($table_config_array[$field_name]['type'] == "enum") || ($table_config_array[$field_name]['sql'] != "")) {
             return \k1lib\forms\make_form_select_list($field_name, $value, $table_config_array, $error_msg);
         } else {
@@ -429,18 +455,37 @@ function make_form_input_from_serialized($table_name, $field_name, $table_config
         // only works for view mode or non-defined with on empty values
         if (($mode == "view") || (!empty($value) && ($mode == "none"))) {
             if (is_numeric($value)) {
-//                $value = number_format($value);
+                $value = number_format($value);
             }
             // checks if the actual field is a foreign key to get his label from his table
             if (!empty($table_config_array[$field_name]['refereced_table_name'])) {
+                static $last_fk_table = null;
+                static $last_fk_array = [];
+                static $last_position = 1;
                 $foreign_table = $table_config_array[$field_name]['refereced_table_name'];
-                $foreign_table_key = $table_config_array[$field_name]['refereced_column_name'];
-                $fk_label = \k1lib\sql\get_fk_field_label($foreign_table_key, $foreign_table, $url_key_array);
+//                $foreign_table_key = $table_config_array[$field_name]['refereced_column_name'];
+                $fk_to_query = array($field_name => $value);
+                if ($last_fk_table != $foreign_table) {
+                    $last_fk_table = $foreign_table;
+                    $last_fk_array = $fk_to_query;
+                    $last_position = 1;
+                } else {
+                    $last_fk_array += $fk_to_query;
+                    $fk_to_query = $last_fk_array;
+                    $last_position++;
+                }
+                $fk_label = \k1lib\sql\get_fk_field_label($foreign_table, $fk_to_query, $last_position);
+
+
                 if (!empty($fk_label)) {
                     $value = "{$fk_label} (ID:$value)";
                 } else {
                     $value = "$value (FK)";
                 }
+            }
+            // WTF: This should work with === BUT NOT !! 
+            if ($value == NULL) {
+                $value = "(NULL)";
             }
             $html_code = sprintf($html_template, $table_config_array[$field_name]['label'], $value);
 
@@ -460,7 +505,7 @@ function get_labels_from_table($db, $table_name) {
     }
     $table_config_array = \k1lib\sql\get_table_config($db, $table_name);
     $label_field = \k1lib\sql\get_table_label($table_config_array);
-    $table_keys_array = k1_get_table_keys($table_config_array);
+    $table_keys_array = \k1lib\sql\get_table_keys($table_config_array);
     if (!empty($table_keys_array)) {
         $table_config_array = array_flip($table_keys_array);
     }

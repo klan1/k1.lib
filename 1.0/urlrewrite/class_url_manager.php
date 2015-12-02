@@ -43,10 +43,9 @@ class url_manager {
         }
         return self::$enabled;
     }
-    
+
     static public function get_data() {
         return self::$url_data;
-        
     }
 
     /**
@@ -103,7 +102,7 @@ class url_manager {
                     $GLOBALS[$name] = NULL;
                     return FALSE;
                 } else {
-                    k1lib_common\show_error("The URL level {$level} requested do not exist and is required", __FUNCTION__, TRUE);
+                    trigger_error("The URL level {$level} requested do not exist and is required", E_USER_ERROR);
                 }
             }
         } else {
@@ -273,19 +272,18 @@ class url_manager {
             return NULL;
         }
         if (!is_string($url_to_link)) {
-            k1lib_common\show_error("The value to make the link have to be a string", __FUNCTION__, TRUE);
+            trigger_error("The value to make the link have to be a string", E_USER_ERROR);
         }
         if (!is_string($get_vars_to_keep)) {
-            k1lib_common\show_error("The value of get_vars_to_keep have to be a string", __FUNCTION__, TRUE);
+            trigger_error("The value of get_vars_to_keep have to be a string", E_USER_ERROR);
         }
 
-        if (($get_vars_to_keep == "") && defined("GLOBAL_GET_KEEP_VARS")) {
+        if (($get_vars_to_keep == "") && defined("\k1app\GLOBAL_GET_KEEP_VARS")) {
             // we always have to keep the signed_request from FB
-            $get_vars_to_keep .= ( (!empty($get_vars_to_keep)) ? ',' . GLOBAL_GET_KEEP_VARS : GLOBAL_GET_KEEP_VARS);
+            $get_vars_to_keep .= ( (!empty($get_vars_to_keep)) ? ',' . \k1app\GLOBAL_GET_KEEP_VARS : \k1app\GLOBAL_GET_KEEP_VARS);
         }
-
         //make the initial link
-        if (strstr($url_to_link, "https://") === FALSE) {
+        if (strstr($url_to_link, "http://") === FALSE) {
             // if the url do not have / at start we must to put it
             if (substr($url_to_link, 0, 2) == './') {
                 $page_url = $url_to_link;
@@ -300,16 +298,19 @@ class url_manager {
         }
         $i = 0;
         // build the GET list whit only with the vars that the user needs to keep
-        foreach ($_GET as $name => $value) {
-            if (strpos($get_vars_to_keep, $name) !== FALSE) {
-                $i++;
-                if (strpos($page_url, "?")) {
-                    $page_url .= "&{$name}={$value}";
+        if ($keep_get_vars) {
+            foreach ($_GET as $name => $value) {
+                $value = urlencode($value);
+                if (strpos($get_vars_to_keep, $name) !== FALSE) {
+                    $i++;
+                    if (strpos($page_url, "?")) {
+                        $page_url .= "&{$name}={$value}";
+                    } else {
+                        $page_url .= ( ($i == 1) ? '?' : '&') . "{$name}={$value}";
+                    }
                 } else {
-                    $page_url .= ( ($i == 1) ? '?' : '&') . "{$name}={$value}";
+                    continue;
                 }
-            } else {
-                continue;
             }
         }
 

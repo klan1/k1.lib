@@ -32,19 +32,25 @@ class html_table_with_table_config {
     private $other_attribs;
     // Atributos varios
     private $no_data;
-    private $numbering;
-    private $form_object;
+    private $numbering = FALSE;
+    private $form_object = FALSE;
     // codigo HTML
     private $html_code;
 
     function __construct($boarID = NULL) {
         $this->boardID = $boarID;
         $this->configViewRule = "show-table";
-        $this->form_object = FALSE;
-        $this->numbering = FALSE;
         $this->class = "";
         $this->other_attribs = "";
         $this->no_data = "No hay datos para mostrar";
+    }
+
+    function get_use_numbering() {
+        return $this->numbering;
+    }
+
+    function use_numbering() {
+        $this->numbering = TRUE;
     }
 
     /**
@@ -167,6 +173,9 @@ class html_table_with_table_config {
             $this->tableConfigArray = $tableConfigArray;
         }
         if (is_string($sqlQuery)) {
+            if (empty($sqlQuery)) {
+                trigger_error("The SQL query cant be empty string", E_USER_ERROR);
+            }
             $this->sqlQuery = $sqlQuery;
         } else {
             \trigger_error("La variable recibida no es un array ", E_USER_ERROR);
@@ -220,10 +229,23 @@ class html_table_with_table_config {
         }
     }
 
+    function get_form_object() {
+        return $this->form_object;
+    }
+
+    function use_form_object($form_object = 'radio') {
+        if ($form_object == 'radio' || $form_object == 'check') {
+            $this->form_object = $form_object;
+        } else {
+            trigger_error("You can only use 'radio' or 'check' for this. Nothing set on this function call.", E_USER_WARNING);
+        }
+    }
+
     function doCode(EasyControllerClass $controllerObject = NULL) {
         $serializedTableHeaders = \k1lib\common\unserialize_var($this->boardID . '-tableHeaders');
         $serializedFormVars = \k1lib\common\unserialize_var($this->boardID . '-search');
-        if (empty($this->sqlResult) && empty($this->sqlSearchFilter)) {
+//        if (empty($this->sqlResult) && empty($this->sqlSearchFilter)) {
+        if (empty($this->sqlResult)) {
             if (!empty($this->no_data)) {
                 return "<p>{$this->no_data}</p>";
             } else {
@@ -232,12 +254,25 @@ class html_table_with_table_config {
         } elseif (empty($this->sqlResult)) {
             $this->sqlResult[0] = $serializedTableHeaders;
         }
-        $table_object = new html_classes\table_tag($this->class, $this->id);
-        $thead = $table_object->append_thead();
-        $tr = $thead->append_tr();
 
-        if (strstr($this->form_object, 'radio,checkbox') !== FALSE) {
-            $tr->append_th("Selector");
+        /**
+         * <TABLE> OBJECT
+         */
+        $table_object = new html_classes\table_tag($this->class, $this->id);
+
+        /**
+         * <THEAD> SECTION
+         */
+        $thead = $table_object->append_thead();
+        /**
+         * <TR> ROW
+         */
+        $tr = $thead->append_tr();
+        /**
+         * <TH> CELL
+         */
+        if ($this->form_object !== FALSE) {
+            $tr->append_th("");
         } else {
             
         }
@@ -321,7 +356,7 @@ class html_table_with_table_config {
 
             $tr = $tbody->append_tr();
 
-            if (strstr($this->form_object, 'radio,checkbox') !== FALSE) {
+            if ($this->form_object !== FALSE) {
                 $tr->append_td("<input type='{$this->form_object}' name='__TABLE_KEYS__' value='$actualRowKeysText'>");
             }
             if ($this->numbering == 1) {
@@ -392,7 +427,7 @@ class html_table_with_table_config {
         // get the fields to make links
         if (count($tableFieldLinksArray) === 0) {
             // if there are not definitions
-            $key_fields_array = k1_get_table_keys($this->tableConfigArray);
+            $key_fields_array = \k1lib\sql\get_table_keys($this->tableConfigArray);
             foreach ($key_fields_array as $key => $value) {
                 $this->tableFieldLinksArray[$key] = $defaultUrlLink;
             }

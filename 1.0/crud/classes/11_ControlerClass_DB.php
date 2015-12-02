@@ -87,6 +87,11 @@ class controller_with_dbtables_class extends general_controller_class {
      * 
      * ***************** */
 
+    function get_dbTableForeignName() {
+        $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
+        return $this->dbTableForeignName;
+    }
+
     public function getDbTableMainName() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
         return $this->dbTableMainName;

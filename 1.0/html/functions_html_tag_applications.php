@@ -32,16 +32,23 @@ function load_html_template($function_name) {
  * @param String $label
  * @param Boolean $required
  * @param String $error_msg
+ * @param String $label_link 
  * @return String
  */
-function label_input_text_combo($field_name, $value, $label, $required = FALSE, $error_msg = "") {
+function label_input_text_combo($field_name, $value, $label, $required = FALSE, $error_msg = "", $label_link = null) {
 
 //    function \k1lib\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
     if ($required) {
-        $required_class = "required";
+        $required_class = "";
     } else {
         $required_class = "";
     }
+    if ($label_link == TRUE) {
+        $a_object = new a_tag($label_link, $label);
+        $a_object->set_attrib("class", "search-override-submit", TRUE);
+        $label = $a_object->generate_tag();
+    }
+
     $label_object = new html_classes\label_tag($label, $field_name, "right inline");
     $input_object = new html_classes\input_tag("text", $field_name, $value, $required_class);
     $input_object->set_attrib("required", (!empty($required_class)) ? TRUE : FALSE);
@@ -119,7 +126,7 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
     return $table_object->generate_tag();
 }
 
-function get_link_button($linkTo, $label, $mini = TRUE, $inline = TRUE) {
+function get_link_button($linkTo, $label, $mini = TRUE, $inline = TRUE, $keep_get_vars = TRUE) {
     if ($linkTo == NULL) {
         return NULL;
     } elseif (!(is_string($linkTo) && is_string($label))) {
@@ -241,7 +248,7 @@ function get_link_button($linkTo, $label, $mini = TRUE, $inline = TRUE) {
     }
 
     if ((strstr($linkTo, "http") === FALSE) && (strstr($linkTo, "javascript:") === FALSE)) {
-        $linkTo = \k1lib\urlrewrite\url_manager::get_app_link($linkTo);
+        $linkTo = \k1lib\urlrewrite\url_manager::get_app_link($linkTo, $keep_get_vars);
     }
     $button_object = new \k1lib\html\a_tag($linkTo, " " . $label, "_self", "App link", "button");
     $button_object->set_attrib("class", "$button_icon", TRUE);

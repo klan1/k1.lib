@@ -35,6 +35,12 @@ class session_plain {
     static public $session_data;
 
     /**
+     * URL for default login redirection
+     * @var string
+     */
+    static private $log_form_url;
+
+    /**
      * Enable the engenie
      */
     static public function enable() {
@@ -72,8 +78,8 @@ class session_plain {
         /**
          * TODO: ENCRYPT THIS !!
          */
-        if (!isset($_SESSION['k1lib_session']['user_id'])) {
-            $_SESSION['k1lib_session']['user_id'] = NULL;
+        if (!isset($_SESSION['k1lib_session']['login'])) {
+            $_SESSION['k1lib_session']['login'] = NULL;
             $_SESSION['k1lib_session']['user_hash'] = NULL;
             $_SESSION['k1lib_session']['user_level'] = 0;
             $_SESSION['k1lib_session']['user_data'] = NULL;
@@ -98,10 +104,10 @@ class session_plain {
         session_unset();
     }
 
-    static public function start_logged_session($user_id, $user_level = 0, $user_data = NULL) {
+    static public function start_logged_session($login, $user_level = 0, $user_data = NULL) {
         if (self::is_enabled(true)) {
-            $_SESSION['k1lib_session']['user_id'] = $user_id;
-            $_SESSION['k1lib_session']['user_hash'] = self::get_client_hash($user_id);
+            $_SESSION['k1lib_session']['login'] = $login;
+            $_SESSION['k1lib_session']['user_hash'] = self::get_client_hash($login);
             $_SESSION['k1lib_session']['user_level'] = $user_level;
             if (is_array($user_data)) {
                 $_SESSION['k1lib_session']['user_data'] = $user_data;
@@ -116,7 +122,7 @@ class session_plain {
 
     static public function is_logged($redirect = FALSE, $where_redirect_to = "") {
         if ((self::is_enabled(true)) && (self::$has_started) && (isset(self::$session_data['user_hash']))) {
-            if (self::$session_data['user_hash'] == self::get_client_hash(self::$session_data['user_id'])) {
+            if (self::$session_data['user_hash'] == self::get_client_hash(self::$session_data['login'])) {
                 return TRUE;
             } else {
                 self::end_session();
@@ -126,21 +132,29 @@ class session_plain {
             return FALSE;
         } else {
             ob_clean();
-            \k1lib\html\html_header_go($where_redirect_to);
+            if (empty($where_redirect_to) && !empty(self::$log_form_url)) {
+                \k1lib\html\html_header_go(self::$log_form_url);
+            } else {
+                \k1lib\html\html_header_go($where_redirect_to);
+            }
             exit;
         }
     }
 
+    static function set_log_form_url($log_form_url) {
+        self::$log_form_url = $log_form_url;
+    }
+
     static public function load_logged_session($redirect = FALSE, $where_redirect_to = "") {
         if ((self::is_enabled(true)) && (self::$has_started)) {
-            if ($_SESSION['k1lib_session']['user_hash'] === self::get_client_hash($_SESSION['k1lib_session']['user_id'])) {
-                self::$session_data['user_id'] = $_SESSION['k1lib_session']['user_id'];
+            if ($_SESSION['k1lib_session']['user_hash'] === self::get_client_hash($_SESSION['k1lib_session']['login'])) {
+                self::$session_data['login'] = $_SESSION['k1lib_session']['login'];
                 self::$session_data['user_hash'] = $_SESSION['k1lib_session']['user_hash'];
                 self::$session_data['user_level'] = $_SESSION['k1lib_session']['user_level'];
                 self::$session_data['user_data'] = $_SESSION['k1lib_session']['user_data'];
                 return TRUE;
             } else {
-                self::$session_data['user_id'] = -1;
+                self::$session_data['login'] = -1;
                 self::$session_data['user_level'] = 0;
 //                self::$session_data['user_data'] = null;
                 return FALSE;
@@ -152,8 +166,8 @@ class session_plain {
 
     static public function get_client_hash() {
         self::is_enabled(true);
-        if (isset($_SESSION['k1lib_session']['user_id'])) {
-            return md5($_SESSION['k1lib_session']['user_id'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\MAGIC_VALUE);
+        if (isset($_SESSION['k1lib_session']['login'])) {
+            return md5($_SESSION['k1lib_session']['login'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\MAGIC_VALUE);
         } else {
             return FALSE;
         }
@@ -164,7 +178,7 @@ class session_plain {
      * @param string $levels_to_check comma separated list as "1,2,3,4,5"
      * @return boolean
      */
-    static public function check_user_level($levels_to_check) {
+    static public function check_user_level($levels_to_check = "0") {
         self::is_enabled(true);
         if (!isset(self::$session_data['user_level'])) {
             trigger_error("No session to check", E_USER_ERROR);

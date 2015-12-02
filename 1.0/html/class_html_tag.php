@@ -138,7 +138,7 @@ namespace k1lib\html {
                 foreach ($this->attributes as $attribute => $value) {
                     $current_attribute++;
                     if (!is_bool($value)) {
-                        if (!empty($value)) {
+                        if ($value == '0' || $value === 0 || !empty($value)) {
                             $attributes_code .= "{$attribute}=\"{$value}\"";
                         }
                     } else {

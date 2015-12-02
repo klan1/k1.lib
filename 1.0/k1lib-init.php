@@ -23,13 +23,11 @@ namespace k1lib;
 
 const IN_K1LIB = TRUE;
 
+header('Content-Type: text/html; charset=utf-8');
+
 /*
  * GENERAL VARIABLE DECLARATIONS
  */
-//date_default_timezone_set("America/Bogota");
-//$date = date("Y-m-d");
-//$time = date("H:i:s");
-//$now = date("Y-m-d H:i:s");
 
 /*
  * PATH AUTO CONFIG
@@ -47,7 +45,8 @@ const VERSION = "1.0";
  */
 const URL_REWRITE_VAR_NAME = "K1LIB_URL";
 const BASE_PATH = \K1LIB_BASE_PATH;
-const HTML_TEMPLATES_PATH = BASE_PATH . "/html-templates";
+define("HTML_TEMPLATES_PATH" , BASE_PATH . "/html-templates");
+const HTML_TEMPLATES_PATH = \HTML_TEMPLATES_PATH;
 
 const MAGIC_VALUE = "9d5042fd5925dfc995b7958a84a24ead";
 
