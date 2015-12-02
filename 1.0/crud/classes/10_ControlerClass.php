@@ -178,7 +178,7 @@ class general_controller_class {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_EXECUTING, __METHOD__);
 
         if ($this->getIsReturnPoint() === TRUE) {
-            \k1lib\common\serialize_var(\k1lib\urlrewrite\url_manager::make_url_from_rewrite('this'), "k1_return_point");
+            \k1lib\common\serialize_var(\k1lib\urlrewrite\url_manager::get_app_link(\k1lib\urlrewrite\url_manager::make_url_from_rewrite('this')), "k1_return_point");
             \k1lib\common\serialize_var($this->getControllerID(), "k1_return_point_id");
         }
     }

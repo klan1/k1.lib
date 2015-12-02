@@ -1,6 +1,7 @@
 <?php
 
 namespace k1lib\crud;
+
 use k1lib\session\session_plain as k1lib_session;
 
 class completeEasyController extends controller_with_dbtables_class {
@@ -20,6 +21,9 @@ class completeEasyController extends controller_with_dbtables_class {
     private $boardUrlActionName = FALSE;
     private $boardFkUrlValue = FALSE;
     private $boardFkUrlName = FALSE;
+    private $board_fk_extra_url_value = FALSE;
+    private $board_fk_extra_url_value_pos = NULL;
+    private $board_fk_extra_table_config = FALSE;
     private $boardLevelAccessArray = Array();
     private $boardAvailabilityArray = Array();
     private $boardViewToLoadArray = Array();
@@ -82,6 +86,17 @@ class completeEasyController extends controller_with_dbtables_class {
         }
     }
 
+    function set_board_fk_extra_url_value($board_fk_extra_url_value, $pos = "pre") {
+        $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
+        $this->board_fk_extra_url_value = $board_fk_extra_url_value;
+        $this->board_fk_extra_url_value_pos = $pos;
+    }
+
+    function set_board_fk_extra_table_config($board_fk_extra_table_config) {
+        $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
+        $this->board_fk_extra_table_config = $board_fk_extra_table_config;
+    }
+
     /*     * ******************
      * 
      * \k1lib\oexec\OEXEC_PHASE_LAUNCHING
@@ -92,6 +107,20 @@ class completeEasyController extends controller_with_dbtables_class {
 //        $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__, TRUE);
 //        $this->boardRootUrl = $boardRootUrl;
 //    }
+    function get_board_fk_extra_url_value() {
+        $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__, TRUE);
+        return $this->board_fk_extra_url_value;
+    }
+
+    function get_board_fk_extra_url_value_pos() {
+        $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__, TRUE);
+        return $this->board_fk_extra_url_value_pos;
+    }
+
+    function get_board_fk_extra_table_config() {
+        $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__, TRUE);
+        return $this->board_fk_extra_table_config;
+    }
 
     public function setDefaultBoardUrlValue($defaultBoardUrlValue) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__, TRUE);
@@ -155,18 +184,37 @@ class completeEasyController extends controller_with_dbtables_class {
         $this->boardFkUrlName = "foreing_key";
         $this->boardFkUrlValue = $this->setUrlLevel($this->boardFkUrlName, FALSE);
 
-
         if ($this->boardFkUrlValue !== FALSE) {
-//    $foreign_table = "empresas";
-//    $foreign_table_config = \k1lib\sql\get_table_config($db, $foreign_table);
-            $this->boardFkUrlValueArray = \k1lib\sql\table_url_text_to_keys(
-                    $this->boardFkUrlValue
-                    , $this->dbTableForeignObject->getTableFieldConfig()
-            );
-            $this->foreignKeyWhereCondition = \k1lib\sql\table_keys_to_where_condition(
-                    $this->boardFkUrlValueArray
-                    , $this->dbTableForeignObject->getTableFieldConfig()
-            );
+//            $this->boardFkUrlValue = $this->boardFkUrlValue . "--" . $this->board_fk_extra_url_value;
+            $this->boardFkUrlValue = $this->boardFkUrlValue;
+            /**
+             * This code is for complete the PK array with info comming from a GET var as text, 
+             * this should be managed from the ccontroller config file
+             */
+            if (!empty($this->board_fk_extra_url_value) && ($this->board_fk_extra_url_value_pos == "pre")) {
+                // Put togeter the TABLE KEY TEXT
+                $boardFkUrlValue = $this->boardFkUrlValue . "--" . $this->board_fk_extra_url_value;
+                //  Puting togeter the Table Config array from the FKTable and the Extra Table
+                $board_fk_config_with_extra = $this->board_fk_extra_table_config + $this->dbTableForeignObject->getTableFieldConfig();
+                $board_fk_config_with_extra = \k1lib\common\organize_array_with_guide($board_fk_config_with_extra, $this->dbTableMainObject->getTableFieldConfig());
+
+                $this->boardFkUrlValueArray = \k1lib\sql\table_url_text_to_keys($boardFkUrlValue, $board_fk_config_with_extra);
+                $this->foreignKeyWhereCondition = \k1lib\sql\table_keys_to_where_condition($this->boardFkUrlValueArray, $board_fk_config_with_extra);
+            } elseif (!empty($this->board_fk_extra_url_value) && ($this->board_fk_extra_url_value_pos == "post")) {
+                trigger_error("Not implemented PRE position yet.", E_USER_ERROR);
+            } else {
+                $this->boardFkUrlValueArray = \k1lib\sql\table_url_text_to_keys(
+                        $this->boardFkUrlValue
+                        , $this->dbTableForeignObject->getTableFieldConfig()
+                );
+                $this->foreignKeyWhereCondition = \k1lib\sql\table_keys_to_where_condition(
+                        $this->boardFkUrlValueArray
+                        , $this->dbTableForeignObject->getTableFieldConfig()
+                );
+            }
+//            d($this->boardFkUrlValue);
+//            d($this->boardFkUrlValueArray);
+//            d($this->foreignKeyWhereCondition);
 //            oh yeah optmization !!
 //  //          $this->setControllerUrlRoot($this->getControllerUrlRoot() . "/{$this->boardFkUrlValue}");
         } else {
@@ -279,22 +327,14 @@ class completeEasyController extends controller_with_dbtables_class {
 
     public function getFkLabelValue() {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_LAUNCHING, __METHOD__);
-        if ($this->foreignLabelValue === "") {
-            $tableConfig = $this->dbTableMainObject->getTableFieldConfig();
-            foreach ($tableConfig as $field_name => $field_config) {
-                if (!empty($field_config['refereced_table_name'])) {
-                    $foreign_table = $field_config['refereced_table_name'];
-                    $foreign_table_key = $field_config['refereced_column_name'];
-                    $fk_label = \k1lib\sql\get_fk_field_label($foreign_table_key, $foreign_table, $this->getBoardFkUrlValueArray());
-                    if (!empty($fk_label)) {
-                        $this->foreignLabelValue = $fk_label;
-                    } else {
-                        $this->foreignLabelValue = NULL;
-                    }
-                }
-            }
-            if ($this->foreignLabelValue === "") {
-                $this->foreignLabelValue = FALSE;
+        if (empty($this->foreignLabelValue)) {
+//            \d($this->dbTableForeignObject->getTableFieldConfig());
+            $fk_label = \k1lib\sql\get_fk_field_label($this->get_dbTableForeignName(), $this->getBoardFkUrlValueArray(), -1);
+            if (!empty($fk_label)) {
+                $this->foreignLabelValue = $fk_label;
+            } else {
+                $this->foreignLabelValue = NULL;
+                return FALSE;
             }
         }
         return $this->foreignLabelValue;

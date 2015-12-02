@@ -78,14 +78,14 @@ function get_table_config(\PDO $db, $table, $recursion = 1) {
     $columns_info_query = "SHOW FULL COLUMNS FROM {$table}";
     $columns_info_result = sql_query($db, $columns_info_query, TRUE);
     if (empty($columns_info_query)) {
-        die(__FUNCTION__ . ": The table '$table' do not exist");
+        trigger_error("The table '$table' do not exist", E_USER_ERROR);
     }
     $dsn_db = get_db_database_name($db);
     $INFORMATION_SCHEMA_query = "SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '{$dsn_db}'
 AND table_name = '{$table}'";
     $INFORMATION_SCHEMA_result = sql_query($db, $INFORMATION_SCHEMA_query, TRUE);
     if (empty($INFORMATION_SCHEMA_result)) {
-        die(__FUNCTION__ . ": The table '$table' do not exist - $INFORMATION_SCHEMA_query");
+        trigger_error("The table '$table' do not exist - $INFORMATION_SCHEMA_query", E_USER_ERROR);
     }
 
     $config_array = array();
@@ -275,7 +275,7 @@ AND table_name = '{$table}'";
     return $config_array;
 }
 
-function k1_get_table_keys(&$table_config_array) {
+function get_table_keys(&$table_config_array) {
     if (!is_array($table_config_array)) {
         die(__FUNCTION__ . ": need an array to work on \$table_config_array");
     }
@@ -293,27 +293,32 @@ function k1_get_table_keys(&$table_config_array) {
 }
 
 /**
- * From V0.8 depreated no you have to use k1_get_field_label() instead -->> WHHHYYYYY ????
- * @param type $table_config_array
- * @return NULL
+ * Get the FIELD with label-field:yes comment on $position order
+ * @param Array $table_config_array
+ * @param Integer $position If this is -1 will return the last field found
+ * @return String Label field name
  */
-function get_table_label(&$table_config_array) {
-//    d("From V0.8 depreated no you have to use k1_get_field_label() instead"); -->> WHHHYYYYY ????
+function get_table_label(&$table_config_array, $position = 1) {
     if (!is_array($table_config_array)) {
         die(__FUNCTION__ . ": need an array to work on \$table_config_array");
     }
+    $p = 0;
+    if ($position == -1) {
+        $table_config_array = array_reverse($table_config_array);
+        $position = 1;
+    }
     foreach ($table_config_array as $field => $config) {
-        if ($config['label-field']) {
-            return $field;
+        if (($config['label-field'])) {
+            $p++;
+            if ($p == $position) {
+                return $field;
+            }
         }
     }
     return NULL;
 }
 
-function get_fk_field_label($fkFieldName, $table_name, $url_key_array = Array()) {
-    if (!is_string($fkFieldName)) {
-        trigger_error("\$fkFieldName must to be a String", E_USER_ERROR);
-    }
+function get_fk_field_label($table_name, $url_key_array = Array(), $last_position = 1) {
     if (!is_string($table_name)) {
         trigger_error("\$table_name must to be a String", E_USER_ERROR);
     }
@@ -322,7 +327,7 @@ function get_fk_field_label($fkFieldName, $table_name, $url_key_array = Array())
     }
     global $db;
     $fkTableConfig = get_table_config($db, $table_name);
-    $fkTableLabelField = get_table_label($fkTableConfig);
+    $fkTableLabelField = get_table_label($fkTableConfig, $last_position);
 
     if (!empty($fkTableLabelField)) {
         $fkWhereCondition = table_keys_to_where_condition($url_key_array, $fkTableConfig);
@@ -357,7 +362,7 @@ function table_keys_to_text(&$row_data, &$table_config_array) {
     if (!is_array($table_config_array)) {
         die(__FUNCTION__ . ": need an array to work on \$table_config_array");
     }
-    $table_keys_array = k1_get_table_keys($table_config_array);
+    $table_keys_array = \k1lib\sql\get_table_keys($table_config_array);
     $table_keys_values = array();
     foreach ($row_data as $column_name => $value) {
         if (isset($table_keys_array[$column_name]) && (!empty($table_keys_array[$column_name]))) {
@@ -375,11 +380,11 @@ function table_url_text_to_keys($url_text, $table_config_array) {
     $url_text_array = explode("--", $url_text);
     $url_text_array_count = count($url_text_array);
 
-    $table_keys_array = k1_get_table_keys($table_config_array);
+    $table_keys_array = \k1lib\sql\get_table_keys($table_config_array);
     $table_keys_count = count($table_keys_array);
 // elements count check
     if ($url_text_array_count != $table_keys_count) {
-        die(__FUNCTION__ . ": The count of recived keys as text to not match with the \$table_config_array");
+        trigger_error(__FUNCTION__ . ": The count of recived keys ({$url_text_array_count}) as text to not match with the \$table_config_array ({$table_keys_count})", E_USER_ERROR);
     } else {
 //lets do the array using the url_text and $table_keys
         $key_data = array();
@@ -399,12 +404,13 @@ function table_url_text_to_keys($url_text, $table_config_array) {
     return $key_data;
 }
 
-function table_keys_to_where_condition(&$row_data, $table_config_array) {
+function table_keys_to_where_condition(&$row_data, $table_config_array, $use_table_name = FALSE) {
+//    d($table_config_array);
     if (!is_array($table_config_array)) {
         die(__FUNCTION__ . ": need an array to work on \$table_config_array");
     }
 
-    $table_keys_array = k1_get_table_keys($table_config_array);
+    $table_keys_array = \k1lib\sql\get_table_keys($table_config_array);
     if (empty($table_keys_array)) {
         die(__FUNCTION__ . ": The is no PRI on the \$table_config_array");
     }
@@ -423,7 +429,11 @@ function table_keys_to_where_condition(&$row_data, $table_config_array) {
         if (!$first_value) {
             $where_condition .= " AND ";
         }
-        $where_condition .= "$key = '$value'";
+        if ($use_table_name) {
+            $where_condition .= "{$table_config_array[$key]['table']}.$key = '$value'";
+        } else {
+            $where_condition .= "$key = '$value'";
+        }
         $first_value = FALSE;
     }
     return $where_condition;
@@ -522,7 +532,7 @@ function sql_query_cached(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE
 }
 
 /**
- * 
+ * Run a SQL Query and returns an Array with all the result data
  * @param \PDO $db
  * @param String $sql
  * @param Boolean $return_all
@@ -542,7 +552,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
         profiler::set_is_cached($sql_profile_id, TRUE);
     } else {
         profiler::set_is_cached($sql_profile_id, FALSE);
-        $query_result = $db->query($sql) or ( (K1_DEBUG) ? d(print_r($db->errorInfo(), TRUE) . "SQL: $sql") : "SQL Error" );
+        $query_result = $db->query($sql);
     }
     if (profiler::is_enabled()) {
         profiler::stop_time_count($sql_profile_id);
@@ -592,6 +602,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
 }
 
 function sql_update(\PDO $db, $table, $data, $table_keys = array(), $table_config_array = array()) {
+    d("sql_update");
     global $controller_errors;
 
     if (!is_string($table) || empty($table)) {
@@ -607,17 +618,19 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $table_confi
         die(__FUNCTION__ . ": need an array to work on \$table_config_array");
     }
 
-    if (USE_DB) {
+    if (\k1lib\db\handler::is_enabled()) {
         if (is_array($data)) {
             if (!is_array(@$data[0])) {
                 if (empty($table_config_array)) {
                     $table_config_array = get_table_config($db, $table);
                 }
+                d($data, TRUE);
                 if (empty($table_keys)) {
                     $keys_where_condition = table_keys_to_where_condition($data, $table_config_array);
                 } else {
                     $keys_where_condition = table_keys_to_where_condition($table_keys, $table_config_array);
                 }
+                d($keys_where_condition);
                 $data_string = array_to_sql_set($data);
                 $update_sql = "UPDATE $table SET $data_string WHERE $keys_where_condition;";
 //                $controller_errors[] = $update_sql;
@@ -626,13 +639,10 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $table_confi
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
 //show-message($insert_sql);
-            $update = $db->exec($update_sql) or ( \trigger_error($db->errorInfo(), E_USER_WARNING));
+            $update = $db->exec($update_sql);
             if ($update) {
                 return $update;
             } else {
-                if (K1_DEBUG) {
-                    \trigger_error($update_sql, E_USER_NOTICE);
-                }
                 return FALSE;
             }
         } else {
@@ -653,7 +663,7 @@ function sql_insert(\PDO $db, $table, $data) {
      * TODO: make data verification over the foreign keys to show more precise errors
      */
     global $form_errors, $controller_errors;
-    if (USE_DB) {
+    if (\k1lib\db\handler::is_enabled()) {
         if (is_array($data)) {
             if (!@is_array($data[0])) {
                 $data_string = array_to_sql_set($data);
@@ -729,7 +739,14 @@ function array_to_sql_values($array) {
                         $first = FALSE;
                     }
                     $value = \k1lib\forms\check_single_incomming_var($value);
-                    $data_string .= ( is_numeric($value) ? $value : "'$value'");
+                    if ($value === NULL) {
+                        $data_string .= "NULL";
+                    } elseif (!is_int($value) && !is_float($value)) {
+                        $data_string .= "'{$value}'";
+                    } else {
+                        $data_string .= "{$value}";
+                    }
+//                    $data_string .= ( is_numeric($value) ? $value : "'$value'");
                 }
                 $data_string .= ") ";
             } else {
@@ -745,27 +762,38 @@ function array_to_sql_values($array) {
     }
 }
 
-function array_to_sql_set($array) {
+function array_to_sql_set($array, $use_nulls = true, $for_search = FALSE) {
     if (is_array($array) && (count($array) >= 1)) {
         $first = TRUE;
         $data_string = "";
         foreach ($array as $field => $value) {
-// ZERO FIX !!
-            if (($value !== 0) && empty($value)) {
+            if ($use_nulls === FALSE && $value === NULL) {
                 continue;
             }
-//put the , to the string
+
+            //put the , to the string
             if (!$first) {
-                $data_string .= ", ";
+                if ($for_search) {
+                    $data_string .= " AND ";
+                } else {
+                    $data_string .= ", ";
+                }
             } else {
                 $first = FALSE;
             }
             $field = trim($field);
             $value = \k1lib\forms\check_single_incomming_var($value);
-            if (!is_int($value) && !is_float($value)) {
-                $value = "'$value'";
+            if (!$for_search) {
+                if ($value === NULL) {
+                    $data_string .= "`$field` = NULL";
+                } elseif (!is_int($value) && !is_float($value)) {
+                    $data_string .= "`$field` = '{$value}'";
+                } else {
+                    $data_string .= "`{$field}` = {$value}";
+                }
+            } else {
+                $data_string .= "`{$field}` LIKE '%{$value}%'";
             }
-            $data_string .= "`$field` = " . $value;
         }
     } else {
         trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);

@@ -30,6 +30,9 @@ class board_general_class {
     private $formMagicValue = NULL;
     private $formSubmitLabel = NULL;
 
+    /**
+     * 
+     */
     /*     * *****************
      * 
      * \k1lib\oexec\OEXEC_PHASE_CONSTRUCTION
@@ -102,10 +105,10 @@ class board_general_class {
         $this->formSubmitLabel = $formSubmitLabel;
     }
 
-    public function setFormAfterActionUrl($formAfterActionUrl) {
+    public function setFormAfterActionUrl($formAfterActionUrl, $source) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
         $formAfterActionUrl = \k1lib\crud\parseUrlTag($formAfterActionUrl, $this->controllerObject);
-        $this->formAfterActionUrl = $formAfterActionUrl;
+        $this->formAfterActionUrl[$source] = $formAfterActionUrl;
     }
 
     public function getFormAfterActionUrl($source = NULL) {
@@ -247,7 +250,7 @@ class board_general_class {
         if ($mini) {
             $button_object->set_attrib("class", "tiny", TRUE);
         }
-
+        $button_object->set_attrib("id", "send-data");
         return $button_object->generate_tag();
     }
 
@@ -290,7 +293,8 @@ class BoardNew extends board_general_class {
         parent::initFormAction();
 
         if ($this->controllerObject->getControllerType() == \k1lib\crud\CONTROLLER_TYPE_FOREIGN) {
-            $this->boardParameterKeyArray = \k1lib\sql\table_url_text_to_keys($this->controllerObject->getBoardFkUrlValue(), $this->controllerObject->getControllerFkTableConfig());
+            $this->boardParameterKeyArray = $this->controllerObject->getBoardFkUrlValueArray();
+//            \d($this->boardParameterKeyArray);
             if (!empty($this->boardParameterKeyArray)) {
                 \k1lib\common\serialize_var($this->boardParameterKeyArray, "{$this->controllerObject->getBoardFormId()}-fkData");
                 \k1lib\common\serialize_var($this->boardParameterKeyArray, $this->controllerObject->getBoardFormId());
@@ -316,6 +320,20 @@ class BoardNew extends board_general_class {
             $_POST = $fkData + $_POST;
         }
         $form_vars = \k1lib\forms\check_all_incomming_vars($_POST, $this->controllerObject->getBoardFormId());
+
+        /**
+         * FK SEARCH SYSTEM
+         */
+        if (isset($_GET['search_in'])) {
+            $search_in = \k1lib\forms\check_single_incomming_var($_GET['search_in']);
+            if ($search_in !== NULL) {
+                $search_url = $search_in . "/?from=" . urlencode(\k1lib\urlrewrite\url_manager::get_app_link($this->controllerObject->getBoardRootUrl()));
+                \k1lib\html\html_header_go($search_url);
+            }
+        }
+        /**
+         * END FK SEARCH SYSTEM
+         */
         $form_errors = array();
         if (isset($form_vars['magic_value'])) {
             //Magic test 
@@ -328,7 +346,9 @@ class BoardNew extends board_general_class {
                 $form_vars = \k1lib\common\clean_array_with_guide($form_vars, $this->controllerObject->getControllerTableConfig());
                 $form_errors = \k1lib\forms\form_check_values($form_vars, $this->controllerObject->getControllerTableConfig(), $this->controllerObject->db);
                 if ($form_errors === FALSE) {
-                    if (\k1lib\sql\sql_insert($this->controllerObject->db, $this->controllerObject->getDbTableMainName(), $form_vars)) {
+                    $last_inserted_id = \k1lib\sql\sql_insert($this->controllerObject->db, $this->controllerObject->getDbTableMainName(), $form_vars);
+
+                    if ($last_inserted_id) {
 //                        \k1lib\html\html_header_go(\k1lib\urlrewrite\url_manager::make_url_from_rewrite(-2));
                         // TODO: implement the after action behavior
                         // UNSET ALL FOR NO FUTURE PROBLEMS ;)
@@ -336,7 +356,16 @@ class BoardNew extends board_general_class {
                         \k1lib\common\unset_serialize_var($this->controllerObject->getBoardErrorId());
                         \k1lib\common\unset_serialize_var($this->controllerObject->getBoardFormErrorId());
                         \k1lib\common\unset_serialize_var("{$this->controllerObject->getBoardFormId()}-fkData");
-                        \k1lib\html\html_header_go($this->controllerObject->getControllerUrlRoot() . "/view-all");
+//                        \d($this->getFormAfterActionUrl('new'));
+//                        exit;
+                        if (is_numeric($last_inserted_id)) {
+                            $after_action_url = sprintf($this->getFormAfterActionUrl('new'), $last_inserted_id);
+                        } else {
+                            $new_text_key = \k1lib\sql\table_keys_to_text($form_vars, $this->controllerObject->getControllerTableConfig());
+                            $after_action_url = sprintf($this->getFormAfterActionUrl('new'), $new_text_key);
+                        }
+                        \k1lib\html\html_header_go($after_action_url);
+//                        \k1lib\html\html_header_go($this->controllerObject->getControllerUrlRoot() . "/view-all");
                     } else {
                         $do_check = TRUE;
                         $controller_errors[] = "No se ha podido insertar el registro.";
@@ -379,7 +408,21 @@ class BoardNew extends board_general_class {
          */
         global $form_errors, $controller_errors;
         $controller_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardErrorId());
-        $form_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardFormErrorId());
+        if (isset($_GET['silent']) && $_GET['silent'] == '1') {
+            $form_errors = [];
+        } else {
+            $form_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardFormErrorId());
+        }
+
+        /**
+         * FK SEARCH SYSTEM
+         */
+        $search_util_result = \k1lib\common\unserialize_var("search-util-result");
+        if ($search_util_result !== FALSE) {
+            $form_data = \k1lib\common\unserialize_var($this->controllerObject->getBoardFormId());
+            $form_data = $search_util_result + $form_data;
+            \k1lib\common\serialize_var($form_data, $this->controllerObject->getBoardFormId());
+        }
     }
 
     /*     * ******************
@@ -416,10 +459,33 @@ class BoardViewAll extends board_general_class {
      * 
      * ***************** */
 
-    public function setBoardTableMode() {
+    public function setBoardMode($mode = null, $parameter1 = null, $parameter2 = null, \k1lib\db\handler $db = null) {
+        if (empty($mode)) {
+            $mode = "table";
+        }
+        switch ($mode) {
+            case "table":
+                $this->setBoardTableMode($parameter1);
+                break;
+            case "sql":
+                $this->setSqlMode($parameter1, $parameter2, $db);
+                break;
+            default:
+                trigger_error("You hasn't choose a valid table type", E_USER_ERROR);
+                break;
+        }
+    }
+
+    public function setBoardTableMode($sql_filer) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
 
         $tableSQLFilter = $this->controllerObject->getDbTableMainSQLFilter();
+
+        if (!empty($tableSQLFilter)) {
+            $tableSQLFilter = $tableSQLFilter . " AND ($sql_filer)";
+        } else {
+            $tableSQLFilter = $sql_filer;
+        }
 
         switch ($this->controllerObject->getControllerType()) {
             case \k1lib\crud\CONTROLLER_TYPE_MAIN:
@@ -443,13 +509,14 @@ class BoardViewAll extends board_general_class {
         $this->HtmlTableObject->modeSQL($sql_query, $this->controllerObject->getControllerTableConfig());
     }
 
-    public function setSqlMode($sql, $tablesToGetConfig) {
+    public function setSqlMode($sql, $tablesToGetConfig, \k1lib\db\handler $db) {
         $this->test_object_exec_phase(\k1lib\oexec\OEXEC_PHASE_CONFIG, __METHOD__);
         $tablesToGetConfigArray = explode(",", $tablesToGetConfig);
         $tablesConfigArray = Array();
         foreach ($tablesToGetConfigArray as $tableName) {
             $configTable = \k1lib\sql\get_table_config($db, $tableName);
         }
+        $sql = sprintf($sql, $this->controllerObject->getForeignKeyWhereCondition());
         $this->HtmlTableObject->modeSQL($sql, $this->controllerObject->getControllerTableConfig());
     }
 
@@ -677,6 +744,16 @@ class BoardEdit extends board_general_class {
         // check and serialize post vars
 
         $form_vars = \k1lib\forms\check_all_incomming_vars($_POST, $this->controllerObject->getBoardFormId() . "-sqlResult");
+
+        /**
+         * FK SEARCH SYSTEM
+         */
+        $search_in = \k1lib\forms\check_single_incomming_var($_GET['search_in']);
+        if ($search_in !== NULL) {
+            $search_url = $search_in . "/?from=" . urlencode(\k1lib\urlrewrite\url_manager::get_app_link($this->controllerObject->getBoardRootUrl()));
+            \k1lib\html\html_header_go($search_url);
+        }
+
         if (isset($form_vars['magic_value'])) {
             //Magic test 
 
@@ -738,7 +815,22 @@ class BoardEdit extends board_general_class {
          */
         global $form_errors, $controller_errors;
         $controller_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardErrorId());
-        $form_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardFormErrorId());
+
+        if (isset($_GET['silent']) && $_GET['silent'] == '1') {
+            $form_errors = [];
+        } else {
+            $form_errors = \k1lib\common\unserialize_var($this->controllerObject->getBoardFormErrorId());
+        }
+
+        /**
+         * FK SEARCH SYSTEM
+         */
+        $search_util_result = \k1lib\common\unserialize_var("search-util-result");
+        if ($search_util_result !== FALSE) {
+            $form_data = \k1lib\common\unserialize_var($this->controllerObject->getBoardFormId() . "-sqlResult");
+            $form_data = $search_util_result + $form_data;
+            \k1lib\common\serialize_var($form_data, $this->controllerObject->getBoardFormId() . "-sqlResult");
+        }
     }
 
     /*     * ******************

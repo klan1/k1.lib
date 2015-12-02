@@ -1,5 +1,9 @@
 <?php
 
+namespace k1app;
+
+const CENSO2015_TABLE = "CENSO2015_OCTUBRE";
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,24 +16,31 @@ function getCensoRegistraduria($cedula, $source = "full") {
     global $db;
     $return = FALSE;
 
-    if (!is_numeric($cedula)) {
+    if (!is_numeric($cedula) || strlen($cedula) > 10) {
         trigger_error("La cedula recibida no es un numero valido");
         return FALSE;
     }
 
-
-    $result_local_array = getFromLocalCenso($cedula);
-    if (!isset($result_local_array['bajas'])) {
-        $result_cache_array = getFromLocalCache($cedula);
-        if (isset($result_cache_array['censo'])) {
-            $result_local_array['censo'] = $result_cache_array['censo'];
+    /**
+     * DUMMY TEST
+     */
+//    return get_from_registraduria($cedula);
+//    exit;
+    /**
+     * END DUMMY TEST
+     */
+    $result_cache_array = getFromLocalCache($cedula);
+    if (!isset($result_cache_array['censo'])) {
+//        $result_local_array = getFromLocalCenso($cedula);
+        $result_registraduria_array = get_from_registraduria($cedula);
+        if (isset($result_registraduria_array['censo'])) {
+            $result_array['censo'] = $result_registraduria_array['censo'];
         }
-        if (isset($result_cache_array['inscripcion'])) {
-            $result_local_array['inscripcion'] = $result_cache_array['inscripcion'];
-        }
+    } else {
+        $result_array['censo'] = $result_cache_array['censo'];
     }
 
-    if (!empty($result_cache_array) || (!empty($result_local_array))) {
+    if (!empty($result_array)) {
         $return = TRUE;
     }
     /**
@@ -39,7 +50,7 @@ function getCensoRegistraduria($cedula, $source = "full") {
 
     $censo_log = array(
         'cedula' => $cedula,
-        'http_response' => (isset($content1_info['http_code'])) ? $content1_info['http_code'] : -1,
+//        'http_response' => (isset($content1_info['http_code'])) ? $content1_info['http_code'] : -1,
 //        'proxy' => $actual_proxy,
         'script_time' => $fetch_run_time,
         'IP' => (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : "127.0.0.1",
@@ -48,7 +59,7 @@ function getCensoRegistraduria($cedula, $source = "full") {
     );
     \k1lib\sql\sql_insert($db, "CENSO2015_LOG", $censo_log);
     if ($return) {
-        return $result_local_array;
+        return $result_array;
     } else {
         return FALSE;
     }
@@ -63,18 +74,18 @@ function getFromLocalCache($cedula) {
     /**
      * Primero consultamos desde LOCAL
      */
-    $local_sql_query = "SELECT * FROM CENSO2015_JULIO WHERE cedula={$cedula}";
+    $local_sql_query = "SELECT * FROM " . CENSO2015_TABLE . " WHERE cedula={$cedula}";
     $local_sql_query_result = \k1lib\sql\sql_query($db, $local_sql_query, FALSE);
     if ($local_sql_query_result !== NULL) {
         $return_array['censo'] = $local_sql_query_result;
         $return = TRUE;
     }
-    $local_sql_query_insc = "SELECT * FROM CENSO2015_INSCRIPCIONES WHERE cedula={$cedula}";
-    $local_sql_query_result_insc = \k1lib\sql\sql_query($db, $local_sql_query_insc, TRUE);
-    if ($local_sql_query_result_insc !== NULL) {
-        $return_array['inscripcion'] = $local_sql_query_result_insc;
-        $return = TRUE;
-    }
+//    $local_sql_query_insc = "SELECT * FROM CENSO2015_INSCRIPCIONES WHERE cedula={$cedula}";
+//    $local_sql_query_result_insc = \k1lib\sql\sql_query($db, $local_sql_query_insc, TRUE);
+//    if ($local_sql_query_result_insc !== NULL) {
+//        $return_array['inscripcion'] = $local_sql_query_result_insc;
+//        $return = TRUE;
+//    }
     if ($return) {
         return $return_array;
     } else {
@@ -83,6 +94,8 @@ function getFromLocalCache($cedula) {
 }
 
 function getFromLocalCenso($cedula) {
+
+    return false;
     global $db;
     $return = FALSE;
 
@@ -152,6 +165,157 @@ function getFromLocalCenso($cedula) {
 //        $return_array['inscripcion'] = $local_sql_query_result_insc;
 //        $return = TRUE;
 //    }
+    if ($return) {
+        return $return_array;
+    } else {
+        return FALSE;
+    }
+}
+
+function get_from_registraduria($cedula) {
+    static $i = 0;
+
+    static $user_agents = array(
+        0 => "Mozilla/5.0 ;Windows NT 6.1; WOW64; Trident/7.0; rv:11.0; like Gecko",
+        1 => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13',
+        2 => 'Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.7.1.13) Gecko/20080310 Firefox/2.0.0.13',
+        3 => 'Mozilla/5.0 ;Windows NT 6.2; WOW64; rv:27.0; Gecko/20100101 Firefox/27.0',
+        4 => 'Mozilla/5.0 ;Windows NT 6.1; WOW64; rv:26.0; Gecko/20100101 Firefox/27.0',
+    );
+    $user_agents_index = rand(0, (count($user_agents) - 1));
+//    if (count($proxy_list_array) === 0) {
+    $proxy_file_content = file_get_contents(APP_RESOURCES_PATH . "/shell-scripts/proxy-list.txt");
+    $proxy_list_array = explode("\n", $proxy_file_content);
+//    }
+
+    $return = FALSE;
+    $actual_proxy = NULL;
+    $return_array['censo'] = array();
+
+    /**
+     * FORM LOAD TO CAPTURE IMPUT DATA
+     */
+    $click_position_x = rand(1, 138);
+    $click_position_y = rand(1, 24);
+    $registraduria_base = "http://www3.registraduria.gov.co/censo/_censoresultado.php";
+    $registraduria_url1 = "http://www3.registraduria.gov.co/censo/_censoresultado.php?nCedula={$cedula}&nCedulaH=&{$click_position_x}=0&y={$click_position_y}";
+
+
+    $rnd_cookie = md5(rand(100, 9999));
+
+    do {
+        /**
+         *  CURL CONFIG
+         */
+        $ch1 = curl_init($registraduria_url1);
+        curl_setopt($ch1, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($ch1, CURLOPT_TIMEOUT, 4); //timeout in seconds
+        curl_setopt($ch1, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch1, CURLOPT_BINARYTRANSFER, TRUE);
+        curl_setopt($ch1, CURLOPT_HEADER, TRUE);
+        curl_setopt($ch1, CURLOPT_USERAGENT, $user_agents[$user_agents_index]);
+//        curl_setopt($ch1, CURLOPT_COOKIEJAR, "/tmp/{$rnd_cookie}.txt");
+//        curl_setopt($ch1, CURLOPT_COOKIEFILE, "/tmp/{$rnd_cookie}.txt");
+        curl_setopt($ch1, CURLOPT_REFERER, $registraduria_base);
+        if (!empty($proxy_list_array[$i])) {
+            $actual_proxy = $proxy_list_array[$i];
+            d("Using proxy: " . $actual_proxy);
+            curl_setopt($ch1, CURLOPT_PROXY, $actual_proxy);
+        } else {
+            d("Using local IP");
+        }
+        /**
+         * CURL EXEC
+         */
+        $content1 = curl_exec($ch1);
+        $content1_info = curl_getinfo($ch1);
+        curl_close($ch1);
+
+        /**
+         * END CURL
+         */
+        if ((!empty($content1)) && ($content1_info['http_code'] == 200)) {
+            /**
+             * DIV with info to retrieve
+             */
+//            $pattern_info_div = '/<div id=\"info\">\s(.*?)\s<\\/div>/is';
+//            preg_match($pattern_info_div, $content1, $matches_form);
+//            if (isset($matches_form[1]) && !empty($matches_form[1])) {
+            $load_error = FALSE;
+//                $info_content = $matches_form[1];
+//                d($info_content);
+            /**
+             * INFO BASICA CENSO CON NOMBRE
+             */
+            $pattern_datos_censo = "/"
+                    . "\s*<tr.*>\R"
+                    . "\s*<td.*><strong>Departamento:<\/strong><\\/td>\R"
+                    . "\s*<td.*>([a-z]*)\s*<\\/td>\R"
+                    . "\s*<\\/tr>\R"
+                    . "\s*<tr.*>\R"
+                    . "\s*<td.*><strong>Municipio:<\/strong><\\/td>\R"
+                    . "\s*<td.*>([a-z]*)\s*<\\/td>\R"
+                    . "\s*<\\/tr>\R"
+                    . "\s*<tr.*>\R"
+                    . "\s*<td.*><strong>Puesto:<\/strong><\\/td>\R"
+                    . "\s*<td.*>(.*)<\\/td>\R"
+                    . "\s*<\\/tr>\R"
+                    . "\s*<tr.*>\R"
+                    . "\s*<td.*><.*>Direcci.n Puesto:<\/.*><\\/td>\R"
+                    . "\s*<td class=\"tblbgcolor\" valign='middle'><div style='float:left;'>(.*)\s*<\\/div>\s*<\\/td>\R"
+                    . "\s*<\\/tr>\R"
+                    . "\s*<tr.*>\R"
+                    . "\s*<td.*><strong>Fecha de inscripci.n:<\/strong><\/td>\R"
+                    . "\s*<td.*>(.*)\s*<\\/td>\R"
+                    . "\s*<\\/tr>\R"
+                    . "\s*<tr.*>\R"
+                    . "\s*<td.*><strong>Mesa<\/strong><\/td>\R"
+                    . "\s*<td.*>(.*)\s*<\\/td>\R"
+//                        . "\s*<\\/tr>\R"
+                    . "/i";
+            $matches1 = FALSE;
+            $info_found = preg_match($pattern_datos_censo, utf8_decode($content1), $matches1);
+
+            $data = [];
+            foreach ($matches1 as $key => $value) {
+                $data[$key] = trim($value);
+            }
+            if (isset($data[1])) {
+                $return = TRUE;
+                $return_array['censo']['cedula'] = $cedula;
+                $return_array['censo']['dpto'] = $data[1];
+                $return_array['censo']['mun'] = $data[2];
+                $return_array['censo']['puesto'] = $data[3];
+                $return_array['censo']['dir_puesto'] = $data[4];
+                $return_array['censo']['fecha_ingreso'] = $data[5];
+                $return_array['censo']['mesa'] = $data[6];
+                /**
+                 * SQL Insert for "cache" :P
+                 */
+                if (!empty($return_array['censo']['mesa'])) {
+                    GLOBAL $db;
+                    \k1lib\sql\sql_insert($db, CENSO2015_TABLE, $return_array['censo']);
+                } else {
+                    trigger_error("Mesa en blanco, no se almacenaraá el registro");
+                }
+            } else {
+//                trigger_error("Info no encontrada.");
+            }
+        } else {
+            $load_error = TRUE;
+            trigger_error("La peticion de la pagina de fuente ha retornado error: " . $content1_info["http_code"] . " o la respuesta ha sido en blanco");
+        }
+        /**
+         * PROXY INDEX 
+         */
+        if ($load_error) {
+            if (!isset($proxy_list_array[$i + 1])) {
+                $i = 0;
+            } else {
+                $i++;
+            }
+        }
+    } while ($load_error);
     if ($return) {
         return $return_array;
     } else {

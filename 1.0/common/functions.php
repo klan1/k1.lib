@@ -104,6 +104,16 @@ function clean_array_with_guide($array_to_clean, $guide_array) {
     return $array_to_clean;
 }
 
+function organize_array_with_guide($array_to_organize, $guide_array) {
+    $new_array = [];
+    foreach ($guide_array as $guide_key => $no_use) {
+        if (isset($array_to_organize[$guide_key])) {
+            $new_array[$guide_key] = $array_to_organize[$guide_key];
+        }
+    }
+    return $new_array;
+}
+
 /**
  * Takes an Array and transform in key1=value1&keyN=valueN. Is recursive.
  * @param Array $data_array The data to convert to GET URL
@@ -140,7 +150,6 @@ function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = 
     }
     return $url_parameters;
 }
-
 
 /**
  * Converts Booleans vars to text
@@ -213,6 +222,7 @@ function check_magic_value($name, $value_to_check) {
         trigger_error("Magic system REQUIRES the session system to be enabled and a session started", E_USER_ERROR);
     }
 }
+
 /**
  * Save a var to the selected method
  * @param miexd $var_to_save

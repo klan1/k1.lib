@@ -19,9 +19,18 @@ class temply {
     /**
      * Enable the engenie
      */
-    static public function enable() {
+    static public function enable($app_mode) {
         self::$enabled = TRUE;
         self::$output_places = array();
+        if ($app_mode == "web") {
+            \ob_start('\k1lib\templates\temply::parse_template_places');
+        }
+    }
+
+    static public function end($app_mode) {
+        if ($app_mode == "web") {
+            \ob_end_flush();
+        }
     }
 
     /**
@@ -115,7 +124,7 @@ class temply {
     static public function register_header($url, $relative = FALSE, $type = "auto") {
         self::is_enabled(true);
         if (!is_string($url)) {
-            \k1lib\common\show_error("The URL HAS to be a string", __FUNCTION__, TRUE);
+            \trigger_error("The URL HAS to be a string", E_USER_ERROR);
         }
         if ($type == "auto") {
             $file_extension = \k1lib\common\get_file_extension($url);
@@ -133,7 +142,7 @@ class temply {
                 $code = "<link href=\"%url%\" rel=\"stylesheet\" type=\"text/css\"/>";
                 break;
             default:
-                \k1lib\common\show_error("no extension detected on [$url] ", __FUNCTION__, TRUE);
+                \trigger_error("no extension detected on [$url] ", E_USER_ERROR);
                 return FALSE;
                 break;
         }
@@ -166,7 +175,7 @@ class temply {
                 $code = "<link href=\"%url%\" rel=\"stylesheet\" type=\"text/css\"/>";
                 break;
             default:
-                \k1lib\common\show_error("no extension detected on [$url] ", __FUNCTION__, TRUE);
+                \trigger_error("no extension detected on [$url] ", E_USER_ERROR);
                 return FALSE;
                 break;
         }
