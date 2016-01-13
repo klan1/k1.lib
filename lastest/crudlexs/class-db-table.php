@@ -240,9 +240,9 @@ class class_db_table {
         }
     }
 
-    public function get_data_keys($return_all = TRUE, $do_fields = TRUE) {
+    public function get_data_keys() {
         if ($this->generate_sql_query_keys()) {
-            $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql_keys, $return_all, $do_fields);
+            $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql_keys, TRUE, TRUE);
             if (!empty($query_result)) {
                 return $query_result;
             } else {
