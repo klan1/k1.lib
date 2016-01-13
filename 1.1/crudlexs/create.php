@@ -41,9 +41,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * Override the original function to create an empty array the meets the requiriements for all the metods
      * @return boolean
      */
-    public function load_db_table_data($blank_data = FALSE) {
+    public function load_db_table_data($return_all = TRUE, $do_fields = TRUE, $blank_data = FALSE) {
         if (!$blank_data) {
-            return parent::load_db_table_data();
+            return parent::load_db_table_data($return_all, $do_fields);
         } else {
             if (!$this->db_table->get_db_table_show_rule()) {
                 $this->db_table->set_db_table_show_rule("show-all");
@@ -308,9 +308,25 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         }
     }
 
+    /**
+     * This uses the post_incoming_array (Please verify it first) to make the insert.
+     * NOTE: If the table has multiple KEYS the auto_number HAS to be on the first position, if not, the redirection won't works.
+     * @param type $url_to_go
+     * @return boolean TRUE on sucess or FALSE on error.
+     */
     public function do_insert($url_to_go = null) {
-        if ($this->db_table->insert_data($this->post_incoming_array)) {
-            $new_key_text = \k1lib\sql\table_keys_to_text($this->post_incoming_array, $this->db_table->get_db_table_config());
+        $insert_result = $this->db_table->insert_data($this->post_incoming_array);
+        $last_inserted_id = [];
+
+        if (is_numeric($insert_result)) {
+            foreach ($this->db_table->get_db_table_config() as $field => $config) {
+                if ($config['extra'] == 'auto_increment') {
+                    $last_inserted_id[$field] = $insert_result;
+                }
+            }
+        }
+        if ($insert_result) {
+            $new_key_text = \k1lib\sql\table_keys_to_text(array_merge($last_inserted_id, $this->post_incoming_array), $this->db_table->get_db_table_config());
             if (!empty($url_to_go)) {
                 $url_to_go = sprintf($url_to_go, $new_key_text);
                 $this->set_auth_code($new_key_text);
@@ -339,7 +355,8 @@ class updating extends \k1lib\crudlexs\creating {
             if (!empty($url_to_go)) {
                 $url_to_go = sprintf($url_to_go, $row_key_text);
                 $this->set_auth_code($row_key_text);
-                \k1lib\html\html_header_go($url_to_go . "?auth-code={$this->get_auth_code()}");
+                \d($url_to_go . "?auth-code={$this->get_auth_code()}");
+//                \k1lib\html\html_header_go($url_to_go . "?auth-code={$this->get_auth_code()}");
             }
             return TRUE;
         } else {

@@ -358,13 +358,6 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
 }
 
 function sql_insert(\PDO $db, $table, $data) {
-    /*
-     * TODO: make this secure with $data values confirmation through \k1lib\forms\form_check_values()
-     */
-    /*
-     * TODO: make data verification over the foreign keys to show more precise errors
-     */
-    global $form_errors, $controller_errors;
     if (\k1lib\db\handler::is_enabled()) {
         if (is_array($data)) {
             if (!@is_array($data[0])) {
@@ -374,9 +367,7 @@ function sql_insert(\PDO $db, $table, $data) {
                 $data_string = array_to_sql_values($data);
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
-            $form_errors[] = $insert_sql;
-            $insert = $db->exec($insert_sql) or ( $controller_errors[] = ($db->errorInfo()));
-            $controller_errors[] = $insert_sql;
+            $insert = $db->exec($insert_sql) or ( trigger_error("Error on Insert stament : " . $db->errorInfo(), E_USER_WARNING));
             if ($insert) {
                 $last_insert_sql = "SELECT LAST_INSERT_ID() as 'LAST_ID'";
                 $last_insert_result = sql_query($db, $last_insert_sql, FALSE);
