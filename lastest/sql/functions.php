@@ -181,7 +181,7 @@ AND table_name = '{$table}'";
              */
 //            $field_row['min'] = defined(DB_MIN_FIELD_LENGTH) ? DB_MIN_FIELD_LENGTH : FALSE;
         }
-// REQUIRED-FIELD
+// NEW 2016: REQUIRED-FIELD
         if ($field_row['null'] === TRUE) {
             $field_row['required'] = FALSE;
         } else {
@@ -195,15 +195,22 @@ AND table_name = '{$table}'";
         if (!isset($field_row['link-field'])) {
             $field_row['link-field'] = FALSE;
         }
-// ALIAS-FIELD
+// NEW 2016: ALIAS-FIELD
         if (!isset($field_row['alias'])) {
             $field_row['alias'] = FALSE;
         }
 // show board
+        /**
+         * Show rules
+         */
         $show_array_attribs[] = 'show-table';
         $show_array_attribs[] = 'show-new';
         $show_array_attribs[] = 'show-edit';
         $show_array_attribs[] = 'show-view';
+        // 2016 with NEW RULES !!
+        $show_array_attribs[] = 'show-search';
+        $show_array_attribs[] = 'show-export';
+
 //there is not show-all defined
         if (!isset($field_row['show-all'])) {
             //FIX: should be FALSE

@@ -11,18 +11,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      *
      * @var Array
      */
-    protected $headers_array = [];
-
-    /**
-     *
-     * @var Array
-     */
-    protected $blank_row_array = [];
-
-    /**
-     *
-     * @var Array
-     */
     protected $post_incoming_array = [];
 
     /**
@@ -41,24 +29,25 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * Override the original function to create an empty array the meets the requiriements for all the metods
      * @return boolean
      */
-    public function load_db_table_data($return_all = TRUE, $do_fields = TRUE, $blank_data = FALSE) {
+    public function load_db_table_data($blank_data = FALSE) {
         if (!$blank_data) {
-            return parent::load_db_table_data($return_all, $do_fields);
+            return parent::load_db_table_data();
         } else {
             if (!$this->db_table->get_db_table_show_rule()) {
                 $this->db_table->set_db_table_show_rule("show-all");
             }
+            $headers_array = [];
+            $blank_row_array = [];
             $show_rule = $this->db_table->get_db_table_show_rule();
-
             foreach ($this->db_table->get_db_table_config() as $field => $config) {
                 if ($config[$show_rule]) {
-                    $this->headers_array[] = $field;
-                    $this->blank_row_array[$field] = "";
+                    $headers_array[] = $field;
+                    $blank_row_array[$field] = "";
                 }
             }
-            if (!empty($this->headers_array) && !empty($this->blank_row_array)) {
-                $this->db_table_data[0] = $this->headers_array;
-                $this->db_table_data[1] = $this->blank_row_array;
+            if (!empty($headers_array) && !empty($blank_row_array)) {
+                $this->db_table_data[0] = $headers_array;
+                $this->db_table_data[1] = $blank_row_array;
                 $this->db_table_data_filtered = $this->db_table_data;
                 return TRUE;
             } else {
@@ -140,6 +129,8 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 case 'enum': {
                         $enum_data = $this->db_table->get_enum_options($field);
                         $input_tag = new \k1lib\html\select_tag($this->encrypt_field_name($field));
+                        $input_tag->append_option("", "Seleccione una opcion", $selected);
+
                         foreach ($enum_data as $value) {
                             // SELETED work around
                             if ($this->db_table_data[$row_to_apply][$field] == $value) {
@@ -355,8 +346,7 @@ class updating extends \k1lib\crudlexs\creating {
             if (!empty($url_to_go)) {
                 $url_to_go = sprintf($url_to_go, $row_key_text);
                 $this->set_auth_code($row_key_text);
-                \d($url_to_go . "?auth-code={$this->get_auth_code()}");
-//                \k1lib\html\html_header_go($url_to_go . "?auth-code={$this->get_auth_code()}");
+                \k1lib\html\html_header_go($url_to_go . "?auth-code={$this->get_auth_code()}");
             }
             return TRUE;
         } else {

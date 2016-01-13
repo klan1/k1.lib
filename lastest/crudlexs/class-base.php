@@ -117,11 +117,11 @@ class crudlexs_base_with_data extends crudlexs_base {
      * 
      * @return Array Data with data[0] as table fields and data[1..n] for data rows. FALSE on no data.
      */
-    public function load_db_table_data($return_all = TRUE, $do_fields = TRUE) {
-        $this->db_table_data = $this->db_table->get_data($return_all, $do_fields);
+    public function load_db_table_data() {
+        $this->db_table_data = $this->db_table->get_data();
         if ($this->db_table_data) {
             $this->db_table_data_filtered = $this->db_table_data;
-            $this->db_table_data_keys = $this->db_table->get_data_keys($return_all, $do_fields);
+            $this->db_table_data_keys = $this->db_table->get_data_keys();
             return TRUE;
         } else {
             return FALSE;
