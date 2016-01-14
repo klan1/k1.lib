@@ -169,7 +169,7 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
     return $table_object->generate_tag();
 }
 
-function get_link_button($linkTo, $label, $mini = TRUE, $inline = TRUE, $keep_get_vars = TRUE) {
+function get_link_button($linkTo, $label, $mini = FALSE, $inline = TRUE, $keep_get_vars = TRUE) {
     if ($linkTo == NULL) {
         return NULL;
     } elseif (!(is_string($linkTo) && is_string($label))) {
@@ -274,7 +274,7 @@ function get_link_button($linkTo, $label, $mini = TRUE, $inline = TRUE, $keep_ge
             break;
         case "new":
             $button_icon = "fi-plus";
-            $theme = "";
+            $theme = "success";
             break;
         case "edit":
             $button_icon = "fi-clipboard-pencil";

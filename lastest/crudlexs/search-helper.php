@@ -16,7 +16,7 @@ class search_helper extends creating {
      */
     protected $db_table_data_keys = FALSE;
 
-    // FILTERS
+// FILTERS
     public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
         parent::__construct($db_table, FALSE);
 
@@ -29,10 +29,15 @@ class search_helper extends creating {
     public function do_code() {
         if ($this->catch_post_data()) {
             $this->put_post_data_on_table_data();
-            $this->apply_label_filter();
             $this->db_table->set_query_filter($this->post_incoming_array, FALSE);
         }
-        return parent::do_code();
+        $this->apply_label_filter();
+
+
+        $div_callout = new \k1lib\html\div_tag("reveal","search-modal");
+        $div_callout->set_attrib("data-reveal", TRUE);
+        $div_callout->set_value(parent::do_code());
+        return $div_callout->generate_tag();
     }
 
 }

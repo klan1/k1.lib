@@ -38,6 +38,8 @@ unset($k1lib_local_dir);
 
 const VERSION = "0.5";
 
+header("PHP Framework: K1.lib V" . VERSION);
+header("Developed by: Klan1 Network | http://www.klan1.com");
 /**
  * This MUST to be reflected on the .htaccess, IF NOT rewriting WONT work!
  */

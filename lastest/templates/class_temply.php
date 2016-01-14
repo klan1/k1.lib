@@ -156,10 +156,10 @@ class temply {
         }
         switch ($file_extension) {
             case 'js':
-                $code = "<script src=\"%url%\" type=\"text/javascript\"></script>";
+                $code = "<script src=\"%url%\"></script>";
                 break;
             case 'css':
-                $code = "<link href=\"%url%\" rel=\"stylesheet\" type=\"text/css\"/>";
+                $code = "<link href=\"%url%\" rel=\"stylesheet\" />";
                 break;
             default:
                 \trigger_error("no extension detected on [$url] ", E_USER_ERROR);
@@ -189,10 +189,10 @@ class temply {
         }
         switch ($file_extension) {
             case 'js':
-                $code = "<script src=\"%url%\" type=\"text/javascript\"></script>";
+                $code = "<script src=\"%url%\"></script>";
                 break;
             case 'css':
-                $code = "<link href=\"%url%\" rel=\"stylesheet\" type=\"text/css\"/>";
+                $code = "<link href=\"%url%\" rel=\"stylesheet\">";
                 break;
             default:
                 \trigger_error("no extension detected on [$url] ", E_USER_ERROR);

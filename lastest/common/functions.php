@@ -68,7 +68,7 @@ function get_message($msg, $title = "", $type = "info", $app_mode = "web") {
  * @param String $type This should be "success", "warning", "info", "alert" or NULL. This is a Foundation CLASS.
  * @param String $app_mode this should be "web" to return HTML, is not will return plain text format.
  */
-function show_message($msg, $title = "", $type = "info", $app_mode = "web") {
+function show_message($msg, $title = "", $type = "", $app_mode = "web") {
     echo get_message($msg, $title, $type, $app_mode);
 }
 
