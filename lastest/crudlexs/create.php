@@ -26,6 +26,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     protected $post_validation_errors = [];
 
     /**
+     *
+     * @var Boolean
+     */
+    protected $enable_foundation_form_check = FALSE;
+
+    /**
      * Override the original function to create an empty array the meets the requiriements for all the metods
      * @return boolean
      */
@@ -119,7 +125,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * @param Int $row_to_apply
      */
     public function insert_inputs_on_data_row($row_to_apply = 1, $create_labels_on_headers = TRUE) {
-
         /**
          * VALUES
          */
@@ -129,7 +134,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 case 'enum': {
                         $enum_data = $this->db_table->get_enum_options($field);
                         $input_tag = new \k1lib\html\select_tag($this->encrypt_field_name($field));
-                        $input_tag->append_option("", "Seleccione una opcion", $selected);
+                        $input_tag->append_option("", "Seleccione una opción");
 
                         foreach ($enum_data as $value) {
                             // SELETED work around
@@ -142,8 +147,8 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                         }
                     } break;
                 default: {
-                        $input_tag = new \k1lib\html\input_tag("text", $this->encrypt_field_name($field), $value, "k1-input-insert");
-                        $input_tag->set_attrib("placeholder", "write some");
+                        $input_tag = new \k1lib\html\input_tag("text", $this->encrypt_field_name($field), NULL, "k1-input-insert");
+                        $input_tag->set_attrib("placeholder", "");
                     } break;
             }
             /**
@@ -152,7 +157,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             if ($create_labels_on_headers) {
                 $label_tag = new \k1lib\html\label_tag($this->db_table_data_filtered[0][$field_index], $this->encrypt_field_name($field));
                 if (isset($this->post_validation_errors[$field])) {
-                    $label_tag->set_attrib("class", "error");
+                    $label_tag->set_attrib("class", "is-invalid-label");
                 }
                 $this->db_table_data_filtered[0][$field_index] = $label_tag->generate_tag();
             }
@@ -161,10 +166,10 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              */
             if (isset($this->post_validation_errors[$field])) {
 
-                $span_error = new \k1lib\html\span_tag("error");
+                $span_error = new \k1lib\html\span_tag("form-error is-visible");
                 $span_error->set_value($this->post_validation_errors[$field]);
                 $input_tag->post_code($span_error->generate_tag());
-                $input_tag->set_attrib("class", "error", TRUE);
+                $input_tag->set_attrib("class", "is-invalid-input", TRUE);
             }
             /**
              * END ERROR TESTING
@@ -178,7 +183,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $field_index++;
             unset($input_tag);
         }
-//        $this->apply_html_tag_on_field_filter($input_tag, crudlexs_base::USE_ALL_FIELDS, "name");
     }
 
     /**
@@ -243,37 +247,50 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         }
     }
 
-    public function do_code() {
+    public function enable_foundation_form_check() {
+        $this->enable_foundation_form_check = TRUE;
+    }
+
+    public function do_html_object() {
         if (!empty($this->db_table_data_filtered)) {
-            /**
-             * Hidden input
-             */
-            $hidden_input = new \k1lib\html\input_tag("hidden", "k1magic", "123123");
+            $this->insert_inputs_on_data_row();
+
             /**
              * DIV content
              */
-            $div_content = new \k1lib\html\div_tag();
-            $this->insert_inputs_on_data_row();
+            $div_content = new \k1lib\html\div_tag("k1-form-generator");
             /**
              * FORM time !!
              */
             $html_form = new \k1lib\html\form_tag();
+            $html_form->append_to($div_content);
+            if ($this->enable_foundation_form_check) {
+                $html_form->set_attrib("data-abide", TRUE);
+            }
+
+            /**
+             * Hidden input
+             */
+            $hidden_input = new \k1lib\html\input_tag("hidden", "k1magic", "123123");
+            $hidden_input->append_to($html_form);
             // FORM LAYOUT
             $row_column_number = 1;
             $key_index = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
-                // <div class="row">
+                // Variable variables names
                 $row_column = "div_row" . $row_column_number;
-                ${$row_column} = new \k1lib\html\div_tag("row");
                 $actual_row_column = "div_row_column_" . $row_column_number;
+
+                // <div class="row">
+                ${$row_column} = new \k1lib\html\div_tag("row");
+                ${$row_column}->append_to($html_form);
+
                 // <div class="large-12 columns">
                 ${$actual_row_column} = new \k1lib\html\div_tag("large-12 columns");
+                ${$actual_row_column}->append_to(${$row_column});
                 ${$actual_row_column}->set_value($this->db_table_data_filtered[0][$key_index], TRUE);
                 ${$actual_row_column}->set_value($value, TRUE);
                 // put on div_row
-                ${$row_column}->append_child(${$actual_row_column});
-                $div_content->append_child(${$row_column});
-
                 $row_column++;
                 $key_index++;
             }
@@ -284,16 +301,14 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              * BUTTONS
              */
             $div_buttons = new \k1lib\html\div_tag("row text-center");
+            $div_buttons->append_to($html_form);
             $submit_button = new \k1lib\html\input_tag("submit", "k1send", "Enviar");
             $submit_button->set_attrib("class", "small button success");
-            $div_buttons->append_child($submit_button);
+            $submit_button->append_to($div_buttons);
             /**
              * Prepare output
              */
-            $html_form->append_child($hidden_input);
-            $html_form->append_child($div_content);
-            $html_form->append_child($div_buttons);
-            return $html_form->generate_tag();
+            return $div_content;
         } else {
             return FALSE;
         }
@@ -319,7 +334,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         if ($insert_result) {
             $new_key_text = \k1lib\sql\table_keys_to_text(array_merge($last_inserted_id, $this->post_incoming_array), $this->db_table->get_db_table_config());
             if (!empty($url_to_go)) {
-                $url_to_go = sprintf($url_to_go, $new_key_text);
+                $url_to_go = str_replace("%row_key%", $new_key_text, $url_to_go);
                 $this->set_auth_code($new_key_text);
                 \k1lib\html\html_header_go($url_to_go . "?auth-code={$this->get_auth_code()}");
             }
@@ -344,7 +359,7 @@ class updating extends \k1lib\crudlexs\creating {
             );
             $row_key_text = \k1lib\sql\table_keys_to_text($merged_key_array, $this->db_table->get_db_table_config());
             if (!empty($url_to_go)) {
-                $url_to_go = sprintf($url_to_go, $row_key_text);
+                $url_to_go = str_replace("%row_key%", $row_key_text, $url_to_go);
                 $this->set_auth_code($row_key_text);
                 \k1lib\html\html_header_go($url_to_go . "?auth-code={$this->get_auth_code()}");
             }

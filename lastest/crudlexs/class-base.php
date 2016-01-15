@@ -4,7 +4,7 @@ namespace k1lib\crudlexs;
 
 interface crudlexs_base_interface {
 
-    public function do_code();
+    public function do_html_object();
 }
 
 class crudlexs_base {
@@ -20,6 +20,12 @@ class crudlexs_base {
      */
     protected $db_table;
 
+    /**
+     *
+     * @var \k1lib\html\div_tag
+     */
+    protected $html_object;
+
     static function get_k1magic_value() {
         return self::$k1magic_value;
     }
@@ -30,6 +36,7 @@ class crudlexs_base {
 
     public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
         $this->db_table = $db_table;
+        $this->html_object = new \k1lib\html\div_tag();
     }
 
     /**
@@ -117,7 +124,10 @@ class crudlexs_base_with_data extends crudlexs_base {
      * 
      * @return Array Data with data[0] as table fields and data[1..n] for data rows. FALSE on no data.
      */
-    public function load_db_table_data() {
+    public function load_db_table_data($show_rule = null) {
+        if (!empty($show_rule)) {
+            $this->db_table->set_db_table_show_rule($show_rule);
+        }
         $this->db_table_data = $this->db_table->get_data();
         if ($this->db_table_data) {
             $this->db_table_data_filtered = $this->db_table_data;
@@ -164,19 +174,20 @@ class crudlexs_base_with_data extends crudlexs_base {
                     if ($index === 0) {
                         continue;
                     }
-                    if (isset($row_data[$field_to_change]) === false) {
+                    if (!array_key_exists($field_to_change, $row_data)) {
 //                        trigger_error("The field to change ($field_to_change) do no exist ", E_USER_WARNING);
                         continue;
                     } else {
-//                    $key_array = \k1lib\sql\get_keys_array_from_row_data($row_data, $db_table_config);
                         $tag_object->set_value($row_data[$field_to_change]);
                         $tag_html = $tag_object->generate_tag();
                         if (!empty($this->db_table_data_keys)) {
                             $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                             $auth_code = md5(\k1lib\MAGIC_VALUE . $key_array_text);
-                            $tag_html = sprintf($tag_html, $key_array_text, $auth_code);
+                            $tag_html = str_replace("%row_key%", $key_array_text, $tag_html);
+                            $tag_html = str_replace("%field_value%", $row_data[$field_to_change], $tag_html);
+                            $tag_html = str_replace("%auth_code%", $auth_code, $tag_html);
+//                            $tag_html = sprintf($tag_html, $key_array_text, $auth_code);
                         }
-//                        d($link_with_key);
                         $this->db_table_data_filtered[$index][$field_to_change] = $tag_html;
                     }
                 }

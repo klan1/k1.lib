@@ -6,6 +6,17 @@
 
 namespace k1lib\html {
 
+    class html_dummy_class extends html_tag_base {
+        /**
+         * 
+         * @param string $html_code
+         */
+        public function __construct($html_code) {
+            $this->value = $html_code;
+        }
+
+    }
+
     class a_tag extends html_tag {
 
         /**
