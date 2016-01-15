@@ -6,40 +6,111 @@
 
 namespace k1lib\html {
 
+    class html_tag_base {
+
+        /** @var String */
+        protected $tag_code = "";
+
+        /** @var String */
+        protected $pre_code = "";
+
+        /** @var String */
+        protected $post_code = "";
+
+        /** @var String */
+        protected $value = "";
+
+        /** @var Boolean */
+        protected $has_child = FALSE;
+
+        /** @var Array */
+        protected $childs = array();
+
+        /**
+         * Chains an html tag into the actual html tag
+         * @param html_tag $chlid_object
+         */
+        public function append_child($chlid_object) {
+            $this->childs[] = $chlid_object;
+            $this->has_child = TRUE;
+        }
+
+        public function append_to($html_object) {
+            $html_object->append_child($this);
+        }
+
+        /**
+         * Add free TEXT before the generated TAG
+         * @param String $pre_code
+         */
+        function pre_code($pre_code) {
+            $this->pre_code = $pre_code;
+        }
+
+        /**
+         * Add free TEXT after the generated TAG
+         * @param String $post_code
+         */
+        function post_code($post_code) {
+            $this->post_code = $post_code;
+        }
+
+        /**
+         * Set the VALUE for the TAG, as <TAG value="$value" /> or <TAG>$value</TAG>
+         * @param String $value
+         */
+        public function set_value($value, $append = false) {
+//            $this->value = $value;
+            $this->value = (($append === TRUE) && (!empty($this->value)) ) ? ($this->value . " " . $value) : ($value);
+        }
+
+        public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
+            $html_code = "\n";
+
+            if (($with_childs) && (count($this->childs) >= 1)) {
+                //lets move with index numbers begining from 0
+                $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
+//            d($this->childs,TRUE);
+                foreach ($this->childs as $index => &$child_object) {
+                    if ($index > $n_childs) {
+                        break;
+                    }
+                    $html_code .= "\n" . $child_object->generate_tag();
+                }
+            }
+            $html_code .= $this->get_value();
+
+            $this->tag_code = $this->pre_code . $html_code . $this->post_code;
+
+            if ($do_echo) {
+                echo $this->tag_code;
+            } else {
+                return $this->tag_code;
+            }
+        }
+
+        public function get_tag_code() {
+            return $this->tag_code;
+        }
+
+    }
+
     /**
      * HTML Tag abstraction
      */
-    class html_tag {
+    class html_tag extends html_tag_base {
 
         /** @var String */
-        private $tag_name = NULL;
-
-        /** @var String */
-        private $tag_code = "";
+        protected $tag_name = NULL;
 
         /** @var Boolean */
-        private $is_selfclosed = FALSE;
+        protected $is_selfclosed = FALSE;
 
         /** @var Array */
-        private $attributes = array();
+        protected $attributes = array();
 
         /** @var String */
-        private $attributes_code = "";
-
-        /** @var Boolean */
-        private $has_child = FALSE;
-
-        /** @var Array */
-        private $childs = array();
-
-        /** @var String */
-        private $value = "";
-
-        /** @var String */
-        private $pre_code = "";
-
-        /** @var String */
-        private $post_code = "";
+        protected $attributes_code = "";
 
         /**
          * Constructor with $tag_name and $selfclosed options for beginning
@@ -59,15 +130,6 @@ namespace k1lib\html {
                 trigger_error("Self closed value has to be boolean", E_USER_WARNING);
             }
             $this->set_attrib("class", "k1-{$tag_name}-object");
-        }
-
-        /**
-         * Chains an html tag into the actual html tag
-         * @param html_tag $chlid_object
-         */
-        public function append_child(&$chlid_object) {
-            $this->childs[] = $chlid_object;
-            $this->has_child = TRUE;
         }
 
         /**
@@ -108,15 +170,6 @@ namespace k1lib\html {
             } else {
                 return FALSE;
             }
-        }
-
-        /**
-         * Set the VALUE for the TAG, as <TAG value="$value" /> or <TAG>$value</TAG>
-         * @param String $value
-         */
-        public function set_value($value, $append = false) {
-//            $this->value = $value;
-            $this->value = (($append === TRUE) && (!empty($this->value)) ) ? ($this->value . " " . $value) : ($value);
         }
 
         /**
@@ -173,7 +226,7 @@ namespace k1lib\html {
          * @param Int $n_childs
          * @return string Won't return any if is set $do_echo = TRUE
          */
-        public function generate_tag($do_echo = FALSE, $with_childs = TRUE, $n_childs = 0) {
+        public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
             $html_code = "\n<{$this->tag_name} ";
             $html_code .= $this->generate_attributes_code();
             if ($this->is_selfclosed) {
@@ -220,26 +273,6 @@ namespace k1lib\html {
             } else {
                 return $html_code;
             }
-        }
-
-        public function get_tag_code() {
-            return $this->tag_code;
-        }
-
-        /**
-         * Add free TEXT before the generated TAG
-         * @param String $pre_code
-         */
-        function pre_code($pre_code) {
-            $this->pre_code = $pre_code;
-        }
-
-        /**
-         * Add free TEXT after the generated TAG
-         * @param String $post_code
-         */
-        function post_code($post_code) {
-            $this->post_code = $post_code;
         }
 
     }

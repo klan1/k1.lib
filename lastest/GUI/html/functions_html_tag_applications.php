@@ -77,7 +77,6 @@ function label_input_text_combo($field_name, $value, $label, $required = FALSE, 
 function label_text_combo($label, $value) {
 
 //    function \k1lib\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
-
 //    $label_object = new html_classes\label_tag($label, "", "right inline");
 
     $html_template = load_html_template("label-input-combo");
@@ -85,6 +84,7 @@ function label_text_combo($label, $value) {
 
     return $html_code;
 }
+
 /**
  * Using a HTML Template makes the couple of label-inpunt as 2 columns
  * @param String $field_name
@@ -98,7 +98,6 @@ function label_text_combo($label, $value) {
 function label_text_combo_2columns($label, $value) {
 
 //    function \k1lib\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
-
 //    $label_object = new html_classes\label_tag($label, "", "right inline");
 
     $html_template = load_html_template("row-2-columns");
@@ -169,6 +168,15 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
     return $table_object->generate_tag();
 }
 
+/**
+ * 
+ * @param String $linkTo
+ * @param String $label
+ * @param Boolean $mini
+ * @param Boolean $inline
+ * @param Boolean $keep_get_vars
+ * @return \k1lib\html\a_tag
+ */
 function get_link_button($linkTo, $label, $mini = FALSE, $inline = TRUE, $keep_get_vars = TRUE) {
     if ($linkTo == NULL) {
         return NULL;
@@ -176,64 +184,17 @@ function get_link_button($linkTo, $label, $mini = FALSE, $inline = TRUE, $keep_g
         die(__FUNCTION__ . " The parameters are not string");
     }
 
-    $possible_strings = array(
-        "export" => array(
-            "exportar",
-            "export",
-        ),
-        "back" => array(
-            "back",
-            "volver",
-            "atras",
-            "retroceder",
-            "regresar",
-        ),
-        "go" => array(
-            "ir",
-            "go",
-        ),
-        "ok" => array(
-            "aceptar",
-            "si",
-            "yes",
-            "accept",
-        ),
-        "cancel" => array(
-            "cancelar",
-            "cancel",
-            "no",
-            "not",
-        ),
-        "view" => array(
-            "ver",
-            "mostrar",
-            "view",
-            "show",
-        ),
-        "new" => array(
-            "agregar",
-            "nuev",
-            "new",
-            "add",
-            "añadir",
-            "crear",
-            "generar",
-        ),
-        "edit" => array(
-            "edit",
-            "editar",
-            "cambiar",
-            "change",
-        ),
-        "delete" => array(
-            "delete",
-            "borrar",
-            "eliminar",
-            "suprimir",
-            "quitar",
-            "cancelar",
-        ),
-    );
+    $possible_strings = [
+        "export" => ["exportar", "export",],
+        "back" => ["back", "volver", "atras", "retroceder", "regresar"],
+        "go" => ["ir", "go"],
+        "ok" => ["aceptar", "si", "yes", "accept",],
+        "cancel" => ["cancelar", "cancel", "no", "not"],
+        "view" => ["ver", "mostrar", "view", "show"],
+        "new" => ["agregar", "nuev", "new", "add", "añadir", "crear", "generar"],
+        "edit" => ["edit", "editar", "cambiar", "change"],
+        "delete" => ["delete", "borrar", "eliminar", "suprimir", "quitar", "cancelar"],
+    ];
 
     $label_low = strtolower($label);
     $possible_action = "";
@@ -307,8 +268,9 @@ function get_link_button($linkTo, $label, $mini = FALSE, $inline = TRUE, $keep_g
         $button_object->set_attrib("class", "tiny", TRUE);
     }
 
-    return $button_object->generate_tag();
+    return $button_object;
 }
+
 
 function make_form_label_input_layout($row_data, $extra_css_clasess = "", $row_data_headers = null) {
     $form_layout = "";
