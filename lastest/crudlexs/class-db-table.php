@@ -131,8 +131,12 @@ class class_db_table {
         $this->query_row_count_limit = $row_count;
     }
 
-    public function set_query_filter($filter_array, $exact_filter = FALSE) {
-        $clean_filter_array = \k1lib\common\clean_array_with_guide($filter_array, $this->db_table_config);
+    public function set_query_filter($filter_array, $exact_filter = FALSE, $do_clean_array = TRUE) {
+        if ($do_clean_array) {
+            $clean_filter_array = \k1lib\common\clean_array_with_guide($filter_array, $this->db_table_config);
+        } else {
+            $clean_filter_array = $filter_array;
+        }
         if (empty($clean_filter_array)) {
             return FALSE;
         } else {

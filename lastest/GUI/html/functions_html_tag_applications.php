@@ -271,7 +271,6 @@ function get_link_button($linkTo, $label, $mini = FALSE, $inline = TRUE, $keep_g
     return $button_object;
 }
 
-
 function make_form_label_input_layout($row_data, $extra_css_clasess = "", $row_data_headers = null) {
     $form_layout = "";
     $index = 0;
@@ -287,8 +286,12 @@ function make_row_2columns_layout($row_data, $extra_css_clasess = "", $row_data_
     $form_layout = "";
     $index = 0;
     foreach ($row_data as $field => $value) {
-        $form_layout .= label_text_combo_2columns($row_data_headers[$index], $value);
-        $index++;
+        if (isset($row_data_headers) && array_key_exists($index, $row_data_headers)) {
+            $form_layout .= label_text_combo_2columns($row_data_headers[$index], $value);
+            $index++;
+        } else {
+            $form_layout .= label_text_combo_2columns($field, $value);
+        }
     }
 //    return $div_row;
     return $form_layout;
