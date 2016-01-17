@@ -7,6 +7,7 @@
 namespace k1lib\html {
 
     class html_dummy_class extends html_tag_base {
+
         /**
          * 
          * @param string $html_code
@@ -327,7 +328,7 @@ namespace k1lib\html {
     }
 
     /**
-     * NOT USED YET
+     * FORM
      */
     class form_tag extends html_tag {
 
@@ -340,6 +341,48 @@ namespace k1lib\html {
             $this->set_attrib("enctype", "application/x-www-form-urlencoded");
             $this->set_attrib("novalidate", FALSE);
             $this->set_attrib("target", "_self");
+        }
+        
+        function append_submit_button($label = "Enviar") {
+            $button = new input_tag("submit", "submit-it", $label, "button success");
+
+            $this->append_child($button);
+           
+        }
+
+    }
+
+    /**
+     * P
+     */
+    class p_tag extends html_tag {
+
+        function __construct($class = "") {
+            parent::__construct("p", FALSE);
+            $this->set_attrib("class", $class);
+        }
+
+    }
+
+    /**
+     * P
+     */
+    class fieldset_tag extends html_tag {
+
+        function __construct($legend) {
+            parent::__construct("fieldset", FALSE);
+            $this->set_attrib("class", "fieldset");
+            $legend = new legend_tag($legend);
+            $this->append_child($legend);
+        }
+
+    }
+
+    class legend_tag extends html_tag {
+
+        function __construct($value) {
+            parent::__construct("legend", FALSE);
+            $this->set_value($value);
         }
 
     }
