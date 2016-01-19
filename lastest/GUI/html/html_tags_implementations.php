@@ -342,12 +342,13 @@ namespace k1lib\html {
             $this->set_attrib("novalidate", FALSE);
             $this->set_attrib("target", "_self");
         }
-        
-        function append_submit_button($label = "Enviar") {
-            $button = new input_tag("submit", "submit-it", $label, "button success");
 
-            $this->append_child($button);
-           
+        function append_submit_button($label = "Enviar", $just_return = FALSE) {
+            $button = new input_tag("submit", "submit-it", $label, "button success");
+            if (!$just_return) {
+                $this->append_child($button);
+            }
+            return $button;
         }
 
     }

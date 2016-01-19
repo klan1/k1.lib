@@ -174,12 +174,17 @@ AND table_name = '{$table}'";
         if (!isset($field_row['label'])) {
             $field_row['label'] = strtoupper(substr($field_name, 0, 1)) . (substr($field_name, 1));
         }
+        // ENUM FIX
         if (!isset($field_row['min'])) {
-            $field_row['min'] = FALSE;
+            $field_row['min'] = 0;
             /**
              * TODO: Make option system for this
              */
 //            $field_row['min'] = defined(DB_MIN_FIELD_LENGTH) ? DB_MIN_FIELD_LENGTH : FALSE;
+        }
+        if ($field_row['type'] == "enum") {
+            $field_row['min'] = 1;
+            $field_row['max'] = 999;
         }
 // NEW 2016: REQUIRED-FIELD
         if ($field_row['null'] === TRUE) {
@@ -189,15 +194,15 @@ AND table_name = '{$table}'";
         }
 // LABEL-FIELD
         if (!isset($field_row['label-field'])) {
-            $field_row['label-field'] = FALSE;
+            $field_row['label-field'] = NULL;
         }
 // LINK-FIELD
         if (!isset($field_row['link-field'])) {
-            $field_row['link-field'] = FALSE;
+            $field_row['link-field'] = NULL;
         }
 // NEW 2016: ALIAS-FIELD
         if (!isset($field_row['alias'])) {
-            $field_row['alias'] = FALSE;
+            $field_row['alias'] = NULL;
         }
 // show board
         /**
@@ -227,13 +232,6 @@ AND table_name = '{$table}'";
         }
 //table name for each one, yes! repetitive, but necesary in some cases where i dnot receive the table name !!
         $field_row['table'] = $table;
-
-// ENUM FIX
-        if ($field_row['type'] == "enum") {
-            $field_row['min'] = 1;
-            $field_row['max'] = 999;
-        }
-
 // SQL for selects
         $field_row['sql'] = "";
 
@@ -859,4 +857,25 @@ function table_traduce_enum_to_index(\PDO $db, &$query_result, $db_table_config)
             }
         }
     }
+}
+
+function get_table_definition_as_array(\PDO $db, $table_name) {
+    $definition = \k1lib\sql\sql_query($db, "SHOW CREATE TABLE {$table_name}", FALSE);
+    $definition_array = explode("\n", $definition['Create Table']);
+    // REMOVE THE 'CREATE TABLE PART'
+    unset($definition_array[0]);
+    // REMOVE THE LAST LINE 'ENGINIE=
+    unset($definition_array[count($definition_array)]);
+    // REMOVE PRIMARY KEY LINE
+    unset($definition_array[count($definition_array)]);
+    $definition_array_clean = [];
+    foreach ($definition_array as $row => $text) {
+        $text = substr($text, 3, -1);
+        $field_name = substr($text, 0, strpos($text, "`"));
+        $field_definition = substr($text, strpos($text, "`") + 2);
+        $definition_array_clean[$field_name] = str_replace(strstr($text, "COMMENT"), "", $field_definition);
+//        $definition_array_clean[$field_name]['definition'] = str_replace(strstr($text, "COMMENT"), "", $field_definition);
+//        $definition_array_clean[$field_name]['comment'] = strstr($text, "COMMENT");
+    }
+    return ($definition_array_clean);
 }
