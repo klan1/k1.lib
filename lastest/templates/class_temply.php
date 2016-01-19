@@ -24,6 +24,7 @@ class temply {
         self::$output_places = array();
         if ($app_mode == "web") {
             \ob_start('\k1lib\templates\temply::parse_template_places');
+//            \ob_start();
         }
     }
 
