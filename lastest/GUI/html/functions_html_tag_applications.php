@@ -107,14 +107,14 @@ function label_text_combo_2columns($label, $value) {
 }
 
 /**
- * Generate a <SELECT></SELECT> HTML tag with options from an Array() 
+ * Generate a <SELECT></SELECT> HTML tag object with options from an Array() 
  * @param String $name
  * @param Array $data_array
  * @param type $default_value
  * @param Boolean $allow_empty
  * @param String $class
  * @param String $id
- * @return String
+ * @return html_classes\select_tag
  */
 function select_list_from_array($name, $data_array, $default_value = "", $allow_empty = FALSE, $class = "", $id = "") {
     $select_object = new html_classes\select_tag($name);
@@ -128,7 +128,7 @@ function select_list_from_array($name, $data_array, $default_value = "", $allow_
     foreach ($data_array as $value => $label) {
         $select_object->append_option($value, $label, (($value === $default_value) ? TRUE : FALSE));
     }
-    return $select_object->generate_tag();
+    return $select_object;
 }
 
 /**
@@ -165,7 +165,7 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
         }
     }
 //        \var_dump($table_object);
-    return $table_object->generate_tag();
+    return $table_object;
 }
 
 /**

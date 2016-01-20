@@ -21,49 +21,10 @@ class class_db_table {
     private $query_row_count_limit = null;
     private $query_where_pairs = null;
     private $query_sql = null;
+    private $query_sql_total_rows = null;
     private $query_sql_keys = null;
-
-// Definitions
-//    private $mysql_max_length_defaults = array(
-//        'char' => 255,
-//        'varchar' => 255,
-//        'text' => 9999,
-//        'date' => 10,
-//        'time' => 8,
-//        'datetime' => 19,
-//        'timestamp' => 19,
-//        'tinyint' => 3,
-//        'smallint' => 5,
-//        'mediumint' => 7,
-//        'int' => 10,
-//        'bigint' => 19,
-//        'float' => 34,
-//        'double' => 64,
-//        'enum' => NULL,
-//    );
-//    private $mysql_default_validation = array(
-//        'char' => 'mixed-simbols',
-//        'varchar' => 'mixed-simbols',
-//        'text' => 'mixed-simbols',
-//        'date' => 'date',
-//        'time' => 'time',
-//        'datetime' => 'datetime',
-//        'timestamp' => 'datetime',
-//        'tinyint' => 'numbers',
-//        'smallint' => 'numbers',
-//        'mediumint' => 'numbers',
-//        'int' => 'numbers',
-//        'bigint' => 'numbers',
-//        'float' => 'decimals',
-//        'double' => 'numbers',
-//        'enum' => 'options',
-//    );
-//    private $show_array_attribs = Array(
-//        'show-table',
-//        'show-new',
-//        'show-edit',
-//        'show-view',
-//    );
+    private $total_rows_filtered_result;
+    private $total_rows_result;
 
     public function __construct(\PDO $db, $db_table_name) {
         $this->db = $db;
@@ -131,6 +92,14 @@ class class_db_table {
         $this->query_row_count_limit = $row_count;
     }
 
+    function get_query_offset() {
+        return $this->query_offset;
+    }
+
+    function get_query_row_count_limit() {
+        return $this->query_row_count_limit;
+    }
+
     public function set_query_filter($filter_array, $exact_filter = FALSE, $do_clean_array = TRUE) {
         if ($do_clean_array) {
             $clean_filter_array = \k1lib\common\clean_array_with_guide($filter_array, $this->db_table_config);
@@ -191,15 +160,19 @@ class class_db_table {
             return FALSE;
         } else {
             $this->query_sql = "SELECT {$fields} FROM {$this->db_table_name} ";
+            $this->query_sql_total_rows = "SELECT COUNT(*) as num_rows FROM {$this->db_table_name} ";
 
             if (!empty($this->query_where_pairs)) {
                 $this->query_sql .= "WHERE {$this->query_where_pairs} ";
+                $this->query_sql_total_rows .= "WHERE {$this->query_where_pairs} ";
             }
             if (($this->query_offset === 0) && ($this->query_row_count_limit > 0)) {
                 $this->query_sql .= "LIMIT {$this->query_row_count_limit} ";
+                $this->query_sql_total_rows .= "LIMIT {$this->query_row_count_limit} ";
             }
             if (($this->query_offset > 0) && ($this->query_row_count_limit > 0)) {
                 $this->query_sql .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
+                $this->query_sql_total_rows .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
             }
             return $this->query_sql;
         }
@@ -234,7 +207,10 @@ class class_db_table {
         if ($this->generate_sql_query()) {
             $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql, $return_all, $do_fields);
 
+            $this->total_rows_result = \k1lib\sql\sql_query($this->db, $this->query_sql_total_rows, FALSE, FALSE);
+
             if (!empty($query_result)) {
+                $this->total_rows_filtered_result = count($query_result) - 1;
                 return $query_result;
             } else {
                 return FALSE;
@@ -255,6 +231,14 @@ class class_db_table {
         } else {
             return FALSE;
         }
+    }
+
+    function get_total_data_rows() {
+        return $this->total_rows_filtered_result;
+    }
+
+    function get_total_rows() {
+        return $this->total_rows_result['num_rows'];
     }
 
     function get_db_table_show_rule() {

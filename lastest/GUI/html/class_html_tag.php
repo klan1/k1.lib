@@ -197,10 +197,8 @@ namespace k1lib\html {
             if ($attributes_count != 0) {
                 foreach ($this->attributes as $attribute => $value) {
                     $current_attribute++;
-                    if (!is_bool($value)) {
-                        if ($value == '0' || $value === 0 || !empty($value)) {
-                            $attributes_code .= "{$attribute}=\"{$value}\"";
-                        }
+                    if ($value !== TRUE && $value !== FALSE) {
+                        $attributes_code .= "{$attribute}=\"{$value}\"";
                     } else {
                         if ($value === TRUE) {
                             $attributes_code .= "{$attribute}";

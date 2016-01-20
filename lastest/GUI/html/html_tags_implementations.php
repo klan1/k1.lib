@@ -318,8 +318,8 @@ namespace k1lib\html {
          */
         function __construct($value, $label, $selected = FALSE, $class = "", $id = "") {
             parent::__construct("option", FALSE);
-            $this->set_value($value);
-            $this->set_attrib("label", $label);
+            $this->set_value($label);
+            $this->set_attrib("value", $value);
             $this->set_attrib("selected", $selected);
             $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
