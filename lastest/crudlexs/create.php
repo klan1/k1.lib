@@ -31,6 +31,11 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      */
     protected $enable_foundation_form_check = FALSE;
 
+    public function __construct($db_table, $row_keys_text) {
+        parent::__construct($db_table, $row_keys_text);
+        $this->div_container->set_attrib("class", "k1-crudlexs-create");
+    }
+
     /**
      * Override the original function to create an empty array the meets the requiriements for all the metods
      * @return boolean
@@ -136,14 +141,14 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                         $input_tag = new \k1lib\html\select_tag($this->encrypt_field_name($field));
                         $input_tag->append_option("", "Seleccione una opción");
 
-                        foreach ($enum_data as $value) {
+                        foreach ($enum_data as $index => $value) {
                             // SELETED work around
                             if ($this->db_table_data[$row_to_apply][$field] == $value) {
                                 $selected = TRUE;
                             } else {
                                 $selected = FALSE;
                             }
-                            $input_tag->append_option($value, $value, $selected);
+                            $input_tag->append_option($index, $value, $selected);
                         }
                     } break;
                 default: {
@@ -258,12 +263,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             /**
              * DIV content
              */
-            $div_content = new \k1lib\html\div_tag("k1-form-generator");
+            $this->div_container->set_attrib("class", "k1-form-generator", TRUE);
             /**
              * FORM time !!
              */
             $html_form = new \k1lib\html\form_tag();
-            $html_form->append_to($div_content);
+            $html_form->append_to($this->div_container);
             if ($this->enable_foundation_form_check) {
                 $html_form->set_attrib("data-abide", TRUE);
             }
@@ -308,7 +313,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             /**
              * Prepare output
              */
-            return $div_content;
+            return $this->div_container;
         } else {
             return FALSE;
         }
@@ -347,6 +352,11 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 }
 
 class updating extends \k1lib\crudlexs\creating {
+
+    public function __construct($db_table, $row_keys_text) {
+        parent::__construct($db_table, $row_keys_text);
+        $this->div_container->set_attrib("class", "k1-crudlexs-update");
+    }
 
     public function do_update($url_to_go = null) {
         if ($this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1])) {

@@ -24,7 +24,7 @@ class crudlexs_base {
      *
      * @var \k1lib\html\div_tag
      */
-    protected $html_object;
+    protected $div_container;
 
     static function get_k1magic_value() {
         return self::$k1magic_value;
@@ -36,7 +36,7 @@ class crudlexs_base {
 
     public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
         $this->db_table = $db_table;
-        $this->html_object = new \k1lib\html\div_tag();
+        $this->div_container = new \k1lib\html\div_tag();
     }
 
     /**
@@ -136,6 +136,45 @@ class crudlexs_base_with_data extends crudlexs_base {
         } else {
             return FALSE;
         }
+    }
+
+    public function simulate_db_data_with_array(array $data_array) {
+        if (array_key_exists(0, $data_array)) {
+            $headers_count = count($data_array[0]);
+            foreach ($data_array as $row => $row_array) {
+                if ($row === 0) {
+                    continue;
+                }
+                if (count($row_array) !== $headers_count) {
+                    trigger_error("The array sended is not compatible with this method", E_USER_WARNING);
+                    return FALSE;
+                }
+            }
+            $this->db_table_data = $data_array;
+            $this->db_table_data_filtered = $data_array;
+            return TRUE;
+        }
+        trigger_error("The array sended is not compatible with this method", E_USER_WARNING);
+        return FALSE;
+    }
+
+    public function simulate_db_data_keys_with_array(array $data_array) {
+        if (array_key_exists(0, $data_array)) {
+            $headers_count = count($data_array[0]);
+            foreach ($data_array as $row => $row_array) {
+                if ($row === 0) {
+                    continue;
+                }
+                if (count($row_array) !== $headers_count) {
+                    trigger_error("The array sended is not compatible with this method", E_USER_WARNING);
+                    return FALSE;
+                }
+            }
+            $this->db_table_data_keys = $data_array;
+            return TRUE;
+        }
+        trigger_error("The array sended is not compatible with this method", E_USER_WARNING);
+        return FALSE;
     }
 
     public function apply_label_filter() {
