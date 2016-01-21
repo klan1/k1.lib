@@ -90,6 +90,7 @@ class crudlexs_base_with_data extends crudlexs_base {
      * @var String
      */
     protected $auth_code = null;
+    protected $link_on_field_filter_applied = false;
 
     /**
      * Always to create the object you must have a valid DB Table object already 
@@ -237,9 +238,14 @@ class crudlexs_base_with_data extends crudlexs_base {
     }
 
     public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null) {
+        $this->link_on_field_filter_applied = true;
         $a_tag = new \k1lib\html\a_tag($link_to_apply, "");
         $a_tag->set_attrib("class", "k1-link-filter", TRUE);
         return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change);
+    }
+
+    function get_link_on_field_filter_applied() {
+        return $this->link_on_field_filter_applied;
     }
 
 }

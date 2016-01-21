@@ -13,6 +13,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     protected $actual_page = 1;
     protected $first_row_number = 1;
     protected $last_row_number = 1;
+    protected $stat_msg = "Showing %s of %s (%s to %s)";
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
@@ -29,11 +30,11 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
         }
     }
 
-    public function do_row_stats($stat_msg = "Showing %s of %s (%s to %s)") {
+    public function do_row_stats() {
         $div_stats = new \k1lib\html\div_tag("k1-crudlexs-table-stats");
         $div_stats->set_value(
                 sprintf(
-                        $stat_msg
+                        $this->stat_msg
                         , $this->total_rows_filter
                         , $this->total_rows
                         , $this->first_row_number
@@ -41,6 +42,10 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
                 )
         );
         return $div_stats;
+    }
+
+    function set_stat_msg($stat_msg) {
+        $this->stat_msg = $stat_msg;
     }
 
     function get_actual_page() {
