@@ -71,7 +71,7 @@ class board_read extends board_base implements controller_interface {
         if ($do_echo) {
             $this->board_content_div->generate_tag(TRUE);
         } else {
-            return $this->board_content_div->generate_tag();
+            return TRUE;
         }
     }
 
