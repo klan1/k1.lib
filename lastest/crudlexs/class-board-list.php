@@ -34,14 +34,14 @@ class board_list extends board_base implements board_interface {
             /**
              * NEW BUTTON
              */
-            $new_link = \k1lib\html\get_link_button("../{$this->controller_object->get_board_create_url_name()}/", "Nuevo");
+            $new_link = \k1lib\html\get_link_button("../{$this->controller_object->get_board_create_url_name()}/", board_list_strings::$button_new);
             $new_link->append_to($this->board_content_div);
 
             /**
              * Search buttom
              */
-            $search_buttom = new \k1lib\html\a_tag("#", "Buscar", "_self", "Buscar un registro en la tabla");
-            $search_buttom->set_attrib("class", "button");
+            $search_buttom = new \k1lib\html\a_tag("#", " " . board_list_strings::$button_search, "_self", board_list_strings::$button_search);
+            $search_buttom->set_attrib("class", "button fi-page-search");
             $search_buttom->set_attrib("data-open", "search-modal");
             $search_buttom->append_to($this->board_content_div);
 
@@ -49,13 +49,13 @@ class board_list extends board_base implements board_interface {
              * Clear search
              */
             if (!empty($search_helper->get_post_data())) {
-                $clear_search_buttom = new \k1lib\html\a_tag($_SERVER['REQUEST_URI'], "Cancelar busqueda", "_self", "Limpiar la busqueda");
-                $search_buttom->set_value("Editar busqueda");
+                $clear_search_buttom = new \k1lib\html\a_tag($_SERVER['REQUEST_URI'], board_list_strings::$button_search_cancel, "_self", board_list_strings::$button_search_cancel);
+                $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                 $clear_search_buttom->set_attrib("class", "button warning");
                 $clear_search_buttom->append_to($this->board_content_div);
             }
         } else {
-            \k1lib\common\show_message("La tabla no se pudo abrir.", "Alerta", "alert");
+            \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
             return FALSE;
         }
         $search_helper->do_html_object()->append_to($this->board_content_div);
@@ -87,17 +87,29 @@ class board_list extends board_base implements board_interface {
                 $this->list_object->do_row_stats()->append_to($this->board_content_div);
             }
         } else {
-            \k1lib\common\show_message("Sin datos para mostrar", "Alerta", "alert");
+            \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
         }
         if ($do_echo) {
             $this->board_content_div->generate_tag($do_echo);
         } else {
-            return $this->board_content_div->generate_tag($do_echo);
+            return TRUE;
         }
     }
 
     function set_where_to_show_stats($where_to_show_stats) {
         $this->where_to_show_stats = $where_to_show_stats;
     }
+
+}
+
+class board_list_strings {
+
+    /**
+     * BUTTON LABELS
+     */
+    static $button_new = "Add new";
+    static $button_search = "Search";
+    static $button_search_modify = "Modify search";
+    static $button_search_cancel = "Cancel search";
 
 }
