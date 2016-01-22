@@ -687,11 +687,13 @@ function table_keys_to_text(&$row_data, $db_table_config) {
 
 function get_keys_array_from_row_data(&$row_data, $db_table_config) {
     $key_fields_array = get_db_table_keys($db_table_config);
+    d($row_data);
+    d($key_fields_array);
     $keys_array = \k1lib\common\clean_array_with_guide($row_data, $key_fields_array);
     if (!empty($keys_array)) {
         return $keys_array;
     } else {
-        return false;
+        return [];
     }
 }
 

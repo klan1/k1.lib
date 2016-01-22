@@ -5,8 +5,18 @@ namespace k1lib\crudlexs;
 class updating extends \k1lib\crudlexs\creating {
 
     public function __construct(\k1lib\crudlexs\class_db_table $db_table, $row_keys_text) {
-        parent::__construct($db_table, $row_keys_text);
-        $this->div_container->set_attrib("class", "k1-crudlexs-update");
+        if (!empty($row_keys_text)) {
+            parent::__construct($db_table, $row_keys_text);
+            if ($this->get_state()) {
+                $this->set_back_link("javascript:history.back()");
+                $this->div_container->set_attrib("class", "k1-crudlexs-update");
+            } else {
+                
+            }
+        } else {
+            \k1lib\common\show_message("The keys can't be empty", "Error", "alert");
+        }
+        creating_strings::$button_submit = updating_strings::$button_submit;
     }
 
     public function do_update($url_to_go = null) {
@@ -31,5 +41,11 @@ class updating extends \k1lib\crudlexs\creating {
             return FALSE;
         }
     }
+
+}
+
+class updating_strings {
+
+    static $button_submit = "Update";
 
 }

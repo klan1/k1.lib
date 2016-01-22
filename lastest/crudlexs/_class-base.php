@@ -91,6 +91,7 @@ class crudlexs_base_with_data extends crudlexs_base {
      */
     protected $auth_code = null;
     protected $link_on_field_filter_applied = false;
+    protected $back_link = "../";
 
     /**
      * Always to create the object you must have a valid DB Table object already 
@@ -108,7 +109,13 @@ class crudlexs_base_with_data extends crudlexs_base {
                     $this->auth_code = $auth_code;
                     $row_keys_array = \k1lib\sql\table_url_text_to_keys($row_keys_text, $this->db_table->get_db_table_config());
                     $this->db_table->set_query_filter($row_keys_array, TRUE);
+                } else {
+                    \k1lib\common\show_message("Bad, bad! auth code", "Error", "alert");
+                    return FALSE;
                 }
+            } else {
+                \k1lib\common\show_message("Auth code can't be empty", "Error", "alert");
+                return FALSE;
             }
         }
     }
@@ -196,56 +203,72 @@ class crudlexs_base_with_data extends crudlexs_base {
     }
 
     public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $append_auth_code = FALSE) {
-        if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
-            trigger_error("Can't work without table data loaded first", E_USER_WARNING);
-            return FALSE;
-        } else {
-            if ($fields_to_change == crudlexs_base::USE_KEY_FIELDS) {
-                $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
-            } elseif ($fields_to_change == crudlexs_base::USE_ALL_FIELDS) {
-                $fields_to_change = $this->db_table_data[0];
+        if ($this->get_state()) {
+            if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
+                trigger_error("Can't work without table data loaded first", E_USER_WARNING);
+                return FALSE;
             } else {
-                if (!is_array($fields_to_change) && is_string($fields_to_change)) {
-                    $fields_to_change = Array($fields_to_change);
-                }
-            }
-            foreach ($fields_to_change as $field_to_change) {
-                foreach ($this->db_table_data as $index => $row_data) {
-                    if ($index === 0) {
-                        continue;
+                if ($fields_to_change == crudlexs_base::USE_KEY_FIELDS) {
+                    $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
+                } elseif ($fields_to_change == crudlexs_base::USE_ALL_FIELDS) {
+                    $fields_to_change = $this->db_table_data[0];
+                } else {
+                    if (!is_array($fields_to_change) && is_string($fields_to_change)) {
+                        $fields_to_change = Array($fields_to_change);
                     }
-                    if (!array_key_exists($field_to_change, $row_data)) {
-//                        trigger_error("The field to change ($field_to_change) do no exist ", E_USER_WARNING);
-                        continue;
-                    } else {
-                        $tag_object->set_value($row_data[$field_to_change]);
-                        $tag_html = $tag_object->generate_tag();
-                        if (!empty($this->db_table_data_keys)) {
-                            $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
-                            $auth_code = md5(\k1lib\MAGIC_VALUE . $key_array_text);
-                            $tag_html = str_replace("%row_key%", $key_array_text, $tag_html);
-                            $tag_html = str_replace("%field_value%", $row_data[$field_to_change], $tag_html);
-                            $tag_html = str_replace("%auth_code%", $auth_code, $tag_html);
-//                            $tag_html = sprintf($tag_html, $key_array_text, $auth_code);
+                }
+                foreach ($fields_to_change as $field_to_change) {
+                    foreach ($this->db_table_data as $index => $row_data) {
+                        if ($index === 0) {
+                            continue;
                         }
-                        $this->db_table_data_filtered[$index][$field_to_change] = $tag_html;
+                        if (!array_key_exists($field_to_change, $row_data)) {
+//                        trigger_error("The field to change ($field_to_change) do no exist ", E_USER_WARNING);
+                            continue;
+                        } else {
+                            $tag_object->set_value($row_data[$field_to_change]);
+                            $tag_html = $tag_object->generate_tag();
+                            if (!empty($this->db_table_data_keys)) {
+                                $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
+                                $auth_code = md5(\k1lib\MAGIC_VALUE . $key_array_text);
+                                $tag_html = str_replace("%row_key%", $key_array_text, $tag_html);
+                                $tag_html = str_replace("%field_value%", $row_data[$field_to_change], $tag_html);
+                                $tag_html = str_replace("%auth_code%", $auth_code, $tag_html);
+//                            $tag_html = sprintf($tag_html, $key_array_text, $auth_code);
+                            }
+                            $this->db_table_data_filtered[$index][$field_to_change] = $tag_html;
+                        }
                     }
                 }
-            }
 
-            return TRUE;
+                return TRUE;
+            }
+        } else {
+            return FALSE;
         }
     }
 
     public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null) {
-        $this->link_on_field_filter_applied = true;
-        $a_tag = new \k1lib\html\a_tag($link_to_apply, "");
-        $a_tag->set_attrib("class", "k1-link-filter", TRUE);
-        return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change);
+        if ($this->get_state()) {
+            $this->link_on_field_filter_applied = true;
+            $a_tag = new \k1lib\html\a_tag($link_to_apply, "");
+            $a_tag->set_attrib("class", "k1-link-filter", TRUE);
+            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change);
+        } else {
+            return FALSE;
+        }
     }
 
-    function get_link_on_field_filter_applied() {
+    public function get_link_on_field_filter_applied() {
         return $this->link_on_field_filter_applied;
+    }
+
+    public function get_back_link() {
+        return $this->back_link;
+    }
+
+    public function set_back_link($back_link) {
+        $this->back_link = $back_link;
     }
 
 }
