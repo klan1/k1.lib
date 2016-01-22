@@ -177,7 +177,7 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
  * @param Boolean $keep_get_vars
  * @return \k1lib\html\a_tag
  */
-function get_link_button($linkTo, $label, $mini = FALSE, $inline = TRUE, $keep_get_vars = TRUE) {
+function get_link_button($linkTo, $label, $class = "", $id = "", $keep_get_vars = TRUE) {
     if ($linkTo == NULL) {
         return NULL;
     } elseif (!(is_string($linkTo) && is_string($label))) {
@@ -255,17 +255,11 @@ function get_link_button($linkTo, $label, $mini = FALSE, $inline = TRUE, $keep_g
     if ((strstr($linkTo, "http") === FALSE) && (strstr($linkTo, "javascript:") === FALSE)) {
         $linkTo = \k1lib\urlrewrite\url_manager::get_app_link($linkTo, $keep_get_vars);
     }
-    $button_object = new \k1lib\html\a_tag($linkTo, " " . $label, "_self", "App link", "button");
+    $button_object = new \k1lib\html\a_tag($linkTo, " " . $label, "_self", "Button", "button {$class}", $id);
     $button_object->set_attrib("class", "$button_icon", TRUE);
     $button_object->set_attrib("class", "$theme", TRUE);
     if ($js_confirm_dialog) {
         $button_object->set_attrib("onclick", "return confirm('Esta seguro que desea hacer esto ?\\n\\nEsta accion no se podra deshacer.')");
-    }
-    if ($inline) {
-        $button_object->set_attrib("class", "inline", TRUE);
-    }
-    if ($mini) {
-        $button_object->set_attrib("class", "tiny", TRUE);
     }
 
     return $button_object;

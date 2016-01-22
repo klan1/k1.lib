@@ -250,7 +250,7 @@ class url_manager {
             $page_url = "";
             if (($level_to_built <= $url_num_levels) && ($level_to_built >= 0)) {
                 foreach (self::$url_data as $level => $level_data) {
-                    $page_url .= "/" . $level_data['value'];
+                    $page_url .= (($level === 0) ? "" : "/") . $level_data['value'];
                     if ($level_to_built == $level) {
                         break;
                     }

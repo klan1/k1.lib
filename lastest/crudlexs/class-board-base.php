@@ -29,8 +29,18 @@ class board_base {
     }
 
     public function set_board_name($board_name) {
-        temply::set_place_value($this->controller_object->get_template_place_name_html_title(), " - {$board_name}}");
+        temply::set_place_value($this->controller_object->get_template_place_name_html_title(), " - {$board_name}");
         temply::set_place_value($this->controller_object->get_template_place_name_controller_name(), " - {$board_name}");
     }
+
+}
+
+class board_base_strings {
+
+    static $alert_board = "Alert";
+    static $error_board = "Error message";
+    static $error_mysql = "DB error";
+    static $error_mysql_table_not_opened = "Can not open the table.";
+    static $error_mysql_table_no_data = "Empty query";
 
 }

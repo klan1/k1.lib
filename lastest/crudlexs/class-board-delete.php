@@ -52,7 +52,7 @@ class board_delete extends board_base implements controller_interface {
     }
 
     public function exec_board() {
-        
+        return TRUE;
     }
 
 }

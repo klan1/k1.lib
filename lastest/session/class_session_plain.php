@@ -199,3 +199,22 @@ class session_plain {
     }
 
 }
+
+class login_manager {
+
+    /**
+     *
+     * @var \k1lib\crudlexs\class_db_table
+     */
+    protected $db_table;
+    protected $user_login_field = NULL;
+    protected $user_password_field = NULL;
+    protected $user_level_field = NULL;
+    protected $user_name_field = NULL;
+    protected $user_email_field = NULL;
+
+    public function __construct($db_table, $user_login_field, $user_password_field, $user_level_field = NULL, $user_name_field = NULL, $user_email_field = NULL) {
+        
+    }
+
+}

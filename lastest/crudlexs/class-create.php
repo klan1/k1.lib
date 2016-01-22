@@ -30,6 +30,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * @var Boolean
      */
     protected $enable_foundation_form_check = FALSE;
+    protected $show_cancel_button = TRUE;
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
@@ -139,7 +140,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 case 'enum': {
                         $enum_data = $this->db_table->get_enum_options($field);
                         $input_tag = new \k1lib\html\select_tag($this->encrypt_field_name($field));
-                        $input_tag->append_option("", "Seleccione una opción");
+                        $input_tag->append_option("", creating_strings::$select_choose_option);
 
                         foreach ($enum_data as $index => $value) {
                             // SELETED work around
@@ -307,9 +308,13 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              */
             $div_buttons = new \k1lib\html\div_tag("row text-center");
             $div_buttons->append_to($html_form);
-            $submit_button = new \k1lib\html\input_tag("submit", "k1send", "Enviar");
-            $submit_button->set_attrib("class", "small button success");
+            $submit_button = new \k1lib\html\input_tag("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
             $submit_button->append_to($div_buttons);
+            if ($this->show_cancel_button) {
+                $cancel_button = \k1lib\html\get_link_button($this->back_link, creating_strings::$button_cancel, "small");
+                $cancel_button->append_to($div_buttons);
+            }
+
             /**
              * Prepare output
              */
@@ -348,5 +353,13 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             return FALSE;
         }
     }
+
+}
+
+class creating_strings {
+
+    static $select_choose_option = "Select an option...";
+    static $button_submit = "Insert";
+    static $button_cancel = "Cancel";
 
 }

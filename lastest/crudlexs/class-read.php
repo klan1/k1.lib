@@ -8,8 +8,15 @@ namespace k1lib\crudlexs;
 class reading extends crudlexs_base_with_data implements crudlexs_base_interface {
 
     public function __construct($db_table, $row_keys_text) {
-        parent::__construct($db_table, $row_keys_text);
-        $this->div_container->set_attrib("class", "k1-crudlexs-read");
+        if (!empty($row_keys_text)) {
+            if (parent::__construct($db_table, $row_keys_text)) {
+                $this->div_container->set_attrib("class", "k1-crudlexs-read");
+            }else{
+                
+            }
+        } else {
+            \k1lib\common\show_message("The keys can't be empty", "Error", "alert");
+        }
     }
 
     public function do_html_object($extra_css_clasess = "") {
@@ -25,4 +32,5 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             return FALSE;
         }
     }
+
 }
