@@ -6,42 +6,6 @@ function js_back() {
     die("<body><script type='text/javascript''>history.back();</script>");
 }
 
-function get_back_link($text_link = "Regresar", $target = "_self", $id = "", $class = "", $app_format = FALSE, $keep_vars = TRUE, $vars_to_keep = "") {
-    if (isset($_SERVER['HTTP_REFERER']) && (!empty($_SERVER['HTTP_REFERER']))) {
-        $back_link = $_SERVER['HTTP_REFERER'];
-    } elseif (isset($_SESSION['K1_LAST_URL']) && (!empty($_SESSION['K1_LAST_URL']))) {
-        $back_link = $_SESSION['K1_LAST_URL'];
-    } else {
-        $back_link = "javascript:history.back()";
-    }
-    $back_link = \k1lib\html\generate_link($back_link, $text_link, $target, $id, $class, $app_format, $keep_vars, $vars_to_keep);
-
-    return $back_link;
-}
-
-function back_link($text_link = "< Volver", $return = TRUE, $url = FALSE, $use_div = TRUE, $class = "k1-back-link") {
-    if ($url) {
-        $back_link = "<a href=\"{$url}\" \">{$text_link}</a>";
-    } else {
-        $back_link = "<a href=\"#\" onclick=\"history.back()\">{$text_link}</a>";
-    }
-    if ($use_div) {
-        $back_link = "<div class=\"{$class}\">" . $back_link . "</div>";
-    }
-    if ($return) {
-        return $back_link;
-    } else {
-        echo $back_link;
-    }
-}
-
-function generate_link($url, $text_link, $target = "_self", $id = "", $class = "", $app_format = TRUE, $keep_vars = TRUE, $vars_to_keep = "") {
-    if ($app_format) {
-        $url = \k1lib\urlrewrite\url_manager::get_app_link($url, $keep_vars, $vars_to_keep);
-    }
-    return $back_link = "<a href=\"{$url}\" id=\"{$id}\" class=\"{$class}\" target=\"{$target}\" \">{$text_link}</a>";
-}
-
 /**
  * Send HTML HEAD command to redirect the browser
  * @param string $url

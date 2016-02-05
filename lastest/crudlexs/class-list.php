@@ -17,17 +17,19 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
-        $this->div_container->set_attrib("class", "k1-crudlexs-table");
     }
 
     public function do_html_object() {
+        $this->div_container->set_attrib("class", "k1-crudlexs-table");
         if ($this->db_table_data) {
             $html_table = \k1lib\html\table_from_array($this->db_table_data_filtered, TRUE, "scroll");
             $this->div_container->append_child($html_table);
-            return $this->div_container;
         } else {
-            return FALSE;
+            $div_message = new \k1lib\html\p_tag("callout primary");
+            $div_message->set_value("No data to show");
+            $div_message->append_to($this->div_container);
         }
+        return $this->div_container;
     }
 
     public function do_row_stats() {

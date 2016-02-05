@@ -194,6 +194,7 @@ function get_link_button($linkTo, $label, $class = "", $id = "", $keep_get_vars 
         "new" => ["agregar", "nuev", "new", "add", "añadir", "crear", "generar"],
         "edit" => ["edit", "editar", "cambiar", "change"],
         "delete" => ["delete", "borrar", "eliminar", "suprimir", "quitar", "cancelar"],
+        "list" => ["lista", "list", "all data", "view data", "data"],
     ];
 
     $label_low = strtolower($label);
@@ -215,7 +216,7 @@ function get_link_button($linkTo, $label, $class = "", $id = "", $keep_get_vars 
             break;
         case "back":
             $button_icon = "fi-arrow-left";
-            $theme = "";
+            $theme = "secondary";
             break;
         case "go":
             $button_icon = "fi-check";
@@ -245,6 +246,10 @@ function get_link_button($linkTo, $label, $class = "", $id = "", $keep_get_vars 
             $button_icon = "fi-page-delete";
             $theme = "alert";
             $js_confirm_dialog = TRUE;
+            break;
+        case "list":
+            $button_icon = "fi-list";
+            $theme = "primary";
             break;
         default:
             $button_icon = "fi-widget";

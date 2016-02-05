@@ -57,7 +57,20 @@ class controller_base {
      *
      * @var boolean
      */
+    protected $board_inited = FALSE;
     protected $board_started = FALSE;
+    protected $board_executed = FALSE;
+
+    /**
+     *
+     * @var \k1lib\html\div_tag
+     */
+    public $board_div_content;
+    /**
+     * 
+     * URL MANAGEMENT VALUES
+     * 
+     */
 
     /**
      *
@@ -94,11 +107,7 @@ class controller_base {
     public $board_delete_object;
     protected $board_delete_url_name = "delete";
 
-    /**
-     * 
-     * URL MANAGEMENT VALUES
-     * 
-     */
+
     /**
      *
      * Board names for html title and controller name tag
@@ -116,12 +125,22 @@ class controller_base {
      * @var type 
      */
     protected $template_place_name_controller_name = "controller-name";
+    protected $template_place_name_board_name = "board-name";
     protected $board_list_name = "";
-    protected $board_create_name = "";
-    protected $board_read_name = "";
-    protected $board_update_name = "";
-    protected $board_delete_name = "";
+    protected $board_create_name = "Create new";
+    protected $board_read_name = "Show details";
+    protected $board_update_name = "Update details";
+    protected $board_delete_name = "Delete registry";
     protected $url_redirect_after_delete = "../../list/";
+
+    /**
+     * BOARDS avaliabilty
+     */
+    protected $board_list_enabled = TRUE;
+    protected $board_create_enabled = TRUE;
+    protected $board_read_enabled = TRUE;
+    protected $board_update_enabled = TRUE;
+    protected $board_delete_enabled = TRUE;
 
     /**
      * One line config for more time to party and less coding :)
@@ -158,36 +177,124 @@ class controller_base {
         return url_manager::set_url_rewrite_var($next_url_level, $controller_url_value, FALSE);
     }
 
-    public function start_board($specific_board_to_start = NULL) {
-        if (empty($specific_board_to_start)) {
-            $specific_board_to_start = $this->controller_board_url_value;
+    public function init_board($specific_board_to_init = NULL) {
+        if (empty($specific_board_to_init)) {
+            $specific_board_to_init = $this->controller_board_url_value;
         }
-        $this->board_started = TRUE;
-        switch ($specific_board_to_start) {
+        $this->board_inited = TRUE;
+        switch ($specific_board_to_init) {
             case $this->board_create_url_name:
                 $this->board_create_object = new board_create($this);
-                return $this->board_create_object->start_board();
+                $this->board_create_object->set_is_enabled($this->board_create_enabled);
+                $this->board_create_object->set_board_name($this->board_create_name);
+                $this->board_div_content = $this->board_create_object->board_content_div;
+
+                break;
 
             case $this->board_read_url_name:
                 $this->board_read_object = new board_read($this);
-                return $this->board_read_object->start_board();
+                $this->board_read_object->set_is_enabled($this->board_read_enabled);
+                $this->board_read_object->set_board_name($this->board_read_name);
+                $this->board_div_content = $this->board_read_object->board_content_div;
+                if (!$this->board_list_enabled) {
+                    $this->board_read_object->set_all_data_enable(FALSE);
+                }
+                if (!$this->board_update_enabled) {
+                    $this->board_read_object->set_update_enable(FALSE);
+                }
+                if (!$this->board_delete_enabled) {
+                    $this->board_read_object->set_delete_enable(FALSE);
+                }
+                break;
 
             case $this->board_update_url_name:
                 $this->board_update_object = new board_update($this);
-                return $this->board_update_object->start_board();
+                $this->board_update_object->set_is_enabled($this->board_update_enabled);
+                $this->board_update_object->set_board_name($this->board_update_name);
+                $this->board_div_content = $this->board_update_object->board_content_div;
+
+                break;
 
             case $this->board_delete_url_name:
                 $this->board_delete_object = new board_delete($this);
-                return $this->board_delete_object->start_board();
+                $this->board_delete_object->set_is_enabled($this->board_delete_enabled);
+                $this->board_delete_object->set_board_name($this->board_delete_name);
+                $this->board_div_content = $this->board_delete_object->board_content_div;
+                break;
 
             case $this->board_list_url_name:
                 $this->board_list_object = new board_list($this);
-                return $this->board_list_object->start_board();
+                $this->board_list_object->set_is_enabled($this->board_list_enabled);
+                $this->board_list_object->set_board_name($this->board_list_name);
+                $this->board_div_content = $this->board_list_object->board_content_div;
+                if (!$this->board_create_enabled) {
+                    $this->board_list_object->set_create_enable(FALSE);
+                }
+                break;
 
             default:
-                $this->board_started = FALSE;
+                $this->board_inited = FALSE;
                 \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
                 return FALSE;
+        }
+        return $this->board_div_content;
+    }
+
+    public function read_url_keys_text($db_table_name) {
+        if (isset($this->board_create_object)) {
+            /**
+             * URL key text management
+             */
+            $related_url_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "related_url_keys_text", FALSE);
+            if (!empty($related_url_keys_text)) {
+                $related_table = $db_table_name;
+                $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
+                $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                $related_url_keys_text_auth_code = md5(\k1lib\MAGIC_VALUE . $related_url_keys_text);
+                if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
+                    $this->db_table->set_field_constants($related_url_keys_array);
+                } else {
+                    $this->board_create_object->set_is_enabled(FALSE);
+                    \k1lib\common\show_message(board_base_strings::$error_url_keys_no_auth, "ERROR", "alert");
+                }
+            } else {
+                $this->board_create_object->set_is_enabled(FALSE);
+                \k1lib\common\show_message(board_base_strings::$error_url_keys_no_keys_text, "ERROR", "alert");
+            }
+        }
+    }
+
+    public function start_board($specific_board_to_start = NULL) {
+        if ($this->board_inited) {
+            if (empty($specific_board_to_start)) {
+                $specific_board_to_start = $this->controller_board_url_value;
+            }
+            $this->board_started = TRUE;
+            switch ($specific_board_to_start) {
+                case $this->board_create_url_name:
+                    return $this->board_create_object->start_board();
+
+                case $this->board_read_url_name:
+                    return $this->board_read_object->start_board();
+
+                case $this->board_update_url_name:
+                    return $this->board_update_object->start_board();
+
+                case $this->board_delete_url_name:
+                    return $this->board_delete_object->start_board();
+
+                case $this->board_list_url_name:
+                    return $this->board_list_object->start_board();
+
+                default:
+                    $this->board_started = FALSE;
+                    \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
+                    return FALSE;
+            }
+        } else {
+            $this->board_executed = FALSE;
+            trigger_error("The board hasn't inited yet.", E_USER_WARNING);
+            return FALSE;
         }
     }
 
@@ -197,6 +304,7 @@ class controller_base {
             if (empty($specific_board_to_exec)) {
                 $specific_board_to_exec = $this->controller_board_url_value;
             }
+            $this->board_executed = TRUE;
 
             switch ($specific_board_to_exec) {
                 case $this->board_create_url_name:
@@ -218,6 +326,7 @@ class controller_base {
                     break;
             }
         } else {
+            $this->board_executed = FALSE;
             trigger_error("The board hasn't started yet.", E_USER_WARNING);
             return FALSE;
         }
@@ -226,6 +335,78 @@ class controller_base {
     /**
      * SIMPLE SETTERS AND GETTERS
      */
+    function get_controller_url_value() {
+        return $this->controller_url_value;
+    }
+
+    function get_controller_root_dir() {
+        return $this->controller_root_dir;
+    }
+
+    function get_controller_board_url_value() {
+        return $this->controller_board_url_value;
+    }
+
+    function get_board_list_enabled() {
+        return $this->board_list_enabled;
+    }
+
+    function get_board_create_enabled() {
+        return $this->board_create_enabled;
+    }
+
+    function get_board_read_enabled() {
+        return $this->board_read_enabled;
+    }
+
+    function get_board_update_enabled() {
+        return $this->board_update_enabled;
+    }
+
+    function get_board_delete_enabled() {
+        return $this->board_delete_enabled;
+    }
+
+    function set_board_list_enabled($board_list_enabled) {
+        if ($board_list_enabled !== FALSE) {
+            $this->board_list_enabled = TRUE;
+        } else {
+            $this->board_list_enabled = FALSE;
+        }
+    }
+
+    function set_board_create_enabled($board_create_enabled) {
+        if ($board_create_enabled !== FALSE) {
+            $this->board_create_enabled = TRUE;
+        } else {
+            $this->board_create_enabled = FALSE;
+        }
+    }
+
+    function set_board_read_enabled($board_read_enabled) {
+        if ($board_read_enabled !== FALSE) {
+            $this->board_read_enabled = TRUE;
+        } else {
+            $this->board_read_enabled = FALSE;
+        }
+    }
+
+    function set_board_update_enabled($board_update_enabled) {
+        if ($board_update_enabled !== FALSE) {
+            $this->board_update_enabled = TRUE;
+        } else {
+            $this->board_update_enabled = FALSE;
+        }
+    }
+
+    function set_board_delete_enabled($board_delete_enabled) {
+        if ($board_delete_enabled !== FALSE) {
+            $this->board_delete_enabled = TRUE;
+        } else {
+            $this->board_delete_enabled = FALSE;
+        }
+    }
+
     function get_url_redirect_after_delete() {
         return $this->url_redirect_after_delete;
     }
@@ -254,39 +435,32 @@ class controller_base {
         return $this->template_place_name_controller_name;
     }
 
+    function set_template_place_name_board_name($template_place_name_board_name) {
+        $this->template_place_name_board_name = $template_place_name_board_name;
+    }
+
+    function get_template_place_name_board_name() {
+        return $this->template_place_name_board_name;
+    }
+
     function set_board_create_name($board_new_name) {
         $this->board_create_name = $board_new_name;
-        if (isset($this->board_create_object)) {
-            $this->board_create_object->set_board_name($board_new_name);
-        }
     }
 
     function set_board_read_name($board_view_name) {
         $this->board_read_name = $board_view_name;
-        if (isset($this->board_read_object)) {
-            $this->board_read_object->set_board_name($board_view_name);
-        }
     }
 
     function set_board_update_name($board_update_name) {
         $this->board_update_name = $board_update_name;
-        if (isset($this->board_update_object)) {
-            $this->board_update_object->set_board_name($board_update_name);
-        }
     }
 
     function set_board_delete_name($board_delete_name) {
         $this->board_delete_name = $board_delete_name;
-        if (isset($this->board_delete_object)) {
-            $this->board_delete_object->set_board_name($board_delete_name);
-        }
     }
 
     function set_board_list_name($board_list_name) {
         $this->board_list_name = $board_list_name;
-        if (isset($this->board_list_object)) {
-            $this->board_list_object->set_board_name($board_list_name);
-        }
     }
 
     function get_board_list_url_name() {
@@ -311,22 +485,27 @@ class controller_base {
 
     function set_board_list_url_name($board_list_url_name) {
         $this->board_list_url_name = $board_list_url_name;
+        $this->set_board_list_enabled($board_list_url_name);
     }
 
     function set_board_create_url_name($board_create_url_name) {
         $this->board_create_url_name = $board_create_url_name;
+        $this->set_board_create_enabled($board_create_url_name);
     }
 
     function set_board_read_url_name($board_read_url_name) {
         $this->board_read_url_name = $board_read_url_name;
+        $this->set_board_read_enabled($board_read_url_name);
     }
 
     function set_board_update_url_name($board_update_url_name) {
         $this->board_update_url_name = $board_update_url_name;
+        $this->set_board_update_enabled($board_update_url_name);
     }
 
     function set_board_delete_url_name($board_delete_url_name) {
         $this->board_delete_url_name = $board_delete_url_name;
+        $this->set_board_delete_enabled($board_delete_url_name);
     }
 
 }

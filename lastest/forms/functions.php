@@ -158,7 +158,7 @@ function check_value_type($value, $type) {
     $year = date("Y");
     //funcitons vars
     $error_type = "";
-    $preg_simbols = "-_@.,!#$%&'*\/+=?^`{\|}~ÁÉÍÓÚáéíóuñÑ";
+    $preg_symbols = "-_@.,!:;#$%&'*\/+=?^`{\|}~ÁÉÍÓÚáéíóuñÑ";
 
     switch ($type) {
         case 'options':
@@ -193,8 +193,8 @@ function check_value_type($value, $type) {
                 if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
                     $actual_date_number = juliantojd($month, $day, $year);
                     $value_date_number = juliantojd($matches['month'], $matches['day'], $matches['year']);
-                    if ($value_date_number > $actual_date_number) {
-                        $error_type = " La fecha no puede ser mayor al dia de hoy: {$date}";
+                    if ($value_date_number >= $actual_date_number) {
+                        $error_type = " de fecha no puede ser mayor al dia de hoy: {$date}";
                     }
                 } else {
                     $error_type = " valores de fecha in validos";
@@ -208,8 +208,8 @@ function check_value_type($value, $type) {
                 if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
                     $actual_date_number = juliantojd($month, $day, $year);
                     $value_date_number = juliantojd($matches['month'], $matches['day'], $matches['year']);
-                    if ($value_date_number <= $actual_date_number) {
-                        $error_type = " La fecha debe ser mayor al dia de hoy: {$date}";
+                    if ($value_date_number < $actual_date_number) {
+                        $error_type = " de fecha debe ser mayor al dia de hoy: {$date}";
                     }
                 } else {
                     $error_type = " valores de fecha in validos";
@@ -227,13 +227,19 @@ function check_value_type($value, $type) {
         case 'letters':
             $regex = "/^[a-zA-Z\s]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z sin simbolos";
+                $error_type = " deber ser solo letras de la a-z y A-Z sin symbolos";
             }
             break;
-        case 'letters-simbols':
-            $regex = "/^[a-zA-Z\s{$preg_simbols}]*$/";
+        case 'letters-symbols':
+            $regex = "/^[a-zA-Z0-9\s{$preg_symbols}]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z y simbolos: $preg_simbols";
+                $error_type = " deber ser solo letras de la a-z y A-Z y symbolos: $preg_symbols";
+            }
+            break;
+        case 'password':
+            $regex = "/^[a-zA-Z0-9\s{$preg_symbols}]*$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " deber ser solo letras de la a-z y A-Z y symbolos: $preg_symbols";
             }
             break;
         case 'decimals':
@@ -260,10 +266,10 @@ function check_value_type($value, $type) {
                 $error_type = " debe contener solo numeros";
             }
             break;
-        case 'numbers-simbols':
-            $regex = "/^[\-0-9\s{$preg_simbols}]*$/";
+        case 'numbers-symbols':
+            $regex = "/^[\-0-9\s{$preg_symbols}]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " debe contener solo numeros y simbolos: $preg_simbols";
+                $error_type = " debe contener solo numeros y symbolos: $preg_symbols";
             }
             break;
         case 'mixed':
@@ -272,10 +278,10 @@ function check_value_type($value, $type) {
                 $error_type = " deber ser solo letras de la a-z y A-Z y numeros";
             }
             break;
-        case 'mixed-simbols':
-            $regex = "/^[a-zA-Z0-9\s{$preg_simbols}]*$/";
+        case 'mixed-symbols':
+            $regex = "/^[a-zA-Z0-9\s{$preg_symbols}]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z, numeros y simbolos: $preg_simbols";
+                $error_type = " deber ser solo letras de la a-z y A-Z, numeros y symbolos: $preg_symbols";
             }
             break;
         default:
@@ -311,7 +317,7 @@ function form_check_values($form_array, $table_array_config, $db = NULL) {
         $max = $table_array_config[$key]['max'];
 
 
-        // email | letters (solo letras) | numbers (solo numeros) | mixed (alfanumerico) | letters-simbols (con simbolos ej. !#()[],.) | numbers-simbols | mixed-simbols - los simbols no lo implementare aun
+        // email | letters (solo letras) | numbers (solo numeros) | mixed (alfanumerico) | letters-symbols (con symbolos ej. !#()[],.) | numbers-symbols | mixed-symbols - los symbols no lo implementare aun
         // the basic error, if is required on the table definition
         if (($value !== 0) && ($value !== '0') && empty($value)) {
             if ($table_array_config[$key]['required'] === TRUE) {
@@ -387,119 +393,6 @@ function make_form_select_list(&$field_name, &$value, &$table_config_array, &$er
     return $html_code;
 }
 
-function make_form_input_from_serialized($table_name, $field_name, $table_config_array, $mode = "view", $link_to_search = NULL) {
-    global $form_errors;
-    $error_msg = "";
-
-    $html_template = html_functions\load_html_template("board-view-unit");
-
-    if (!is_string($table_name) || empty($table_name)) {
-        die(__FUNCTION__ . " \$table_name should be an non empty string.");
-    }
-    $value = \k1lib\forms\get_form_field_from_serialized($table_name, $field_name);
-
-// php Function apply from SQL 
-    /**
-     * WTF -- DO THIS WORK ??
-     * TODO: check this ! COD 1
-     */
-    if (strstr($value, "function-") !== FALSE) {
-        $function_to_execute = strstr($value, "k1");
-        eval("\$value = $function_to_execute;");
-    }
-    /**
-     * END WTF
-     */
-    if (!isset($table_config_array[$field_name])) {
-        if (empty($value)) {
-            $value = "";
-        }
-        //die(__FUNCTION__ . " There is no field config for '$field_name' on config table");
-
-        $html_code = sprintf($html_template, $field_name, $value);
-
-        return $html_code;
-    }
-
-    $html_code = "";
-    if (isset($form_errors[$field_name])) {
-//            $data_theme = "d";
-        $error_msg = "$form_errors[$field_name]";
-    } else {
-        $error_msg = "";
-    }
-    if ($mode == "edit") {
-        /*
-         * NORMAL INPUT TEXT
-         */
-        $type_comparation = strstr("char,varchar,text,date,datetime,tinyint,smallint,mediumint,int,bigint,float,double'", $table_config_array[$field_name]['type']);
-        if (($type_comparation !== FALSE) && ($table_config_array[$field_name]['sql'] == "")) {
-            /**
-             * FK SEARCH SYSTEM
-             */
-            if (!empty($table_config_array[$field_name]['refereced_table_name'])) {
-                $link_to_search_with_table = $link_to_search . "/{$table_config_array[$field_name]['refereced_table_name']}";
-            } else {
-                $link_to_search_with_table = NULL;
-            }
-
-            return html_functions\label_input_text_combo(
-                    $field_name, $value, $table_config_array[$field_name]['label']
-                    , $table_config_array[$field_name]['null']
-                    , $error_msg
-                    , $link_to_search_with_table
-            );
-        } elseif (($table_config_array[$field_name]['type'] == "enum") || ($table_config_array[$field_name]['sql'] != "")) {
-            return \k1lib\forms\make_form_select_list($field_name, $value, $table_config_array, $error_msg);
-        } else {
-            d($field_name);
-        }
-        return $html_code;
-    } elseif (($mode == "view") || ($mode == "none")) {
-        // only works for view mode or non-defined with on empty values
-        if (($mode == "view") || (!empty($value) && ($mode == "none"))) {
-            if (is_numeric($value)) {
-                $value = number_format($value);
-            }
-            // checks if the actual field is a foreign key to get his label from his table
-            if (!empty($table_config_array[$field_name]['refereced_table_name'])) {
-                static $last_fk_table = null;
-                static $last_fk_array = [];
-                static $last_position = 1;
-                $foreign_table = $table_config_array[$field_name]['refereced_table_name'];
-//                $foreign_table_key = $table_config_array[$field_name]['refereced_column_name'];
-                $fk_to_query = array($field_name => $value);
-                if ($last_fk_table != $foreign_table) {
-                    $last_fk_table = $foreign_table;
-                    $last_fk_array = $fk_to_query;
-                    $last_position = 1;
-                } else {
-                    $last_fk_array += $fk_to_query;
-                    $fk_to_query = $last_fk_array;
-                    $last_position++;
-                }
-                $fk_label = \k1lib\sql\get_fk_field_label($foreign_table, $fk_to_query, $last_position);
-
-
-                if (!empty($fk_label)) {
-                    $value = "{$fk_label} (ID:$value)";
-                } else {
-                    $value = "$value (FK)";
-                }
-            }
-            // WTF: This should work with === BUT NOT !! 
-            if ($value == NULL) {
-                $value = "(NULL)";
-            }
-            $html_code = sprintf($html_template, $table_config_array[$field_name]['label'], $value);
-
-            return $html_code;
-        } else {
-            return "";
-        }
-    }
-}
-
 function get_labels_from_table($db, $table_name) {
 
     \k1lib\sql\db_check_object_type($db, __FUNCTION__);
@@ -508,7 +401,7 @@ function get_labels_from_table($db, $table_name) {
         die(__FUNCTION__ . " \$table_name should be an non empty string");
     }
     $table_config_array = \k1lib\sql\get_db_table_config($db, $table_name);
-    $label_field = \k1lib\sql\get_db_table_label_field($table_config_array);
+    $label_field = \k1lib\sql\get_db_table_label_fields($table_config_array);
     $table_keys_array = \k1lib\sql\get_db_table_keys($table_config_array);
     if (!empty($table_keys_array)) {
         $table_config_array = array_flip($table_keys_array);

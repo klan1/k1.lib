@@ -58,6 +58,38 @@ namespace k1lib\html {
 
     }
 
+    class script_tag extends html_tag {
+
+        /**
+         * Create a SCRIPT html tag with VALUE as data. Use $script->set_value($data)
+         * @param String $class
+         * @param String $id
+         */
+        function __construct($class = "", $id = "") {
+            parent::__construct("script", FALSE);
+//        $this->data_array &= $data_array;
+            $this->set_attrib("class", $class, TRUE);
+            $this->set_attrib("id", $id);
+        }
+
+    }
+
+    class small_tag extends html_tag {
+
+        /**
+         * Create a SMALL html tag with VALUE as data. Use $small->set_value($data)
+         * @param String $class
+         * @param String $id
+         */
+        function __construct($class = "", $id = "") {
+            parent::__construct("small", FALSE);
+//        $this->data_array &= $data_array;
+            $this->set_attrib("class", $class, TRUE);
+            $this->set_attrib("id", $id);
+        }
+
+    }
+
     class span_tag extends html_tag {
 
         /**
@@ -360,6 +392,66 @@ namespace k1lib\html {
 
         function __construct($class = "") {
             parent::__construct("p", FALSE);
+            $this->set_attrib("class", $class);
+        }
+
+    }
+
+    /**
+     * h1
+     */
+    class h1_tag extends html_tag {
+
+        function __construct($class = "") {
+            parent::__construct("h1", FALSE);
+            $this->set_attrib("class", $class);
+        }
+
+    }
+
+    /**
+     * h2
+     */
+    class h2_tag extends html_tag {
+
+        function __construct($class = "") {
+            parent::__construct("h2", FALSE);
+            $this->set_attrib("class", $class);
+        }
+
+    }
+
+    /**
+     * h3
+     */
+    class h3_tag extends html_tag {
+
+        function __construct($class = "") {
+            parent::__construct("h3", FALSE);
+            $this->set_attrib("class", $class);
+        }
+
+    }
+
+    /**
+     * h4
+     */
+    class h4_tag extends html_tag {
+
+        function __construct($class = "") {
+            parent::__construct("h4", FALSE);
+            $this->set_attrib("class", $class);
+        }
+
+    }
+
+    /**
+     * h5
+     */
+    class h5_tag extends html_tag {
+
+        function __construct($class = "") {
+            parent::__construct("h5", FALSE);
             $this->set_attrib("class", $class);
         }
 

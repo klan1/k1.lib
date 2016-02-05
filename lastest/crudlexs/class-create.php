@@ -34,7 +34,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
-        $this->div_container->set_attrib("class", "k1-crudlexs-create");
     }
 
     /**
@@ -52,6 +51,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $blank_row_array = [];
             $show_rule = $this->db_table->get_db_table_show_rule();
             foreach ($this->db_table->get_db_table_config() as $field => $config) {
+                if (!empty($this->db_table->get_constant_fields()) && array_key_exists($field, $this->db_table->get_constant_fields())) {
+                    continue;
+                }
                 if ($config[$show_rule]) {
                     $headers_array[] = $field;
                     $blank_row_array[$field] = "";
@@ -75,7 +77,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      */
     public function put_post_data_on_table_data($row_to_put_on = 1) {
         if ((empty($this->db_table_data)) || empty($this->post_incoming_array)) {
-            trigger_error(__FUNCTION__ . ": There are not data to work yet", E_USER_WARNING);
+//            trigger_error(__FUNCTION__ . ": There are not data to work yet", E_USER_WARNING);
             return FALSE;
         }
         foreach ($this->db_table_data[$row_to_put_on] as $field => $value) {
@@ -118,14 +120,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         }
     }
 
-    function get_do_table_field_name_encrypt() {
-        return $this->do_table_field_name_encrypt;
-    }
-
-    function set_do_table_field_name_encrypt($do_table_field_name_encryp = TRUE) {
-        $this->do_table_field_name_encrypt = $do_table_field_name_encryp;
-    }
-
     /**
      * Put an input object of certain type depending of the MySQL Table Feld Type on each data row[n]
      * @param Int $row_to_apply
@@ -136,26 +130,13 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
          */
         $field_index = 0;
         foreach ($this->db_table_data_filtered[$row_to_apply] as $field => $value) {
-            switch ($this->db_table->get_db_table_field_value_config($field, 'type')) {
-                case 'enum': {
-                        $enum_data = $this->db_table->get_enum_options($field);
-                        $input_tag = new \k1lib\html\select_tag($this->encrypt_field_name($field));
-                        $input_tag->append_option("", creating_strings::$select_choose_option);
-
-                        foreach ($enum_data as $index => $value) {
-                            // SELETED work around
-                            if ($this->db_table_data[$row_to_apply][$field] == $value) {
-                                $selected = TRUE;
-                            } else {
-                                $selected = FALSE;
-                            }
-                            $input_tag->append_option($index, $value, $selected);
-                        }
-                    } break;
-                default: {
-                        $input_tag = new \k1lib\html\input_tag("text", $this->encrypt_field_name($field), NULL, "k1-input-insert");
-                        $input_tag->set_attrib("placeholder", "");
-                    } break;
+            switch ($this->db_table->get_field_config($field, 'type')) {
+                case 'enum':
+                    $input_tag = input_helper::enum_type($this, $row_to_apply, $field);
+                    break;
+                default:
+                    $input_tag = input_helper::default_type($this, $field);
+                    break;
             }
             /**
              * LABELS 
@@ -180,12 +161,14 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             /**
              * END ERROR TESTING
              */
-            if ($this->db_table->get_db_table_field_value_config($field, 'required') === TRUE) {
+            if ($this->db_table->get_field_config($field, 'required') === TRUE) {
                 $input_tag->set_attrib("required", TRUE);
             }
-            $input_tag->set_attrib("k1-data-type", $this->db_table->get_db_table_field_value_config($field, 'validation'));
+            $input_tag->set_attrib("k1-data-type", $this->db_table->get_field_config($field, 'validation'));
             $input_tag->set_attrib("id", $this->encrypt_field_name($field));
+
             $this->apply_html_tag_on_field_filter($input_tag, $field);
+
             $field_index++;
             unset($input_tag);
         }
@@ -259,7 +242,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
     public function do_html_object() {
         if (!empty($this->db_table_data_filtered)) {
-            $this->insert_inputs_on_data_row();
+            $this->div_container->set_attrib("class", "k1-crudlexs-create");
 
             /**
              * DIV content
@@ -311,7 +294,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $submit_button = new \k1lib\html\input_tag("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
             $submit_button->append_to($div_buttons);
             if ($this->show_cancel_button) {
-                $cancel_button = \k1lib\html\get_link_button($this->back_link, creating_strings::$button_cancel, "small");
+                $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
                 $cancel_button->append_to($div_buttons);
             }
 
@@ -342,11 +325,13 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             }
         }
         if ($insert_result) {
-            $new_key_text = \k1lib\sql\table_keys_to_text(array_merge($last_inserted_id, $this->post_incoming_array), $this->db_table->get_db_table_config());
+            $new_key_text = \k1lib\sql\table_keys_to_text(array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields()), $this->db_table->get_db_table_config());
             if (!empty($url_to_go)) {
-                $url_to_go = str_replace("%row_key%", $new_key_text, $url_to_go);
                 $this->set_auth_code($new_key_text);
-                \k1lib\html\html_header_go($url_to_go . "?auth-code={$this->get_auth_code()}");
+                $url_to_go = str_replace("%row_keys%", $new_key_text, $url_to_go);
+                $url_to_go = str_replace("%auth_code%", $this->get_auth_code(), $url_to_go);
+
+                \k1lib\html\html_header_go($url_to_go);
             }
             return TRUE;
         } else {

@@ -11,54 +11,76 @@ class board_update extends board_base implements controller_interface {
      * @var \k1lib\crudlexs\updating
      */
     public $update_object;
+    private $row_keys_text;
 
     public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
-        $this->controller_object = $controller_object;
+        parent::__construct($controller_object);
+        if ($this->is_enabled) {
+            $this->row_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_keys_text", FALSE);
+            $this->update_object = new \k1lib\crudlexs\updating($this->controller_object->db_table, $this->row_keys_text);
+        }
     }
 
     public function start_board() {
+        if (!$this->is_enabled) {
+            $this->update_object->make_invalid();
+            \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
+            return FALSE;
+        }
+        if (!empty($this->row_keys_text)) {
 
-        $row_key_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_key_text", FALSE);
+            if ($this->update_object->get_state()) {
+                $this->update_object->set_back_url(\k1lib\urlrewrite\get_back_url());
 
-        $this->board_content_div = new \k1lib\html\div_tag("board-content");
+                $this->update_object->set_do_table_field_name_encrypt(TRUE);
+                $this->controller_object->db_table->set_db_table_show_rule("show-edit");
 
-        $this->update_object = new \k1lib\crudlexs\updating($this->controller_object->db_table, $row_key_text);
-
-        if ($this->update_object->get_state()) {
-
-            $this->update_object->set_do_table_field_name_encrypt(TRUE);
-            $this->controller_object->db_table->set_db_table_show_rule("show-edit");
-
-            $this->data_loaded = $this->update_object->load_db_table_data();
+                $this->data_loaded = $this->update_object->load_db_table_data();
+                return TRUE;
+            } else {
+                \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
+                return FALSE;
+            }
         } else {
-            \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
+            return FALSE;
         }
     }
 
     public function exec_board($do_echo = TRUE) {
-        if ($this->update_object->get_state()) {
+        if (!$this->is_enabled) {
+            return FALSE;
+        }
+
+        if ($this->update_object->get_state() && !empty($this->row_keys_text)) {
+
             if ($this->data_loaded) {
                 if ($this->update_object->catch_post_data(TRUE)) {
                     $this->update_object->put_post_data_on_table_data();
-                    if ($this->update_object->do_post_data_validation()) {
-                        if (!$this->update_object->do_update("../../{$this->controller_object->get_board_read_url_name()}/%row_key%/")) {
-                            \k1lib\common\show_message(board_update_strings::$error_no_inserted, board_base_strings::$error_mysql, "alert");
+                    if (!$this->skip_form_action) {
+                        if ($this->update_object->do_post_data_validation()) {
+                            $back_url = (isset($_GET['back-url'])) ? "&back-url=" . urlencode(\k1lib\urlrewrite\get_back_url()) : "";
+                            $url_to_go = "{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/%row_keys%/?auth-code=%auth_code%{$back_url}";
+                            if (!$this->update_object->do_update($url_to_go)) {
+                                \k1lib\common\show_message(board_update_strings::$error_no_inserted, board_base_strings::$error_mysql, "alert");
+                            }
+                        } else {
+                            \k1lib\common\show_message(board_update_strings::$error_form, board_base_strings::$alert_board, "warning");
                         }
-                    } else {
-                        \k1lib\common\show_message(board_update_strings::$error_form, board_base_strings::$alert_board, "warning");
                     }
                 }
                 $this->update_object->apply_label_filter();
-                $this->update_object->do_html_object()->append_to($this->board_content_div);
+                $this->update_object->insert_inputs_on_data_row();
+                $update_object_div = $this->update_object->do_html_object();
+                $update_object_div->append_to($this->board_content_div);
+                if ($do_echo) {
+                    $this->board_content_div->generate_tag(TRUE);
+                    return TRUE;
+                } else {
+                    return $update_object_div;
+                }
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
-            }
-
-
-            if ($do_echo) {
-                $this->board_content_div->generate_tag(TRUE);
-            } else {
-                return TRUE;
+                return FALSE;
             }
         }
     }
