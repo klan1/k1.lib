@@ -33,75 +33,78 @@ function get_db_table_config(\PDO $db, $table, $recursion = 1) {
 AND table_name = '{$table}'";
     $INFORMATION_SCHEMA_result = sql_query($db, $INFORMATION_SCHEMA_query, TRUE);
     if (empty($INFORMATION_SCHEMA_result)) {
-        trigger_error("The table '$table' do not exist", E_USER_WARNING);
-        return FALSE;
+//        trigger_error("The table '$table' do not exist", E_USER_WARNING);
+//        return FALSE;
     }
 
     $config_array = array();
 // run through the result and covert into an array that works for K1.lib
     foreach ($columns_info_result as $field_row) {
         $field_name = $field_row['Field'];
-//        unset($field_row['Field']);
+//        unset($field_config['Field']);
         /*
-         * SEE EACH VALUE OF $field_row to build a new $key => $value and compile the COMMENT field from the table
+         * SEE EACH VALUE OF $field_config to build a new $key => $value and compile the COMMENT field from the table
          */
-        foreach ($field_row as $key => $value) {
+        $field_config = $field_row;
+        foreach ($field_config as $key => $value) {
 // LOWER the $key and $value to AVOID problems
             $key_original = $key;
             $key = strtolower($key);
             $value = strtolower($value);
 // create a new pair of data but lowered
-            $field_row[$key] = $value;
+            $field_config[$key] = $value;
             /*
-             * COMPILE THE COMMENT VALUES TO GET A NEW PAIR OF DATA ON $field_row
+             * COMPILE THE COMMENT VALUES TO GET A NEW PAIR OF DATA ON $field_config
              * EACH PARAMETER IS SEPARATED WITH ,
              * PARAMETER AND VALUE SEPARATED :
              * parameter1:value1,...,parameterN:valueN
              */
             if ($key == "comment") {
                 if (!empty($value) && (strstr($value, ":") !== FALSE)) {
-                    $parameters = explode(",", $field_row['Comment']);
+                    $parameters = explode(",", $field_config['Comment']);
                     if (count($parameters) != 0) {
                         foreach ($parameters as $parameter_value) {
                             list($attrib, $attrib_value) = explode(":", $parameter_value);
-                            $field_row[$attrib] = trim($attrib_value);
+                            $field_config[$attrib] = trim($attrib_value);
                             $key = trim($attrib);
                         }
                     }
                 }
             }
 //then delete the original pair of data
-            unset($field_row[$key_original]);
-        } // $field_row
+            unset($field_config[$key_original]);
+        } // $field_config
 // FOREIGN KEYS
-        foreach ($INFORMATION_SCHEMA_result as $info_row) {
-            if (!empty($info_row['POSITION_IN_UNIQUE_CONSTRAINT']) && ($info_row['COLUMN_NAME'] == $field_name)) {
-                $field_row ['refereced_table_name'] = $info_row['REFERENCED_TABLE_NAME'];
-                $field_row ['refereced_column_name'] = $info_row['REFERENCED_COLUMN_NAME'];
-                if ($recursion > 0) {
-                    $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion - 1);
-                    $field_row ['refereced_column_config'] = $referenced_table_config[$info_row['REFERENCED_COLUMN_NAME']];
+        if (!empty($INFORMATION_SCHEMA_result)) {
+            foreach ($INFORMATION_SCHEMA_result as $info_row) {
+                if (!empty($info_row['POSITION_IN_UNIQUE_CONSTRAINT']) && ($info_row['COLUMN_NAME'] == $field_name)) {
+                    $field_config['refereced_table_name'] = $info_row['REFERENCED_TABLE_NAME'];
+                    $field_config['refereced_column_name'] = $info_row['REFERENCED_COLUMN_NAME'];
+                    if ($recursion > 0) {
+                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion - 1);
+                        $field_config['refereced_column_config'] = $referenced_table_config[$info_row['REFERENCED_COLUMN_NAME']];
+                    } else {
+                        $field_config['refereced_column_config'] = FALSE;
+                    }
+                    break;
                 } else {
-                    $field_row ['refereced_column_config'] = FALSE;
+                    $field_config['refereced_table_name'] = FALSE;
+                    $field_config['refereced_column_name'] = FALSE;
+                    $field_config['refereced_column_config'] = FALSE;
                 }
-                break;
-            } else {
-                $field_row ['refereced_table_name'] = FALSE;
-                $field_row ['refereced_column_name'] = FALSE;
-                $field_row ['refereced_column_config'] = FALSE;
             }
         }
         /*
          * DEFAULTS TAKE CARE !!
          */
 // MAX - THIS ONE IS ALWAYS AUTO GENERATED FROM FIELD DEFINITION
-        $field_type = $field_row['type'];
+        $field_type = $field_config['type'];
 // manage the unsigned
         if (strstr($field_type, "unsigned") !== FALSE) {
             $field_type = str_replace(" unsigned", "", $field_type);
-            $field_row['unsigned'] = TRUE;
+            $field_config['unsigned'] = TRUE;
         } else {
-            $field_row['unsigned'] = FALSE;
+            $field_config['unsigned'] = FALSE;
         }
         if (strstr($field_type, "(") !== FALSE) {
 // extract the number from type definition
@@ -133,18 +136,18 @@ AND table_name = '{$table}'";
             );
             $max_legth = $mysql_max_length_defaults[$field_type];
         }
-        $field_row['type'] = $field_type;
-        $field_row['max'] = $max_legth;
+        $field_config['type'] = $field_type;
+        $field_config['max'] = $max_legth;
 
 // TYPE VALIDATION
         $mysql_default_validation = array(
-            'char' => 'mixed-simbols',
-            'varchar' => 'mixed-simbols',
-            'text' => 'mixed-simbols',
+            'char' => 'mixed-symbols',
+            'varchar' => 'mixed-symbols',
+            'text' => 'mixed-symbols',
             'date' => 'date',
             'time' => 'time',
             'datetime' => 'datetime',
-            'timestamp' => 'datetime',
+            'timestamp' => 'numbers',
             'tinyint' => 'numbers',
             'smallint' => 'numbers',
             'mediumint' => 'numbers',
@@ -155,54 +158,74 @@ AND table_name = '{$table}'";
             'enum' => 'options',
             'set' => 'options',
         );
-        if (!isset($field_row['validation'])) {
-            $field_row['validation'] = $mysql_default_validation[$field_row['type']];
+        if (!isset($field_config['validation'])) {
+            $field_config['validation'] = $mysql_default_validation[$field_config['type']];
         }
 
 
 //ROW attrib_value FIXES
 // yes -> TRUE no -> FALSE
-        foreach ($field_row as $key => $value) {
+        foreach ($field_config as $key => $value) {
 //            d("$key -> $value");
-            if ($field_row[$key] == "yes") {
-                $field_row[$key] = TRUE;
-            } elseif ($field_row[$key] == "no") {
-                $field_row[$key] = FALSE;
+            if ($field_config[$key] == "yes") {
+                $field_config[$key] = TRUE;
+            } elseif ($field_config[$key] == "no") {
+                $field_config[$key] = FALSE;
             }
         }
-// IF no label so capitalize the FIELD NAME
-        if (!isset($field_row['label'])) {
-            $field_row['label'] = strtoupper(substr($field_name, 0, 1)) . (substr($field_name, 1));
+        // IF no label so capitalize the FIELD NAME
+        if (!isset($field_config['label'])) {
+            $field_config['label'] = $field_name;
+            // Try to remove the table name from the field name. Commonly use on DB design
+            if (strtolower(substr($table, -3)) === "ies") {
+                $possible_singular_table_name = str_replace("ies", "y", $table);
+            } elseif (strtolower(substr($table, -1)) === "s") {
+                $possible_singular_table_name = substr($table, 0, -1);
+            } else {
+                $possible_singular_table_name = $table;
+            }
+            // Why not changue all the id to ID ?
+            $field_config['label'] = str_replace('id', 'ID', $field_config['label']);
+            // Remove the possible singular name table from field name
+            $field_config['label'] = str_replace("{$possible_singular_table_name}_", '', $field_config['label']);
+            // Better look without the _ character
+            $field_config['label'] = str_replace('_', ' ', strtoupper(substr($field_config['label'], 0, 1)) . (substr($field_config['label'], 1)));
         }
         // ENUM FIX
-        if (!isset($field_row['min'])) {
-            $field_row['min'] = 0;
+        if (!isset($field_config['min'])) {
+            $field_config['min'] = 0;
             /**
              * TODO: Make option system for this
              */
-//            $field_row['min'] = defined(DB_MIN_FIELD_LENGTH) ? DB_MIN_FIELD_LENGTH : FALSE;
+//            $field_config['min'] = defined(DB_MIN_FIELD_LENGTH) ? DB_MIN_FIELD_LENGTH : FALSE;
         }
-        if ($field_row['type'] == "enum") {
-            $field_row['min'] = 1;
-            $field_row['max'] = 999;
+        if ($field_config['type'] == "enum") {
+            $field_config['min'] = 1;
+            $field_config['max'] = 999;
         }
 // NEW 2016: REQUIRED-FIELD
-        if ($field_row['null'] === TRUE) {
-            $field_row['required'] = FALSE;
-        } else {
-            $field_row['required'] = TRUE;
+        if (!isset($field_config['required'])) {
+            if ($field_config['null'] === TRUE) {
+                $field_config['required'] = FALSE;
+            } else {
+                $field_config['required'] = TRUE;
+            }
         }
 // LABEL-FIELD
-        if (!isset($field_row['label-field'])) {
-            $field_row['label-field'] = NULL;
+        if (!isset($field_config['label-field'])) {
+            $field_config['label-field'] = NULL;
         }
 // LINK-FIELD
-        if (!isset($field_row['link-field'])) {
-            $field_row['link-field'] = NULL;
+        if (!isset($field_config['link-field'])) {
+            $field_config['link-field'] = NULL;
         }
 // NEW 2016: ALIAS-FIELD
-        if (!isset($field_row['alias'])) {
-            $field_row['alias'] = NULL;
+        if (!isset($field_config['alias'])) {
+            $field_config['alias'] = NULL;
+        }
+// NEW 2016: PLACEHOLDER
+        if (!isset($field_config['placeholder'])) {
+            $field_config['placeholder'] = NULL;
         }
 // show board
         /**
@@ -217,26 +240,26 @@ AND table_name = '{$table}'";
         $show_array_attribs[] = 'show-export';
 
 //there is not show-all defined
-        if (!isset($field_row['show-all'])) {
+        if (!isset($field_config['show-all'])) {
             //FIX: should be FALSE
-            $field_row['show-all'] = TRUE;
+            $field_config['show-all'] = TRUE;
         }
         foreach ($show_array_attribs as $show_attrib) {
-            if (!isset($field_row[$show_attrib])) {
-                if ($field_row['show-all']) {
-                    $field_row[$show_attrib] = TRUE;
+            if (!isset($field_config[$show_attrib])) {
+                if ($field_config['show-all']) {
+                    $field_config[$show_attrib] = TRUE;
                 } else {
-                    $field_row[$show_attrib] = FALSE;
+                    $field_config[$show_attrib] = FALSE;
                 }
             }
         }
 //table name for each one, yes! repetitive, but necesary in some cases where i dnot receive the table name !!
-        $field_row['table'] = $table;
+        $field_config['table'] = $table;
 // SQL for selects
-        $field_row['sql'] = "";
+        $field_config['sql'] = "";
 
 // use the actual cycle data
-        $config_array[$field_name] = $field_row;
+        $config_array[$field_name] = $field_config;
     }
     return $config_array;
 }
@@ -345,8 +368,8 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
             } else {
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
-//show-message($insert_sql);
-            $update = $db->exec($update_sql);
+//            d($update_sql,true);
+            $update = $db->exec($update_sql) or ( trigger_error("Error on Update stament : " . $db->errorInfo()[2], E_USER_WARNING));
             if ($update) {
                 return $update;
             } else {
@@ -372,7 +395,7 @@ function sql_insert(\PDO $db, $table, $data) {
                 $data_string = array_to_sql_values($data);
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
-            $insert = $db->exec($insert_sql) or ( trigger_error("Error on Insert stament : " . $db->errorInfo(), E_USER_WARNING));
+            $insert = $db->exec($insert_sql) or ( trigger_error("Error on Insert stament : " . $db->errorInfo()[2], E_USER_WARNING));
             if ($insert) {
                 $last_insert_sql = "SELECT LAST_INSERT_ID() as 'LAST_ID'";
                 $last_insert_result = sql_query($db, $last_insert_sql, FALSE);
@@ -507,10 +530,9 @@ function array_to_sql_set($array, $use_nulls = true, $for_where_stament = FALSE,
     return $data_string;
 }
 
-function get_tables_config_from_sql($sqlQuery) {
-    global $db;
-    $sqlQuery = "EXPLAIN " . $sqlQuery;
-    $explainResult = sql_query($db, $sqlQuery, TRUE);
+function get_db_tables_config_from_sql(\PDO $db, $sql_query) {
+    $sql_query = "EXPLAIN " . $sql_query;
+    $explainResult = sql_query($db, $sql_query, TRUE);
     if ($explainResult) {
         $presentTablesArray = Array();
         $tableConfig = NULL;
@@ -530,6 +552,20 @@ function get_tables_config_from_sql($sqlQuery) {
     } else {
         return NULL;
     }
+}
+
+function get_sql_count_query_from_sql_code($sql_query) {
+    $sql_query_lower = strtolower($sql_query);
+    $from_pos = strpos($sql_query_lower, "from");
+    $new_sql_with_count = "SELECT count(*) as num_rows " . substr($sql_query, $from_pos);
+    return $new_sql_with_count;
+}
+
+function get_sql_query_with_new_fields($sql_query, $fields) {
+    $sql_query_lower = strtolower($sql_query);
+    $from_pos = strpos($sql_query_lower, "from");
+    $new_sql_with_new_fields = "SELECT {$fields} " . substr($sql_query, $from_pos);
+    return $new_sql_with_new_fields;
 }
 
 /**
@@ -600,46 +636,37 @@ function get_db_table_keys_array($db_table_config) {
  * @param Integer $position If this is -1 will return the last field found
  * @return String Label field name
  */
-function get_db_table_label_field($db_table_config, $position = 1) {
+function get_db_table_label_fields($db_table_config) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
     $p = 0;
-    if ($position == -1) {
-        $db_table_config = array_reverse($db_table_config);
-        $position = 1;
-    }
+    $labels = [];
     foreach ($db_table_config as $field => $config) {
         if (($config['label-field'])) {
-            $p++;
-            if ($p == $position) {
-                return $field;
-            }
+            $labels[] = $field;
         }
     }
-    return NULL;
+    if (!empty($labels)) {
+        return $labels;
+    } else {
+        return NULL;
+    }
 }
 
-function get_db_table_labels(&$array_data, $db_table_config) {
-    
-}
-
-function get_fk_field_label($table_name, $url_key_array = Array(), $last_position = 1) {
+function get_fk_field_label(\PDO $db, $table_name, array $url_key_array = Array()) {
     if (!is_string($table_name)) {
         trigger_error("\$table_name must to be a String", E_USER_ERROR);
     }
-    if (!is_array($url_key_array)) {
-        trigger_error("Need an array to work on \$url_key_array", E_USER_ERROR);
-    }
-    global $db;
-    $fkTableConfig = get_db_table_config($db, $table_name);
-    $fkTableLabelField = get_db_table_label_field($fkTableConfig, $last_position);
+    $fk_table_config = get_db_table_config($db, $table_name);
+    $fk_table_label_fields = get_db_table_label_fields($fk_table_config);
+    $fk_table_label_fields_text = implode(",", $fk_table_label_fields);
 
-    if (!empty($fkTableLabelField)) {
-        $fkWhereCondition = table_keys_to_where_condition($url_key_array, $fkTableConfig);
-        $fkSqlQuery = "SELECT {$fkTableLabelField} FROM $table_name WHERE $fkWhereCondition";
-        $sql_result = sql_query($db, $fkSqlQuery, FALSE);
-        return $sql_result[$fkTableLabelField];
+    if (!empty($fk_table_label_fields_text)) {
+        $fk_where_condition = table_keys_to_where_condition($url_key_array, $fk_table_config);
+        $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM $table_name WHERE $fk_where_condition";
+        $sql_result = sql_query($db, $fk_sql_query, FALSE);
+        return implode(" ", $sql_result);
     } else {
         return NULL;
     }
@@ -670,7 +697,7 @@ function get_db_table_refereces($db_table_config) {
  * @param Array $db_table_config
  * @return Array FALSE on error
  */
-function table_keys_to_text(&$row_data, $db_table_config) {
+function table_keys_to_text($row_data, $db_table_config) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
@@ -687,13 +714,11 @@ function table_keys_to_text(&$row_data, $db_table_config) {
 
 function get_keys_array_from_row_data(&$row_data, $db_table_config) {
     $key_fields_array = get_db_table_keys($db_table_config);
-    d($row_data);
-    d($key_fields_array);
     $keys_array = \k1lib\common\clean_array_with_guide($row_data, $key_fields_array);
     if (!empty($keys_array)) {
         return $keys_array;
     } else {
-        return [];
+        return[];
     }
 }
 
@@ -836,8 +861,12 @@ function get_db_table_enum_values(\PDO $db, $table, $field) {
     $matches = array();
     preg_match('/^enum\((.*)\)$/', $type, $matches);
     $i = 0;
-    foreach (explode(',', $matches[1]) as $value) {
-        $enum[trim($value, "'")] = trim($value, "'");
+    if (!empty($matches[1])) {
+        foreach (explode(',', $matches[1]) as $value) {
+            $enum[trim($value, "'")] = trim($value, "'");
+        }
+    } else {
+        $enum = [];
     }
     return $enum;
 }

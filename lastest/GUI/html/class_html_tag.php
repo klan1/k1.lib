@@ -6,7 +6,51 @@
 
 namespace k1lib\html {
 
-    class html_tag_base {
+    class html_tag_base { // FAIL !!
+
+        public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
+            $html_code = "\n";
+
+            if (($with_childs) && (count($this->childs) >= 1)) {
+                //lets move with index numbers begining from 0
+                $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
+//            d($this->childs,TRUE);
+                foreach ($this->childs as $index => &$child_object) {
+                    if ($index > $n_childs) {
+                        break;
+                    }
+                    $html_code .= "\n" . $child_object->generate_tag();
+                }
+            }
+            $html_code .= $this->get_value();
+
+            $this->tag_code = $this->pre_code . $html_code . $this->post_code;
+
+            if ($do_echo) {
+                echo $this->tag_code;
+            } else {
+                return $this->tag_code;
+            }
+        }
+
+    }
+
+    /**
+     * HTML Tag abstraction
+     */
+    class html_tag {
+
+        /** @var String */
+        protected $tag_name = NULL;
+
+        /** @var Boolean */
+        protected $is_selfclosed = FALSE;
+
+        /** @var Array */
+        protected $attributes = array();
+
+        /** @var String */
+        protected $attributes_code = "";
 
         /** @var String */
         protected $tag_code = "";
@@ -25,6 +69,11 @@ namespace k1lib\html {
 
         /** @var Array */
         protected $childs = array();
+
+        /**
+         * @var html_tag;
+         */
+        protected $linked_html_obj = null;
 
         /**
          * Chains an html tag into the actual html tag
@@ -61,56 +110,20 @@ namespace k1lib\html {
          */
         public function set_value($value, $append = false) {
 //            $this->value = $value;
-            $this->value = (($append === TRUE) && (!empty($this->value)) ) ? ($this->value . " " . $value) : ($value);
-        }
-
-        public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
-            $html_code = "\n";
-
-            if (($with_childs) && (count($this->childs) >= 1)) {
-                //lets move with index numbers begining from 0
-                $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
-//            d($this->childs,TRUE);
-                foreach ($this->childs as $index => &$child_object) {
-                    if ($index > $n_childs) {
-                        break;
-                    }
-                    $html_code .= "\n" . $child_object->generate_tag();
-                }
-            }
-            $html_code .= $this->get_value();
-
-            $this->tag_code = $this->pre_code . $html_code . $this->post_code;
-
-            if ($do_echo) {
-                echo $this->tag_code;
+            if (empty($this->linked_html_obj)) {
+                $this->value = (($append === TRUE) && (!empty($this->value)) ) ? ($this->value . " " . $value) : ($value);
             } else {
-                return $this->tag_code;
+                $this->linked_html_obj->value = (($append === TRUE) && (!empty($this->linked_html_obj->value)) ) ? ($this->linked_html_obj->value . " " . $value) : ($value);
             }
         }
 
-        public function get_tag_code() {
-            return $this->tag_code;
+        /**
+         * Links the value of the current object to a child one. The current WON't be used and the value will be placed on the link object.
+         * @param \k1lib\html\html_tag $obj_to_link
+         */
+        public function link_value_obj(html_tag $obj_to_link) {
+            $this->linked_html_obj = $obj_to_link;
         }
-
-    }
-
-    /**
-     * HTML Tag abstraction
-     */
-    class html_tag extends html_tag_base {
-
-        /** @var String */
-        protected $tag_name = NULL;
-
-        /** @var Boolean */
-        protected $is_selfclosed = FALSE;
-
-        /** @var Array */
-        protected $attributes = array();
-
-        /** @var String */
-        protected $attributes_code = "";
 
         /**
          * Constructor with $tag_name and $selfclosed options for beginning
@@ -153,7 +166,11 @@ namespace k1lib\html {
          */
         public function set_attrib($attribute, $value, $append = FALSE) {
             if (!empty($attribute) && is_string($attribute)) {
-                $this->attributes[$attribute] = (($append === TRUE) && (!empty($this->attributes[$attribute])) ) ? ($this->attributes[$attribute] . " " . $value) : ($value);
+                if (empty($this->linked_html_obj)) {
+                    $this->attributes[$attribute] = (($append === TRUE) && (!empty($this->attributes[$attribute])) ) ? ($this->attributes[$attribute] . " " . $value) : ($value);
+                } else {
+                    $this->linked_html_obj->set_attrib($attribute, $value, $append);
+                }
             } else {
                 trigger_error("HTML ATTRIBUTE has to be string", E_USER_WARNING);
             }
@@ -271,6 +288,10 @@ namespace k1lib\html {
             } else {
                 return $html_code;
             }
+        }
+
+        public function get_tag_code() {
+            return $this->tag_code;
         }
 
     }

@@ -120,6 +120,16 @@ class session_plain {
         }
     }
 
+    static public function get_user_data() {
+        if (self::is_enabled(true)) {
+            if (isset($_SESSION['k1lib_session']['user_data'])) {
+                return $_SESSION['k1lib_session']['user_data'];
+            } else {
+                return FALSE;
+            }
+        }
+    }
+
     static public function is_logged($redirect = FALSE, $where_redirect_to = "") {
         if ((self::is_enabled(true)) && (self::$has_started) && (isset(self::$session_data['user_hash']))) {
             if (self::$session_data['user_hash'] == self::get_client_hash(self::$session_data['login'])) {

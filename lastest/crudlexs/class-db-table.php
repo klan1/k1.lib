@@ -26,6 +26,22 @@ class class_db_table {
     private $total_rows_filtered_result;
     private $total_rows_result;
 
+    /**
+     * CUSTOM SQL QUERY
+     */
+    protected $custom_sql_query_code = null;
+    protected $custom_query_table_config = [];
+
+    /**
+     * @var array Constant fields array
+     */
+    private $constant_fields = [];
+
+    /**
+     * 
+     * @param \PDO $db
+     * @param string $db_table_name
+     */
     public function __construct(\PDO $db, $db_table_name) {
         $this->db = $db;
         // check $db_table_name type
@@ -37,7 +53,7 @@ class class_db_table {
 
         $this->db_table_config = $this->_get_db_table_config($db_table_name);
         if ($this->db_table_config) {
-            $this->db_table_label_field = $this->_get_db_table_label_field($this->db_table_config);
+            $this->db_table_label_field = $this->_get_db_table_label_fields($this->db_table_config);
         } else {
             
         }
@@ -59,16 +75,22 @@ class class_db_table {
         }
     }
 
+    public function set_custom_sql_query($sql_query) {
+        $this->custom_sql_query_code = $sql_query;
+        $this->db_table_config = \k1lib\sql\get_db_tables_config_from_sql($this->db, $this->custom_sql_query_code);
+//        return $this->custom_query_table_config;
+    }
+
     function get_db_table_name() {
         return $this->db_table_name;
     }
 
-    public function get_db_table_label_field() {
+    public function get_db_table_label_fields() {
         return $this->db_table_label_field;
     }
 
-    private static function _get_db_table_label_field(&$db_table_config) {
-        return \k1lib\sql\get_db_table_label_field($db_table_config);
+    private static function _get_db_table_label_fields(&$db_table_config) {
+        return \k1lib\sql\get_db_table_label_fields($db_table_config);
     }
 
     public function get_db_table_config() {
@@ -79,11 +101,11 @@ class class_db_table {
         return $this->db_table_config[$field];
     }
 
-    public function get_db_table_field_value_config($field, $config_name) {
+    public function get_field_config($field, $config_name) {
         return $this->db_table_config[$field][$config_name];
     }
 
-    private function _get_db_table_config($db_table_name, $recursion = 1) {
+    private function _get_db_table_config($db_table_name, $recursion = 10) {
         return \k1lib\sql\get_db_table_config($this->db, $db_table_name, $recursion);
     }
 
@@ -140,17 +162,42 @@ class class_db_table {
         }
     }
 
+    public function set_field_constants(array $field_constants_array) {
+
+        if (empty($field_constants_array)) {
+            return FALSE;
+        } else {
+            // DB table constants creation for inserts and updates
+            $this->constant_fields = array_merge($this->constant_fields, $field_constants_array);
+            return TRUE;
+        }
+    }
+
+    function get_constant_fields() {
+        return $this->constant_fields;
+    }
+
     public function clear_query_filter() {
         $this->query_where_pairs = "";
     }
 
     public function generate_sql_query_fields_by_rule($rule) {
         $fields_array = [];
+//        if (!empty($this->custom_query_table_config)) {
+//            $table_config_bkp = $this->db_table_config;
+//            $this->db_table_config = $this->custom_query_table_config;
+//        }
         foreach ($this->db_table_config as $field => $config) {
+            if (isset($this->constant_fields) && array_key_exists($field, $this->constant_fields)) {
+                continue;
+            }
             if (isset($config[$rule]) && $config[$rule]) {
                 $fields_array[] = $field;
             }
         }
+//        if (!empty($this->custom_query_table_config)) {
+//            $this->db_table_config = $table_config_bkp;
+//        }
         if (!empty($fields_array)) {
             return implode(",", $fields_array);
         } else {
@@ -168,8 +215,13 @@ class class_db_table {
         if (empty($fields)) {
             return FALSE;
         } else {
-            $this->query_sql = "SELECT {$fields} FROM {$this->db_table_name} ";
-            $this->query_sql_total_rows = "SELECT COUNT(*) as num_rows FROM {$this->db_table_name} ";
+            if (!empty($this->custom_sql_query_code)) {
+                $this->query_sql = $this->custom_sql_query_code . " ";
+                $this->query_sql_total_rows = \k1lib\sql\get_sql_count_query_from_sql_code($this->query_sql) . " ";
+            } else {
+                $this->query_sql = "SELECT {$fields} FROM {$this->db_table_name} ";
+                $this->query_sql_total_rows = "SELECT COUNT(*) as num_rows FROM {$this->db_table_name} ";
+            }
 
             if (!empty($this->query_where_pairs)) {
                 $this->query_sql .= "WHERE {$this->query_where_pairs} ";
@@ -194,7 +246,20 @@ class class_db_table {
         } else {
             return FALSE;
         }
-        $this->query_sql_keys = "SELECT {$fields} FROM {$this->db_table_name} ";
+        if (empty($this->db_table_show_rule)) {
+            $fields_to_add = "";
+        } else {
+            $fields_to_add = "," . $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
+        }
+
+
+        if (!empty($this->custom_sql_query_code)) {
+            $this->query_sql = $this->custom_sql_query_code . " ";
+            $this->query_sql_keys = \k1lib\sql\get_sql_query_with_new_fields($this->query_sql . " ", $fields);
+        } else {
+            $this->query_sql_keys = "SELECT {$fields}{$fields_to_add} FROM {$this->db_table_name} ";
+        }
+
 
         if (!empty($this->query_where_pairs)) {
             $this->query_sql_keys .= "WHERE {$this->query_where_pairs} ";
@@ -232,8 +297,16 @@ class class_db_table {
     public function get_data_keys() {
         if ($this->generate_sql_query_keys()) {
             $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql_keys, TRUE, TRUE);
-            if (!empty($query_result)) {
-                return $query_result;
+            $just_keys_result = [];
+            foreach ($query_result as $row => $data) {
+                if ($row === 0) {
+                    continue;
+                }
+                $just_keys_result[$row] = \k1lib\sql\get_keys_array_from_row_data($query_result[$row], $this->db_table_config);
+            }
+
+            if (!empty($just_keys_result)) {
+                return $just_keys_result;
             } else {
                 return FALSE;
             }
@@ -276,6 +349,7 @@ class class_db_table {
             trigger_error("Data to insert can't be empty", E_USER_WARNING);
             return FALSE;
         }
+        $data_to_insert = array_merge($data_to_insert, $this->constant_fields);
         return \k1lib\sql\sql_insert($this->db, $this->db_table_name, $data_to_insert);
     }
 
@@ -288,6 +362,7 @@ class class_db_table {
             trigger_error("Key to update can't be empty", E_USER_WARNING);
             return FALSE;
         }
+        $data_to_update = array_merge($data_to_update, $this->constant_fields);
         return \k1lib\sql\sql_update($this->db, $this->db_table_name, $data_to_update, $key_to_update);
     }
 

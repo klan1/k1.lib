@@ -8,10 +8,16 @@ use k1lib\urlrewrite\url_manager as url_manager;
 class board_delete extends board_base implements controller_interface {
 
     protected $redirect_url = null;
+    private $row_keys_text;
+    private $read_object;
 
     public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
-        $this->controller_object = $controller_object;
-        $this->redirect_url = "../../{$this->controller_object->get_board_list_url_name()}/";
+        parent::__construct($controller_object);
+        $this->redirect_url = (isset($_GET['back-url'])) ? \k1lib\urlrewrite\get_back_url() : "../../{$this->controller_object->get_board_list_url_name()}/";
+        if ($this->is_enabled) {
+            $this->row_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_keys_text", FALSE);
+            $this->read_object = new \k1lib\crudlexs\reading($this->controller_object->db_table, $this->row_keys_text);
+        }
     }
 
     function set_redirect_url($redirect_url) {
@@ -19,40 +25,40 @@ class board_delete extends board_base implements controller_interface {
     }
 
     public function start_board() {
-
-        /**
-         * GET the row KEY from the URL
-         */
-// This will work because the URL internal index is from 0
-        $next_url_level = url_manager::get_url_level_count();
-// get from the URL the next level value :   /$actual_url/next_level_value
-        $row_key_text = url_manager::set_url_rewrite_var($next_url_level, "row_key_text", FALSE);
-        $row_key_text_array = \k1lib\sql\table_url_text_to_keys($row_key_text, $this->controller_object->db_table->get_db_table_config());
-
-// Init sending the DB Table object that ha
-        $html_db_row_view = new \k1lib\crudlexs\reading($this->controller_object->db_table, $row_key_text);
-
-        if (isset($_GET['auth-code'])) {
-            $delete_auth = $_GET['auth-code'];
-            $auth_expected = md5(\k1lib\MAGIC_VALUE . $row_key_text);
-            if ($delete_auth === $auth_expected) {
-
-                if ($this->controller_object->db_table->delete_data($row_key_text_array)) {
-                    \k1lib\html\html_header_go($this->redirect_url);
-                } else {
-                    \k1lib\common\show_message("El registro a borrar no existe.", "Error: ", "alert");
-                }
-            } else {
-                \k1lib\common\show_message("La autorizacion no es valida.", "Error: ", "alert");
-            }
-        } else {
-
-            \k1lib\common\show_message("No puedo borrar un registro sin autorizacion.", "Error: ", "alert");
+        if (!$this->is_enabled) {
+            $this->read_object->make_invalid();
+            \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
+            return FALSE;
         }
+        return TRUE;
     }
 
     public function exec_board() {
-        return TRUE;
+        if (!$this->is_enabled) {
+            return FALSE;
+        }
+        if (!empty($this->row_keys_text)) {
+            if ($this->read_object->load_db_table_data()) {
+                $row_key_text_array = \k1lib\sql\table_url_text_to_keys($this->row_keys_text, $this->controller_object->db_table->get_db_table_config());
+
+                if ($this->controller_object->db_table->delete_data($row_key_text_array)) {
+                    \k1lib\html\html_header_go($this->redirect_url);
+                    return TRUE;
+                } else {
+                    \k1lib\common\show_message(board_delete_strings::$error_no_data_deleted, "Error: ", "alert");
+                    return FALSE;
+                }
+            } else {
+                \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
+                return FALSE;
+            }
+        }
     }
+
+}
+
+class board_delete_strings {
+
+    static $error_no_data_deleted = "The record to delete can't be deleted";
 
 }
