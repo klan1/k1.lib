@@ -2,6 +2,8 @@
 
 namespace k1lib\crudlexs;
 
+use \k1lib\urlrewrite\url_manager as url_manager;
+
 class updating extends \k1lib\crudlexs\creating {
 
     public function __construct(\k1lib\crudlexs\class_db_table $db_table, $row_keys_text) {
@@ -12,6 +14,23 @@ class updating extends \k1lib\crudlexs\creating {
         }
         creating_strings::$button_submit = updating_strings::$button_submit;
         creating_strings::$select_choose_option = updating_strings::$select_choose_option;
+    }
+
+    public function load_db_table_data($blank_data = FALSE) {
+        $return_data = parent::load_db_table_data($blank_data);
+
+        $url_action = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "url_action", FALSE);
+        $url_action_on_encoded_field = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "url_action_on_encoded_field", FALSE);
+        $url_action_on_field = $this->decrypt_field_name($url_action_on_encoded_field);
+
+        if ($url_action == "unlink-uploaded-file") {
+            \k1lib\forms\file_uploads::unlink_uploaded_file($this->db_table_data[1][$url_action_on_field]);
+            $this->db_table_data[1][$url_action_on_field] = NULL;
+            $this->db_table->update_data($this->db_table_data[1], $this->db_table_data_keys[1]);
+            \k1lib\html\html_header_go(\k1lib\urlrewrite\get_back_url());
+        }
+
+        return $return_data;
     }
 
     public function do_update($url_to_go = "../../") {

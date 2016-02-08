@@ -29,6 +29,22 @@ class input_helper {
         return $input_tag;
     }
 
+    static function file_upload(creating $crudlex_obj, $field) {
+        $input_tag = new \k1lib\html\input_tag("file", $crudlex_obj->encrypt_field_name($field), "", "k1-file-upload");
+        if (isset($crudlex_obj->db_table_data[1][$field]['name']) || empty($crudlex_obj->db_table_data[1][$field])) {
+            return $input_tag;
+        } else {
+            $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/" . $crudlex_obj->encrypt_field_name($field) . "/?auth-code=%auth_code%", "Remove %field_value%");
+
+            $div_container = new \k1lib\html\div_tag();
+            $div_container->append_child($input_tag);
+            $div_container->append_child($delete_file_link);
+            $div_container->link_value_obj($input_tag);
+
+            return $div_container;
+        }
+    }
+
     static function default_type(creating $crudlex_obj, $field) {
         if (!empty($crudlex_obj->db_table->get_field_config($field, 'refereced_table_name'))) {
             $div_input_group = new \k1lib\html\div_tag("input-group");
@@ -53,16 +69,16 @@ class input_helper {
 
             $fk_table = $refereced_column_config['table'];
             $fk_table_alias = \k1lib\db\security\db_table_aliases::encode($fk_table);
-            
+
             $crudlex_obj->set_do_table_field_name_encrypt();
             $static_values = $crudlex_obj->db_table->get_constant_fields();
-            $static_values_enconded = $crudlex_obj->encrypt_field_names($static_values);            
+            $static_values_enconded = $crudlex_obj->encrypt_field_names($static_values);
             $static_values_enconded_as_get_text = \k1lib\common\array_to_url_parameters($static_values_enconded);
-            
+
             $back_url = urlencode($_SERVER['REQUEST_URI']);
 
             $url_to_search_fk_data = self::$url_to_search_fk_data . "{$fk_table_alias}/list/$this_table_alias/?back-url={$back_url}&{$static_values_enconded_as_get_text}";
-            
+
             $search_button = new \k1lib\html\input_tag("button", "search", "&#xf18d;", "button fi-page-search");
             $search_button->set_attrib("style", "font-family:foundation-icons");
             $search_button->set_attrib("onclick", "javascript:use_select_row_keys(this.form,'{$url_to_search_fk_data}')");

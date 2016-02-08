@@ -128,7 +128,7 @@ class controller_base {
     protected $template_place_name_board_name = "board-name";
     protected $board_list_name = "";
     protected $board_create_name = "Create new";
-    protected $board_read_name = "Show details";
+    protected $board_read_name = "";
     protected $board_update_name = "Update details";
     protected $board_delete_name = "Delete registry";
     protected $url_redirect_after_delete = "../../list/";

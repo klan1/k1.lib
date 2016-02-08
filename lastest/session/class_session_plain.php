@@ -23,6 +23,24 @@ class session_plain {
     static private $is_logged;
 
     /**
+     *
+     * @var string 
+     */
+    static private $user_login = null;
+
+    /**
+     *
+     * @var string 
+     */
+    static private $user_hash = null;
+
+    /**
+     *
+     * @var string 
+     */
+    static private $user_level = null;
+
+    /**
      * Session name for the PHP session handler
      * @var String 
      */
@@ -78,8 +96,8 @@ class session_plain {
         /**
          * TODO: ENCRYPT THIS !!
          */
-        if (!isset($_SESSION['k1lib_session']['login'])) {
-            $_SESSION['k1lib_session']['login'] = NULL;
+        if (!isset($_SESSION['k1lib_session']['user_login'])) {
+            $_SESSION['k1lib_session']['user_login'] = NULL;
             $_SESSION['k1lib_session']['user_hash'] = NULL;
             $_SESSION['k1lib_session']['user_level'] = 0;
             $_SESSION['k1lib_session']['user_data'] = NULL;
@@ -99,16 +117,23 @@ class session_plain {
         self::$enabled = TRUE;
         self::$has_started = FALSE;
         self::$is_logged = FALSE;
+
+        self::$user_login = NULL;
+        self::$user_hash = NULL;
+        self::$user_level = NULL;
         self::$session_data = array();
+
         session_destroy();
         session_unset();
     }
 
-    static public function start_logged_session($login, $user_level = 0, $user_data = NULL) {
+    static public function start_logged_session($login, $user_data = NULL, $user_level = 0) {
         if (self::is_enabled(true)) {
-            $_SESSION['k1lib_session']['login'] = $login;
+
+            $_SESSION['k1lib_session']['user_login'] = $login;
             $_SESSION['k1lib_session']['user_hash'] = self::get_client_hash($login);
             $_SESSION['k1lib_session']['user_level'] = $user_level;
+
             if (is_array($user_data)) {
                 $_SESSION['k1lib_session']['user_data'] = $user_data;
             } else {
@@ -131,8 +156,8 @@ class session_plain {
     }
 
     static public function is_logged($redirect = FALSE, $where_redirect_to = "") {
-        if ((self::is_enabled(true)) && (self::$has_started) && (isset(self::$session_data['user_hash']))) {
-            if (self::$session_data['user_hash'] == self::get_client_hash(self::$session_data['login'])) {
+        if ((self::is_enabled(true)) && (self::$has_started) && (isset(self::$user_hash))) {
+            if (self::$user_hash == self::get_client_hash(self::$user_login)) {
                 return TRUE;
             } else {
                 self::end_session();
@@ -157,15 +182,18 @@ class session_plain {
 
     static public function load_logged_session($redirect = FALSE, $where_redirect_to = "") {
         if ((self::is_enabled(true)) && (self::$has_started)) {
-            if ($_SESSION['k1lib_session']['user_hash'] === self::get_client_hash($_SESSION['k1lib_session']['login'])) {
-                self::$session_data['login'] = $_SESSION['k1lib_session']['login'];
-                self::$session_data['user_hash'] = $_SESSION['k1lib_session']['user_hash'];
-                self::$session_data['user_level'] = $_SESSION['k1lib_session']['user_level'];
-                self::$session_data['user_data'] = $_SESSION['k1lib_session']['user_data'];
+            if ($_SESSION['k1lib_session']['user_hash'] === self::get_client_hash($_SESSION['k1lib_session']['user_login'])) {
+
+                self::$user_login = $_SESSION['k1lib_session']['user_login'];
+                self::$user_hash = $_SESSION['k1lib_session']['user_hash'];
+                self::$user_level = $_SESSION['k1lib_session']['user_level'];
+
+                self::$session_data = $_SESSION['k1lib_session'];
+
                 return TRUE;
             } else {
-                self::$session_data['login'] = -1;
-                self::$session_data['user_level'] = 0;
+                self::$user_login = -1;
+                self::$user_level = 0;
 //                self::$session_data['user_data'] = null;
                 return FALSE;
             }
@@ -176,32 +204,32 @@ class session_plain {
 
     static public function get_client_hash() {
         self::is_enabled(true);
-        if (isset($_SESSION['k1lib_session']['login'])) {
-            return md5($_SESSION['k1lib_session']['login'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\MAGIC_VALUE);
+        if (isset($_SESSION['k1lib_session']['user_login'])) {
+            return md5($_SESSION['k1lib_session']['user_login'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\MAGIC_VALUE);
         } else {
             return FALSE;
         }
     }
 
+    static function get_user_login() {
+        return self::$user_login;
+    }
+
+    static function get_user_level() {
+        return self::$user_level;
+    }
+
     /**
-     * Check the current user level VS a comma separated list as 1,2,3,4,5
-     * @param string $levels_to_check comma separated list as "1,2,3,4,5"
+     * Check if the current user level is present on a array of possible levels
+     * @param array Levels to check the current user, use ['leve1','level2','levelN'] to fastest code ;)
      * @return boolean
      */
-    static public function check_user_level($levels_to_check = "0") {
+    static public function check_user_level(array $levels_to_check = [0]) {
         self::is_enabled(true);
-        if (!isset(self::$session_data['user_level'])) {
-            trigger_error("No session to check", E_USER_ERROR);
-        }
-//    if (empty($levels_to_check) || (!is_string($levels_to_check) && !is_numeric($levels_to_check))) {
-        // EMPTY fails with '0'
-        if (!is_string($levels_to_check) && !is_numeric($levels_to_check)) {
-            die("level_to_check have to be a string or numeric");
-        }
-        $levels = explode(",", $levels_to_check);
+
         $has_access = FALSE;
-        foreach ($levels as $level) {
-            if (self::$session_data['user_level'] == $level) {
+        foreach ($levels_to_check as $level) {
+            if (self::$user_level == $level) {
                 $has_access = TRUE;
             }
         }

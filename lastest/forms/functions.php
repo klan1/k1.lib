@@ -11,8 +11,7 @@
 
 namespace k1lib\forms;
 
-use k1lib\html as html_classes;
-use k1lib\html as html_functions;
+use k1lib\html as html;
 
 /**
  * This SHOULD be used always to receive any kind of value from _GET _POST _REQUEST if it will be used on SQL staments.
@@ -159,6 +158,7 @@ function check_value_type($value, $type) {
     //funcitons vars
     $error_type = "";
     $preg_symbols = "-_@.,!:;#$%&'*\/+=?^`{\|}~ÁÉÍÓÚáéíóuñÑ";
+    $preg_file_symbols = "-_.()";
 
     switch ($type) {
         case 'options':
@@ -284,6 +284,12 @@ function check_value_type($value, $type) {
                 $error_type = " deber ser solo letras de la a-z y A-Z, numeros y symbolos: $preg_symbols";
             }
             break;
+        case 'file-upload':
+            $regex = "/^[a-zA-Z0-9\s{$preg_file_symbols}]*$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " solo pude contener letras y los siguientes simbolos: $preg_symbols";
+            }
+            break;
         default:
             $error_type = "Not defined VALIDATION on Type '{$type}' from field '{$label}' ";
             break;
@@ -291,7 +297,31 @@ function check_value_type($value, $type) {
     return $error_type;
 }
 
-function form_check_values($form_array, $table_array_config, $db = NULL) {
+function form_file_upload_handle($file_data, $field_config) {
+    /**
+     * File validations with DB Table Config directives
+     */
+    $file_max_size = $field_config['file-max-size'] + 0;
+    $file_type = $field_config['file-type'];
+    if (strstr($file_data['type'], $file_type) === FALSE) {
+        return "The file type is {$file_data['type']} not {$file_type}";
+    }
+    if ($file_data['size'] > $file_max_size) {
+        return "Size is bigger than " . $file_max_size / 1024 . "k";
+    }
+    /**
+     * ALL ok? then place the file and let it go... let it goooo! (my daughter Allison fault! <3 )
+     */
+    if (file_uploads::place_upload_file($file_data['tmp_name'], $file_data['name'])) {
+        return TRUE;
+    } else {
+        return file_uploads::get_last_error();
+    }
+//    $file_location = file_uploads::get_uploaded_file_path($file_data['name']);
+//    $file_location_url = file_uploads::get_uploaded_file_url($file_data['name']);
+}
+
+function form_check_values(&$form_array, $table_array_config, $db = NULL) {
     if (!is_array($form_array)) {
         die(__FUNCTION__ . " need an array to work on \$form_array");
     }
@@ -300,14 +330,21 @@ function form_check_values($form_array, $table_array_config, $db = NULL) {
     }
     $error_array = array();
     foreach ($form_array as $key => $value) {
-        //get the field label from the table config array
-        $label = $table_array_config[$key]['label'];
 
-//        $error_header_msg = "El campo: '{$label}'";
         $error_header_msg = "Este campo ";
         $error_msg = "";
         $error_type = "";
 
+        /**
+         * FILE UPLOAD HACK
+         */
+        $do_upload_file = FALSE;
+        if (is_array($value)) {
+            $do_upload_file = TRUE;
+            $file_data = $value;
+            $value = $value['name'];
+            $form_array[$key] = $value;
+        }
         /**
          *  TYPE CHECK
          *  -- then See each field value to check if is valid with the table tyoe definition
@@ -335,6 +372,14 @@ function form_check_values($form_array, $table_array_config, $db = NULL) {
                 $error_type = check_value_type($value, $table_array_config[$key]['validation'] . $unsigned_type);
             }
         }
+        if ($do_upload_file && empty($error_msg) && empty($error_type)) {
+            $file_result = form_file_upload_handle($file_data, $table_array_config[$key]);
+            if ($file_result !== TRUE) {
+                $error_array[$key] = $file_result;
+            }
+            $error_msg = "";
+            $error_type = "";
+        }
         if (empty($error_type) && !empty($error_msg)) {
             $error_array[$key] = $error_msg;
         } else if (!empty($error_type) && empty($error_msg)) {
@@ -345,6 +390,7 @@ function form_check_values($form_array, $table_array_config, $db = NULL) {
 //            d("$value is {$table_array_config[$key]['validation']}");
         }
     }
+
     if (count($error_array) > 0) {
         return $error_array;
     } else {
@@ -373,20 +419,20 @@ function make_form_select_list(&$field_name, &$value, &$table_config_array, &$er
     } elseif (!empty($table_config_array[$field_name]['refereced_table_name'])) {
         $select_data_array = \k1lib\forms\get_labels_from_table($db, $table_config_array[$field_name]['refereced_table_name']);
     }
-    $label_object = new html_classes\label_tag($table_config_array[$field_name]['label'], $field_name, "right inline");
-//    $select_object = new html_classes\select_tag($field_name);
+    $label_object = new html\label_tag($table_config_array[$field_name]['label'], $field_name, "right inline");
+//    $select_object = new html\select_tag($field_name);
 
     if (empty($value) && (!$table_config_array[$field_name]['null'])) {
         $value = $table_config_array[$field_name]['default'];
     }
 
     if (!empty($error_msg)) {
-        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null'], "error");
-        $html_template = html_functions\load_html_template("label_input_combo-error");
+        $select_html = html\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null'], "error");
+        $html_template = html\load_html_template("label_input_combo-error");
         $html_code = sprintf($html_template, $label_object->generate_tag(), $select_html, $error_msg);
     } else {
-        $select_html = html_functions\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null']);
-        $html_template = html_functions\load_html_template("label_input_combo");
+        $select_html = html\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null']);
+        $html_template = html\load_html_template("label_input_combo");
         $html_code = sprintf($html_template, $label_object->generate_tag(), $select_html);
     }
 

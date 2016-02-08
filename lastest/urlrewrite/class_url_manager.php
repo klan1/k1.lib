@@ -282,6 +282,7 @@ class url_manager {
             // we always have to keep the signed_request from FB
             $get_vars_to_keep .= ( (!empty($get_vars_to_keep)) ? ',' . \k1app\GLOBAL_GET_KEEP_VARS : \k1app\GLOBAL_GET_KEEP_VARS);
         }
+
         //make the initial link
         $page_url = $url_to_link;
         $i = 0;

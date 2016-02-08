@@ -285,8 +285,8 @@ function make_row_2columns_layout($row_data, $extra_css_clasess = "", $row_data_
     $form_layout = "";
     $index = 0;
     foreach ($row_data as $field => $value) {
-        if (isset($row_data_headers) && array_key_exists($index, $row_data_headers)) {
-            $form_layout .= label_text_combo_2columns($row_data_headers[$index], $value);
+        if (isset($row_data_headers) && array_key_exists($field, $row_data_headers)) {
+            $form_layout .= label_text_combo_2columns($row_data_headers[$field], $value);
             $index++;
         } else {
             $form_layout .= label_text_combo_2columns($field, $value);

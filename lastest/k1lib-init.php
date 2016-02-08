@@ -23,6 +23,9 @@ namespace k1lib;
 
 const IN_K1LIB = TRUE;
 
+// Peace for user, info for the developer with ZendZerver and Z-Ray Live!
+error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
+
 /*
  * GENERAL VARIABLE DECLARATIONS
  */
@@ -40,6 +43,7 @@ const VERSION = "0.5";
 
 header("PHP Framework: K1.lib V" . VERSION);
 header("Developed by: Klan1 Network | http://www.klan1.com");
+
 /**
  * This MUST to be reflected on the .htaccess, IF NOT rewriting WONT work!
  */

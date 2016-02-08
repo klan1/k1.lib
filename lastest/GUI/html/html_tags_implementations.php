@@ -6,38 +6,32 @@
 
 namespace k1lib\html {
 
-    class html_dummy_class extends html_tag_base {
-
-        /**
-         * 
-         * @param string $html_code
-         */
-        public function __construct($html_code) {
-            $this->value = $html_code;
-        }
-
-    }
-
     class a_tag extends html_tag {
 
-        /**
-         * 
-         * @param String $src
-         * @param String $label <TAG>$label</TAG>
-         * @param String $target
-         * @param String $alt
-         * @param String $class
-         * @param String $id
-         */
         function __construct($href, $label, $target = "", $alt = "", $class = "", $id = "") {
             parent::__construct("a", FALSE);
-//        $this->data_array &= $data_array;
             $this->set_attrib("href", $href);
             $this->set_value($label);
             $this->set_attrib("target", $target);
             $this->set_attrib("alt", $alt);
             $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
+        }
+
+    }
+
+    class img_tag extends html_tag {
+
+        function __construct($src = "", $alt = "", $class = "", $id = "") {
+            parent::__construct("img", FALSE);
+            $this->set_attrib("src", $src);
+            $this->set_attrib("alt", $alt);
+            $this->set_attrib("class", $class, TRUE);
+            $this->set_attrib("id", $id);
+        }
+
+        function set_value($value, $append = FALSE) {
+            $this->set_attrib("alt", $value, $append);
         }
 
     }
@@ -370,7 +364,7 @@ namespace k1lib\html {
             $this->set_attrib("name", "k1-form");
             $this->set_attrib("method", "post");
             $this->set_attrib("autocomplete", "yes");
-            $this->set_attrib("enctype", "application/x-www-form-urlencoded");
+            $this->set_attrib("enctype", "multipart/form-data");
             $this->set_attrib("novalidate", FALSE);
             $this->set_attrib("target", "_self");
         }
