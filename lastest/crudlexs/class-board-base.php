@@ -36,6 +36,12 @@ class board_base {
      */
     protected $skip_form_action = FALSE;
 
+    /**
+     *
+     * @var string
+     */
+    protected $user_levels_allowed = null;
+
     public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
         $this->controller_object = $controller_object;
         $this->board_content_div = new \k1lib\html\div_tag("board-content");
@@ -71,6 +77,24 @@ class board_base {
         if (!empty($board_name)) {
             temply::set_place_value($this->controller_object->get_template_place_name_html_title(), " - {$board_name}");
             temply::set_place_value($this->controller_object->get_template_place_name_board_name(), $board_name);
+        }
+    }
+
+    function set_user_levels_allowed(array $user_levels_allowed_array) {
+        $this->user_levels_allowed = $user_levels_allowed_array;
+    }
+
+    function add_user_level_allowed($user_level_allowed) {
+        if (!empty($user_level_allowed) && is_string($user_level_allowed)) {
+            $this->user_levels_allowed[] = $user_level_allowed;
+        }
+    }
+
+    function check_user_level_access($user_level_to_check) {
+        if (empty(array_key_exists($user_level_to_check, array_keys($this->user_levels_allowed)))) {
+            return FALSE;
+        } else {
+            return TRUE;
         }
     }
 

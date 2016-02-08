@@ -17,6 +17,7 @@ class board_read extends board_base implements controller_interface {
     protected $all_data_enable = TRUE;
     protected $update_enable = TRUE;
     protected $delete_enable = TRUE;
+    protected $use_label_as_title_enabled = TRUE;
 
     public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
         parent::__construct($controller_object);
@@ -84,8 +85,18 @@ class board_read extends board_base implements controller_interface {
 
         if ($this->read_object->get_state() && !empty($this->row_keys_text)) {
             if ($this->data_loaded) {
+                if ($this->use_label_as_title_enabled) {
+                    $data_label = $this->read_object->get_labels_from_data(1);
+                    if (!empty($data_label)) {
+                        $this->read_object->remove_labels_from_data_filtered();
+                        $this->controller_object->board_read_object->set_board_name($data_label);
+                    }
+                }
                 $this->read_object->apply_label_filter();
                 $this->read_object->apply_field_label_filter();
+                if (\k1lib\forms\file_uploads::is_enabled()) {
+                    $this->read_object->apply_file_uploads_filter();
+                }
 
 //                $this->board_content_div->set_attrib("class", "row", TRUE);
 
@@ -139,6 +150,10 @@ class board_read extends board_base implements controller_interface {
 
                 $related_table_list->apply_label_filter();
                 $related_table_list->apply_field_label_filter();
+                if (\k1lib\forms\file_uploads::is_enabled()) {
+//                    $related_table_list->set
+                    $related_table_list->apply_file_uploads_filter();
+                }
                 $related_table_list->apply_link_on_field_filter(APP_URL . $board_root . "/" . $board_read . "/%row_keys%/?auth-code=%auth_code%&back-url={$back_url}", $field_links_array);
             }
             $related_table_list->do_html_object()->append_to($detail_div);
@@ -174,6 +189,10 @@ class board_read extends board_base implements controller_interface {
 
     function set_delete_enable($delete_enable) {
         $this->delete_enable = $delete_enable;
+    }
+
+    function set_use_label_as_title_enabled($use_label_as_title_enabled) {
+        $this->use_label_as_title_enabled = $use_label_as_title_enabled;
     }
 
 }

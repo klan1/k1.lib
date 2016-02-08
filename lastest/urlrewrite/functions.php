@@ -2,16 +2,18 @@
 
 namespace k1lib\urlrewrite;
 
-function get_back_url() {
+function get_back_url($get_only = FALSE) {
     if (isset($_GET['back-url'])) {
         $back_url = $_GET['back-url'];
 //        $back_url = \k1lib\forms\check_single_incomming_var($_GET['back-url']);
-    } elseif (isset($_SERVER['HTTP_REFERER']) && (!empty($_SERVER['HTTP_REFERER']))) {
+    } elseif (!$get_only && isset($_SERVER['HTTP_REFERER']) && (!empty($_SERVER['HTTP_REFERER']))) {
         $back_url = $_SERVER['HTTP_REFERER'];
-    } elseif (isset($_SESSION['K1APP_LAST_URL']) && (!empty($_SESSION['K1APP_LAST_URL']))) {
+    } elseif (!$get_only && isset($_SESSION['K1APP_LAST_URL']) && (!empty($_SESSION['K1APP_LAST_URL']))) {
         $back_url = $_SESSION['K1APP_LAST_URL'];
-    } else {
+    } elseif (!$get_only) {
         $back_url = "javascript:history.back();";
+    } else {
+        $back_url = FALSE;
     }
     return $back_url;
 }

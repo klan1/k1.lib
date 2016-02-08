@@ -95,6 +95,9 @@ class board_list extends board_base implements board_interface {
         if ($this->data_loaded) {
             $this->list_object->apply_label_filter();
             $this->list_object->apply_field_label_filter();
+            if (\k1lib\forms\file_uploads::is_enabled()) {
+                $this->list_object->apply_file_uploads_filter();
+            }
             // IF NOT previous link applied this will try to apply ONLY on keys if are present on show-table filter
             if (!$this->list_object->get_link_on_field_filter_applied()) {
                 $this->list_object->apply_link_on_field_filter("../{$this->controller_object->get_board_read_url_name()}/%row_keys%/?auth-code=%auth_code%&back-url={$this_url}", crudlexs_base::USE_KEY_FIELDS);

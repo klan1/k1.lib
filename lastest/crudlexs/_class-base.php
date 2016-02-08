@@ -116,12 +116,23 @@ class crudlexs_base_with_data extends crudlexs_base {
      * @var boolean 
      */
     protected $skip_auto_code_verification = FALSE;
+    /**
+     *
+     * @var boolean 
+     */
+    protected $skip_blanks_on_filters = FALSE;
 
     /**
      *
      * @var Boolean
      */
     protected $do_table_field_name_encrypt = FALSE;
+
+    /**
+     * If TRUE all file uploads will be represented as links, if OFF images will be images. PDF and others by now allways will be links.
+     * @var boolean
+     */
+    protected $force_file_uploads_as_links = TRUE;
 
     /**
      * Always to create the object you must have a valid DB Table object already 
@@ -204,7 +215,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                     continue;
                 }
                 if (count($row_array) !== $headers_count) {
-                    trigger_error("The array sended is not compatible with this method", E_USER_WARNING);
+                    trigger_error(__METHOD__ . "The array sended is not compatible with this method", E_USER_WARNING);
                     return FALSE;
                 }
             }
@@ -212,7 +223,7 @@ class crudlexs_base_with_data extends crudlexs_base {
             $this->db_table_data_filtered = $data_array;
             return TRUE;
         }
-        trigger_error("The array sended is not compatible with this method", E_USER_WARNING);
+        trigger_error(__METHOD__ . "The array sended is not compatible with this method", E_USER_WARNING);
         return FALSE;
     }
 
@@ -224,20 +235,20 @@ class crudlexs_base_with_data extends crudlexs_base {
                     continue;
                 }
                 if (count($row_array) !== $headers_count) {
-                    trigger_error("The array sended is not compatible with this method", E_USER_WARNING);
+                    trigger_error(__METHOD__ . "The array sended is not compatible with this method", E_USER_WARNING);
                     return FALSE;
                 }
             }
             $this->db_table_data_keys = $data_array;
             return TRUE;
         }
-        trigger_error("The array sended is not compatible with this method", E_USER_WARNING);
+        trigger_error(__METHOD__ . "The array sended is not compatible with this method", E_USER_WARNING);
         return FALSE;
     }
 
     public function apply_label_filter() {
         if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
-            trigger_error("Can't work with an empty result", E_USER_WARNING);
+            trigger_error(__METHOD__ . " - Can't work with an empty result", E_USER_WARNING);
             return FALSE;
         } else {
             $db_table_config = $this->db_table->get_db_table_config();
@@ -255,7 +266,7 @@ class crudlexs_base_with_data extends crudlexs_base {
     public function apply_field_label_filter() {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
-                trigger_error("Can't work without table data loaded first", E_USER_WARNING);
+                trigger_error(__METHOD__ . "Can't work without table data loaded first", E_USER_WARNING);
                 return FALSE;
             } else {
                 $table_config_array = $this->db_table->get_db_table_config();
@@ -287,10 +298,66 @@ class crudlexs_base_with_data extends crudlexs_base {
         }
     }
 
+    public function apply_file_uploads_filter() {
+        if ($this->get_state()) {
+            if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
+                trigger_error(__METHOD__ . "Can't work without table data loaded first", E_USER_WARNING);
+                return FALSE;
+            } else {
+                $table_config_array = $this->db_table->get_db_table_config();
+                $file_upload_fields = [];
+                foreach ($table_config_array as $field => $options) {
+                    if ($options['validation'] == 'file-upload') {
+                        $file_upload_fields[$field] = $options['file-type'];
+                    }
+                }
+                if (!empty($file_upload_fields)) {
+                    foreach ($file_upload_fields as $field => $file_type) {
+                        switch ($file_type) {
+                            case "image":
+//                                $div_container = new \k1lib\html\div_tag();
+                                
+                                $img_tag = new \k1lib\html\img_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field_value%");
+                                $img_tag->set_attrib("class", "k1-data-img", TRUE);
+                                
+//                                $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/", "remove this file");
+                                
+//                                $div_container->append_child($img_tag);
+//                                $div_container->append_child($delete_file_link);
+                                
+                                return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
+
+                            default:
+                                $link_tag = new \k1lib\html\a_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field_value%", "%field_value%", "_blank");
+                                $link_tag->set_attrib("class", "k1-data-link", TRUE);
+                                return $this->apply_html_tag_on_field_filter($link_tag, array_keys($file_upload_fields));
+                        }
+                    }
+                }
+            }
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null) {
+        if ($this->get_state()) {
+            $this->link_on_field_filter_applied = true;
+            $a_tag = new \k1lib\html\a_tag($link_to_apply, "");
+            $a_tag->set_attrib("class", "k1-link-filter", TRUE);
+            if (empty($fields_to_change)) {
+                $fields_to_change = crudlexs_base::USE_KEY_FIELDS;
+            }
+            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change);
+        } else {
+            return FALSE;
+        }
+    }
+
     public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $append_auth_code = FALSE) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
-                trigger_error("Can't work without table data loaded first", E_USER_WARNING);
+                trigger_error(__METHOD__ . "Can't work without table data loaded first", E_USER_WARNING);
                 return FALSE;
             } else {
                 if ($fields_to_change == crudlexs_base::USE_KEY_FIELDS) {
@@ -310,9 +377,12 @@ class crudlexs_base_with_data extends crudlexs_base {
                             continue;
                         }
                         if (!array_key_exists($field_to_change, $row_data)) {
-//                        trigger_error("The field to change ($field_to_change) do no exist ", E_USER_WARNING);
+//                        trigger_error(__METHOD__ . "The field to change ($field_to_change) do no exist ", E_USER_WARNING);
                             continue;
                         } else {
+                            if ($this->skip_blanks_on_filters && empty($row_data[$field_to_change])) {
+                                continue;
+                            }
                             $tag_object->set_value($row_data[$field_to_change]);
                             $tag_html = $tag_object->generate_tag();
                             if (!empty($this->db_table_data_keys)) {
@@ -330,20 +400,6 @@ class crudlexs_base_with_data extends crudlexs_base {
 
                 return TRUE;
             }
-        } else {
-            return FALSE;
-        }
-    }
-
-    public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null) {
-        if ($this->get_state()) {
-            $this->link_on_field_filter_applied = true;
-            $a_tag = new \k1lib\html\a_tag($link_to_apply, "");
-            $a_tag->set_attrib("class", "k1-link-filter", TRUE);
-            if (empty($fields_to_change)) {
-                $fields_to_change = crudlexs_base::USE_KEY_FIELDS;
-            }
-            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change);
         } else {
             return FALSE;
         }
@@ -418,7 +474,7 @@ class crudlexs_base_with_data extends crudlexs_base {
             if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
                 $rnd = $_SESSION['CRUDLEXS-RND'];
             } else {
-                trigger_error("There is not rand number on session data", E_USER_ERROR);
+                trigger_error(__METHOD__ . "There is not rand number on session data", E_USER_ERROR);
             }
             $field_position = \k1lib\utils\n36_to_decimal($n36_number) - $rnd;
             $fields_from_table_config = array_keys($this->db_table->get_db_table_config());
@@ -440,6 +496,28 @@ class crudlexs_base_with_data extends crudlexs_base {
             $decoded_data_array[$this->decrypt_field_name($field)] = $value;
         }
         return $decoded_data_array;
+    }
+
+    public function get_labels_from_data($row = 1) {
+        if ($this->db_table_data) {
+            $data_label = \k1lib\sql\get_db_table_label_fields_from_row($this->db_table_data[$row], $this->db_table->get_db_table_config());
+            if (!empty($data_label)) {
+                return $data_label;
+            } else {
+                return NULL;
+            }
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function remove_labels_from_data_filtered($row = 1) {
+        if ($this->db_table_data) {
+            $label_fields_array = \k1lib\sql\get_db_table_label_fields($this->db_table->get_db_table_config());
+            foreach ($label_fields_array as $field) {
+                unset($this->db_table_data_filtered[$row][$field]);
+            }
+        }
     }
 
 }

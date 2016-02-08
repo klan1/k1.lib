@@ -335,7 +335,7 @@ class class_db_table {
         return \k1lib\sql\get_db_table_enum_values($this->db, $this->db_table_name, $field);
     }
 
-    public function do_data_validation($data_array_to_validate) {
+    public function do_data_validation(&$data_array_to_validate) {
         $validaton_errors = \k1lib\forms\form_check_values($data_array_to_validate, $this->db_table_config, $this->db);
         if (!is_array($validaton_errors)) {
             return TRUE;

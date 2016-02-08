@@ -1,8 +1,9 @@
 <?php
 $mem_usage['init'] = memory_get_usage() / 1024;
-error_reporting(E_ALL);
 $start = microtime(TRUE);
 include 'k1lib-init.php';
+// OVER RIDE THE DEFAULT k1LIB error reporting setting
+error_reporting(E_ALL);
 $mem_usage['peak'] = memory_get_peak_usage() / 1024;
 $mem_usage['loaded'] = memory_get_usage() / 1024;
 $mem_usage['k1lib'] = $mem_usage['loaded'] - $mem_usage['init'];

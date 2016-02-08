@@ -215,10 +215,6 @@ AND table_name = '{$table}'";
         if (!isset($field_config['label-field'])) {
             $field_config['label-field'] = NULL;
         }
-// LINK-FIELD
-        if (!isset($field_config['link-field'])) {
-            $field_config['link-field'] = NULL;
-        }
 // NEW 2016: ALIAS-FIELD
         if (!isset($field_config['alias'])) {
             $field_config['alias'] = NULL;
@@ -226,6 +222,33 @@ AND table_name = '{$table}'";
 // NEW 2016: PLACEHOLDER
         if (!isset($field_config['placeholder'])) {
             $field_config['placeholder'] = NULL;
+        }
+// NEW 2016: PLACEHOLDER
+        if (!isset($field_config['file-type'])) {
+            $field_config['file-type'] = NULL;
+        }
+// NEW 2016: FILE UPLOAD MAX SIZE
+        if (!isset($field_config['file-max-size'])) {
+            $field_config['file-max-size'] = NULL;
+        } else {
+            $field_config['file-max-size'] = strtolower($field_config['file-max-size']);
+            $size_unit = substr($field_config['file-max-size'], -1);
+            $size_number = substr($field_config['file-max-size'], 0, -1);
+            if (!is_numeric($size_unit)) {
+                if ($size_unit == 'k') {
+                    $file_size = $size_number * 1024;
+                }
+                if ($size_unit == 'm') {
+                    $file_size = $size_number * 1024 * 1024;
+                }
+                if ($size_unit == 'g') {
+                    $file_size = $size_number * 1024 * 1024 * 1024;
+                }
+                $field_config['file-max-size'] = $file_size;
+            }
+            if (empty($field_config['file-type'])) {
+                $field_config['file-type'] = "image";
+            }
         }
 // show board
         /**
@@ -301,7 +324,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
             while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
                 if ($do_fields && $return_all) {
                     foreach ($row as $key => $value) {
-                        $fields[] = $key;
+                        $fields[$key] = $key;
                     }
                     $do_fields = FALSE;
                     $queryReturn[0] = $fields;
@@ -641,14 +664,32 @@ function get_db_table_label_fields($db_table_config) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
     $p = 0;
+    $labels_fields = [];
+    foreach ($db_table_config as $field => $config) {
+        if (($config['label-field'])) {
+            $labels_fields[] = $field;
+        }
+    }
+    if (!empty($labels_fields)) {
+        return $labels_fields;
+    } else {
+        return NULL;
+    }
+}
+
+function get_db_table_label_fields_from_row($row_data, $db_table_config) {
+    if (!is_array($db_table_config)) {
+        die(__FUNCTION__ . ": need an array to work on \$db_table_config");
+    }
+    $p = 0;
     $labels = [];
     foreach ($db_table_config as $field => $config) {
         if (($config['label-field'])) {
-            $labels[] = $field;
+            $labels[] = $row_data[$field];
         }
     }
     if (!empty($labels)) {
-        return $labels;
+        return implode(" ", $labels);
     } else {
         return NULL;
     }

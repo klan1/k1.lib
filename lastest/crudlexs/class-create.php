@@ -2,6 +2,8 @@
 
 namespace k1lib\crudlexs;
 
+use k1lib\templates\temply as temply;
+
 /**
  * 
  */
@@ -98,6 +100,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * @return boolean
      */
     function catch_post_data() {
+        $this->do_file_uploads_validation();
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($_POST);
         if (isset($this->post_incoming_array['k1magic'])) {
             self::set_k1magic_value($this->post_incoming_array['k1magic']);
@@ -128,25 +131,37 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         /**
          * VALUES
          */
-        $field_index = 0;
         foreach ($this->db_table_data_filtered[$row_to_apply] as $field => $value) {
+            /**
+             * Switch on DB field specific TYPES
+             */
             switch ($this->db_table->get_field_config($field, 'type')) {
                 case 'enum':
                     $input_tag = input_helper::enum_type($this, $row_to_apply, $field);
                     break;
                 default:
-                    $input_tag = input_helper::default_type($this, $field);
+                    /**
+                     * Switch on K1lib DB Table Config VALIDATION TYPES
+                     */
+                    switch ($this->db_table->get_field_config($field, 'validation')) {
+                        case "file-upload":
+                            $input_tag = input_helper::file_upload($this, $field);
+                            break;
+                        default:
+                            $input_tag = input_helper::default_type($this, $field);
+                            break;
+                    }
                     break;
             }
             /**
              * LABELS 
              */
             if ($create_labels_on_headers) {
-                $label_tag = new \k1lib\html\label_tag($this->db_table_data_filtered[0][$field_index], $this->encrypt_field_name($field));
+                $label_tag = new \k1lib\html\label_tag($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
                 if (isset($this->post_validation_errors[$field])) {
                     $label_tag->set_attrib("class", "is-invalid-label");
                 }
-                $this->db_table_data_filtered[0][$field_index] = $label_tag->generate_tag();
+                $this->db_table_data_filtered[0][$field] = $label_tag->generate_tag();
             }
             /**
              * ERROR TESTING
@@ -169,7 +184,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
             $this->apply_html_tag_on_field_filter($input_tag, $field);
 
-            $field_index++;
             unset($input_tag);
         }
     }
@@ -179,6 +193,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * @return boolean TRUE on no errors or FALSE is some field has any problem.
      */
     public function do_post_data_validation() {
+//        $this->do_file_uploads_validation();
         $this->post_validation_errors = $this->db_table->do_data_validation($this->post_incoming_array);
         if (!is_array($this->post_validation_errors)) {
             return TRUE;
@@ -187,8 +202,23 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         }
     }
 
+    public function do_file_uploads_validation() {
+        if (!empty($_FILES)) {
+            foreach ($_FILES as $encoded_field => $data) {
+                $decoded_field = $this->decrypt_field_name($encoded_field);
+                if ($data['error'] === UPLOAD_ERR_OK) {
+                    $_POST[$decoded_field] = $data;
+                } else {
+                    if ($data['error'] !== UPLOAD_ERR_NO_FILE) {
+                        trigger_error("File upload error : " . print_r($data, TRUE), E_USER_WARNING);
+                    }
+                }
+            }
+        }
+    }
+
     public function encrypt_field_name($field_name) {
-        // first, we need to know in what position is the field on the table design.
+// first, we need to know in what position is the field on the table design.
         if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
             $rnd = $_SESSION['CRUDLEXS-RND'];
         } else {
@@ -262,26 +292,51 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              */
             $hidden_input = new \k1lib\html\input_tag("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
-            // FORM LAYOUT
-            $row_column_number = 1;
-            $key_index = 0;
-            foreach ($this->db_table_data_filtered[1] as $field => $value) {
-                // Variable variables names
-                $row_column = "div_row" . $row_column_number;
-                $actual_row_column = "div_row_column_" . $row_column_number;
+// FORM LAYOUT
+//            d(get_class($this));
+//            if ((get_class($this) == "") || (get_class($this) == ""))
+            $possible_read_template = "create-templates/" . $this->db_table->get_db_table_name();
+            $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
+            $html = "";
+            if ($template_file_path) {
+                ob_start();
+                include $template_file_path;
+                $html = ob_get_contents();
+                ob_end_clean();
 
-                // <div class="row">
-                ${$row_column} = new \k1lib\html\div_tag("row");
-                ${$row_column}->append_to($html_form);
+                if ($template_file_path) {
+                    foreach ($this->db_table_data_filtered[1] as $field => $value) {
+                        if (temply::is_place_registered("{$field}-label")) {
+                            temply::set_place_value("{$field}-label", $this->db_table_data_filtered[0][$field]);
+                        }
+                        if (temply::is_place_registered($field)) {
+                            temply::set_place_value($field, $value);
+                        }
+                    }
+                }
+                $template_div = new \k1lib\html\div_tag();
+                $template_div->set_value($html);
+                $template_div->append_to($html_form);
+            } else {
 
-                // <div class="large-12 columns">
-                ${$actual_row_column} = new \k1lib\html\div_tag("large-12 columns");
-                ${$actual_row_column}->append_to(${$row_column});
-                ${$actual_row_column}->set_value($this->db_table_data_filtered[0][$key_index], TRUE);
-                ${$actual_row_column}->set_value($value, TRUE);
-                // put on div_row
-                $row_column++;
-                $key_index++;
+                $row_column_number = 1;
+                foreach ($this->db_table_data_filtered[1] as $field => $value) {
+// Variable variables names
+                    $row_column = "div_row" . $row_column_number;
+                    $actual_row_column = "div_row_column_" . $row_column_number;
+
+// <div class="row">
+                    ${$row_column} = new \k1lib\html\div_tag("row");
+                    ${$row_column}->append_to($html_form);
+
+// <div class="large-12 columns">
+                    ${$actual_row_column} = new \k1lib\html\div_tag("large-12 columns");
+                    ${$actual_row_column}->append_to(${$row_column});
+                    ${$actual_row_column}->set_value($this->db_table_data_filtered[0][$field], TRUE);
+                    ${$actual_row_column}->set_value($value, TRUE);
+// put on div_row
+                    $row_column++;
+                }
             }
 
 //            $html = \k1lib\html\make_form_label_input_layout($this->db_table_data_filtered[1], $extra_css_clasess, );

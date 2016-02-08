@@ -81,8 +81,12 @@ class temply {
     static public function set_place_value($place_name, $value) {
         self::is_enabled(true);
 
+        if (empty($value)) {
+            return FALSE;
+        }
+
         if ((!is_string($place_name) || !is_string($value))) {
-            die("The OUTPUT PLACE '{$place_name}' couldn't be registered with a value diferent a string " . __FUNCTION__);
+            trigger_error("The OUTPUT PLACE '{$place_name}' couldn't be registered with a value diferent a string " . __FUNCTION__, E_USER_WARNING);
         }
         if (isset(self::$output_places[$place_name])) {
             self::$output_places[$place_name][] = $value;
@@ -102,7 +106,7 @@ class temply {
         self::is_enabled(true);
 
         if (!is_string($place_name)) {
-            die("The OUTPUT PLACE '{$place_name}' couldn't be registered with a value diferent a string " . __FUNCTION__);
+            trigger_error("The OUTPUT PLACE '{$place_name}' couldn't be registered with a value diferent a string " . __FUNCTION__, E_USER_WARNING);
         }
         if (isset(self::$output_places[$place_name]) && (count(self::$output_places[$place_name]) > 0)) {
             return implode("\n", self::$output_places[$place_name]);
@@ -289,7 +293,8 @@ class temply {
                     }
                     return $view_to_load;
                 } else {
-                    trigger_error("The view '{$view_to_load}' could not be found", E_USER_ERROR);
+//                    trigger_error(__METHOD__ . " : The view '{$view_to_load}' could not be found", E_USER_NOTICE);
+                    return FALSE;
                 }
             }
         } else {

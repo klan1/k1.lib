@@ -17,6 +17,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
+        $this->skip_blanks_on_filters = TRUE;
     }
 
     public function do_html_object() {
