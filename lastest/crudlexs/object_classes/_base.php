@@ -116,6 +116,7 @@ class crudlexs_base_with_data extends crudlexs_base {
      * @var boolean 
      */
     protected $skip_auto_code_verification = FALSE;
+
     /**
      *
      * @var boolean 
@@ -286,7 +287,9 @@ class crudlexs_base_with_data extends crudlexs_base {
 //                            $fk_label_field = $fk_db_table->get_db_table_label_fields();
                             $fk_label_field = \k1lib\sql\get_fk_field_label($this->db_table->db, $fk_table, $row_data);
 //                            $this->db_table_data_filtered[$index][$field] = $fk_label_field;
-                            $this->db_table_data_filtered[$index][$field] = $fk_label_field;
+                            if (!empty($fk_label_field)) {
+                                $this->db_table_data_filtered[$index][$field] = $fk_label_field;
+                            }
                         }
                     }
                 }
@@ -316,15 +319,14 @@ class crudlexs_base_with_data extends crudlexs_base {
                         switch ($file_type) {
                             case "image":
 //                                $div_container = new \k1lib\html\div_tag();
-                                
+
                                 $img_tag = new \k1lib\html\img_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field_value%");
                                 $img_tag->set_attrib("class", "k1-data-img", TRUE);
-                                
+
 //                                $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/", "remove this file");
-                                
 //                                $div_container->append_child($img_tag);
 //                                $div_container->append_child($delete_file_link);
-                                
+
                                 return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
 
                             default:
