@@ -41,6 +41,12 @@ class session_plain {
     static private $user_level = null;
 
     /**
+     * the user levels ['user', 'guest'] are defautls
+     * @var array
+     */
+    static private $app_user_levels = ['user', 'guest'];
+
+    /**
      * Session name for the PHP session handler
      * @var String 
      */
@@ -127,11 +133,11 @@ class session_plain {
         session_unset();
     }
 
-    static public function start_logged_session($login, $user_data = NULL, $user_level = 0) {
+    static public function start_logged_session($login, $user_data = NULL, $user_level = 'guest') {
         if (self::is_enabled(true)) {
 
             $_SESSION['k1lib_session']['user_login'] = $login;
-            $_SESSION['k1lib_session']['user_hash'] = self::get_client_hash($login);
+            $_SESSION['k1lib_session']['user_hash'] = self::get_user_hash($login);
             $_SESSION['k1lib_session']['user_level'] = $user_level;
 
             if (is_array($user_data)) {
@@ -157,7 +163,7 @@ class session_plain {
 
     static public function is_logged($redirect = FALSE, $where_redirect_to = "") {
         if ((self::is_enabled(true)) && (self::$has_started) && (isset(self::$user_hash))) {
-            if (self::$user_hash == self::get_client_hash(self::$user_login)) {
+            if (self::$user_hash == self::get_user_hash(self::$user_login)) {
                 return TRUE;
             } else {
                 self::end_session();
@@ -182,7 +188,7 @@ class session_plain {
 
     static public function load_logged_session($redirect = FALSE, $where_redirect_to = "") {
         if ((self::is_enabled(true)) && (self::$has_started)) {
-            if ($_SESSION['k1lib_session']['user_hash'] === self::get_client_hash($_SESSION['k1lib_session']['user_login'])) {
+            if ($_SESSION['k1lib_session']['user_hash'] === self::get_user_hash($_SESSION['k1lib_session']['user_login'])) {
 
                 self::$user_login = $_SESSION['k1lib_session']['user_login'];
                 self::$user_hash = $_SESSION['k1lib_session']['user_hash'];
@@ -202,13 +208,11 @@ class session_plain {
         }
     }
 
-    static public function get_client_hash() {
-        self::is_enabled(true);
-        if (isset($_SESSION['k1lib_session']['user_login'])) {
-            return md5($_SESSION['k1lib_session']['user_login'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\MAGIC_VALUE);
-        } else {
-            return FALSE;
+    static public function get_user_hash($user_login = null) {
+        if (empty($user_login)) {
+            $user_login = self::$user_login;
         }
+        return md5($user_login . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\MAGIC_VALUE);
     }
 
     static function get_user_login() {
@@ -224,7 +228,7 @@ class session_plain {
      * @param array Levels to check the current user, use ['leve1','level2','levelN'] to fastest code ;)
      * @return boolean
      */
-    static public function check_user_level(array $levels_to_check = [0]) {
+    static public function check_user_level(array $levels_to_check) {
         self::is_enabled(true);
 
         $has_access = FALSE;
@@ -234,6 +238,31 @@ class session_plain {
             }
         }
         return $has_access;
+    }
+
+    static public function clear_app_user_levels() {
+        self::$app_user_levels = [];
+    }
+
+    static function get_app_user_levels() {
+        return self::$app_user_levels;
+    }
+
+    static function set_app_user_levels(array $app_user_levels) {
+        self::$app_user_levels = $app_user_levels;
+    }
+
+    static public function add_app_user_levels($level_name) {
+        self::$app_user_levels[] = $level_name;
+    }
+
+    static public function remove_app_user_levels($level_name) {
+        if (key_exists($level_name, array_flip(self::$app_user_levels))) {
+            unset(self::$app_user_level[array_flip(self::$app_user_levels)[$level_name]]);
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
 }

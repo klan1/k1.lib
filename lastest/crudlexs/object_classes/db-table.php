@@ -27,6 +27,20 @@ class class_db_table {
     private $total_rows_result;
 
     /**
+     * ORDER BY
+     */
+
+    /**
+     * @var array
+     */
+    private $query_order_by_fields_array = [];
+
+    /**
+     * @var array
+     */
+    private $query_order_by_order_arry = [];
+
+    /**
      * CUSTOM SQL QUERY
      */
     protected $custom_sql_query_code = null;
@@ -206,71 +220,108 @@ class class_db_table {
         }
     }
 
-    public function generate_sql_query() {
-        if (empty($this->db_table_show_rule)) {
-            $fields = "*";
-        } else {
-            $fields = $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
+    public function generate_sql_query($wich = 'main') {
+
+        $sql_code = "";
+
+        /**
+         * FIELDS
+         */
+        switch ($wich) {
+            case 'main':
+                if (empty($this->db_table_show_rule)) {
+                    $fields = "*";
+                } else {
+                    $fields = $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
+                }
+                break;
+            case 'keys':
+                $db_table_key_fields = \k1lib\sql\get_db_table_keys_array($this->db_table_config);
+                if (!empty($db_table_key_fields)) {
+                    $fields = implode(",", $db_table_key_fields);
+                } else {
+                    return FALSE;
+                }
+                if (empty($this->db_table_show_rule)) {
+                    $fields_to_add = "";
+                } else {
+                    $fields_to_add = "," . $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
+                }
+                $fields .= $fields_to_add;
+                break;
+            default:
+                return FALSE;
         }
+
         if (empty($fields)) {
             return FALSE;
         } else {
+            /**
+             * SELECT
+             */
             if (!empty($this->custom_sql_query_code)) {
-                $this->query_sql = $this->custom_sql_query_code . " ";
-                $this->query_sql_total_rows = \k1lib\sql\get_sql_count_query_from_sql_code($this->query_sql) . " ";
+                $sql_code = $this->custom_sql_query_code . " ";
+                $this->query_sql_total_rows = \k1lib\sql\get_sql_count_query_from_sql_code($sql_code) . " ";
             } else {
-                $this->query_sql = "SELECT {$fields} FROM {$this->db_table_name} ";
+                $sql_code = "SELECT {$fields} FROM {$this->db_table_name} ";
                 $this->query_sql_total_rows = "SELECT COUNT(*) as num_rows FROM {$this->db_table_name} ";
             }
-
+            /**
+             * WHERE
+             */
             if (!empty($this->query_where_pairs)) {
-                $this->query_sql .= "WHERE {$this->query_where_pairs} ";
+                $sql_code .= "WHERE {$this->query_where_pairs} ";
                 $this->query_sql_total_rows .= "WHERE {$this->query_where_pairs} ";
             }
-            if (($this->query_offset === 0) && ($this->query_row_count_limit > 0)) {
-                $this->query_sql .= "LIMIT {$this->query_row_count_limit} ";
-                $this->query_sql_total_rows .= "LIMIT {$this->query_row_count_limit} ";
+            /**
+             * ORDER BY
+             */
+            $sql_code .= $this->get_sql_order_by_code();
+            /**
+             * LIMIT
+             */
+            $sql_code .= $this->get_sql_limit_code();
+
+            switch ($wich) {
+                case 'main':
+                    $this->query_sql = $sql_code;
+                    break;
+                case 'keys':
+                    $this->query_sql_keys = $sql_code;
+                    break;
             }
-            if (($this->query_offset > 0) && ($this->query_row_count_limit > 0)) {
-                $this->query_sql .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
-                $this->query_sql_total_rows .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
-            }
-            return $this->query_sql;
+            return $sql_code;
         }
     }
 
-    public function generate_sql_query_keys() {
-        $db_table_key_fields = \k1lib\sql\get_db_table_keys_array($this->db_table_config);
-        if (!empty($db_table_key_fields)) {
-            $fields = implode(",", $db_table_key_fields);
+    public function get_sql_order_by_code() {
+        $order_array = [];
+        if (!empty($this->query_order_by_fields_array)) {
+            foreach ($this->query_order_by_fields_array as $index => $field_to_order) {
+                $order_type = (key_exists($index, $this->query_order_by_order_arry) ? $this->query_order_by_order_arry[$index] : 'ASC');
+                $order_array[$index] = "{$field_to_order} {$order_type}";
+            }
+            $order_code = "\n\tORDER BY\n\t\t" . implode(",", $order_array) . " ";
+            return $order_code;
         } else {
-            return FALSE;
+            return "";
         }
-        if (empty($this->db_table_show_rule)) {
-            $fields_to_add = "";
-        } else {
-            $fields_to_add = "," . $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
-        }
+    }
 
-
-        if (!empty($this->custom_sql_query_code)) {
-            $this->query_sql = $this->custom_sql_query_code . " ";
-            $this->query_sql_keys = \k1lib\sql\get_sql_query_with_new_fields($this->query_sql . " ", $fields);
-        } else {
-            $this->query_sql_keys = "SELECT {$fields}{$fields_to_add} FROM {$this->db_table_name} ";
-        }
-
-
-        if (!empty($this->query_where_pairs)) {
-            $this->query_sql_keys .= "WHERE {$this->query_where_pairs} ";
-        }
+    public function get_sql_limit_code() {
+        $sql_code = '';
         if (($this->query_offset === 0) && ($this->query_row_count_limit > 0)) {
-            $this->query_sql_keys .= "LIMIT {$this->query_row_count_limit} ";
+            $sql_code .= "LIMIT {$this->query_row_count_limit} ";
+            $sql_code_total_rows .= "LIMIT {$this->query_row_count_limit} ";
+        } elseif (($this->query_offset > 0) && ($this->query_row_count_limit > 0)) {
+            $sql_code .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
+            $sql_code_total_rows .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
         }
-        if (($this->query_offset > 0) && ($this->query_row_count_limit > 0)) {
-            $this->query_sql_keys .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
-        }
-        return $this->query_sql_keys;
+        return $sql_code;
+    }
+
+    public function generate_sql_query_keys() {
+        return $this->generate_sql_query('keys');
     }
 
     function get_query_sql() {
@@ -295,7 +346,7 @@ class class_db_table {
     }
 
     public function get_data_keys() {
-        if ($this->generate_sql_query_keys()) {
+        if ($this->generate_sql_query('keys')) {
             $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql_keys, TRUE, TRUE);
             $just_keys_result = [];
             foreach ($query_result as $row => $data) {
@@ -373,6 +424,11 @@ class class_db_table {
             return FALSE;
         }
         return \k1lib\sql\sql_del_row($this->db, $this->db_table_name, $key_to_delete);
+    }
+
+    public function set_order_by($field, $order = 'ASC') {
+        $this->query_order_by_fields_array[] = $field;
+        $this->query_order_by_order_arry[] = $order;
     }
 
 }

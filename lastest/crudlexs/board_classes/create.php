@@ -4,7 +4,7 @@ namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
 
-class board_create extends board_base implements controller_interface {
+class board_create extends board_base implements board_interface {
 
     /**
      *
@@ -12,8 +12,8 @@ class board_create extends board_base implements controller_interface {
      */
     public $create_object;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
-        parent::__construct($controller_object);
+    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+        parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->create_object = new \k1lib\crudlexs\creating($this->controller_object->db_table, FALSE);
         }
@@ -21,8 +21,6 @@ class board_create extends board_base implements controller_interface {
 
     public function start_board($do_echo = TRUE) {
         if (!$this->is_enabled) {
-            $this->create_object->make_invalid();
-
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
         }

@@ -79,6 +79,7 @@ class handler extends \PDO {
         try {
             $result = parent::query($statement);
         } catch (\PDOException $exc) {
+            d($statement, true);
             switch (self::$verbose_level) {
                 case 0:
                     trigger_error("SQL query error", E_USER_WARNING);
@@ -101,6 +102,7 @@ class handler extends \PDO {
 
         return $result;
     }
+
     function exec($statement) {
         try {
             $result = parent::exec($statement);

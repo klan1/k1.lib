@@ -4,6 +4,13 @@ namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
 
+interface board_interface {
+
+    public function start_board();
+
+    public function exec_board();
+}
+
 class board_base {
 
     /**
@@ -28,7 +35,7 @@ class board_base {
      *
      * @var boolean
      */
-    protected $is_enabled = TRUE;
+    protected $is_enabled = FALSE;
 
     /**
      *
@@ -42,9 +49,19 @@ class board_base {
      */
     protected $user_levels_allowed = null;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
+    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         $this->controller_object = $controller_object;
         $this->board_content_div = new \k1lib\html\div_tag("board-content");
+
+        $this->user_levels_allowed = $user_levels_allowed;
+
+        if (\k1lib\session\session_plain::is_enabled()) {
+            if (!$this->check_user_level_access()) {
+                $this->is_enabled = false;
+            } else {
+                $this->is_enabled = true;
+            }
+        }
 
         /**
          * Search util hack
@@ -70,7 +87,9 @@ class board_base {
     }
 
     function set_is_enabled($is_enabled) {
-        $this->is_enabled = $is_enabled;
+        if ($this->is_enabled) {
+            $this->is_enabled = $is_enabled;
+        }
     }
 
     public function set_board_name($board_name) {
@@ -90,11 +109,15 @@ class board_base {
         }
     }
 
-    function check_user_level_access($user_level_to_check) {
-        if (empty(array_key_exists($user_level_to_check, array_keys($this->user_levels_allowed)))) {
-            return FALSE;
-        } else {
+    function check_user_level_access() {
+        if (empty($this->user_levels_allowed)) {
             return TRUE;
+        } else {
+            if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->user_levels_allowed)))) {
+                return FALSE;
+            } else {
+                return TRUE;
+            }
         }
     }
 
@@ -104,11 +127,11 @@ class board_base_strings {
 
     static $alert_board = "Alert";
     static $error_board = "Error message";
-    static $error_board_disabled = "This board is disabled";
+    static $error_board_disabled = "This board is disabled or you are not allowed to use it";
     static $error_mysql = "DB error";
     static $error_mysql_table_not_opened = "Can not open the table.";
     static $error_mysql_table_no_data = "Empty query";
-    static $error_url_keys_no_auth = "Keys are not valid, so, you can't continue.";
-    static $error_url_keys_no_keys_text = "You can't use this board without the right url key text.";
+    static $error_url_keys_no_auth = "Keys are not valid, so, you can't continue";
+    static $error_url_keys_no_keys_text = "You can't use this board without the right url key text";
 
 }

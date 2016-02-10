@@ -4,7 +4,7 @@ namespace k1lib\crudlexs;
 
 use k1lib\urlrewrite\url_manager as url_manager;
 
-class board_update extends board_base implements controller_interface {
+class board_update extends board_base implements board_interface {
 
     /**
      *
@@ -13,8 +13,8 @@ class board_update extends board_base implements controller_interface {
     public $update_object;
     private $row_keys_text;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
-        parent::__construct($controller_object);
+    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+        parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->row_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_keys_text", FALSE);
             $this->update_object = new \k1lib\crudlexs\updating($this->controller_object->db_table, $this->row_keys_text);
@@ -23,7 +23,6 @@ class board_update extends board_base implements controller_interface {
 
     public function start_board() {
         if (!$this->is_enabled) {
-            $this->update_object->make_invalid();
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
         }
