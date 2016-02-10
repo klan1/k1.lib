@@ -4,7 +4,7 @@ namespace k1lib\crudlexs;
 
 use k1lib\urlrewrite\url_manager as url_manager;
 
-class board_read extends board_base implements controller_interface {
+class board_read extends board_base implements board_interface {
 
     /**
      *
@@ -19,8 +19,8 @@ class board_read extends board_base implements controller_interface {
     protected $delete_enable = TRUE;
     protected $use_label_as_title_enabled = TRUE;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
-        parent::__construct($controller_object);
+    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+        parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->row_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_keys_text", FALSE);
             $this->read_object = new \k1lib\crudlexs\reading($this->controller_object->db_table, $this->row_keys_text);
@@ -29,7 +29,6 @@ class board_read extends board_base implements controller_interface {
 
     public function start_board() {
         if (!$this->is_enabled) {
-            $this->read_object->make_invalid();
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
         }
@@ -122,45 +121,50 @@ class board_read extends board_base implements controller_interface {
 
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $show_create = TRUE) {
 
-        $current_row_keys_text = $this->controller_object->board_read_object->read_object->get_row_keys_text();
-        $current_row_keys_text_auth_code = md5(\k1lib\MAGIC_VALUE . $current_row_keys_text);
+        $detail_div = new \k1lib\html\div_tag();
 
-        $current_row_keys_array = $this->controller_object->board_read_object->read_object->get_row_keys_array();
+        if ($this->is_enabled && $this->read_object->is_valid()) {
+            $current_row_keys_text = $this->controller_object->board_read_object->read_object->get_row_keys_text();
+            $current_row_keys_text_auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $current_row_keys_text);
 
-        $back_url = urlencode($_SERVER['REQUEST_URI']);
+            $current_row_keys_array = $this->controller_object->board_read_object->read_object->get_row_keys_array();
 
-        /**
-         * Clients list
-         */
-        if ($db_table->get_state()) {
-            $db_table->set_query_filter($current_row_keys_array, TRUE);
+            $back_url = urlencode($_SERVER['REQUEST_URI']);
 
-            $detail_div = new \k1lib\html\div_tag("row k1app-related-list {$db_table->get_db_table_name()}-realted-list");
-            $related_title = new \k1lib\html\h4_tag("sub-title");
-            $related_title->set_value($title);
-            $related_title->append_to($detail_div);
+            /**
+             * Clients list
+             */
+            if ($db_table->get_state()) {
+                $db_table->set_query_filter($current_row_keys_array, TRUE);
 
-            if ($show_create) {
-                $new_related_button = \k1lib\html\get_link_button(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/?auth-code=$current_row_keys_text_auth_code&back-url={$back_url}", "New", "tiny");
-                $related_title->set_value($new_related_button->generate_tag(), TRUE);
-            }
+                $detail_div->set_attrib("class", "row k1app-related-list {$db_table->get_db_table_name()}-realted-list");
 
-            $related_table_list = new \k1lib\crudlexs\listing($db_table, FALSE);
-            if ($related_table_list->load_db_table_data("show-table")) {
+                $related_title = new \k1lib\html\h4_tag("sub-title");
+                $related_title->set_value($title);
+                $related_title->append_to($detail_div);
 
-                $related_table_list->apply_label_filter();
-                $related_table_list->apply_field_label_filter();
-                if (\k1lib\forms\file_uploads::is_enabled()) {
-//                    $related_table_list->set
-                    $related_table_list->apply_file_uploads_filter();
+                if ($show_create) {
+                    $new_related_button = \k1lib\html\get_link_button(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/?auth-code=$current_row_keys_text_auth_code&back-url={$back_url}", "New", "tiny");
+                    $related_title->set_value($new_related_button->generate_tag(), TRUE);
                 }
-                $related_table_list->apply_link_on_field_filter(APP_URL . $board_root . "/" . $board_read . "/%row_keys%/?auth-code=%auth_code%&back-url={$back_url}", $field_links_array);
+
+                $related_table_list = new \k1lib\crudlexs\listing($db_table, FALSE);
+                if ($related_table_list->load_db_table_data("show-table")) {
+
+                    $related_table_list->apply_label_filter();
+                    $related_table_list->apply_field_label_filter();
+                    if (\k1lib\forms\file_uploads::is_enabled()) {
+//                    $related_table_list->set
+                        $related_table_list->apply_file_uploads_filter();
+                    }
+                    $related_table_list->apply_link_on_field_filter(APP_URL . $board_root . "/" . $board_read . "/%row_keys%/?auth-code=%auth_code%&back-url={$back_url}", $field_links_array);
+                }
+                $related_table_list->do_html_object()->append_to($detail_div);
+            } else {
+                return false;
             }
-            $related_table_list->do_html_object()->append_to($detail_div);
-            return $detail_div;
-        } else {
-            return false;
         }
+        return $detail_div;
     }
 
     function get_back_enable() {

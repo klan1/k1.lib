@@ -5,22 +5,6 @@ namespace k1lib\crudlexs;
 use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url_manager as url_manager;
 
-interface controller_interface {
-
-    public function start_board();
-
-    public function exec_board();
-}
-
-interface board_interface {
-
-    public function set_board_name($board_name);
-
-    public function start_board();
-
-    public function exec_board();
-}
-
 class controller_base {
 
     /**
@@ -52,6 +36,7 @@ class controller_base {
      * @var string
      */
     protected $controller_board_url_value;
+    protected $controller_board_allowed_leves = [];
 
     /**
      *
@@ -78,6 +63,7 @@ class controller_base {
      */
     public $board_list_object;
     protected $board_list_url_name = "list";
+    protected $board_list_allowed_levels = [];
 
     /**
      *
@@ -85,6 +71,7 @@ class controller_base {
      */
     public $board_create_object;
     protected $board_create_url_name = "create";
+    protected $board_create_allowed_levels = [];
 
     /**
      *
@@ -92,6 +79,7 @@ class controller_base {
      */
     public $board_read_object;
     protected $board_read_url_name = "read";
+    protected $board_read_allowed_levels = [];
 
     /**
      *
@@ -99,6 +87,7 @@ class controller_base {
      */
     public $board_update_object;
     protected $board_update_url_name = "update";
+    protected $board_update_allowed_levels = [];
 
     /**
      *
@@ -106,6 +95,7 @@ class controller_base {
      */
     public $board_delete_object;
     protected $board_delete_url_name = "delete";
+    protected $board_delete_allowed_levels = [];
 
 
     /**
@@ -179,12 +169,11 @@ class controller_base {
 
     public function init_board($specific_board_to_init = NULL) {
         if (empty($specific_board_to_init)) {
-            $specific_board_to_init = $this->controller_board_url_value;
+            $specific_board_to_init = ($this->controller_board_url_value) ? $this->controller_board_url_value : "no-url";
         }
-        $this->board_inited = TRUE;
         switch ($specific_board_to_init) {
             case $this->board_create_url_name:
-                $this->board_create_object = new board_create($this);
+                $this->board_create_object = new board_create($this, $this->board_create_allowed_levels);
                 $this->board_create_object->set_is_enabled($this->board_create_enabled);
                 $this->board_create_object->set_board_name($this->board_create_name);
                 $this->board_div_content = $this->board_create_object->board_content_div;
@@ -192,7 +181,7 @@ class controller_base {
                 break;
 
             case $this->board_read_url_name:
-                $this->board_read_object = new board_read($this);
+                $this->board_read_object = new board_read($this, $this->board_read_allowed_levels);
                 $this->board_read_object->set_is_enabled($this->board_read_enabled);
                 $this->board_read_object->set_board_name($this->board_read_name);
                 $this->board_div_content = $this->board_read_object->board_content_div;
@@ -208,7 +197,7 @@ class controller_base {
                 break;
 
             case $this->board_update_url_name:
-                $this->board_update_object = new board_update($this);
+                $this->board_update_object = new board_update($this, $this->board_update_allowed_levels);
                 $this->board_update_object->set_is_enabled($this->board_update_enabled);
                 $this->board_update_object->set_board_name($this->board_update_name);
                 $this->board_div_content = $this->board_update_object->board_content_div;
@@ -216,14 +205,14 @@ class controller_base {
                 break;
 
             case $this->board_delete_url_name:
-                $this->board_delete_object = new board_delete($this);
+                $this->board_delete_object = new board_delete($this, $this->board_delete_allowed_levels);
                 $this->board_delete_object->set_is_enabled($this->board_delete_enabled);
                 $this->board_delete_object->set_board_name($this->board_delete_name);
                 $this->board_div_content = $this->board_delete_object->board_content_div;
                 break;
 
             case $this->board_list_url_name:
-                $this->board_list_object = new board_list($this);
+                $this->board_list_object = new board_list($this, $this->board_list_allowed_levels);
                 $this->board_list_object->set_is_enabled($this->board_list_enabled);
                 $this->board_list_object->set_board_name($this->board_list_name);
                 $this->board_div_content = $this->board_list_object->board_content_div;
@@ -237,6 +226,7 @@ class controller_base {
                 \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
                 return FALSE;
         }
+        $this->board_inited = TRUE;
         return $this->board_div_content;
     }
 
@@ -250,7 +240,7 @@ class controller_base {
                 $related_table = $db_table_name;
                 $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
                 $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
-                $related_url_keys_text_auth_code = md5(\k1lib\MAGIC_VALUE . $related_url_keys_text);
+                $related_url_keys_text_auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
                     $this->db_table->set_field_constants($related_url_keys_array);
                 } else {
@@ -506,6 +496,54 @@ class controller_base {
     function set_board_delete_url_name($board_delete_url_name) {
         $this->board_delete_url_name = $board_delete_url_name;
         $this->set_board_delete_enabled($board_delete_url_name);
+    }
+
+    function get_controller_board_allowed_leves() {
+        return $this->controller_board_allowed_leves;
+    }
+
+    function set_controller_board_allowed_leves($controller_board_allowed_leves) {
+        $this->controller_board_allowed_leves = $controller_board_allowed_leves;
+    }
+
+    function get_board_list_allowed_levels() {
+        return $this->board_list_allowed_levels;
+    }
+
+    function get_board_create_allowed_levels() {
+        return $this->board_create_allowed_levels;
+    }
+
+    function get_board_read_allowed_levels() {
+        return $this->board_read_allowed_levels;
+    }
+
+    function get_board_update_allowed_levels() {
+        return $this->board_update_allowed_levels;
+    }
+
+    function get_board_delete_allowed_levels() {
+        return $this->board_delete_allowed_levels;
+    }
+
+    function set_board_list_allowed_levels($board_list_allowed_levels) {
+        $this->board_list_allowed_levels = $board_list_allowed_levels;
+    }
+
+    function set_board_create_allowed_levels($board_create_allowed_levels) {
+        $this->board_create_allowed_levels = $board_create_allowed_levels;
+    }
+
+    function set_board_read_allowed_levels($board_read_allowed_levels) {
+        $this->board_read_allowed_levels = $board_read_allowed_levels;
+    }
+
+    function set_board_update_allowed_levels($board_update_allowed_levels) {
+        $this->board_update_allowed_levels = $board_update_allowed_levels;
+    }
+
+    function set_board_delete_allowed_levels($board_delete_allowed_levels) {
+        $this->board_delete_allowed_levels = $board_delete_allowed_levels;
     }
 
 }

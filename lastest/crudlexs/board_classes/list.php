@@ -21,8 +21,8 @@ class board_list extends board_base implements board_interface {
      */
     public $list_object;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
-        parent::__construct($controller_object);
+    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+        parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->list_object = new \k1lib\crudlexs\listing($this->controller_object->db_table, FALSE);
         }
@@ -34,12 +34,9 @@ class board_list extends board_base implements board_interface {
      */
     public function start_board() {
         if (!$this->is_enabled) {
-            $this->list_object->make_invalid();
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
-        }
-
-        $this_url = urlencode($_SERVER['REQUEST_URI']);
+        } $this_url = urlencode($_SERVER['REQUEST_URI']);
 
         if ($this->list_object->get_state()) {
             $search_helper = new \k1lib\crudlexs\search_helper($this->controller_object->db_table);

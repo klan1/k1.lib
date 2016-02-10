@@ -5,14 +5,14 @@ namespace k1lib\crudlexs;
 use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url_manager as url_manager;
 
-class board_delete extends board_base implements controller_interface {
+class board_delete extends board_base implements board_interface {
 
     protected $redirect_url = null;
     private $row_keys_text;
     private $read_object;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object) {
-        parent::__construct($controller_object);
+    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+        parent::__construct($controller_object, $user_levels_allowed);
         $this->redirect_url = (isset($_GET['back-url'])) ? \k1lib\urlrewrite\get_back_url() : "../../{$this->controller_object->get_board_list_url_name()}/";
         if ($this->is_enabled) {
             $this->row_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_keys_text", FALSE);
@@ -26,7 +26,6 @@ class board_delete extends board_base implements controller_interface {
 
     public function start_board() {
         if (!$this->is_enabled) {
-            $this->read_object->make_invalid();
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
         }

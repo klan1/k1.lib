@@ -57,7 +57,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     continue;
                 }
                 if ($config[$show_rule]) {
-                    $headers_array[] = $field;
+                    $headers_array[$field] = $field;
                     $blank_row_array[$field] = "";
                 }
             }

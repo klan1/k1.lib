@@ -146,7 +146,7 @@ class crudlexs_base_with_data extends crudlexs_base {
             if (!$this->skip_auto_code_verification) {
                 if (isset($_GET['auth-code'])) {
                     $auth_code = $_GET['auth-code'];
-                    $auth_expected = md5(\k1lib\MAGIC_VALUE . $this->row_keys_text);
+                    $auth_expected = md5(\k1lib\session\session_plain::get_user_hash() . $this->row_keys_text);
                     if ($auth_code === $auth_expected) {
                         parent::__construct($db_table);
                         $this->auth_code = $auth_code;
@@ -174,7 +174,7 @@ class crudlexs_base_with_data extends crudlexs_base {
     }
 
     public function set_auth_code($row_keys_text) {
-        $this->auth_code = md5(\k1lib\MAGIC_VALUE . $row_keys_text);
+        $this->auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $row_keys_text);
     }
 
     public function get_do_table_field_name_encrypt() {
@@ -387,7 +387,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                             $tag_html = $tag_object->generate_tag();
                             if (!empty($this->db_table_data_keys)) {
                                 $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
-                                $auth_code = md5(\k1lib\MAGIC_VALUE . $key_array_text);
+                                $auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $key_array_text);
                                 $tag_html = str_replace("%row_keys%", $key_array_text, $tag_html);
                                 $tag_html = str_replace("%field_value%", $row_data[$field_to_change], $tag_html);
                                 $tag_html = str_replace("%auth_code%", $auth_code, $tag_html);
