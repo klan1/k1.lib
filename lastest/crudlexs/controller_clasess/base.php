@@ -161,6 +161,87 @@ class controller_base {
         temply::set_place_value($this->template_place_name_controller_name, $controller_name);
     }
 
+    public function set_config_from_class($class_name = NULL) {
+//        $class_name::CONTROLLER_ALLOWED_LEVELS;
+
+        /**
+         * URLS
+         */
+        if (defined("{$class_name}::BOARD_CREATE_ENABLED")) {
+            $this->set_board_create_enabled($class_name::BOARD_CREATE_ENABLED);
+        }
+        if (defined("{$class_name}::BOARD_READ_ENABLED")) {
+            $this->set_board_read_enabled($class_name::BOARD_READ_ENABLED);
+        }
+        if (defined("{$class_name}::BOARD_UPDATE_ENABLED")) {
+            $this->set_board_update_enabled($class_name::BOARD_UPDATE_ENABLED);
+        }
+        if (defined("{$class_name}::BOARD_DELETE_ENABLED")) {
+            $this->set_board_delete_enabled($class_name::BOARD_DELETE_ENABLED);
+        }
+        if (defined("{$class_name}::BOARD_LIST_ENABLED")) {
+            $this->set_board_list_enabled($class_name::BOARD_LIST_ENABLED);
+        }
+        /**
+         * URLS
+         */
+        if (defined("{$class_name}::BOARD_CREATE_URL")) {
+            $this->set_board_create_url_name($class_name::BOARD_CREATE_URL);
+        }
+        if (defined("{$class_name}::BOARD_READ_URL")) {
+            $this->set_board_read_url_name($class_name::BOARD_READ_URL);
+        }
+        if (defined("{$class_name}::BOARD_UPDATE_URL")) {
+            $this->set_board_update_url_name($class_name::BOARD_UPDATE_URL);
+        }
+        if (defined("{$class_name}::BOARD_DELETE_URL")) {
+            $this->set_board_delete_url_name($class_name::BOARD_DELETE_URL);
+        }
+        if (defined("{$class_name}::BOARD_LIST_URL")) {
+            $this->set_board_list_url_name($class_name::BOARD_LIST_URL);
+        }
+        /**
+         * NAMES
+         */
+        if (defined("{$class_name}::BOARD_CREATE_NAME")) {
+            $this->set_board_create_name($class_name::BOARD_CREATE_NAME);
+        }
+        if (defined("{$class_name}::BOARD_READ_NAME")) {
+            $this->set_board_read_name($class_name::BOARD_READ_NAME);
+        }
+        if (defined("{$class_name}::BOARD_UPDATE_NAME")) {
+            $this->set_board_update_name($class_name::BOARD_UPDATE_NAME);
+        }
+        if (defined("{$class_name}::BOARD_DELETE_NAME")) {
+            $this->set_board_delete_name($class_name::BOARD_DELETE_NAME);
+        }
+        if (defined("{$class_name}::BOARD_LIST_NAME")) {
+            $this->set_board_list_name($class_name::BOARD_LIST_NAME);
+        }
+
+        /**
+         * ALLOWED LEVELS
+         */
+        if (defined("{$class_name}::BOARD_CREATE_ALLOWED_LEVELS")) {
+            $this->set_board_create_allowed_levels($class_name::BOARD_CREATE_ALLOWED_LEVELS);
+        }
+        if (defined("{$class_name}::BOARD_READ_ALLOWED_LEVELS")) {
+            $this->set_board_read_allowed_levels($class_name::BOARD_READ_ALLOWED_LEVELS);
+        }
+        if (defined("{$class_name}::BOARD_UPDATE_ALLOWED_LEVELS")) {
+            $this->set_board_update_allowed_levels($class_name::BOARD_UPDATE_ALLOWED_LEVELS);
+        }
+        if (defined("{$class_name}::BOARD_DELETE_ALLOWED_LEVELS")) {
+            $this->set_board_delete_allowed_levels($class_name::BOARD_DELETE_ALLOWED_LEVELS);
+        }
+        if (defined("{$class_name}::BOARD_LIST_ALLOWED_LEVELS")) {
+            $this->set_board_list_allowed_levels($class_name::BOARD_LIST_ALLOWED_LEVELS);
+        }
+//        if (defined("{$class_name}::BOARD_EXPORT_ALLOWED_LEVELS")) {
+//            $this->set_board_export_allowed_levels($class_name::BOARD_EXPORT_ALLOWED_LEVELS);
+//        }
+    }
+
     public function set_and_get_next_url_value() {
         $next_url_level = url_manager::get_url_level_count();
         $controller_url_value = "controller_url_{$next_url_level}";
