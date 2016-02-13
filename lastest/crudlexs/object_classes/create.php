@@ -36,6 +36,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
+
+        $this->set_object_id(get_class($this));
+        $this->set_css_class(get_class($this));
     }
 
     /**

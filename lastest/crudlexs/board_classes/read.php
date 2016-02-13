@@ -87,8 +87,8 @@ class board_read extends board_base implements board_interface {
                 if ($this->use_label_as_title_enabled) {
                     $data_label = $this->read_object->get_labels_from_data(1);
                     if (!empty($data_label)) {
-                        $this->read_object->remove_labels_from_data_filtered();
-                        $this->controller_object->board_read_object->set_board_name($data_label);
+//                        $this->read_object->remove_labels_from_data_filtered();
+//                        $this->controller_object->board_read_object->set_board_name($data_label);
                     }
                 }
                 $this->read_object->apply_label_filter();

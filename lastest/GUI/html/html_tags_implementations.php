@@ -50,6 +50,123 @@ namespace k1lib\html {
             $this->set_attrib("id", $id);
         }
 
+        /**
+         * 
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\div_tag
+         */
+        function &append_div($class = "", $id = "") {
+            $new = new div_tag($class, $id);
+            $this->append_child($new);
+            return $new;
+        }
+
+    }
+
+    class ul_tag extends html_tag {
+
+        /**
+         * Create a UL html tag.
+         * @param String $class
+         * @param String $id
+         */
+        function __construct($class = "", $id = "") {
+            parent::__construct("ul", FALSE);
+//        $this->data_array &= $data_array;
+            $this->set_attrib("class", $class, TRUE);
+            $this->set_attrib("id", $id);
+        }
+
+        function set_value($value, $append = false) {
+//            parent::set_value($value, $append);
+        }
+
+        /**
+         * 
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\li_tag
+         */
+        function &append_li($class = "", $id = "") {
+            $new = new li_tag($value, $class, $id);
+            $this->append_child($new);
+            return $new;
+        }
+
+    }
+
+    class ol_tag extends html_tag {
+
+        /**
+         * Create a UL html tag.
+         * @param String $class
+         * @param String $id
+         */
+        function __construct($class = "", $id = "") {
+            parent::__construct("ol", FALSE);
+//        $this->data_array &= $data_array;
+            $this->set_attrib("class", $class, TRUE);
+            $this->set_attrib("id", $id);
+        }
+
+        function set_value($value, $append = false) {
+//            parent::set_value($value, $append);
+        }
+
+        /**
+         * 
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\li_tag
+         */
+        function &append_li($value = "", $class = "", $id = "") {
+            $new = new li_tag($value, $class, $id);
+            $this->set_value($value);
+            $this->append_child($new);
+            return $new;
+        }
+
+    }
+
+    class li_tag extends html_tag {
+
+        /**
+         * Create a LI html tag with VALUE as data. Use $div->set_value($data)
+         * @param String $class
+         * @param String $id
+         */
+        function __construct($value = "", $class = "", $id = "") {
+            parent::__construct("li", FALSE);
+//        $this->data_array &= $data_array;
+            $this->set_value($value);
+            $this->set_attrib("class", $class, TRUE);
+            $this->set_attrib("id", $id);
+        }
+
+        /**
+         * 
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\ul_tag
+         */
+        function &append_ul($class = "", $id = "") {
+            $new = new ul_tag($class, $id);
+            $this->append_child($new);
+            return $new;
+        }
+        /**
+         * 
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\div_tag
+         */
+        function &append_ol($class = "", $id = "") {
+            $new = new ol_tag($class, $id);
+            $this->append_child($new);
+            return $new;
+        }
+
     }
 
     class script_tag extends html_tag {
@@ -122,7 +239,7 @@ namespace k1lib\html {
          */
         function &append_thead($class = "", $id = "") {
             $child_object = new thead_tag($class, $id);
-            parent::append_child($child_object);
+            $this->append_child($child_object);
             return $child_object;
         }
 
@@ -134,7 +251,7 @@ namespace k1lib\html {
          */
         function &append_tbody($class = "", $id = "") {
             $child_object = new tbody_tag($class, $id);
-            parent::append_child($child_object);
+            $this->append_child($child_object);
             return $child_object;
         }
 
@@ -160,7 +277,7 @@ namespace k1lib\html {
          */
         function append_tr($class = "", $id = "") {
             $child_object = new tr_tag($class, $id);
-            parent::append_child($child_object);
+            $this->append_child($child_object);
             return $child_object;
         }
 
@@ -186,7 +303,7 @@ namespace k1lib\html {
          */
         function append_tr($class = "", $id = "") {
             $child_object = new tr_tag($class, $id);
-            parent::append_child($child_object);
+            $this->append_child($child_object);
             return $child_object;
         }
 
@@ -213,7 +330,7 @@ namespace k1lib\html {
          */
         function append_th($value, $class = "", $id = "") {
             $child_object = new th_tag($value, $class, $id);
-            parent::append_child($child_object);
+            $this->append_child($child_object);
             return $child_object;
         }
 
@@ -226,7 +343,7 @@ namespace k1lib\html {
          */
         function append_td($value, $class = "", $id = "") {
             $child_object = new td_tag($value, $class, $id);
-            parent::append_child($child_object);
+            $this->append_child($child_object);
             return $child_object;
         }
 
@@ -327,7 +444,7 @@ namespace k1lib\html {
          */
         function append_option($value, $label, $selected = FALSE, $class = "", $id = "") {
             $child_object = new option_tag($value, $label, $selected, $class, $id);
-            parent::append_child($child_object);
+            $this->append_child($child_object);
             return $child_object;
         }
 
@@ -384,8 +501,9 @@ namespace k1lib\html {
      */
     class p_tag extends html_tag {
 
-        function __construct($class = "") {
+        function __construct($value = "", $class = "") {
             parent::__construct("p", FALSE);
+            $this->set_value($value);
             $this->set_attrib("class", $class);
         }
 
@@ -396,8 +514,9 @@ namespace k1lib\html {
      */
     class h1_tag extends html_tag {
 
-        function __construct($class = "") {
+        function __construct($value = "", $class = "") {
             parent::__construct("h1", FALSE);
+            $this->set_value($value);
             $this->set_attrib("class", $class);
         }
 
@@ -408,8 +527,9 @@ namespace k1lib\html {
      */
     class h2_tag extends html_tag {
 
-        function __construct($class = "") {
+        function __construct($value = "", $class = "") {
             parent::__construct("h2", FALSE);
+            $this->set_value($value);
             $this->set_attrib("class", $class);
         }
 
@@ -420,8 +540,9 @@ namespace k1lib\html {
      */
     class h3_tag extends html_tag {
 
-        function __construct($class = "") {
+        function __construct($value = "", $class = "") {
             parent::__construct("h3", FALSE);
+            $this->set_value($value);
             $this->set_attrib("class", $class);
         }
 
@@ -432,8 +553,9 @@ namespace k1lib\html {
      */
     class h4_tag extends html_tag {
 
-        function __construct($class = "") {
+        function __construct($value = "", $class = "") {
             parent::__construct("h4", FALSE);
+            $this->set_value($value);
             $this->set_attrib("class", $class);
         }
 
@@ -444,8 +566,9 @@ namespace k1lib\html {
      */
     class h5_tag extends html_tag {
 
-        function __construct($class = "") {
+        function __construct($value = "", $class = "") {
             parent::__construct("h5", FALSE);
+            $this->set_value($value);
             $this->set_attrib("class", $class);
         }
 

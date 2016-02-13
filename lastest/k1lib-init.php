@@ -12,7 +12,7 @@
  * @author          Alejandro Trujillo J. <alejo@klan1.com>
  * @copyright       2015 Klan1 Network
  * @license         Apache 2.0
- * @version         0.5
+ * @version         0.7
  * @since           File available since Release 0.1
  */
 /*
@@ -39,7 +39,7 @@ $k1lib_local_dir = dirname(__FILE__);
 define("K1LIB_BASE_PATH", $k1lib_local_dir);
 unset($k1lib_local_dir);
 
-const VERSION = "0.5";
+const VERSION = "0.7";
 
 header("PHP Framework: K1.lib V" . VERSION);
 header("Developed by: Klan1 Network | http://www.klan1.com");

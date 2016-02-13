@@ -28,6 +28,18 @@ class crudlexs_base {
     protected $div_container;
 
     /**
+     * Unique ID for each object
+     * @var string
+     */
+    protected $object_id = null;
+
+    /**
+     * General CSS class
+     * @var string
+     */
+    protected $css_class = null;
+
+    /**
      * If some goes BAD to do not keep going for others methods, you have to put this on FALSE;
      * @var boolean
      */
@@ -77,6 +89,27 @@ class crudlexs_base {
                 return FALSE;
             }
         }
+    }
+
+    function get_object_id() {
+        return $this->object_id;
+    }
+
+    function set_object_id($class_name) {
+        if (key_exists($this->db_table->get_db_table_name(), \k1lib\db\security\db_table_aliases::$aliases)) {
+            $table_name = \k1lib\db\security\db_table_aliases::$aliases[$this->db_table->get_db_table_name()];
+        } else {
+            $table_name = $this->db_table->get_db_table_name();
+        }
+        return $this->object_id = $table_name . "-" . basename(str_replace("\\", "/", $class_name));
+    }
+
+    function get_css_class() {
+        return $this->css_class;
+    }
+
+    function set_css_class($class_name) {
+        $this->css_class = basename(str_replace("\\", "/", $class_name));
     }
 
 }

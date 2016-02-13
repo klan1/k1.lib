@@ -20,6 +20,9 @@ class search_helper extends creating {
     public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
         parent::__construct($db_table, FALSE);
 
+        $this->set_object_id(get_class($this));
+        $this->set_css_class(get_class($this));
+
         creating_strings::$button_submit = search_helper_strings::$button_search;
         creating_strings::$select_choose_option = search_helper_strings::$select_choose_option;
         $this->show_cancel_button = FALSE;

@@ -60,7 +60,7 @@ class board_update extends board_base implements board_interface {
                             $back_url = (isset($_GET['back-url'])) ? "&back-url=" . urlencode(\k1lib\urlrewrite\get_back_url()) : "";
                             $url_to_go = "{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/%row_keys%/?auth-code=%auth_code%{$back_url}";
                             if (!$this->update_object->do_update($url_to_go)) {
-                                \k1lib\common\show_message(board_update_strings::$error_no_inserted, board_base_strings::$error_mysql, "alert");
+                                \k1lib\html\html_header_go($url_to_go);
                             }
                         } else {
                             \k1lib\common\show_message(board_update_strings::$error_form, board_base_strings::$alert_board, "warning");

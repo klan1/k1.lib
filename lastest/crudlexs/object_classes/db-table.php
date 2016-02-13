@@ -332,8 +332,6 @@ class class_db_table {
         if ($this->generate_sql_query()) {
             $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql, $return_all, $do_fields);
 
-            $this->total_rows_result = \k1lib\sql\sql_query($this->db, $this->query_sql_total_rows, FALSE, FALSE);
-
             if (!empty($query_result)) {
                 $this->total_rows_filtered_result = count($query_result) - 1;
                 return $query_result;
@@ -371,7 +369,16 @@ class class_db_table {
     }
 
     function get_total_rows() {
-        return $this->total_rows_result['num_rows'];
+        if ($this->generate_sql_query()) {
+            $this->total_rows_result = \k1lib\sql\sql_query($this->db, $this->query_sql_total_rows, FALSE, FALSE);
+            if ($this->total_rows_result) {
+                return $this->total_rows_result['num_rows'];
+            } else {
+                return NULL;
+            }
+        } else {
+            return FALSE;
+        }
     }
 
     function get_db_table_show_rule() {
