@@ -4,16 +4,16 @@ namespace k1lib\crudlexs;
 
 class board_list extends board_base implements board_interface {
 
-    const SHOW_STATS_BEFORE_TABLE = 1;
-    const SHOW_STATS_AFTER_TABLE = 2;
-    const SHOW_STATS_BEFORE_AND_AFTER_TABLE = 3;
+    const SHOW_BEFORE_TABLE = 1;
+    const SHOW_AFTER_TABLE = 2;
+    const SHOW_BEFORE_AND_AFTER_TABLE = 3;
 
     protected $search_enable = TRUE;
     protected $create_enable = TRUE;
     protected $export_enable = TRUE;
     protected $pagination_enable = TRUE;
     protected $stats_enable = TRUE;
-    protected $where_to_show_stats = self::SHOW_STATS_AFTER_TABLE;
+    protected $where_to_show_stats = self::SHOW_AFTER_TABLE;
 
     /**
      *
@@ -100,8 +100,9 @@ class board_list extends board_base implements board_interface {
                 $this->list_object->apply_link_on_field_filter("../{$this->controller_object->get_board_read_url_name()}/%row_keys%/?auth-code=%auth_code%&back-url={$this_url}", crudlexs_base::USE_KEY_FIELDS);
             }
             // Show stats BEFORE
-            if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_STATS_BEFORE_TABLE) || ($this->where_to_show_stats == self::SHOW_STATS_BEFORE_AND_AFTER_TABLE))) {
+            if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_BEFORE_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {
                 $this->list_object->do_row_stats()->append_to($this->board_content_div);
+                $this->list_object->do_pagination()->append_to($this->board_content_div);
             }
             /**
              * HTML OBJECT
@@ -109,8 +110,9 @@ class board_list extends board_base implements board_interface {
             $list_object_div = $this->list_object->do_html_object();
             $list_object_div->append_to($this->board_content_div);
             // Show stats AFTER
-            if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_STATS_AFTER_TABLE) || ($this->where_to_show_stats == self::SHOW_STATS_BEFORE_AND_AFTER_TABLE))) {
+            if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_AFTER_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {
                 $this->list_object->do_row_stats()->append_to($this->board_content_div);
+                $this->list_object->do_pagination()->append_to($this->board_content_div);
             }
             if ($do_echo) {
                 $this->board_content_div->generate_tag($do_echo);

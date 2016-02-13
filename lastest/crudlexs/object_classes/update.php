@@ -12,6 +12,10 @@ class updating extends \k1lib\crudlexs\creating {
         } else {
             \k1lib\common\show_message("The keys can't be empty", "Error", "alert");
         }
+        
+        $this->set_object_id(get_class($this));
+        $this->set_css_class(get_class($this));
+        
         creating_strings::$button_submit = updating_strings::$button_submit;
         creating_strings::$select_choose_option = updating_strings::$select_choose_option;
     }
@@ -33,26 +37,30 @@ class updating extends \k1lib\crudlexs\creating {
         return $return_data;
     }
 
-    public function do_update($url_to_go = "../../") {
-        if ($this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1])) {
-            $this->set_back_url("javascript:history.back()");
-            $this->div_container->set_attrib("class", "k1-crudlexs-update");
-            /**
-             * Merge the ROW KEYS with all the possible keys on the POST array
-             */
-            $merged_key_array = array_merge(
-                    $this->db_table_data_keys[1]
-                    , \k1lib\sql\get_keys_array_from_row_data(
-                            $this->post_incoming_array
-                            , $this->db_table->get_db_table_config())
-            );
-            $row_key_text = \k1lib\sql\table_keys_to_text($merged_key_array, $this->db_table->get_db_table_config());
-            if (!empty($url_to_go)) {
-                $this->set_auth_code($row_key_text);
-                $url_to_go = str_replace("%row_keys%", $row_key_text, $url_to_go);
-                $url_to_go = str_replace("%auth_code%", $this->get_auth_code(), $url_to_go);
-                \k1lib\html\html_header_go($url_to_go);
-            }
+    public function do_update($url_to_go = "../../", $do_redirect = true) {
+        //$this->set_back_url("javascript:history.back()");
+        $this->div_container->set_attrib("class", "k1-crudlexs-update");
+        /**
+         * Merge the ROW KEYS with all the possible keys on the POST array
+         */
+        $merged_key_array = array_merge(
+                $this->db_table_data_keys[1]
+                , \k1lib\sql\get_keys_array_from_row_data(
+                        $this->post_incoming_array
+                        , $this->db_table->get_db_table_config())
+        );
+        $row_key_text = \k1lib\sql\table_keys_to_text($merged_key_array, $this->db_table->get_db_table_config());
+        if (!empty($url_to_go)) {
+            $this->set_auth_code($row_key_text);
+            $url_to_go = str_replace("%row_keys%", $row_key_text, $url_to_go);
+            $url_to_go = str_replace("%auth_code%", $this->get_auth_code(), $url_to_go);
+        }
+        $update_result = $this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1]);
+        if ($do_redirect) {
+            \k1lib\html\html_header_go($url_to_go);
+            return TRUE;
+        }
+        if ($update_result) {
             return TRUE;
         } else {
             return FALSE;

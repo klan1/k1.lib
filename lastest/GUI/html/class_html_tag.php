@@ -38,7 +38,7 @@ namespace k1lib\html {
     /**
      * HTML Tag abstraction
      */
-    class html_tag {
+    class html_tag_base {
 
         /** @var String */
         protected $tag_name = NULL;
@@ -78,14 +78,22 @@ namespace k1lib\html {
         /**
          * Chains an html tag into the actual html tag
          * @param html_tag $chlid_object
+         * @return \k1lib\html\html_tag 
          */
         public function append_child($chlid_object) {
             $this->childs[] = $chlid_object;
             $this->has_child = TRUE;
+            return $this;
         }
 
+        /**
+         * Chains THIS html tag to a another html tag
+         * @param html_tag $chlid_object
+         * @return \k1lib\html\html_tag 
+         */
         public function append_to($html_object) {
             $html_object->append_child($this);
+            return $this;
         }
 
         /**
@@ -107,6 +115,7 @@ namespace k1lib\html {
         /**
          * Set the VALUE for the TAG, as <TAG value="$value" /> or <TAG>$value</TAG>
          * @param String $value
+         * @return \k1lib\html\html_tag
          */
         public function set_value($value, $append = false) {
 //            $this->value = $value;
@@ -115,6 +124,7 @@ namespace k1lib\html {
             } else {
                 $this->linked_html_obj->value = (($append === TRUE) && (!empty($this->linked_html_obj->value)) ) ? ($this->linked_html_obj->value . " " . $value) : ($value);
             }
+            return $this;
         }
 
         /**
@@ -163,6 +173,7 @@ namespace k1lib\html {
          * @param String $attribute
          * @param String $value
          * @param Boolean $append
+         * @return \k1lib\html\html_tag
          */
         public function set_attrib($attribute, $value, $append = FALSE) {
             if (!empty($attribute) && is_string($attribute)) {
@@ -174,6 +185,7 @@ namespace k1lib\html {
             } else {
                 trigger_error("HTML ATTRIBUTE has to be string", E_USER_WARNING);
             }
+            return $this;
         }
 
         /**
@@ -292,6 +304,37 @@ namespace k1lib\html {
 
         public function get_tag_code() {
             return $this->tag_code;
+        }
+
+    }
+
+    class html_tag extends html_tag_base {
+        /**
+         * 
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\div_tag
+         */
+        function &append_div($class = "", $id = "") {
+            $new = new div_tag($class, $id);
+            $this->append_child($new);
+            return $new;
+        }
+        
+        /**
+         * 
+         * @param string $href
+         * @param string $label
+         * @param string $target
+         * @param string $alt
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\a_tag
+         */
+        function &append_a($href = "", $label = "", $target = "", $alt = "", $class = "", $id = "") {
+            $new = new a_tag($href, $label, $target, $alt, $class, $id);
+            $this->append_child($new);
+            return $new;
         }
 
     }

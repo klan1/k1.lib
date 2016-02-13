@@ -75,7 +75,7 @@ class url_manager {
             }
             //convert the URL string into an array separated by "/" character
             $exploded_url = explode("/", $_GET[\k1lib\URL_REWRITE_VAR_NAME]);
-
+//            unset($_GET[\k1lib\URL_REWRITE_VAR_NAME]);
             //the level requested can't be lower than the count of the items returned from the explode
             if ($level < count($exploded_url)) {
                 $url_data_level_value = $exploded_url[$level];
@@ -198,9 +198,9 @@ class url_manager {
      * @global array self::$url_data
      * @return string URL 
      */
-    static public function get_this_url($complete_url = TRUE) {
-        if ($complete_url) {
-            return self::get_app_link(self::make_url_from_rewrite("this"));
+    static public function get_this_url($app_url = "") {
+        if (!empty($app_url)) {
+            return self::get_app_link($app_url . self::make_url_from_rewrite("this"));
         } else {
             return self::make_url_from_rewrite("this");
         }
@@ -303,6 +303,70 @@ class url_manager {
             }
         }
         return $page_url;
+    }
+
+    static public function do_url($url, array $new_get_vars = [], $keep_actual_get_vars = TRUE, array $wich_get_vars = [], $keep_including = true) {
+        if (!is_string($url)) {
+            trigger_error("The value to make the link have to be a string", E_USER_ERROR);
+        }
+
+        $hash = strstr($url, "#");
+        $url = str_replace($hash, "", $url);
+        /**
+         * Chat all _GET vars
+         */
+        $actual_get_vars = \k1lib\forms\check_all_incomming_vars($_GET);
+        unset($actual_get_vars[\k1lib\URL_REWRITE_VAR_NAME]);
+        /**
+         * We have to uset() the new vars from the ACTUAL _GET to avoid problems
+         */
+        foreach ($actual_get_vars as $var_name => $value) {
+            if (key_exists($var_name, $new_get_vars)) {
+                unset($actual_get_vars[$var_name]);
+            }
+        }
+
+        $get_vars_to_add = [];
+        if (!empty($new_get_vars)) {
+            foreach ($new_get_vars as $var_name => $value) {
+                $get_vars_to_add[] = "{$var_name}=" . urlencode($value);
+            }
+        }
+        $get_var_to_keep = [];
+        if ($keep_actual_get_vars) {
+            if (!empty($wich_get_vars)) {
+                foreach ($actual_get_vars as $var_name => $value) {
+                    if (key_exists($var_name, array_flip($wich_get_vars))) {
+                        if ($keep_including) {
+                            $get_var_to_keep[] = "{$var_name}=" . urlencode($value);
+                        } else {
+                            unset($actual_get_vars[$var_name]);
+                        }
+                    }
+                }
+                if (!$keep_including) {
+                    foreach ($actual_get_vars as $var_name => $value) {
+                        $get_var_to_keep[] = "{$var_name}=" . urlencode($value);
+                    }
+                }
+            } else {
+                foreach ($actual_get_vars as $var_name => $value) {
+                    $get_var_to_keep[] = "{$var_name}=" . urlencode($value);
+                }
+            }
+        }
+        $get_vars = array_merge($get_vars_to_add, $get_var_to_keep);
+        /**
+         * join the new get vars
+         */
+        if (!empty($new_get_vars)) {
+            $get_vars_on_text = "?" . implode("&", $get_vars);
+        } else {
+            $get_vars_on_text = "";
+        }
+        $url_to_return = $url . $get_vars_on_text . $hash;
+
+        return $url_to_return;
     }
 
 }

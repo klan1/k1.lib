@@ -701,9 +701,9 @@ function get_fk_field_label(\PDO $db, $table_name, array $url_key_array = Array(
     }
     $fk_table_config = get_db_table_config($db, $table_name);
     $fk_table_label_fields = get_db_table_label_fields($fk_table_config);
-    $fk_table_label_fields_text = implode(",", $fk_table_label_fields);
 
-    if (!empty($fk_table_label_fields_text)) {
+    if (!empty($fk_table_label_fields)) {
+        $fk_table_label_fields_text = implode(",", $fk_table_label_fields);
         $fk_where_condition = table_keys_to_where_condition($url_key_array, $fk_table_config);
         $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM $table_name WHERE $fk_where_condition";
         $sql_result = sql_query($db, $fk_sql_query, FALSE);
