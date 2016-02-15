@@ -2,6 +2,8 @@
 
 namespace k1lib\crudlexs;
 
+use k1lib\urlrewrite\url_manager as url_manager;
+
 /**
  * 
  */
@@ -25,7 +27,18 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     /**
      * @var int
      */
-    static public $rows_per_page = 20;
+    static public $rows_per_page = 25;
+
+    /**
+     * @var int
+     */
+    static public $rows_limit_to_all = 200;
+
+    /**
+     *
+     * @var array 
+     */
+    static public $rows_per_page_options = [5, 10, 25, 50, 100, "all"];
 
     /**
      * @var int
@@ -118,6 +131,9 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     public function do_pagination() {
 
         $div_pagination = new \k1lib\html\div_tag("k1-crudlexs-table-pagination", $this->get_object_id() . "-pagination");
+        $div_scroller = $div_pagination->append_div("float-left pagination-scroller");
+        $div_page_chooser = $div_pagination->append_div("float-left pagination-rows");
+
         if (($this->db_table_data) && (self::$rows_per_page <= $this->total_rows)) {
 
             $page_get_var_name = $this->get_object_id() . "-page";
@@ -125,24 +141,24 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
             $this_url = \k1lib\urlrewrite\url_manager::get_this_url(APP_URL) . "#" . $this->get_object_id() . "-pagination";
             if ($this->actual_page > 2) {
-                $this->page_first = \k1lib\urlrewrite\url_manager::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => $this->get_rows_per_page()], TRUE, [$page_get_var_name, $rows_get_var_name], FALSE);
+                $this->page_first = url_manager::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => self::$rows_per_page]);
             } else {
                 $this->page_first = "#";
             }
 
             if ($this->actual_page > 1) {
-                $this->page_previous = \k1lib\urlrewrite\url_manager::do_url($this_url, [$page_get_var_name => ($this->actual_page - 1), $rows_get_var_name => $this->get_rows_per_page()], TRUE, [$page_get_var_name, $rows_get_var_name], FALSE);
+                $this->page_previous = url_manager::do_url($this_url, [$page_get_var_name => ($this->actual_page - 1), $rows_get_var_name => self::$rows_per_page]);
             } else {
                 $this->page_previous = "#";
             }
 
             if ($this->actual_page < $this->total_pages) {
-                $this->page_next = \k1lib\urlrewrite\url_manager::do_url($this_url, [$page_get_var_name => ($this->actual_page + 1), $rows_get_var_name => $this->get_rows_per_page()], TRUE, [$page_get_var_name, $rows_get_var_name], FALSE);
+                $this->page_next = url_manager::do_url($this_url, [$page_get_var_name => ($this->actual_page + 1), $rows_get_var_name => self::$rows_per_page]);
             } else {
                 $this->page_next = "#";
             }
             if ($this->actual_page <= ($this->total_pages - 2)) {
-                $this->page_last = \k1lib\urlrewrite\url_manager::do_url($this_url, [$page_get_var_name => $this->total_pages, $rows_get_var_name => $this->get_rows_per_page()], TRUE, [$page_get_var_name, $rows_get_var_name], FALSE);
+                $this->page_last = url_manager::do_url($this_url, [$page_get_var_name => $this->total_pages, $rows_get_var_name => self::$rows_per_page]);
             } else {
                 $this->page_last = "#";
             }
@@ -150,31 +166,63 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
              * HTML UL- LI construction
              */
             $ul = (new \k1lib\html\ul_tag("pagination k1lib-crudlexs " . $this->get_object_id()));
-            $ul->append_to($div_pagination);
+            $ul->append_to($div_scroller);
 
+            // First page LI
             $li = $ul->append_li();
             $a = $li->append_a($this->page_first, "‹‹", "_self", "First page", "k1lib-crudlexs-first-page");
             if ($this->page_first == "#") {
                 $a->set_attrib("class", "disabled");
             }
-
+            // Previuos page LI
             $li = $ul->append_li("");
             $a = $li->append_a($this->page_previous, "‹", "_self", "Previous page", "k1lib-crudlexs-previous-page");
             if ($this->page_previous == "#") {
                 $a->set_attrib("class", "disabled");
             }
-
+            /**
+             * Page GOTO selector
+             */
+            $page_selector = new \k1lib\html\select_tag("goto_page", "k1-crudlexs-page-goto", $this->get_object_id() . "-page-goto");
+            $page_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
+            for ($i = 1; $i <= $this->total_pages; $i++) {
+                $option_url = url_manager::do_url($this_url, [$page_get_var_name => $i, $rows_get_var_name => self::$rows_per_page]);
+                $option = $page_selector->append_option($option_url, $i, (($this->actual_page == $i) ? TRUE : FALSE));
+            }
+            $ul->append_li()->append_child($page_selector);
+            // Next page LI
             $li = $ul->append_li("");
             $a = $li->append_a($this->page_next, "›", "_self", "Next page", "k1lib-crudlexs-next-page");
             if ($this->page_next == "#") {
                 $a->set_attrib("class", "disabled");
             }
-
+            // Last page LI
             $li = $ul->append_li("");
             $a = $li->append_a($this->page_last, "››", "_self", "Last page", "k1lib-crudlexs-last-page");
             if ($this->page_last == "#") {
                 $a->set_attrib("class", "disabled");
             }
+            /**
+             * PAGE ROWS selector
+             */
+            $num_rows_selector = new \k1lib\html\select_tag("goto_page", "k1-crudlexs-page-goto", $this->get_object_id() . "-page-rows-goto");
+            $num_rows_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
+            foreach (self::$rows_per_page_options as $num_rows) {
+                if ($num_rows <= $this->total_rows) {
+                    $option_url = url_manager::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => $num_rows]);
+                    $option = $num_rows_selector->append_option($option_url, $num_rows, ((self::$rows_per_page == $num_rows) ? TRUE : FALSE));
+                } else {
+                    break;
+                }
+            }
+            if ($this->total_rows <= self::$rows_limit_to_all) {
+                $option_url = url_manager::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => $this->total_rows]);
+                $option = $num_rows_selector->append_option($option_url, $this->total_rows, ((self::$rows_per_page == $this->total_rows) ? TRUE : FALSE));
+            }
+            $label = (new \k1lib\html\label_tag("Show", $this->get_object_id() . "-page-rows-goto"));
+            $label->set_attrib("style", "display:inline");
+            $label->append_to($div_page_chooser);            
+            $num_rows_selector->append_to($div_page_chooser);
         }
         return $div_pagination;
     }
