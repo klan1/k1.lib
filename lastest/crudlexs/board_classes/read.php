@@ -159,7 +159,9 @@ class board_read extends board_base implements board_interface {
                     }
                     $related_table_list->apply_link_on_field_filter(APP_URL . $board_root . "/" . $board_read . "/%row_keys%/?auth-code=%auth_code%&back-url={$back_url}", $field_links_array);
                 }
+                $related_table_list->do_pagination()->append_to($detail_div);
                 $related_table_list->do_html_object()->append_to($detail_div);
+                $related_table_list->do_row_stats()->append_to($detail_div);
             } else {
                 return false;
             }
