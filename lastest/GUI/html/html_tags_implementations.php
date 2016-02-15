@@ -50,18 +50,6 @@ namespace k1lib\html {
             $this->set_attrib("id", $id);
         }
 
-        /**
-         * 
-         * @param string $class
-         * @param string $id
-         * @return \k1lib\html\div_tag
-         */
-        function &append_div($class = "", $id = "") {
-            $new = new div_tag($class, $id);
-            $this->append_child($new);
-            return $new;
-        }
-
     }
 
     class ul_tag extends html_tag {
