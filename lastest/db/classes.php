@@ -79,19 +79,18 @@ class handler extends \PDO {
         try {
             $result = parent::query($statement);
         } catch (\PDOException $exc) {
-            d($statement, true);
             switch (self::$verbose_level) {
                 case 0:
-                    trigger_error("SQL query error", E_USER_WARNING);
+                    trigger_error("SQL query error", E_USER_NOTICE);
                     break;
                 case 1:
-                    trigger_error($exc->getMessage(), E_USER_WARNING);
+                    trigger_error($exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 2:
-                    trigger_error($statement . " | " . $exc->getMessage(), E_USER_WARNING);
+                    trigger_error($statement . " | " . $exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 3:
-                    trigger_error($statement . " | " . $exc->getMessage(), E_USER_WARNING);
+                    trigger_error($statement . " | " . $exc->getMessage(), E_USER_NOTICE);
                     d($exc->getTraceAsString());
                     break;
                 default:

@@ -16,9 +16,16 @@ class search_helper extends creating {
      */
     protected $db_table_data_keys = FALSE;
 
+    /**
+     * @var string
+     */
+    protected $caller_objetc_id = null;
+
 // FILTERS
-    public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
+    public function __construct(\k1lib\crudlexs\class_db_table $db_table, $caller_object_id) {
         parent::__construct($db_table, FALSE);
+
+        $this->caller_objetc_id = $caller_object_id;
 
         $this->set_object_id(get_class($this));
         $this->set_css_class(get_class($this));
@@ -26,6 +33,9 @@ class search_helper extends creating {
         creating_strings::$button_submit = search_helper_strings::$button_search;
         creating_strings::$select_choose_option = search_helper_strings::$select_choose_option;
         $this->show_cancel_button = FALSE;
+
+        $this->set_do_table_field_name_encrypt(TRUE);
+
 
         $last_show_rule = $this->db_table->get_db_table_show_rule();
         $this->db_table->set_db_table_show_rule("show-search");
@@ -39,13 +49,36 @@ class search_helper extends creating {
     }
 
     public function do_html_object() {
-
+        input_helper::$do_fk_search_tool = FALSE;
         $this->insert_inputs_on_data_row();
 
         $div_callout = new \k1lib\html\div_tag("reveal", "search-modal");
         $div_callout->set_attrib("data-reveal", TRUE);
         $div_callout->append_child(parent::do_html_object());
         return $div_callout;
+    }
+
+    function catch_post_data() {
+        $serialize_name = $this->caller_objetc_id . "-post";
+        $saved_post_data = \k1lib\common\unserialize_var($serialize_name);
+
+        if (parent::catch_post_data()) {
+            \k1lib\common\serialize_var($this->post_incoming_array, $serialize_name);
+            if (key_exists($this->caller_objetc_id . "-page", $_GET)) {
+                $_GET[$this->caller_objetc_id . "-page"] = 1;
+            }
+            return TRUE;
+        } else {
+            if (!empty($saved_post_data)) {
+                if (key_exists($this->caller_objetc_id . "-page", $_GET)) {
+                    $this->post_incoming_array = $saved_post_data;
+                    return TRUE;
+                } else {
+                    \k1lib\common\unset_serialize_var($serialize_name);
+                }
+            }
+            return FALSE;
+        }
     }
 
 }

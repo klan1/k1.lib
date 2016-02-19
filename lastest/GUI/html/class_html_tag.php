@@ -83,7 +83,7 @@ namespace k1lib\html {
         public function append_child($chlid_object) {
             $this->childs[] = $chlid_object;
             $this->has_child = TRUE;
-            return $this;
+            return $chlid_object;
         }
 
         /**
@@ -309,6 +309,7 @@ namespace k1lib\html {
     }
 
     class html_tag extends html_tag_base {
+
         /**
          * 
          * @param string $class
@@ -320,7 +321,19 @@ namespace k1lib\html {
             $this->append_child($new);
             return $new;
         }
-        
+
+        /**
+         * 
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\p_tag
+         */
+        function &append_p($value = "", $class = "", $id = "") {
+            $new = new p_tag($value, $class, $id);
+            $this->append_child($new);
+            return $new;
+        }
+
         /**
          * 
          * @param string $href

@@ -97,18 +97,22 @@ function make_guide_array($data_array) {
  */
 function clean_array_with_guide($array_to_clean, $guide_array) {
     $new_array = [];
-    foreach ($guide_array as $guide_key => $guide_value) {
-        if (array_key_exists($guide_key, $array_to_clean)) {
-            $new_array[$guide_key] = $array_to_clean[$guide_key];
+    if (!empty($guide_array)) {
+        foreach ($guide_array as $guide_key => $guide_value) {
+            if (array_key_exists($guide_key, $array_to_clean)) {
+                $new_array[$guide_key] = $array_to_clean[$guide_key];
+            }
         }
-    }
 //
 //    foreach ($array_to_clean as $clean_key => $clean_value) {
 //        if (!isset($guide_array[$clean_key])) {
 //            unset($array_to_clean[$clean_key]);
 //        }
 //    }
-    return $new_array;
+        return $new_array;
+    } else {
+        return $array_to_clean;
+    }
 }
 
 function organize_array_with_guide($array_to_organize, $guide_array) {

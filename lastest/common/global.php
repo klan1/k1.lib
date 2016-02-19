@@ -14,9 +14,12 @@
  * @param mixed $var
  * @param boolean $var_dump
  */
-function d($var, $var_dump = FALSE) {
+function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
 //    trigger_error(__FILE__, E_USER_ERROR);
     $msg = ( ($var_dump) ? var_export($var, TRUE) : print_r($var, TRUE) );
+    if ($trigger_notice) {
+        trigger_error($msg, E_USER_NOTICE);
+    }
     if (defined("\k1app\APP_MODE") && (\k1app\APP_MODE == "shell")) {
         echo "\n{$msg}\n";
     } else {

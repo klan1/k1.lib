@@ -112,15 +112,18 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
      */
     public function do_row_stats() {
         $div_stats = new \k1lib\html\div_tag("k1-crudlexs-table-stats");
-        $div_stats->set_value(
-                sprintf(
-                        $this->stat_msg
-                        , $this->total_rows_filter
-                        , $this->total_rows
-                        , $this->first_row_number
-                        , $this->last_row_number
-                )
-        );
+        if (($this->db_table_data)) {
+
+            $div_stats->set_value(
+                    sprintf(
+                            $this->stat_msg
+                            , $this->total_rows_filter
+                            , $this->total_rows
+                            , $this->first_row_number
+                            , $this->last_row_number
+                    )
+            );
+        }
         return $div_stats;
     }
 
@@ -221,7 +224,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             }
             $label = (new \k1lib\html\label_tag("Show", $this->get_object_id() . "-page-rows-goto"));
             $label->set_attrib("style", "display:inline");
-            $label->append_to($div_page_chooser);            
+            $label->append_to($div_page_chooser);
             $num_rows_selector->append_to($div_page_chooser);
         }
         return $div_pagination;

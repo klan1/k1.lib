@@ -17,12 +17,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
     /**
      *
-     * @var Boolean
-     */
-    protected $do_table_field_name_encrypt = FALSE;
-
-    /**
-     *
      * @var Array
      */
     protected $post_validation_errors = [];
@@ -112,12 +106,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
         if (!empty($this->post_incoming_array)) {
             if ($this->do_table_field_name_encrypt) {
-                $new_post_data = [];
-                foreach ($this->post_incoming_array as $field => $value) {
-                    $new_post_data[$this->decrypt_field_name($field)] = $value;
-                }
-                $this->post_incoming_array = $new_post_data;
-                unset($new_post_data);
+            $new_post_data = [];
+            foreach ($this->post_incoming_array as $field => $value) {
+                $new_post_data[$this->decrypt_field_name($field)] = $value;
+            }
+            $this->post_incoming_array = $new_post_data;
+            unset($new_post_data);
             }
             $this->post_incoming_array = \k1lib\common\clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
             return TRUE;
@@ -221,16 +215,14 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     }
 
     public function encrypt_field_name($field_name) {
+        if ($this->do_table_field_name_encrypt) {
 // first, we need to know in what position is the field on the table design.
-        if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
-            $rnd = $_SESSION['CRUDLEXS-RND'];
-        } else {
-            $rnd = rand(5000, 10000);
-            $_SESSION['CRUDLEXS-RND'] = $rnd;
-        }
-        if (!$this->do_table_field_name_encrypt) {
-            return $field_name;
-        } else {
+            if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
+                $rnd = $_SESSION['CRUDLEXS-RND'];
+            } else {
+                $rnd = rand(5000, 10000);
+                $_SESSION['CRUDLEXS-RND'] = $rnd;
+            }
             $field_pos = 0;
             foreach ($this->db_table->get_db_table_config() as $field => $config) {
                 if ($field == $field_name) {
@@ -244,6 +236,8 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 //            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos);
             $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos + $rnd);
             return $new_field_name;
+        } else {
+            return($field_name);
         }
     }
 
@@ -272,7 +266,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     public function enable_foundation_form_check() {
         $this->enable_foundation_form_check = TRUE;
     }
-
+    /**
+     * @return \k1lib\html\div_tag
+     */
     public function do_html_object() {
         if (!empty($this->db_table_data_filtered)) {
             $this->div_container->set_attrib("class", "k1-crudlexs-create");
@@ -301,7 +297,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $possible_read_template = "create-templates/" . $this->db_table->get_db_table_name();
             $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
             $html = "";
-            if ($template_file_path) {
+            if ($template_file_path && $this->use_create_custom_template) {
                 ob_start();
                 include $template_file_path;
                 $html = ob_get_contents();

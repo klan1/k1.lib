@@ -21,6 +21,9 @@ class board_update extends board_base implements board_interface {
         }
     }
 
+    /**
+     * @return \k1lib\html\div_tag|boolean
+     */
     public function start_board() {
         if (!$this->is_enabled) {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
@@ -32,10 +35,10 @@ class board_update extends board_base implements board_interface {
                 $this->update_object->set_back_url(\k1lib\urlrewrite\get_back_url());
 
                 $this->update_object->set_do_table_field_name_encrypt(TRUE);
-                $this->controller_object->db_table->set_db_table_show_rule("show-edit");
+                $this->controller_object->db_table->set_db_table_show_rule("show-update");
 
                 $this->data_loaded = $this->update_object->load_db_table_data();
-                return TRUE;
+                return $this->board_content_div;
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
                 return FALSE;
@@ -45,6 +48,9 @@ class board_update extends board_base implements board_interface {
         }
     }
 
+    /**
+     * @return \k1lib\html\div_tag|boolean
+     */
     public function exec_board($do_echo = TRUE) {
         if (!$this->is_enabled) {
             return FALSE;
@@ -69,16 +75,19 @@ class board_update extends board_base implements board_interface {
                 }
                 $this->update_object->apply_label_filter();
                 $this->update_object->insert_inputs_on_data_row();
-                $update_object_div = $this->update_object->do_html_object();
-                $update_object_div->append_to($this->board_content_div);
+                $this->update_object->set_use_create_custom_template();
+
+                $this->update_object->do_html_object()->append_to($this->board_content_div);
                 if ($do_echo) {
                     $this->board_content_div->generate_tag(TRUE);
                     return TRUE;
                 } else {
-                    return $update_object_div;
+                    return $this->board_content_div;
                 }
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
+                $this->update_object->make_invalid();
+                $this->is_enabled = FALSE;
                 return FALSE;
             }
         }

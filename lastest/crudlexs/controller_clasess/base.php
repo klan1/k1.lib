@@ -248,6 +248,10 @@ class controller_base {
         return url_manager::set_url_rewrite_var($next_url_level, $controller_url_value, FALSE);
     }
 
+    /**
+     * @param string $specific_board_to_init 
+     * @return \k1lib\html\div_tag|boolean
+     */
     public function init_board($specific_board_to_init = NULL) {
         if (empty($specific_board_to_init)) {
             $specific_board_to_init = ($this->controller_board_url_value) ? $this->controller_board_url_value : "no-url";
@@ -369,6 +373,12 @@ class controller_base {
         }
     }
 
+    /**
+     * 
+     * @param boolean $do_echo
+     * @param string $specific_board_to_exec
+     * @return \k1lib\html\div_tag
+     */
     public function exec_board($do_echo = TRUE, $specific_board_to_exec = NULL) {
 
         if ($this->board_started) {
