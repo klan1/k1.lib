@@ -312,6 +312,9 @@ class url_manager {
 
         $hash = strstr($url, "#");
         $url = str_replace($hash, "", $url);
+
+        $url_only = strstr($url, "?");
+        $url = str_replace($url_only, "", $url);
         /**
          * Chat all _GET vars
          */
@@ -365,7 +368,6 @@ class url_manager {
             $get_vars_on_text = "";
         }
         $url_to_return = $url . $get_vars_on_text . $hash;
-
         return $url_to_return;
     }
 

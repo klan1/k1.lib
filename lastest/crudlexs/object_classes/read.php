@@ -36,7 +36,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $possible_read_template = "read-templates/" . $this->db_table->get_db_table_name();
             $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
             $html = "";
-            if ($template_file_path) {
+            if ($template_file_path && $this->use_read_custom_template) {
                 ob_start();
                 include $template_file_path;
                 $html = ob_get_contents();

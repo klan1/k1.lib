@@ -19,13 +19,13 @@ use k1lib\sql\local_cache;
  * @param array $table
  * @return array
  */
-function get_db_table_config(\PDO $db, $table, $recursion = 1) {
+function get_db_table_config(\PDO $db, $table, $recursion = TRUE) {
 
 // SQL to get info about a table
     $columns_info_query = "SHOW FULL COLUMNS FROM {$table}";
     $columns_info_result = sql_query($db, $columns_info_query, TRUE);
-    if (empty($columns_info_query)) {
-        trigger_error("The table '$table' do not exist", E_USER_WARNING);
+    if (empty($columns_info_result)) {
+        trigger_error("The table '$table' do not exist", E_USER_NOTICE);
         return FALSE;
     }
     $dsn_db = get_db_database_name($db);
@@ -80,8 +80,8 @@ AND table_name = '{$table}'";
                 if (!empty($info_row['POSITION_IN_UNIQUE_CONSTRAINT']) && ($info_row['COLUMN_NAME'] == $field_name)) {
                     $field_config['refereced_table_name'] = $info_row['REFERENCED_TABLE_NAME'];
                     $field_config['refereced_column_name'] = $info_row['REFERENCED_COLUMN_NAME'];
-                    if ($recursion > 0) {
-                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion - 1);
+                    if ($recursion) {
+                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion);
                         $field_config['refereced_column_config'] = $referenced_table_config[$info_row['REFERENCED_COLUMN_NAME']];
                     } else {
                         $field_config['refereced_column_config'] = FALSE;
@@ -223,7 +223,7 @@ AND table_name = '{$table}'";
         if (!isset($field_config['placeholder'])) {
             $field_config['placeholder'] = NULL;
         }
-// NEW 2016: PLACEHOLDER
+// NEW 2016: FILE TYPE
         if (!isset($field_config['file-type'])) {
             $field_config['file-type'] = NULL;
         }
@@ -254,27 +254,24 @@ AND table_name = '{$table}'";
         /**
          * Show rules
          */
-        $show_array_attribs[] = 'show-table';
-        $show_array_attribs[] = 'show-new';
-        $show_array_attribs[] = 'show-edit';
-        $show_array_attribs[] = 'show-view';
+        $show_array_attribs[] = 'show-create';
+        $show_array_attribs[] = 'show-read';
+        $show_array_attribs[] = 'show-update';
+        $show_array_attribs[] = 'show-list';
         // 2016 with NEW RULES !!
-        $show_array_attribs[] = 'show-search';
         $show_array_attribs[] = 'show-export';
-
-//there is not show-all defined
-        if (!isset($field_config['show-all'])) {
-            //FIX: should be FALSE
-            $field_config['show-all'] = TRUE;
-        }
         foreach ($show_array_attribs as $show_attrib) {
             if (!isset($field_config[$show_attrib])) {
-                if ($field_config['show-all']) {
-                    $field_config[$show_attrib] = TRUE;
-                } else {
-                    $field_config[$show_attrib] = FALSE;
-                }
+                $field_config[$show_attrib] = TRUE;
             }
+        }
+        // NEW 2016: show-search - Default as the table option
+        if (!isset($field_config['show-search'])) {
+            $field_config['show-search'] = (isset($field_config['show-list'])) ? $field_config['show-list'] : FALSE;
+        }
+        // NEW 2016: show-related - Default as the table option
+        if (!isset($field_config['show-related'])) {
+            $field_config['show-related'] = (isset($field_config['show-list'])) ? $field_config['show-list'] : FALSE;
         }
 //table name for each one, yes! repetitive, but necesary in some cases where i dnot receive the table name !!
         $field_config['table'] = $table;

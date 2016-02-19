@@ -40,8 +40,8 @@ function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE)
             $value = urldecode($value);
         }
         if (\json_decode($value) === NULL) {
-            $replace = array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"');
-            $search = array("\\", "\0", "\n", "\r", "\x1a", "'", '"');
+            $replace = array("\\\\", "\\0", "\Z", "\'", '\"');
+            $search = array("\\", "\0", "\x1a", "'", '"');
             $value = str_replace($search, $replace, $value);
 //            $value = mysql_escape_string($value);
         }

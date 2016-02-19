@@ -143,6 +143,7 @@ namespace k1lib\html {
             $this->append_child($new);
             return $new;
         }
+
         /**
          * 
          * @param string $class
@@ -389,6 +390,23 @@ namespace k1lib\html {
 
     }
 
+    class textarea_tag extends html_tag {
+
+        /**
+         * 
+         * @param string $name
+         * @param string $class
+         * @param string $id
+         */
+        function __construct($name, $class = "", $id = "") {
+            parent::__construct("textarea", FALSE);
+            $this->set_attrib("name", $name);
+            $this->set_attrib("class", $class, TRUE);
+            $this->set_attrib("id", $id);
+        }
+
+    }
+
     class label_tag extends html_tag {
 
         /**
@@ -474,6 +492,12 @@ namespace k1lib\html {
             $this->set_attrib("target", "_self");
         }
 
+        /**
+         * 
+         * @param string $label
+         * @param boolean $just_return
+         * @return \k1lib\html\input_tag
+         */
         function append_submit_button($label = "Enviar", $just_return = FALSE) {
             $button = new input_tag("submit", "submit-it", $label, "button success");
             if (!$just_return) {
@@ -489,10 +513,11 @@ namespace k1lib\html {
      */
     class p_tag extends html_tag {
 
-        function __construct($value = "", $class = "") {
+        function __construct($value = "", $class = "", $id = "") {
             parent::__construct("p", FALSE);
             $this->set_value($value);
             $this->set_attrib("class", $class);
+            $this->set_attrib("id", $id);
         }
 
     }

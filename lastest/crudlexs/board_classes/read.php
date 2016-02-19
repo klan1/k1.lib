@@ -18,6 +18,8 @@ class board_read extends board_base implements board_interface {
     protected $update_enable = TRUE;
     protected $delete_enable = TRUE;
     protected $use_label_as_title_enabled = TRUE;
+    protected $related_use_rows_key_text = TRUE;
+    protected $related_use_show_rule = "show-related";
 
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
@@ -27,6 +29,9 @@ class board_read extends board_base implements board_interface {
         }
     }
 
+    /**
+     * @return \k1lib\html\div_tag|boolean
+     */
     public function start_board() {
         if (!$this->is_enabled) {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
@@ -66,8 +71,8 @@ class board_read extends board_base implements board_interface {
                     $delete_link->append_to($this->board_content_div);
                 }
 
-                $this->data_loaded = $this->read_object->load_db_table_data('show-view');
-                return TRUE;
+                $this->data_loaded = $this->read_object->load_db_table_data('show-read');
+                return $this->board_content_div;
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
                 return FALSE;
@@ -77,6 +82,9 @@ class board_read extends board_base implements board_interface {
         }
     }
 
+    /**
+     * @return \k1lib\html\div_tag|boolean
+     */
     public function exec_board($do_echo = TRUE) {
         if (!$this->is_enabled) {
             return FALSE;
@@ -93,6 +101,7 @@ class board_read extends board_base implements board_interface {
                 }
                 $this->read_object->apply_label_filter();
                 $this->read_object->apply_field_label_filter();
+                $this->read_object->set_use_read_custom_template();
                 if (\k1lib\forms\file_uploads::is_enabled()) {
                     $this->read_object->apply_file_uploads_filter();
                 }
@@ -102,16 +111,18 @@ class board_read extends board_base implements board_interface {
                 $span_tag = new \k1lib\html\span_tag("key-field");
                 $this->read_object->apply_html_tag_on_field_filter($span_tag, \k1lib\crudlexs\crudlexs_base::USE_KEY_FIELDS);
 
-                $read_object_div = $this->read_object->do_html_object();
-                $read_object_div->append_to($this->board_content_div);
+                $this->read_object->do_html_object()->append_to($this->board_content_div);
+
                 if ($do_echo) {
                     $this->board_content_div->generate_tag(TRUE);
                     return TRUE;
                 } else {
-                    return $read_object_div;
+                    return $this->board_content_div;
                 }
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
+                $this->read_object->make_invalid();
+                $this->is_enabled = FALSE;
                 return FALSE;
             }
         } else {
@@ -119,6 +130,25 @@ class board_read extends board_base implements board_interface {
         }
     }
 
+    function set_related_use_rows_key_text($related_use_rows_key_text) {
+        $this->related_use_rows_key_text = $related_use_rows_key_text;
+    }
+
+    function set_related_use_show_rule($related_use_show_rule) {
+        $this->related_use_show_rule = $related_use_show_rule;
+    }
+
+    /**
+     * 
+     * @param \k1lib\crudlexs\class_db_table $db_table
+     * @param array $field_links_array
+     * @param string $title
+     * @param string $board_root
+     * @param string $board_create
+     * @param string $board_read
+     * @param boolean $show_create
+     * @return \k1lib\html\div_tag|boolean
+     */
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $show_create = TRUE) {
 
         $detail_div = new \k1lib\html\div_tag();
@@ -127,7 +157,6 @@ class board_read extends board_base implements board_interface {
             $current_row_keys_text = $this->controller_object->board_read_object->read_object->get_row_keys_text();
             $current_row_keys_text_auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $current_row_keys_text);
 
-            $current_row_keys_array = $this->controller_object->board_read_object->read_object->get_row_keys_array();
 
             $back_url = urlencode($_SERVER['REQUEST_URI']);
 
@@ -135,9 +164,12 @@ class board_read extends board_base implements board_interface {
              * Clients list
              */
             if ($db_table->get_state()) {
-                $db_table->set_query_filter($current_row_keys_array, TRUE);
+                if ($this->related_use_rows_key_text) {
+                    $current_row_keys_array = $this->controller_object->board_read_object->read_object->get_row_keys_array();
+                    $db_table->set_query_filter($current_row_keys_array, TRUE, FALSE);
+                }
 
-                $detail_div->set_attrib("class", "row k1app-related-list {$db_table->get_db_table_name()}-realted-list");
+                $detail_div->set_attrib("class", "k1app-related-list {$db_table->get_db_table_name()}-realted-list");
 
                 $related_title = new \k1lib\html\h4_tag("sub-title");
                 $related_title->set_value($title);
@@ -149,7 +181,7 @@ class board_read extends board_base implements board_interface {
                 }
 
                 $related_table_list = new \k1lib\crudlexs\listing($db_table, FALSE);
-                if ($related_table_list->load_db_table_data("show-table")) {
+                if ($related_table_list->load_db_table_data($this->related_use_show_rule)) {
 
                     $related_table_list->apply_label_filter();
                     $related_table_list->apply_field_label_filter();

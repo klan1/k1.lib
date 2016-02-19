@@ -89,10 +89,12 @@ class class_db_table {
         }
     }
 
-    public function set_custom_sql_query($sql_query) {
+    public function set_custom_sql_query($sql_query, $override_db_table_config = FALSE) {
         $this->custom_sql_query_code = $sql_query;
-        $this->db_table_config = \k1lib\sql\get_db_tables_config_from_sql($this->db, $this->custom_sql_query_code);
-//        return $this->custom_query_table_config;
+        if ($override_db_table_config) {
+            $this->db_table_config = \k1lib\sql\get_db_tables_config_from_sql($this->db, $this->custom_sql_query_code);
+        }
+//        return $this->db_table_config;
     }
 
     function get_db_table_name() {

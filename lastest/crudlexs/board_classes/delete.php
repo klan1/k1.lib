@@ -24,14 +24,19 @@ class board_delete extends board_base implements board_interface {
         $this->redirect_url = $redirect_url;
     }
 
-    public function start_board() {
+    /**
+     * @return \k1lib\html\div_tag|boolean
+     */ public function start_board() {
         if (!$this->is_enabled) {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
         }
-        return TRUE;
+        return $this->board_content_div;
     }
 
+    /**
+     * @return boolean
+     */
     public function exec_board() {
         if (!$this->is_enabled) {
             return FALSE;
@@ -49,6 +54,7 @@ class board_delete extends board_base implements board_interface {
                 }
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
+                $this->is_enabled = FALSE;
                 return FALSE;
             }
         }

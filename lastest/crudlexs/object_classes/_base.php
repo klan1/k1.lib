@@ -169,6 +169,16 @@ class crudlexs_base_with_data extends crudlexs_base {
     protected $force_file_uploads_as_links = TRUE;
 
     /**
+     * @var boolean
+     */
+    protected $use_create_custom_template = FALSE;
+
+    /**
+     * @var boolean
+     */
+    protected $use_read_custom_template = FALSE;
+
+    /**
      * Always to create the object you must have a valid DB Table object already 
      * @param \k1lib\crudlexs\class_db_table $db_table DB Table object
      */
@@ -282,13 +292,13 @@ class crudlexs_base_with_data extends crudlexs_base {
 
     public function apply_label_filter() {
         if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
-            trigger_error(__METHOD__ . " - Can't work with an empty result", E_USER_WARNING);
+//            trigger_error(__METHOD__ . " - Can't work with an empty result", E_USER_WARNING);
             return FALSE;
         } else {
             $db_table_config = $this->db_table->get_db_table_config();
             if (isset($this->db_table_data[0]) && (count($this->db_table_data[0]) > 0)) {
                 foreach ($this->db_table_data[0] as $index => $field_name) {
-                    $this->db_table_data_filtered[0][$index] = $db_table_config[$field_name]['label'];
+                    $this->db_table_data_filtered[0][$index] = (isset($db_table_config[$field_name]['label'])) ? $db_table_config[$field_name]['label'] : $field_name;
                 }
             } else {
                 return FALSE;
@@ -553,6 +563,22 @@ class crudlexs_base_with_data extends crudlexs_base {
                 unset($this->db_table_data_filtered[$row][$field]);
             }
         }
+    }
+
+    function get_use_create_custom_template() {
+        return $this->use_create_custom_template;
+    }
+
+    function get_use_read_custom_template() {
+        return $this->use_read_custom_template;
+    }
+
+    function set_use_create_custom_template($use_create_custom_template = TRUE) {
+        $this->use_create_custom_template = $use_create_custom_template;
+    }
+
+    function set_use_read_custom_template($use_read_custom_template = TRUE) {
+        $this->use_read_custom_template = $use_read_custom_template;
     }
 
 }
