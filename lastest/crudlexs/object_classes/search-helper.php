@@ -30,8 +30,9 @@ class search_helper extends creating {
         $this->set_object_id(get_class($this));
         $this->set_css_class(get_class($this));
 
-        creating_strings::$button_submit = search_helper_strings::$button_search;
-        creating_strings::$select_choose_option = search_helper_strings::$select_choose_option;
+        creating_strings::$button_submit = search_helper_strings::$button_submit;
+        creating_strings::$button_cancel = search_helper_strings::$button_cancel;
+
         $this->show_cancel_button = FALSE;
 
         $this->set_do_table_field_name_encrypt(TRUE);
@@ -80,12 +81,5 @@ class search_helper extends creating {
             return FALSE;
         }
     }
-
-}
-
-class search_helper_strings {
-
-    static $button_search = "Search";
-    static $select_choose_option = "Select an option...";
 
 }

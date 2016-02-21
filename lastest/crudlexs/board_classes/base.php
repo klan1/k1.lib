@@ -9,6 +9,8 @@ interface board_interface {
     public function start_board();
 
     public function exec_board();
+
+    public function finish_board();
 }
 
 class board_base {
@@ -47,7 +49,13 @@ class board_base {
      *
      * @var string
      */
-    protected $user_levels_allowed = null;
+    protected $user_levels_allowed = NULL;
+
+    /**
+     *
+     * @var mixed 
+     */
+    protected $sql_action_result = NULL;
 
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         $this->controller_object = $controller_object;
@@ -120,18 +128,5 @@ class board_base {
             }
         }
     }
-
-}
-
-class board_base_strings {
-
-    static $alert_board = "Alert";
-    static $error_board = "Error message";
-    static $error_board_disabled = "This board is disabled or you are not allowed to use it";
-    static $error_mysql = "DB error";
-    static $error_mysql_table_not_opened = "Can not open the table.";
-    static $error_mysql_table_no_data = "Empty query";
-    static $error_url_keys_no_auth = "Keys are not valid, so, you can't continue";
-    static $error_url_keys_no_keys_text = "You can't use this board without the right url key text";
 
 }

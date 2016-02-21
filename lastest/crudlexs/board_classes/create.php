@@ -62,26 +62,27 @@ class board_create extends board_base implements board_interface {
                             $back_url = (isset($_GET['back-url'])) ? "&back-url=" . urlencode(\k1lib\urlrewrite\get_back_url()) : "";
                             $url_to_go = "{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/%row_keys%/?auth-code=%auth_code%{$back_url}";
                         }
-                        if (!$this->create_object->do_insert($url_to_go)) {
-                            \k1lib\common\show_message(board_create_strings::$error_no_inserted, board_base_strings::$error_mysql, "alert");
-                        }
+                        $this->sql_action_result = $this->create_object->do_insert($url_to_go, FALSE);
                     } else {
                         \k1lib\common\show_message(board_create_strings::$error_form, board_base_strings::$alert_board, "warning");
                     }
                 }
             }
-            $this->create_object->apply_label_filter();
-            $this->create_object->insert_inputs_on_data_row();
+            if (empty($this->sql_action_result)) {
 
-            $this->create_object->set_use_create_custom_template();
+                $this->create_object->apply_label_filter();
+                $this->create_object->insert_inputs_on_data_row();
 
-            $this->create_object->do_html_object()->append_to($this->board_content_div);
+                $this->create_object->set_use_create_custom_template();
 
-            if ($do_echo) {
-                $this->board_content_div->generate_tag(TRUE);
-                return TRUE;
-            } else {
-                return $this->board_content_div;
+                $this->create_object->do_html_object()->append_to($this->board_content_div);
+
+                if ($do_echo) {
+                    $this->board_content_div->generate_tag(TRUE);
+                    return TRUE;
+                } else {
+                    return $this->board_content_div;
+                }
             }
         } else {
             \k1lib\common\show_message(board_create_strings::$error_no_blank_data, board_base_strings::$alert_board, "alert");
@@ -91,12 +92,12 @@ class board_create extends board_base implements board_interface {
         }
     }
 
-}
-
-class board_create_strings {
-
-    static $error_no_inserted = "Data hasn't been inserted.";
-    static $error_form = "Please correct the marked errors.";
-    static $error_no_blank_data = "The blank data couldn't be created.";
+    public function finish_board() {
+        if ($this->sql_action_result !== FALSE && $this->sql_action_result !== NULL) {
+            \k1lib\html\html_header_go($this->sql_action_result);
+        } elseif ($this->sql_action_result === FALSE) {
+            \k1lib\common\show_message(board_create_strings::$error_no_inserted, board_base_strings::$error_mysql, "alert");
+        }
+    }
 
 }

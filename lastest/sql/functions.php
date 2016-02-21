@@ -120,7 +120,7 @@ AND table_name = '{$table}'";
             $mysql_max_length_defaults = array(
                 'char' => 255,
                 'varchar' => 255,
-                'text' => 9999,
+                'text' => (10 * 1204 * 1204), // 10485760 bytes or 110 Megabytes
                 'date' => 10,
                 'time' => 8,
                 'datetime' => 19,
@@ -143,7 +143,7 @@ AND table_name = '{$table}'";
         $mysql_default_validation = array(
             'char' => 'mixed-symbols',
             'varchar' => 'mixed-symbols',
-            'text' => 'mixed-symbols',
+            'text' => 'html',
             'date' => 'date',
             'time' => 'time',
             'datetime' => 'datetime',
@@ -381,14 +381,13 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
                 } else {
                     $keys_where_condition = table_keys_to_where_condition($table_keys, $db_table_config);
                 }
-                $data_string = array_to_sql_set($data);
+                $data_string = array_to_sql_set($db, $data);
                 $update_sql = "UPDATE $table SET $data_string WHERE $keys_where_condition;";
 //                $controller_errors[] = $update_sql;
 //                $controller_errors[] = print_r($data, TRUE);
             } else {
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
-//            d($update_sql,true);
             $update = $db->exec($update_sql) or ( trigger_error("Error on Update stament : " . $db->errorInfo()[2], E_USER_WARNING));
             if ($update) {
                 return $update;
@@ -409,7 +408,7 @@ function sql_insert(\PDO $db, $table, $data) {
     if (\k1lib\db\handler::is_enabled()) {
         if (is_array($data)) {
             if (!@is_array($data[0])) {
-                $data_string = array_to_sql_set($data);
+                $data_string = array_to_sql_set($db, $data);
                 $insert_sql = "INSERT INTO $table SET $data_string;";
             } else {
                 $data_string = array_to_sql_values($data);
@@ -510,39 +509,66 @@ function array_to_sql_values($array) {
  * @param Bolean $for_where_stament If TRUE will join the pairs with AND, if not, will use coma instead
  * @return type
  */
-function array_to_sql_set($array, $use_nulls = true, $for_where_stament = FALSE, $precise = TRUE) {
+function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_stament = FALSE, $precise = TRUE) {
     if (is_array($array) && (count($array) >= 1)) {
-        $first = TRUE;
-        $data_string = "";
+
+        /**
+         * NEW CODE 2016
+         */
+        $pairs = [];
         foreach ($array as $field => $value) {
             if ($use_nulls === FALSE && $value === NULL) {
                 continue;
             }
-
-            //put the , to the string
-            if (!$first) {
-                if ($for_where_stament) {
-                    $data_string .= " AND ";
-                } else {
-                    $data_string .= ", ";
-                }
-            } else {
-                $first = FALSE;
-            }
-            $field = trim($field);
-            $value = \k1lib\forms\check_single_incomming_var($value);
             if ($precise) {
                 if ($value === NULL) {
-                    $data_string .= "`$field` = NULL";
-                } elseif (!is_int($value) && !is_float($value)) {
-                    $data_string .= "`$field` = '{$value}'";
+                    $pairs[] = "`{$field}`= NULL";
                 } else {
-                    $data_string .= "`{$field}` = {$value}";
+                    $pairs[] = "`{$field}`= " . $db->quote($value);
                 }
             } else {
-                $data_string .= "`{$field}` LIKE '%{$value}%'";
+                $pairs[] = "`{$field}` LIKE '%" . $db->quote($value) . "%'";
             }
         }
+        if ($for_where_stament) {
+            $glue = " AND ";
+        } else {
+            $glue = ", ";
+        }
+        $data_string = implode($glue, $pairs);
+
+        /**
+         * OLD OLD CODE FROM 2012 !!
+         */
+//        foreach ($array as $field => $value) {
+//            if ($use_nulls === FALSE && $value === NULL) {
+//                continue;
+//            }
+//
+//            //put the , to the string
+//            if (!$first) {
+//                if ($for_where_stament) {
+//                    $data_string .= " AND ";
+//                } else {
+//                    $data_string .= ", ";
+//                }
+//            } else {
+//                $first = FALSE;
+//            }
+//            $field = trim($field);
+//            $value = \k1lib\forms\check_single_incomming_var($value);
+//            if ($precise) {
+//                if ($value === NULL) {
+//                    $data_string .= "`$field` = NULL";
+//                } elseif (!is_int($value) && !is_float($value)) {
+//                    $data_string .= "`$field` = '{$value}'";
+//                } else {
+//                    $data_string .= "`{$field}` = {$value}";
+//                }
+//            } else {
+//                $data_string .= "`{$field}` LIKE '%{$value}%'";
+//            }
+//        }
     } else {
         trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
         exit();
@@ -827,7 +853,7 @@ function table_keys_to_where_condition(&$row_data, $db_table_config, $use_table_
 }
 
 function sql_del_row(\PDO $db, $table, $key_array) {
-    $key_sql_set = array_to_sql_set($key_array, TRUE, TRUE);
+    $key_sql_set = array_to_sql_set($db, $key_array, TRUE, TRUE);
     $sql = "DELETE FROM `$table` WHERE $key_sql_set";
     if ($db->exec($sql) !== FALSE) {
         return TRUE;

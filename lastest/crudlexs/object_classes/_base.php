@@ -1,6 +1,8 @@
 <?php
 
 namespace k1lib\crudlexs;
+use \k1lib\common_strings as common_strings;
+
 
 interface crudlexs_base_interface {
 
@@ -139,6 +141,7 @@ class crudlexs_base_with_data extends crudlexs_base {
      * @var String
      */
     protected $auth_code = null;
+    protected $auth_code_personal = null;
     protected $link_on_field_filter_applied = false;
     protected $back_url;
     protected $row_keys_text = null;
@@ -190,19 +193,22 @@ class crudlexs_base_with_data extends crudlexs_base {
             if (!$this->skip_auto_code_verification) {
                 if (isset($_GET['auth-code'])) {
                     $auth_code = $_GET['auth-code'];
-                    $auth_expected = md5(\k1lib\session\session_plain::get_user_hash() . $this->row_keys_text);
-                    if ($auth_code === $auth_expected) {
+                    $auth_expected = md5(\k1lib\K1MAGIC::get_value() . $this->row_keys_text);
+                    $auth_personal_expected = md5(\k1lib\session\session_plain::get_user_hash() . $this->row_keys_text);
+
+                    if (($auth_code === $auth_expected) || ($auth_code === $auth_personal_expected)) {
                         parent::__construct($db_table);
-                        $this->auth_code = $auth_code;
+                        $this->auth_code = $auth_expected;
+                        $this->auth_code_personal = $auth_personal_expected;
                         $this->row_keys_array = \k1lib\sql\table_url_text_to_keys($this->row_keys_text, $this->db_table->get_db_table_config());
                         $this->db_table->set_query_filter($this->row_keys_array, TRUE);
                         $this->is_valid = TRUE;
                     } else {
-                        \k1lib\common\show_message("Bad, bad! auth code", "Error", "alert");
+                        \k1lib\common\show_message(object_base_strings::$error_bad_auth_code, common_strings::$error, "alert");
                         $this->is_valid = FALSE;
                     }
                 } else {
-                    \k1lib\common\show_message("Auth code can't be empty", "Error", "alert");
+                    \k1lib\common\show_message(object_base_strings::$alert_empty_auth_code, common_strings::$alert, "alert");
                     $this->is_valid = FALSE;
                 }
             } else {
@@ -218,7 +224,15 @@ class crudlexs_base_with_data extends crudlexs_base {
     }
 
     public function set_auth_code($row_keys_text) {
-        $this->auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $row_keys_text);
+        $this->auth_code = md5(\k1lib\K1MAGIC::get_value() . $row_keys_text);
+    }
+
+    public function get_auth_code_personal() {
+        return $this->auth_code_personal;
+    }
+
+    public function set_auth_code_personal($row_keys_text) {
+        $this->auth_code_personal = md5(\k1lib\session\session_plain::get_user_hash() . $row_keys_text);
     }
 
     public function get_do_table_field_name_encrypt() {
@@ -259,7 +273,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                     continue;
                 }
                 if (count($row_array) !== $headers_count) {
-                    trigger_error(__METHOD__ . "The array sended is not compatible with this method", E_USER_WARNING);
+                    trigger_error(__METHOD__ . " " . object_base_strings::$error_array_not_compatible, E_USER_WARNING);
                     return FALSE;
                 }
             }
@@ -267,7 +281,7 @@ class crudlexs_base_with_data extends crudlexs_base {
             $this->db_table_data_filtered = $data_array;
             return TRUE;
         }
-        trigger_error(__METHOD__ . "The array sended is not compatible with this method", E_USER_WARNING);
+        trigger_error(__METHOD__ . " " . object_base_strings::$error_array_not_compatible, E_USER_WARNING);
         return FALSE;
     }
 
@@ -279,14 +293,14 @@ class crudlexs_base_with_data extends crudlexs_base {
                     continue;
                 }
                 if (count($row_array) !== $headers_count) {
-                    trigger_error(__METHOD__ . "The array sended is not compatible with this method", E_USER_WARNING);
+                    trigger_error(__METHOD__ . " " . object_base_strings::$error_array_not_compatible, E_USER_WARNING);
                     return FALSE;
                 }
             }
             $this->db_table_data_keys = $data_array;
             return TRUE;
         }
-        trigger_error(__METHOD__ . "The array sended is not compatible with this method", E_USER_WARNING);
+        trigger_error(__METHOD__ . " " . object_base_strings::$error_array_not_compatible, E_USER_WARNING);
         return FALSE;
     }
 
@@ -310,7 +324,7 @@ class crudlexs_base_with_data extends crudlexs_base {
     public function apply_field_label_filter() {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
-                trigger_error(__METHOD__ . "Can't work without table data loaded first", E_USER_WARNING);
+                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_WARNING);
                 return FALSE;
             } else {
                 $table_config_array = $this->db_table->get_db_table_config();
@@ -347,7 +361,7 @@ class crudlexs_base_with_data extends crudlexs_base {
     public function apply_file_uploads_filter() {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
-                trigger_error(__METHOD__ . "Can't work without table data loaded first", E_USER_WARNING);
+                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_WARNING);
                 return FALSE;
             } else {
                 $table_config_array = $this->db_table->get_db_table_config();
@@ -363,7 +377,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                             case "image":
 //                                $div_container = new \k1lib\html\div_tag();
 
-                                $img_tag = new \k1lib\html\img_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field_value%");
+                                $img_tag = new \k1lib\html\img_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field-value%");
                                 $img_tag->set_attrib("class", "k1-data-img", TRUE);
 
 //                                $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/", "remove this file");
@@ -373,7 +387,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                                 return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
 
                             default:
-                                $link_tag = new \k1lib\html\a_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field_value%", "%field_value%", "_blank");
+                                $link_tag = new \k1lib\html\a_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field-value%", "%field-value%", "_blank");
                                 $link_tag->set_attrib("class", "k1-data-link", TRUE);
                                 return $this->apply_html_tag_on_field_filter($link_tag, array_keys($file_upload_fields));
                         }
@@ -402,7 +416,7 @@ class crudlexs_base_with_data extends crudlexs_base {
     public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $append_auth_code = FALSE) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
-                trigger_error(__METHOD__ . "Can't work without table data loaded first", E_USER_WARNING);
+                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_WARNING);
                 return FALSE;
             } else {
                 if ($fields_to_change == crudlexs_base::USE_KEY_FIELDS) {
@@ -432,9 +446,9 @@ class crudlexs_base_with_data extends crudlexs_base {
                             $tag_html = $tag_object->generate_tag();
                             if (!empty($this->db_table_data_keys)) {
                                 $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
-                                $auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $key_array_text);
+                                $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
                                 $tag_html = str_replace("%row_keys%", $key_array_text, $tag_html);
-                                $tag_html = str_replace("%field_value%", $row_data[$field_to_change], $tag_html);
+                                $tag_html = str_replace("%field-value%", $row_data[$field_to_change], $tag_html);
                                 $tag_html = str_replace("%auth_code%", $auth_code, $tag_html);
 //                            $tag_html = sprintf($tag_html, $key_array_text, $auth_code);
                             }
@@ -519,7 +533,7 @@ class crudlexs_base_with_data extends crudlexs_base {
             if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
                 $rnd = $_SESSION['CRUDLEXS-RND'];
             } else {
-                trigger_error(__METHOD__ . "There is not rand number on session data", E_USER_ERROR);
+                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_session_random, E_USER_ERROR);
             }
             $field_position = \k1lib\utils\n36_to_decimal($n36_number) - $rnd;
             $fields_from_table_config = array_keys($this->db_table->get_db_table_config());

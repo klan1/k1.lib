@@ -165,11 +165,10 @@ namespace k1lib\html {
          * @param String $class
          * @param String $id
          */
-        function __construct($class = "", $id = "") {
+        function __construct($code = "") {
             parent::__construct("script", FALSE);
+            $this->set_value($code);
 //        $this->data_array &= $data_array;
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
         }
 
     }
@@ -403,6 +402,7 @@ namespace k1lib\html {
             $this->set_attrib("name", $name);
             $this->set_attrib("class", $class, TRUE);
             $this->set_attrib("id", $id);
+            $this->set_attrib("rows", 10);
         }
 
     }

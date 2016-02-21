@@ -62,7 +62,7 @@ class class_db_table {
         if (is_string($db_table_name)) {
             $this->db_table_name = $db_table_name;
         } else {
-            trigger_error("The table name has to be a String", E_USER_ERROR);
+            trigger_error(__METHOD__ . ' ' . db_table_strings::$error_table_name, E_USER_ERROR);
         }
 
         $this->db_table_config = $this->_get_db_table_config($db_table_name);
@@ -149,7 +149,7 @@ class class_db_table {
         } else {
             $query_where_pairs = "";
             if ($exact_filter) {
-                $query_where_pairs = \k1lib\sql\array_to_sql_set($clean_filter_array, FALSE, TRUE);
+                $query_where_pairs = \k1lib\sql\array_to_sql_set($this->db, $clean_filter_array, FALSE, TRUE);
             } else {
                 $doFilter = FALSE;
                 foreach ($clean_filter_array as $search_value) {
@@ -217,7 +217,7 @@ class class_db_table {
         if (!empty($fields_array)) {
             return implode(",", $fields_array);
         } else {
-            trigger_error("Rule is not avaliable", E_USER_WARNING);
+            trigger_error(__METHOD__ . ' ' . db_table_strings::$error_no_show_rule, E_USER_WARNING);
             return FALSE;
         }
     }
@@ -404,9 +404,9 @@ class class_db_table {
         }
     }
 
-    public function insert_data(Array $data_to_insert) {
+    public function insert_data(array $data_to_insert) {
         if (empty($data_to_insert)) {
-            trigger_error("Data to insert can't be empty", E_USER_WARNING);
+            trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_insert, E_USER_WARNING);
             return FALSE;
         }
         $data_to_insert = array_merge($data_to_insert, $this->constant_fields);
@@ -415,11 +415,11 @@ class class_db_table {
 
     public function update_data(Array $data_to_update, $key_to_update) {
         if (empty($data_to_update)) {
-            trigger_error("Data to update can't be empty", E_USER_WARNING);
+            trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_update, E_USER_WARNING);
             return FALSE;
         }
         if (empty($key_to_update)) {
-            trigger_error("Key to update can't be empty", E_USER_WARNING);
+            trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_update_key, E_USER_WARNING);
             return FALSE;
         }
         $data_to_update = array_merge($data_to_update, $this->constant_fields);
@@ -429,7 +429,7 @@ class class_db_table {
     public function delete_data(Array $key_to_delete) {
 
         if (empty($key_to_delete)) {
-            trigger_error("Key to delete can't be empty", E_USER_WARNING);
+            trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_delete_key, E_USER_WARNING);
             return FALSE;
         }
         return \k1lib\sql\sql_del_row($this->db, $this->db_table_name, $key_to_delete);

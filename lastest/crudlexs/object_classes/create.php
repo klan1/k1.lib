@@ -98,7 +98,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      */
     function catch_post_data() {
         $this->do_file_uploads_validation();
-        $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($_POST);
+        $this->post_incoming_array = $_POST;
         if (isset($this->post_incoming_array['k1magic'])) {
             self::set_k1magic_value($this->post_incoming_array['k1magic']);
             unset($this->post_incoming_array['k1magic']);
@@ -106,12 +106,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
         if (!empty($this->post_incoming_array)) {
             if ($this->do_table_field_name_encrypt) {
-            $new_post_data = [];
-            foreach ($this->post_incoming_array as $field => $value) {
-                $new_post_data[$this->decrypt_field_name($field)] = $value;
-            }
-            $this->post_incoming_array = $new_post_data;
-            unset($new_post_data);
+                $new_post_data = [];
+                foreach ($this->post_incoming_array as $field => $value) {
+                    $new_post_data[$this->decrypt_field_name($field)] = $value;
+                }
+                $this->post_incoming_array = $new_post_data;
+                unset($new_post_data);
             }
             $this->post_incoming_array = \k1lib\common\clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
             return TRUE;
@@ -135,6 +135,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             switch ($this->db_table->get_field_config($field, 'type')) {
                 case 'enum':
                     $input_tag = input_helper::enum_type($this, $row_to_apply, $field);
+                    break;
+                case 'text':
+                    $input_tag = input_helper::text_type($this, $row_to_apply, $field);
                     break;
                 default:
                     /**
@@ -207,7 +210,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     $_POST[$decoded_field] = $data;
                 } else {
                     if ($data['error'] !== UPLOAD_ERR_NO_FILE) {
-                        trigger_error("File upload error : " . print_r($data, TRUE), E_USER_WARNING);
+                        trigger_error(creating_strings::$error_file_upload . print_r($data, TRUE), E_USER_WARNING);
                     }
                 }
             }
@@ -247,7 +250,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
                 $rnd = $_SESSION['CRUDLEXS-RND'];
             } else {
-                trigger_error("There is not rand number on session data", E_USER_ERROR);
+                trigger_error(__METHOD__ . ' ' . object_base_strings::$error_no_session_random, E_USER_ERROR);
             }
             $field_position = \k1lib\utils\n36_to_decimal($n36_number) - $rnd;
             $fields_from_table_config = array_keys($this->db_table->get_db_table_config());
@@ -266,6 +269,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     public function enable_foundation_form_check() {
         $this->enable_foundation_form_check = TRUE;
     }
+
     /**
      * @return \k1lib\html\div_tag
      */
@@ -367,38 +371,34 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * @param type $url_to_go
      * @return boolean TRUE on sucess or FALSE on error.
      */
-    public function do_insert($url_to_go = null) {
+    public function do_insert($url_to_go = null, $do_redirect = true) {
+        $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
         $insert_result = $this->db_table->insert_data($this->post_incoming_array);
         $last_inserted_id = [];
-
-        if (is_numeric($insert_result)) {
-            foreach ($this->db_table->get_db_table_config() as $field => $config) {
-                if ($config['extra'] == 'auto_increment') {
-                    $last_inserted_id[$field] = $insert_result;
+        if ($insert_result !== FALSE) {
+            if (is_numeric($insert_result)) {
+                foreach ($this->db_table->get_db_table_config() as $field => $config) {
+                    if ($config['extra'] == 'auto_increment') {
+                        $last_inserted_id[$field] = $insert_result;
+                    }
                 }
             }
-        }
-        if ($insert_result) {
             $new_key_text = \k1lib\sql\table_keys_to_text(array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields()), $this->db_table->get_db_table_config());
             if (!empty($url_to_go)) {
                 $this->set_auth_code($new_key_text);
+                $this->set_auth_code_personal($new_key_text);
                 $url_to_go = str_replace("%row_keys%", $new_key_text, $url_to_go);
                 $url_to_go = str_replace("%auth_code%", $this->get_auth_code(), $url_to_go);
-
-                \k1lib\html\html_header_go($url_to_go);
             }
-            return TRUE;
+            if ($do_redirect) {
+                \k1lib\html\html_header_go($url_to_go);
+                return TRUE;
+            } else {
+                return $url_to_go;
+            }
         } else {
             return FALSE;
         }
     }
-
-}
-
-class creating_strings {
-
-    static $select_choose_option = "Select an option...";
-    static $button_submit = "Insert";
-    static $button_cancel = "Cancel";
 
 }

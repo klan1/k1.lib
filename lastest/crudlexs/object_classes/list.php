@@ -56,9 +56,9 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     protected $last_row_number = 1;
 
     /**
-     * @var int
+     * @var string
      */
-    protected $stat_msg = "Showing %s of %s (%s to %s)";
+    protected $stat_msg;
 
     /**
      * @var int
@@ -87,6 +87,8 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
         $this->set_css_class(get_class($this));
 
         $this->skip_blanks_on_filters = TRUE;
+
+        $this->stat_msg = listing_strings::$stats_default_message;
     }
 
     /**
@@ -110,19 +112,20 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
      * 
      * @return \k1lib\html\div_tag
      */
-    public function do_row_stats() {
+    public function do_row_stats($custom_msg = "") {
         $div_stats = new \k1lib\html\div_tag("k1-crudlexs-table-stats");
         if (($this->db_table_data)) {
+            if (empty($custom_msg)) {
+                $stat_msg = $this->stat_msg;
+            } else {
+                $stat_msg = $custom_msg;
+            }
+            $stat_msg = str_replace("%total-rows-filter%", $this->total_rows_filter, $stat_msg);
+            $stat_msg = str_replace("%total-rows%", $this->total_rows, $stat_msg);
+            $stat_msg = str_replace("%first-row-number%", $this->first_row_number, $stat_msg);
+            $stat_msg = str_replace("%last-row-number%", $this->last_row_number, $stat_msg);
 
-            $div_stats->set_value(
-                    sprintf(
-                            $this->stat_msg
-                            , $this->total_rows_filter
-                            , $this->total_rows
-                            , $this->first_row_number
-                            , $this->last_row_number
-                    )
-            );
+            $div_stats->set_value($stat_msg);
         }
         return $div_stats;
     }

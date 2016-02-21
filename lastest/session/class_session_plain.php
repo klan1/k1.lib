@@ -212,7 +212,7 @@ class session_plain {
         if (empty($user_login)) {
             $user_login = self::$user_login;
         }
-        return md5($user_login . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\MAGIC_VALUE);
+        return md5($user_login . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\K1MAGIC::get_value());
     }
 
     static function get_user_login() {

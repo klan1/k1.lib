@@ -66,7 +66,7 @@ class board_read extends board_base implements board_interface {
                  */
                 if ($this->delete_enable) {
                     $back_url = urlencode(\k1lib\urlrewrite\get_back_url());
-                    $delete_url = "../../{$this->controller_object->get_board_delete_url_name()}/{$this->row_keys_text}/?auth-code={$this->read_object->get_auth_code()}&back-url={$back_url}";
+                    $delete_url = "../../{$this->controller_object->get_board_delete_url_name()}/{$this->row_keys_text}/?auth-code={$this->read_object->get_auth_code_personal()}&back-url={$back_url}";
                     $delete_link = \k1lib\html\get_link_button($delete_url, board_read_strings::$button_delete);
                     $delete_link->append_to($this->board_content_div);
                 }
@@ -130,6 +130,10 @@ class board_read extends board_base implements board_interface {
         }
     }
 
+    public function finish_board() {
+        
+    }
+
     function set_related_use_rows_key_text($related_use_rows_key_text) {
         $this->related_use_rows_key_text = $related_use_rows_key_text;
     }
@@ -155,7 +159,7 @@ class board_read extends board_base implements board_interface {
 
         if ($this->is_enabled && $this->read_object->is_valid()) {
             $current_row_keys_text = $this->controller_object->board_read_object->read_object->get_row_keys_text();
-            $current_row_keys_text_auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $current_row_keys_text);
+            $current_row_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $current_row_keys_text);
 
 
             $back_url = urlencode($_SERVER['REQUEST_URI']);
@@ -232,14 +236,5 @@ class board_read extends board_base implements board_interface {
     function set_use_label_as_title_enabled($use_label_as_title_enabled) {
         $this->use_label_as_title_enabled = $use_label_as_title_enabled;
     }
-
-}
-
-class board_read_strings {
-
-    static $button_all_data = "All data";
-    static $button_back = "Back";
-    static $button_edit = "Edit";
-    static $button_delete = "Delete";
 
 }

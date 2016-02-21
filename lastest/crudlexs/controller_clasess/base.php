@@ -116,11 +116,11 @@ class controller_base {
      */
     protected $template_place_name_controller_name = "controller-name";
     protected $template_place_name_board_name = "board-name";
-    protected $board_list_name = "";
-    protected $board_create_name = "Create new";
-    protected $board_read_name = "";
-    protected $board_update_name = "Update details";
-    protected $board_delete_name = "Delete registry";
+    protected $board_list_name;
+    protected $board_create_name;
+    protected $board_read_name;
+    protected $board_update_name;
+    protected $board_delete_name;
     protected $url_redirect_after_delete = "../../list/";
 
     /**
@@ -159,6 +159,15 @@ class controller_base {
         $this->controller_name = $controller_name;
         temply::set_place_value($this->template_place_name_html_title, " | $controller_name");
         temply::set_place_value($this->template_place_name_controller_name, $controller_name);
+
+        /**
+         * SET FROM LANG HACK
+         */
+        $this->board_list_name = controller_base_strings::$board_list_name;
+        $this->board_create_name = controller_base_strings::$board_create_name;
+        $this->board_read_name = controller_base_strings::$board_read_name;
+        $this->board_update_name = controller_base_strings::$board_update_name;
+        $this->board_delete_name = controller_base_strings::$board_delete_name;
     }
 
     public function set_config_from_class($class_name = NULL) {
@@ -325,26 +334,26 @@ class controller_base {
                 $related_table = $db_table_name;
                 $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
                 $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
-                $related_url_keys_text_auth_code = md5(\k1lib\session\session_plain::get_user_hash() . $related_url_keys_text);
+                $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
                     $this->db_table->set_field_constants($related_url_keys_array);
                 } else {
                     $this->board_create_object->set_is_enabled(FALSE);
-                    \k1lib\common\show_message(board_base_strings::$error_url_keys_no_auth, "ERROR", "alert");
+                    \k1lib\common\show_message(board_base_strings::$error_url_keys_no_auth, \k1lib\common_strings::$error, "alert");
                 }
             } else {
                 $this->board_create_object->set_is_enabled(FALSE);
-                \k1lib\common\show_message(board_base_strings::$error_url_keys_no_keys_text, "ERROR", "alert");
+                \k1lib\common\show_message(board_base_strings::$error_url_keys_no_keys_text, \k1lib\common_strings::$error, "alert");
             }
         }
     }
 
     public function start_board($specific_board_to_start = NULL) {
+        $this->board_started = TRUE;
         if ($this->board_inited) {
             if (empty($specific_board_to_start)) {
                 $specific_board_to_start = $this->controller_board_url_value;
             }
-            $this->board_started = TRUE;
             switch ($specific_board_to_start) {
                 case $this->board_create_url_name:
                     return $this->board_create_object->start_board();
@@ -367,8 +376,8 @@ class controller_base {
                     return FALSE;
             }
         } else {
-            $this->board_executed = FALSE;
-            trigger_error("The board hasn't inited yet.", E_USER_WARNING);
+            $this->board_started = FALSE;
+            trigger_error(__METHOD__ . ' ' . controller_base_strings::$error_board_not_inited, E_USER_WARNING);
             return FALSE;
         }
     }
@@ -380,13 +389,12 @@ class controller_base {
      * @return \k1lib\html\div_tag
      */
     public function exec_board($do_echo = TRUE, $specific_board_to_exec = NULL) {
+        $this->board_executed = TRUE;
 
         if ($this->board_started) {
             if (empty($specific_board_to_exec)) {
                 $specific_board_to_exec = $this->controller_board_url_value;
             }
-            $this->board_executed = TRUE;
-
             switch ($specific_board_to_exec) {
                 case $this->board_create_url_name:
                     return $this->board_create_object->exec_board($do_echo);
@@ -404,11 +412,49 @@ class controller_base {
                     return $this->board_list_object->exec_board($do_echo);
 
                 default:
+                    $this->board_executed = FALSE;
+                    \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
                     break;
             }
         } else {
             $this->board_executed = FALSE;
-            trigger_error("The board hasn't started yet.", E_USER_WARNING);
+            trigger_error(__METHOD__ . ' ' . controller_base_strings::$error_board_not_started, E_USER_WARNING);
+            return FALSE;
+        }
+    }
+
+    public function finish_board($specific_board_to_finish = NULL) {
+        $this->board_finished = TRUE;
+
+        if ($this->board_started) {
+            if (empty($specific_board_to_finish)) {
+                $specific_board_to_finish = $this->controller_board_url_value;
+            }
+
+            switch ($specific_board_to_finish) {
+                case $this->board_create_url_name:
+                    return $this->board_create_object->finish_board();
+
+                case $this->board_read_url_name:
+                    return $this->board_read_object->finish_board();
+
+                case $this->board_update_url_name:
+                    return $this->board_update_object->finish_board();
+
+                case $this->board_delete_url_name:
+                    return $this->board_delete_object->finish_board();
+
+                case $this->board_list_url_name:
+                    return $this->board_list_object->finish_board();
+
+                default:
+                    $this->board_finished = FALSE;
+                    \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
+                    break;
+            }
+        } else {
+            $this->board_finished = FALSE;
+            trigger_error(__METHOD__ . ' ' . controller_base_strings::$error_board_not_executed, E_USER_WARNING);
             return FALSE;
         }
     }
