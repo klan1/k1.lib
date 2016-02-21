@@ -48,7 +48,8 @@ class board_list extends board_base implements board_interface {
              * NEW BUTTON
              */
             if ($this->create_enable) {
-                $new_link = \k1lib\html\get_link_button("../{$this->controller_object->get_board_create_url_name()}/?back-url={$this_url}", board_list_strings::$button_new);
+                $new_link = \k1lib\html\get_link_button("../{$this->controller_object->get_board_create_url_name()}/", board_list_strings::$button_new);
+//                $new_link = \k1lib\html\get_link_button("../{$this->controller_object->get_board_create_url_name()}/?back-url={$this_url}", board_list_strings::$button_new);
                 $new_link->append_to($this->board_content_div);
             }
 
@@ -138,6 +139,10 @@ class board_list extends board_base implements board_interface {
         }
     }
 
+    public function finish_board() {
+        
+    }
+
     function set_where_to_show_stats($where_to_show_stats) {
         $this->where_to_show_stats = $where_to_show_stats;
     }
@@ -181,17 +186,5 @@ class board_list extends board_base implements board_interface {
     function set_stats_enable($stats_enable) {
         $this->stats_enable = $stats_enable;
     }
-
-}
-
-class board_list_strings {
-
-    /**
-     * BUTTON LABELS
-     */
-    static $button_new = "Add new";
-    static $button_search = "Search";
-    static $button_search_modify = "Modify search";
-    static $button_search_cancel = "Cancel search";
 
 }

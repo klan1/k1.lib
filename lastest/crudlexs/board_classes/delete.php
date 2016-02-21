@@ -44,12 +44,16 @@ class board_delete extends board_base implements board_interface {
         if (!empty($this->row_keys_text)) {
             if ($this->read_object->load_db_table_data()) {
                 $row_key_text_array = \k1lib\sql\table_url_text_to_keys($this->row_keys_text, $this->controller_object->db_table->get_db_table_config());
-
-                if ($this->controller_object->db_table->delete_data($row_key_text_array)) {
-                    \k1lib\html\html_header_go($this->redirect_url);
-                    return TRUE;
-                } else {
-                    \k1lib\common\show_message(board_delete_strings::$error_no_data_deleted, "Error: ", "alert");
+                if ($_GET['auth-code'] === $this->read_object->get_auth_code_personal()) {
+                    if ($this->controller_object->db_table->delete_data($row_key_text_array)) {
+                        \k1lib\html\html_header_go($this->redirect_url);
+                        return TRUE;
+                    } else {
+                        \k1lib\common\show_message(board_delete_strings::$error_no_data_deleted, \k1lib\common_strings::$error, "alert");
+                        return FALSE;
+                    }
+                } else if ($_GET['auth-code'] === $this->read_object->get_auth_code()) {
+                    \k1lib\common\show_message(board_delete_strings::$error_no_data_deleted_hacker, \k1lib\common_strings::$error_hacker, "alert");
                     return FALSE;
                 }
             } else {
@@ -60,10 +64,8 @@ class board_delete extends board_base implements board_interface {
         }
     }
 
-}
-
-class board_delete_strings {
-
-    static $error_no_data_deleted = "The record to delete can't be deleted";
+    public function finish_board() {
+        
+    }
 
 }

@@ -199,7 +199,7 @@ function set_magic_value($name) {
     if (\k1lib\session\session_plain::on_session()) {
         $secret = md5($name . microtime(TRUE));
         $_SESSION[\k1lib\common\get_magic_name($name)] = $secret;
-        $client_magic = md5(\k1lib\session\session_plain::get_user_hash() . $secret);
+        $client_magic = md5(\k1lib\K1MAGIC::get_value() . $secret);
         return $client_magic;
     } else {
         trigger_error("Magic system REQUIRES the session system to be enabled and a session started", E_USER_ERROR);
@@ -219,7 +219,7 @@ function check_magic_value($name, $value_to_check) {
         } else {
             if (isset($_SESSION[\k1lib\common\get_magic_name($name)])) {
                 $secret = $_SESSION[\k1lib\common\get_magic_name($name)];
-                $client_magic = md5(\k1lib\session\session_plain::get_user_hash() . $secret);
+                $client_magic = md5(\k1lib\K1MAGIC::get_value() . $secret);
                 if ($client_magic == $value_to_check) {
                     return $client_magic;
                 } else {

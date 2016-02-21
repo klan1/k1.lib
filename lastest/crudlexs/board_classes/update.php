@@ -65,24 +65,24 @@ class board_update extends board_base implements board_interface {
                         if ($this->update_object->do_post_data_validation()) {
                             $back_url = (isset($_GET['back-url'])) ? "&back-url=" . urlencode(\k1lib\urlrewrite\get_back_url()) : "";
                             $url_to_go = "{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/%row_keys%/?auth-code=%auth_code%{$back_url}";
-                            if (!$this->update_object->do_update($url_to_go)) {
-                                \k1lib\html\html_header_go($url_to_go);
-                            }
+                            $this->sql_action_result = $this->update_object->do_update($url_to_go, FALSE);
                         } else {
                             \k1lib\common\show_message(board_update_strings::$error_form, board_base_strings::$alert_board, "warning");
                         }
                     }
                 }
-                $this->update_object->apply_label_filter();
-                $this->update_object->insert_inputs_on_data_row();
-                $this->update_object->set_use_create_custom_template();
+                if (empty($this->sql_action_result)) {
+                    $this->update_object->apply_label_filter();
+                    $this->update_object->insert_inputs_on_data_row();
+                    $this->update_object->set_use_create_custom_template();
 
-                $this->update_object->do_html_object()->append_to($this->board_content_div);
-                if ($do_echo) {
-                    $this->board_content_div->generate_tag(TRUE);
-                    return TRUE;
-                } else {
-                    return $this->board_content_div;
+                    $this->update_object->do_html_object()->append_to($this->board_content_div);
+                    if ($do_echo) {
+                        $this->board_content_div->generate_tag(TRUE);
+                        return TRUE;
+                    } else {
+                        return $this->board_content_div;
+                    }
                 }
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
@@ -93,13 +93,12 @@ class board_update extends board_base implements board_interface {
         }
     }
 
-}
-
-class board_update_strings {
-
-    static $button_submit = "Update";
-    static $error_no_inserted = "Data hasn't benn updated. Did you leave all unchaged ?";
-    static $error_form = "Please correct the marked errors.";
-    static $error_no_blank_data = "Please correct the marked errors.";
+    public function finish_board() {
+        if ($this->sql_action_result !== FALSE && $this->sql_action_result !== NULL) {
+            \k1lib\html\html_header_go($this->sql_action_result);
+        } elseif ($this->sql_action_result === FALSE) {
+            \k1lib\common\show_message(board_create_strings::$error_no_inserted, board_base_strings::$error_mysql, "alert");
+        }
+    }
 
 }

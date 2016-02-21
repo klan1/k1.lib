@@ -16,7 +16,7 @@ use k1lib\html as html;
 /**
  * This SHOULD be used always to receive any kind of value from _GET _POST _REQUEST if it will be used on SQL staments.
  * @param String $var Value to check.
- * @param Boolean FALSE to check $var as is. Use TRUE if $var become an index as: $_REQUEST[$var]
+ * @param Boolean $request FALSE to check $var as is. Use TRUE if $var become an index as: $_REQUEST[$var]
  * @param Boolean $url_decode TRUE if the data should be URL decoded.
  * @return String Rerturn NULL on error This could be that $var IS NOT String, Number or IS Array.
  */
@@ -40,9 +40,9 @@ function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE)
             $value = urldecode($value);
         }
         if (\json_decode($value) === NULL) {
-            $replace = array("\\\\", "\\0", "\Z", "\'", '\"');
-            $search = array("\\", "\0", "\x1a", "'", '"');
-            $value = str_replace($search, $replace, $value);
+//            $search = ['\\', "\0", "\n", "\r", "'", '"', "\x1a"];
+//            $replace = ['\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'];
+//            $value = str_replace($search, $replace, $value);
 //            $value = mysql_escape_string($value);
         }
         return $value;
@@ -157,7 +157,8 @@ function check_value_type($value, $type) {
     $year = date("Y");
     //funcitons vars
     $error_type = "";
-    $preg_symbols = "-_@.,!:;#$%&'*\/+=?^`{\|}~ÁÉÍÓÚáéíóuñÑ";
+    $preg_symbols = "-_@.,!:;#$%&'*\\/+=?^`{\|}()~ÁÉÍÓÚáéíóuñÑ";
+    $preg_symbols_html = $preg_symbols . "<>\\\\\"'";
     $preg_file_symbols = "-_.()";
 
     switch ($type) {
@@ -282,6 +283,12 @@ function check_value_type($value, $type) {
             $regex = "/^[a-zA-Z0-9\s{$preg_symbols}]*$/";
             if (!preg_match($regex, $value)) {
                 $error_type = " deber ser solo letras de la a-z y A-Z, numeros y symbolos: $preg_symbols";
+            }
+            break;
+        case 'html':
+            $regex = "/^[a-zA-Z0-9\s{$preg_symbols_html}]*$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = " deber ser solo letras de la a-z y A-Z, numeros y symbolos: $preg_symbols_html";
             }
             break;
         case 'file-upload':

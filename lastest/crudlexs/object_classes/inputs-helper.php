@@ -6,6 +6,7 @@ class input_helper {
 
     static $do_fk_search_tool = TRUE;
     static $url_to_search_fk_data = APP_URL . "utils/select-row-keys/";
+    static $main_css = "";
 
     /**
      * *
@@ -16,7 +17,7 @@ class input_helper {
     static function enum_type(creating $crudlex_obj, $row_to_apply, $field) {
         $enum_data = $crudlex_obj->db_table->get_enum_options($field);
         $input_tag = new \k1lib\html\select_tag($field);
-        $input_tag->append_option("", creating_strings::$select_choose_option);
+        $input_tag->append_option("", input_helper_strings::$select_choose_option);
 
         foreach ($enum_data as $index => $value) {
             // SELETED work around
@@ -30,6 +31,43 @@ class input_helper {
         return $input_tag;
     }
 
+    /**
+     * 
+     * @param \k1lib\crudlexs\creating $crudlex_obj
+     * @param int $row_to_apply
+     * @param string $field
+     * @return \k1lib\html\textarea_tag
+     */
+    static function text_type(creating $crudlex_obj, $row_to_apply, $field) {
+        $field_encrypted = $crudlex_obj->encrypt_field_name($field);
+
+        if (!empty(self::$main_css)) {
+            $css_option = "content_css: ['" . self::$main_css . "'],";
+        } else {
+            $css_option = "";
+        }
+
+        $html_script = "tinymce.init({ "
+                . "selector: '#$field_encrypted',"
+                . "height: 500,"
+                . "plugins: [ 
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table contextmenu paste code'
+                ],"
+                . $css_option
+                . "toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',"
+                . "paste_data_images: true,"
+                . ""
+                . "});";
+        $script = new \k1lib\html\script_tag($html_script);
+
+        $input_tag = new \k1lib\html\textarea_tag($field_encrypted);
+
+        $input_tag->post_code($script->generate_tag());
+        return $input_tag;
+    }
+
     static function file_upload(creating $crudlex_obj, $field) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
 
@@ -37,7 +75,7 @@ class input_helper {
         if (isset($crudlex_obj->db_table_data[1][$field]['name']) || empty($crudlex_obj->db_table_data[1][$field])) {
             return $input_tag;
         } else {
-            $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/" . $field_encrypted . "/?auth-code=%auth_code%", "Remove %field_value%");
+            $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/" . $field_encrypted . "/?auth-code=%auth_code%", input_helper_strings::$button_remove);
 
             $div_container = new \k1lib\html\div_tag();
             $div_container->append_child($input_tag);
@@ -54,7 +92,7 @@ class input_helper {
             $div_input_group = new \k1lib\html\div_tag("input-group");
 
             $input_tag = new \k1lib\html\input_tag("text", $field_encrypted, NULL, "k1-input-insert input-group-field");
-            $input_tag->set_attrib("placeholder", "Use the reference ID");
+            $input_tag->set_attrib("placeholder", input_helper_strings::$input_fk_placeholder);
             $input_tag->set_attrib("k1-data-group-" . $crudlex_obj->db_table->get_field_config($field, 'refereced_table_name'), TRUE);
             $input_tag->append_to($div_input_group);
 
@@ -90,7 +128,7 @@ class input_helper {
                 $search_button->set_attrib("onclick", "javascript:use_select_row_keys(this.form,'{$url_to_search_fk_data}')");
             } else {
                 $url_to_search_fk_data = "#";
-                $search_button->set_attrib("onclick", "javascript:alert('Search on another table is not possible here, use the Key value to search')");
+                $search_button->set_attrib("onclick", "javascript:alert('" . listing_strings::$no_fk_search_here . "')");
             }
 
             $search_button->append_to($div_input_group_button);
@@ -101,14 +139,14 @@ class input_helper {
             $div_input_group = new \k1lib\html\div_tag("input-group");
 
             $input_tag = new \k1lib\html\input_tag("text", $field_encrypted, NULL, "k1-input-insert input-group-field datepicker");
-            $input_tag->set_attrib("placeholder", "Click here to pick a date");
+            $input_tag->set_attrib("placeholder", input_helper_strings::$input_date_placeholder);
             $input_tag->set_attrib("k1-data-datepickup", TRUE);
             $input_tag->append_to($div_input_group);
 
             $div_input_group_button = new \k1lib\html\div_tag("input-group-button");
             $div_input_group_button->append_to($div_input_group);
 
-            $search_button = new \k1lib\html\a_tag("#", "", "_self", "Search", "button fi-calendar");
+            $search_button = new \k1lib\html\a_tag("#", "", "_self", search_helper_strings::$button_search, "button fi-calendar");
             $search_button->append_to($div_input_group_button);
 
             $div_input_group->link_value_obj($input_tag);
