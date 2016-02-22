@@ -49,7 +49,7 @@ class input_helper {
 
         $html_script = "tinymce.init({ "
                 . "selector: '#$field_encrypted',"
-                . "height: 500,"
+                . "height: 300,"
                 . "plugins: [ 
                     'advlist autolink lists link image charmap print preview anchor',
                     'searchreplace visualblocks code fullscreen',
@@ -146,7 +146,7 @@ class input_helper {
             $div_input_group_button = new \k1lib\html\div_tag("input-group-button");
             $div_input_group_button->append_to($div_input_group);
 
-            $search_button = new \k1lib\html\a_tag("#", "", "_self", search_helper_strings::$button_search, "button fi-calendar");
+            $search_button = new \k1lib\html\a_tag("#", "", "_self", search_helper_strings::$button_submit, "button fi-calendar");
             $search_button->append_to($div_input_group_button);
 
             $div_input_group->link_value_obj($input_tag);

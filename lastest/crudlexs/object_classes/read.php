@@ -30,25 +30,27 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $this->div_container->set_attrib("class", "row k1-crudlexs-" . $this->css_class);
             $this->div_container->set_attrib("id", $this->object_id);
 
-            /**
-             * LOAD the custom HTMLtemplate 
-             */
-            $possible_read_template = "read-templates/" . $this->db_table->get_db_table_name();
-            $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
             $html = "";
-            if ($template_file_path && $this->use_read_custom_template) {
-                ob_start();
-                include $template_file_path;
-                $html = ob_get_contents();
-                ob_end_clean();
-
+            if ($this->use_read_custom_template) {
+                /**
+                 * LOAD the custom HTMLtemplate 
+                 */
+                $possible_read_template = "read-templates/" . $this->db_table->get_db_table_name();
+                $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
                 if ($template_file_path) {
-                    foreach ($this->db_table_data_filtered[1] as $field => $value) {
-                        if (temply::is_place_registered("{$field}-label")) {
-                            temply::set_place_value("{$field}-label", $this->db_table_data_filtered[0][$field]);
-                        }
-                        if (temply::is_place_registered($field)) {
-                            temply::set_place_value($field, $value);
+                    ob_start();
+                    include $template_file_path;
+                    $html = ob_get_contents();
+                    ob_end_clean();
+
+                    if ($template_file_path) {
+                        foreach ($this->db_table_data_filtered[1] as $field => $value) {
+                            if (temply::is_place_registered("{$field}-label")) {
+                                temply::set_place_value("{$field}-label", $this->db_table_data_filtered[0][$field]);
+                            }
+                            if (temply::is_place_registered($field)) {
+                                temply::set_place_value($field, $value);
+                            }
                         }
                     }
                 }
@@ -72,7 +74,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
                 $row = $data_group->append_div("row");
 
                 foreach ($values as $field => $value) {
-                    
+
                     /**
                      * ALL the TEXT field types are sendend to the last position to show nicely the HTML on it.
                      */
@@ -87,7 +89,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
                     $div_rows->append_div("k1-data-item-value")->set_value($value);
                 }
                 $text_fields_div->append_to($data_group);
-                
+
                 $div_rows->set_attrib("class", 'end', TRUE);
 
 //              $this->controller_object->board_read_object->set_board_name($data_label);

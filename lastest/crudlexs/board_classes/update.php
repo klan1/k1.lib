@@ -16,6 +16,7 @@ class board_update extends board_base implements board_interface {
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
+            $this->show_rule_to_apply = "show-update";
             $this->row_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_keys_text", FALSE);
             $this->update_object = new \k1lib\crudlexs\updating($this->controller_object->db_table, $this->row_keys_text);
         }
@@ -35,7 +36,7 @@ class board_update extends board_base implements board_interface {
                 $this->update_object->set_back_url(\k1lib\urlrewrite\get_back_url());
 
                 $this->update_object->set_do_table_field_name_encrypt(TRUE);
-                $this->controller_object->db_table->set_db_table_show_rule("show-update");
+                $this->controller_object->db_table->set_db_table_show_rule($this->show_rule_to_apply);
 
                 $this->data_loaded = $this->update_object->load_db_table_data();
                 return $this->board_content_div;

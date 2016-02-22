@@ -24,6 +24,7 @@ class board_list extends board_base implements board_interface {
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
+            $this->show_rule_to_apply = "show-list";
             $this->list_object = new \k1lib\crudlexs\listing($this->controller_object->db_table, FALSE);
         }
     }
@@ -36,13 +37,11 @@ class board_list extends board_base implements board_interface {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
         }
-        $this_url = urlencode($_SERVER['REQUEST_URI']);
 
         if ($this->list_object->get_state()) {
             if ($this->search_enable) {
                 $search_helper = new \k1lib\crudlexs\search_helper($this->controller_object->db_table, $this->list_object->get_object_id());
             }
-
 
             /**
              * NEW BUTTON
@@ -74,7 +73,7 @@ class board_list extends board_base implements board_interface {
                 $search_helper->do_html_object()->append_to($this->board_content_div);
             }
 
-            $this->data_loaded = $this->list_object->load_db_table_data('show-list');
+            $this->data_loaded = $this->list_object->load_db_table_data($this->show_rule_to_apply);
             return $this->board_content_div;
         } else {
             \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
@@ -129,7 +128,7 @@ class board_list extends board_base implements board_interface {
                 return $this->board_content_div;
             }
         } else {
-            \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$alert_board, "alert");
+            $this->list_object->do_html_object()->append_to($this->board_content_div);
             if ($do_echo) {
                 $this->board_content_div->generate_tag($do_echo);
                 return TRUE;

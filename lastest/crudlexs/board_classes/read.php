@@ -24,6 +24,7 @@ class board_read extends board_base implements board_interface {
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
+            $this->show_rule_to_apply = "show-read";
             $this->row_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_keys_text", FALSE);
             $this->read_object = new \k1lib\crudlexs\reading($this->controller_object->db_table, $this->row_keys_text);
         }
@@ -71,7 +72,7 @@ class board_read extends board_base implements board_interface {
                     $delete_link->append_to($this->board_content_div);
                 }
 
-                $this->data_loaded = $this->read_object->load_db_table_data('show-read');
+                $this->data_loaded = $this->read_object->load_db_table_data($this->show_rule_to_apply);
                 return $this->board_content_div;
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
@@ -101,7 +102,7 @@ class board_read extends board_base implements board_interface {
                 }
                 $this->read_object->apply_label_filter();
                 $this->read_object->apply_field_label_filter();
-                $this->read_object->set_use_read_custom_template();
+//                $this->read_object->set_use_read_custom_template();
                 if (\k1lib\forms\file_uploads::is_enabled()) {
                     $this->read_object->apply_file_uploads_filter();
                 }

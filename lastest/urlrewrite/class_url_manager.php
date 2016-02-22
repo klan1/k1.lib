@@ -230,6 +230,9 @@ class url_manager {
         if ($url_num_levels < 0) {
             return "/";
         } else {
+            /**
+             * LEVEL CHECK
+             */
             if ($level_to_built === 'this') {
                 $level_to_built = $url_num_levels;
             } else {
@@ -237,17 +240,20 @@ class url_manager {
                     if (($level_to_built < 0) && (($level_to_built + $url_num_levels) <= $url_num_levels)) {
                         $level_to_built += $url_num_levels;
                         if ($level_to_built > $url_num_levels) {
-                            die("The calculated level do not exist " . __FUNCTION__);
+                            trigger_error(__METHOD__ . " : The calculated level do not exist ", E_USER_ERROR);
                         }
                     }
                     if ($level_to_built > $url_num_levels) {
-                        die("The calculated level do not exist " . __FUNCTION__);
+                        trigger_error(__METHOD__ . "The calculated level do not exist ", E_USER_ERROR);
                     }
                 } else {
-                    die("The level to built have to be a number " . __FUNCTION__);
+                    trigger_error(__METHOD__ . "The level to built have to be a number ", E_USER_ERROR);
                 }
             }
             $page_url = "";
+            /**
+             * LETS DO IT
+             */
             if (($level_to_built <= $url_num_levels) && ($level_to_built >= 0)) {
                 foreach (self::$url_data as $level => $level_data) {
                     $page_url .= (($level === 0) ? "" : "/") . $level_data['value'];
@@ -305,7 +311,7 @@ class url_manager {
         return $page_url;
     }
 
-    static public function do_url($url, array $new_get_vars = [], $keep_actual_get_vars = TRUE, array $wich_get_vars = [], $keep_including = true) {
+    static public function do_url($url, array $new_get_vars = [], $keep_actual_get_vars = TRUE, array $wich_get_vars = [], $keep_including = TRUE) {
         if (!is_string($url)) {
             trigger_error("The value to make the link have to be a string", E_USER_ERROR);
         }
@@ -362,7 +368,7 @@ class url_manager {
         /**
          * join the new get vars
          */
-        if (!empty($new_get_vars)) {
+        if (!empty($new_get_vars) || !empty($get_vars)) {
             $get_vars_on_text = "?" . implode("&", $get_vars);
         } else {
             $get_vars_on_text = "";

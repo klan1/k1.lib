@@ -12,17 +12,17 @@ class class_db_table {
     private $db_table_name = FALSE;
     private $db_table_config = FALSE;
     private $db_table_label_field = FALSE;
-    private $db_table_show_rule = FALSE;
+    private $db_table_show_rule = NULL;
 
     /**
      * SQL Values
      */
     private $query_offset = 0;
-    private $query_row_count_limit = null;
-    private $query_where_pairs = null;
-    private $query_sql = null;
-    private $query_sql_total_rows = null;
-    private $query_sql_keys = null;
+    private $query_row_count_limit = NULL;
+    private $query_where_pairs = NULL;
+    private $query_sql = NULL;
+    private $query_sql_total_rows = NULL;
+    private $query_sql_keys = NULL;
     private $total_rows_filtered_result;
     private $total_rows_result;
 
@@ -43,7 +43,7 @@ class class_db_table {
     /**
      * CUSTOM SQL QUERY
      */
-    protected $custom_sql_query_code = null;
+    protected $custom_sql_query_code = NULL;
     protected $custom_query_table_config = [];
 
     /**
@@ -125,7 +125,7 @@ class class_db_table {
         return \k1lib\sql\get_db_table_config($this->db, $db_table_name, $recursion);
     }
 
-    public function set_query_limit($offset = 0, $row_count = null) {
+    public function set_query_limit($offset = 0, $row_count = NULL) {
         $this->query_offset = $offset;
         $this->query_row_count_limit = $row_count;
     }
