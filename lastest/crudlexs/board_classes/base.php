@@ -57,6 +57,12 @@ class board_base {
      */
     protected $sql_action_result = NULL;
 
+    /**
+     *
+     * @var string
+     */
+    protected $show_rule_to_apply = NULL;
+
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         $this->controller_object = $controller_object;
         $this->board_content_div = new \k1lib\html\div_tag("board-content");
@@ -127,6 +133,14 @@ class board_base {
                 return TRUE;
             }
         }
+    }
+
+    public function get_show_rule_to_apply() {
+        return $this->show_rule_to_apply;
+    }
+
+    public function set_show_rule_to_apply($show_rule_to_apply) {
+        $this->show_rule_to_apply = $show_rule_to_apply;
     }
 
 }

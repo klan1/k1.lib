@@ -15,6 +15,7 @@ class board_create extends board_base implements board_interface {
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
+            $this->show_rule_to_apply = "show-create";
             $this->create_object = new \k1lib\crudlexs\creating($this->controller_object->db_table, FALSE);
         }
     }
@@ -34,7 +35,7 @@ class board_create extends board_base implements board_interface {
             $this->create_object->set_back_url(\k1lib\urlrewrite\get_back_url());
 
             $this->create_object->set_do_table_field_name_encrypt(TRUE);
-            $this->controller_object->db_table->set_db_table_show_rule("show-create");
+            $this->controller_object->db_table->set_db_table_show_rule($this->show_rule_to_apply);
             $this->data_loaded = $this->create_object->load_db_table_data(TRUE);
             return $this->board_content_div;
         } else {

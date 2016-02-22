@@ -43,9 +43,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         if (!$blank_data) {
             return parent::load_db_table_data();
         } else {
-            if (!$this->db_table->get_db_table_show_rule()) {
-                $this->db_table->set_db_table_show_rule("show-all");
-            }
             $headers_array = [];
             $blank_row_array = [];
             $show_rule = $this->db_table->get_db_table_show_rule();
@@ -53,7 +50,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 if (!empty($this->db_table->get_constant_fields()) && array_key_exists($field, $this->db_table->get_constant_fields())) {
                     continue;
                 }
-                if ($config[$show_rule]) {
+                if (($show_rule === NULL) || ($config[$show_rule])) {
                     $headers_array[$field] = $field;
                     $blank_row_array[$field] = "";
                 }
@@ -349,12 +346,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              */
             $div_buttons = new \k1lib\html\div_tag("row text-center");
             $div_buttons->append_to($html_form);
-            $submit_button = new \k1lib\html\input_tag("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
-            $submit_button->append_to($div_buttons);
             if ($this->show_cancel_button) {
                 $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
                 $cancel_button->append_to($div_buttons);
             }
+            $submit_button = new \k1lib\html\input_tag("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
+            $submit_button->append_to($div_buttons);
 
             /**
              * Prepare output

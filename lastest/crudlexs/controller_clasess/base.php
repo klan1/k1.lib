@@ -317,7 +317,7 @@ class controller_base {
 
             default:
                 $this->board_inited = FALSE;
-                \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
+                \k1lib\html\html_header_go(url_manager::do_url($this->controller_root_dir . $this->get_board_list_url_name() . "/"));
                 return FALSE;
         }
         $this->board_inited = TRUE;
