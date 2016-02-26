@@ -177,7 +177,7 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
  * @param Boolean $keep_get_vars
  * @return \k1lib\html\a_tag
  */
-function get_link_button($linkTo, $label, $class = "", $id = "", $keep_get_vars = TRUE) {
+function get_link_button($linkTo, $label, $class = "", $id = "") {
     if ($linkTo == NULL) {
         return NULL;
     } elseif (!(is_string($linkTo) && is_string($label))) {
@@ -257,9 +257,6 @@ function get_link_button($linkTo, $label, $class = "", $id = "", $keep_get_vars 
             break;
     }
 
-    if ((strstr($linkTo, "http") === FALSE) && (strstr($linkTo, "javascript:") === FALSE)) {
-        $linkTo = \k1lib\urlrewrite\url_manager::get_app_link($linkTo, $keep_get_vars);
-    }
     $button_object = new \k1lib\html\a_tag($linkTo, " " . $label, "_self", "Button", "button {$class}", $id);
     $button_object->set_attrib("class", "$button_icon", TRUE);
     $button_object->set_attrib("class", "$theme", TRUE);

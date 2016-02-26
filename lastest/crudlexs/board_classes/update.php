@@ -2,7 +2,7 @@
 
 namespace k1lib\crudlexs;
 
-use k1lib\urlrewrite\url_manager as url_manager;
+use k1lib\urlrewrite\url as url;
 
 class board_update extends board_base implements board_interface {
 
@@ -17,7 +17,7 @@ class board_update extends board_base implements board_interface {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-update";
-            $this->row_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "row_keys_text", FALSE);
+            $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "row_keys_text", FALSE);
             $this->update_object = new \k1lib\crudlexs\updating($this->controller_object->db_table, $this->row_keys_text);
         }
     }
@@ -64,26 +64,21 @@ class board_update extends board_base implements board_interface {
                     $this->update_object->put_post_data_on_table_data();
                     if (!$this->skip_form_action) {
                         if ($this->update_object->do_post_data_validation()) {
-                            $back_url = (isset($_GET['back-url'])) ? "&back-url=" . urlencode(\k1lib\urlrewrite\get_back_url()) : "";
-                            $url_to_go = "{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/%row_keys%/?auth-code=%auth_code%{$back_url}";
-                            $this->sql_action_result = $this->update_object->do_update($url_to_go, FALSE);
+                            $this->sql_action_result = $this->update_object->do_update();
                         } else {
                             \k1lib\common\show_message(board_update_strings::$error_form, board_base_strings::$alert_board, "warning");
                         }
                     }
                 }
-                if (empty($this->sql_action_result)) {
-                    $this->update_object->apply_label_filter();
-                    $this->update_object->insert_inputs_on_data_row();
-                    $this->update_object->set_use_create_custom_template();
+                $this->update_object->apply_label_filter();
+                $this->update_object->insert_inputs_on_data_row();
 
-                    $this->update_object->do_html_object()->append_to($this->board_content_div);
-                    if ($do_echo) {
-                        $this->board_content_div->generate_tag(TRUE);
-                        return TRUE;
-                    } else {
-                        return $this->board_content_div;
-                    }
+                $this->update_object->do_html_object()->append_to($this->board_content_div);
+                if ($do_echo) {
+                    $this->board_content_div->generate_tag(TRUE);
+                    return TRUE;
+                } else {
+                    return $this->board_content_div;
                 }
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
@@ -94,11 +89,18 @@ class board_update extends board_base implements board_interface {
         }
     }
 
-    public function finish_board() {
-        if ($this->sql_action_result !== FALSE && $this->sql_action_result !== NULL) {
-            \k1lib\html\html_header_go($this->sql_action_result);
-        } elseif ($this->sql_action_result === FALSE) {
-            \k1lib\common\show_message(board_create_strings::$error_no_inserted, board_base_strings::$error_mysql, "alert");
+    public function finish_board($do_redirect = TRUE, $custom_redirect = FALSE) {
+        if ($this->sql_action_result !== NULL) {
+            if ($custom_redirect === FALSE) {
+                $get_params = [
+                    "back-url" => \k1lib\urlrewrite\get_back_url(),
+                    "auth-code" => "--authcode--"
+                ];
+                $url_to_go = url::do_url("{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/--rowkeys--/?{$back_url}", $get_params);
+            } else {
+                $url_to_go = url::do_url($custom_redirect);
+            }
+            $this->update_object->post_update_redirect($url_to_go, $do_redirect);
         }
     }
 

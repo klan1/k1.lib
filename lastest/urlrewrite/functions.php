@@ -4,7 +4,7 @@ namespace k1lib\urlrewrite;
 
 function get_back_url($get_only = FALSE) {
     if (isset($_GET['back-url'])) {
-        $back_url = $_GET['back-url'];
+        $back_url = urldecode($_GET['back-url']);
 //        $back_url = \k1lib\forms\check_single_incomming_var($_GET['back-url']);
     } elseif (!$get_only && isset($_SERVER['HTTP_REFERER']) && (!empty($_SERVER['HTTP_REFERER']))) {
         $back_url = $_SERVER['HTTP_REFERER'];
@@ -41,14 +41,3 @@ function get_link($link, $text, $class = "", $extra = "") {
     return "<a href='$link' class='$class' $extra>$text</a>";
 }
 
-/** NO
- * This is an alias of "\k1lib\urlrewrite\url_manager::get_app_link" with the $get_vars_to_keep parameter ready to use from the CONFIG file
- * @param string $url_to_link
- * @param boolean $keep_get_vars
- * @param string $get_vars_to_keep Coma separated value
- * @return string
- */
-function get_fb_app_link($url_to_link, $keep_get_vars = TRUE, $get_vars_to_keep = GET_VARS_TO_KEEP) {
-    $link = \k1lib\urlrewrite\url_manager::get_app_link($url_to_link, $keep_get_vars, $get_vars_to_keep);
-    return str_replace(APP_URL, FB_APP_URL, $link);
-}

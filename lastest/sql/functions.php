@@ -19,11 +19,11 @@ use k1lib\sql\local_cache;
  * @param array $table
  * @return array
  */
-function get_db_table_config(\PDO $db, $table, $recursion = TRUE) {
+function get_db_table_config(\PDO $db, $table, $recursion = TRUE, $use_cache = TRUE) {
 
 // SQL to get info about a table
     $columns_info_query = "SHOW FULL COLUMNS FROM {$table}";
-    $columns_info_result = sql_query($db, $columns_info_query, TRUE);
+    $columns_info_result = sql_query($db, $columns_info_query, TRUE, FALSE, $use_cache);
     if (empty($columns_info_result)) {
         trigger_error("The table '$table' do not exist", E_USER_NOTICE);
         return FALSE;
@@ -175,21 +175,7 @@ AND table_name = '{$table}'";
         }
         // IF no label so capitalize the FIELD NAME
         if (!isset($field_config['label'])) {
-            $field_config['label'] = $field_name;
-            // Try to remove the table name from the field name. Commonly use on DB design
-            if (strtolower(substr($table, -3)) === "ies") {
-                $possible_singular_table_name = str_replace("ies", "y", $table);
-            } elseif (strtolower(substr($table, -1)) === "s") {
-                $possible_singular_table_name = substr($table, 0, -1);
-            } else {
-                $possible_singular_table_name = $table;
-            }
-            // Why not changue all the id to ID ?
-            $field_config['label'] = str_replace('id', 'ID', $field_config['label']);
-            // Remove the possible singular name table from field name
-            $field_config['label'] = str_replace("{$possible_singular_table_name}_", '', $field_config['label']);
-            // Better look without the _ character
-            $field_config['label'] = str_replace('_', ' ', strtoupper(substr($field_config['label'], 0, 1)) . (substr($field_config['label'], 1)));
+            $field_config['label'] = get_field_label_default($table, $field_name);
         }
         // ENUM FIX
         if (!isset($field_config['min'])) {
@@ -282,6 +268,24 @@ AND table_name = '{$table}'";
         $config_array[$field_name] = $field_config;
     }
     return $config_array;
+}
+
+function get_field_label_default($table, $field_name) {
+    // Try to remove the table name from the field name. Commonly use on DB design
+    if (strtolower(substr($table, -3)) === "ies") {
+        $possible_singular_table_name = str_replace("ies", "y", $table);
+    } elseif (strtolower(substr($table, -1)) === "s") {
+        $possible_singular_table_name = substr($table, 0, -1);
+    } else {
+        $possible_singular_table_name = $table;
+    }
+    // Why not changue all the id to ID ?
+    $field_name = str_replace('id', 'ID', $field_name);
+    // Remove the possible singular name table from field name
+    $field_name = str_replace("{$possible_singular_table_name}_", '', $field_name);
+    // Better look without the _ character
+    $field_name = str_replace('_', ' ', strtoupper(substr($field_name, 0, 1)) . (substr($field_name, 1)));
+    return $field_name;
 }
 
 /**
@@ -776,7 +780,7 @@ function table_keys_to_text($row_data, $db_table_config) {
     return $table_keys_text;
 }
 
-function get_keys_array_from_row_data(&$row_data, $db_table_config) {
+function get_keys_array_from_row_data($row_data, $db_table_config) {
     $key_fields_array = get_db_table_keys($db_table_config);
     $keys_array = \k1lib\common\clean_array_with_guide($row_data, $key_fields_array);
     if (!empty($keys_array)) {

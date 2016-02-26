@@ -109,7 +109,10 @@ class class_db_table {
         return \k1lib\sql\get_db_table_label_fields($db_table_config);
     }
 
-    public function get_db_table_config() {
+    public function get_db_table_config($reload = FALSE) {
+        if ($reload) {
+            $this->db_table_config = $this->_get_db_table_config($this->db_table_name, TRUE, FALSE);
+        }
         return $this->db_table_config;
     }
 
@@ -121,8 +124,8 @@ class class_db_table {
         return $this->db_table_config[$field][$config_name];
     }
 
-    private function _get_db_table_config($db_table_name, $recursion = 10) {
-        return \k1lib\sql\get_db_table_config($this->db, $db_table_name, $recursion);
+    private function _get_db_table_config($db_table_name, $recursion = TRUE, $use_cache = TRUE) {
+        return \k1lib\sql\get_db_table_config($this->db, $db_table_name, $recursion, $use_cache);
     }
 
     public function set_query_limit($offset = 0, $row_count = NULL) {
@@ -163,7 +166,7 @@ class class_db_table {
                     foreach ($clean_filter_array as $field => $search_value) {
                         if (isset($this->db_table_config[$field]) && (!empty($search_value))) {
                             $query_where_pairs .= ($i >= 1) ? " AND " : "";
-                            $query_where_pairs .= " $field LIKE '%$search_value%'";
+                            $query_where_pairs .= " $field LIKE '%{$search_value}%'";
                             $i++;
                         }
                     }
@@ -229,30 +232,26 @@ class class_db_table {
         /**
          * FIELDS
          */
-        switch ($wich) {
-            case 'main':
-                if (empty($this->db_table_show_rule)) {
-                    $fields = "*";
-                } else {
+        if (empty($this->db_table_show_rule)) {
+            $fields = "*";
+        } else {
+            switch ($wich) {
+                case 'main':
                     $fields = $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
-                }
-                break;
-            case 'keys':
-                $db_table_key_fields = \k1lib\sql\get_db_table_keys_array($this->db_table_config);
-                if (!empty($db_table_key_fields)) {
-                    $fields = implode(",", $db_table_key_fields);
-                } else {
-                    return FALSE;
-                }
-                if (empty($this->db_table_show_rule)) {
-                    $fields_to_add = "";
-                } else {
+                    break;
+                case 'keys':
+                    $db_table_key_fields = \k1lib\sql\get_db_table_keys_array($this->db_table_config);
+                    if (!empty($db_table_key_fields)) {
+                        $fields = implode(",", $db_table_key_fields);
+                    } else {
+                        return FALSE;
+                    }
                     $fields_to_add = "," . $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
-                }
-                $fields .= $fields_to_add;
-                break;
-            default:
-                return FALSE;
+                    $fields .= $fields_to_add;
+                    break;
+                default:
+                    return FALSE;
+            }
         }
 
         if (empty($fields)) {

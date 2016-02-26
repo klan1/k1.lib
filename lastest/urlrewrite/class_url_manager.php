@@ -4,7 +4,7 @@ namespace k1lib\urlrewrite;
 
 use k1lib_common as k1lib_common;
 
-class url_manager {
+class url {
 
     /**
      * Enable state
@@ -198,12 +198,8 @@ class url_manager {
      * @global array self::$url_data
      * @return string URL 
      */
-    static public function get_this_url($app_url = "") {
-        if (!empty($app_url)) {
-            return self::get_app_link($app_url . self::make_url_from_rewrite("this"));
-        } else {
-            return self::make_url_from_rewrite("this");
-        }
+    static public function get_this_url() {
+        return self::make_url_from_rewrite("this");
     }
 
     static public function get_this_controller_id() {
@@ -267,65 +263,44 @@ class url_manager {
     }
 
     /**
-     * Returns a URL ready for the APP, has the ability of keep the GET var and you can order wich one or all by default
-     * @param string $url_to_link
-     * @param boolean $keep_get_vars
-     * @param type $get_vars_to_keep
+     * Return an URL with NEW and EXISTENT GET values with no efford
+     * @param type $url
+     * @param array $new_get_vars
+     * @param type $keep_actual_get_vars
+     * @param array $wich_get_vars
+     * @param type $keep_including
      * @return string
      */
-    static public function get_app_link($url_to_link, $keep_get_vars = TRUE, $get_vars_to_keep = "") {
-        if ($url_to_link === NULL) {
-            return NULL;
-        }
-        if (!is_string($url_to_link)) {
-            trigger_error("The value to make the link have to be a string", E_USER_ERROR);
-        }
-        if (!is_string($get_vars_to_keep)) {
-            trigger_error("The value of get_vars_to_keep have to be a string", E_USER_ERROR);
-        }
-
-        if (($get_vars_to_keep == "") && defined("\k1app\GLOBAL_GET_KEEP_VARS")) {
-            // we always have to keep the signed_request from FB
-            $get_vars_to_keep .= ( (!empty($get_vars_to_keep)) ? ',' . \k1app\GLOBAL_GET_KEEP_VARS : \k1app\GLOBAL_GET_KEEP_VARS);
-        }
-
-        //make the initial link
-        $page_url = $url_to_link;
-        $i = 0;
-        // build the GET list whit only with the vars that the user needs to keep
-        if ($keep_get_vars) {
-            foreach ($_GET as $name => $value) {
-                $value = urlencode($value);
-                if (strpos($get_vars_to_keep, $name) !== FALSE) {
-                    $i++;
-                    if (strpos($page_url, "?")) {
-                        $page_url .= "&{$name}={$value}";
-                    } else {
-                        $page_url .= ( ($i == 1) ? '?' : '&') . "{$name}={$value}";
-                    }
-                } else {
-                    continue;
-                }
-            }
-        }
-        return $page_url;
-    }
-
     static public function do_url($url, array $new_get_vars = [], $keep_actual_get_vars = TRUE, array $wich_get_vars = [], $keep_including = TRUE) {
         if (!is_string($url)) {
             trigger_error("The value to make the link have to be a string", E_USER_ERROR);
         }
 
+        /**
+         * Separate URL, GET VARS and HASH
+         */
+        //Get the HASH part
         $hash = strstr($url, "#");
+        // Clean the hash part from URL
         $url = str_replace($hash, "", $url);
 
-        $url_only = strstr($url, "?");
-        $url = str_replace($url_only, "", $url);
+        //Get the GET vars part
+        $url_vars = strstr($url, "?", FALSE);
+        // Clean the GET vars from URL
+        $url = str_replace($url_vars, "", $url);
+        // Now remove the ? from GET vars part
+//        $url_vars = str_replace("?", "", $url_vars);
+        $url_var_array = \k1lib\common\explode_with_2_delimiters("&", "=", $url_vars, 1);
         /**
-         * Chat all _GET vars
+         * Catch all _GET vars
          */
         $actual_get_vars = \k1lib\forms\check_all_incomming_vars($_GET);
         unset($actual_get_vars[\k1lib\URL_REWRITE_VAR_NAME]);
+
+        /**
+         * Join actual GET vars with the URL GET vars
+         */
+        $actual_get_vars = array_merge($actual_get_vars, $url_var_array);
         /**
          * We have to uset() the new vars from the ACTUAL _GET to avoid problems
          */
@@ -364,7 +339,7 @@ class url_manager {
                 }
             }
         }
-        $get_vars = array_merge($get_vars_to_add, $get_var_to_keep);
+        $get_vars = array_merge($get_var_to_keep, $get_vars_to_add);
         /**
          * join the new get vars
          */
@@ -375,6 +350,10 @@ class url_manager {
         }
         $url_to_return = $url . $get_vars_on_text . $hash;
         return $url_to_return;
+    }
+
+    function do_clean_url($url) {
+        return self::do_url($url, [], FALSE);
     }
 
 }

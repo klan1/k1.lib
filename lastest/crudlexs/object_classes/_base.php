@@ -1,8 +1,12 @@
 <?php
 
 namespace k1lib\crudlexs;
-use \k1lib\common_strings as common_strings;
 
+use \k1lib\common_strings as common_strings;
+use \k1lib\urlrewrite\url as url;
+use \k1lib\db\security\db_table_aliases as db_table_aliases;
+use \k1lib\session\session_plain as session_plain;
+use \k1lib\forms\file_uploads as file_uploads;
 
 interface crudlexs_base_interface {
 
@@ -98,8 +102,8 @@ class crudlexs_base {
     }
 
     function set_object_id($class_name) {
-        if (key_exists($this->db_table->get_db_table_name(), \k1lib\db\security\db_table_aliases::$aliases)) {
-            $table_name = \k1lib\db\security\db_table_aliases::$aliases[$this->db_table->get_db_table_name()];
+        if (key_exists($this->db_table->get_db_table_name(), db_table_aliases::$aliases)) {
+            $table_name = db_table_aliases::$aliases[$this->db_table->get_db_table_name()];
         } else {
             $table_name = $this->db_table->get_db_table_name();
         }
@@ -185,16 +189,20 @@ class crudlexs_base_with_data extends crudlexs_base {
      * Always to create the object you must have a valid DB Table object already 
      * @param \k1lib\crudlexs\class_db_table $db_table DB Table object
      */
-    public function __construct(\k1lib\crudlexs\class_db_table $db_table, $row_keys_text = null) {
+    public function __construct(\k1lib\crudlexs\class_db_table $db_table, $row_keys_text = null, $custom_auth_code = null) {
         $this->back_url = \k1lib\urlrewrite\get_back_url();
 
         if (!empty($row_keys_text)) {
             $this->row_keys_text = $row_keys_text;
             if (!$this->skip_auto_code_verification) {
-                if (isset($_GET['auth-code'])) {
-                    $auth_code = $_GET['auth-code'];
+                if (isset($_GET['auth-code']) || !empty($custom_auth_code)) {
+                    if (!empty($custom_auth_code)) {
+                        $auth_code = $custom_auth_code;
+                    } else {
+                        $auth_code = $_GET['auth-code'];
+                    }
                     $auth_expected = md5(\k1lib\K1MAGIC::get_value() . $this->row_keys_text);
-                    $auth_personal_expected = md5(\k1lib\session\session_plain::get_user_hash() . $this->row_keys_text);
+                    $auth_personal_expected = md5(session_plain::get_user_hash() . $this->row_keys_text);
 
                     if (($auth_code === $auth_expected) || ($auth_code === $auth_personal_expected)) {
                         parent::__construct($db_table);
@@ -232,7 +240,7 @@ class crudlexs_base_with_data extends crudlexs_base {
     }
 
     public function set_auth_code_personal($row_keys_text) {
-        $this->auth_code_personal = md5(\k1lib\session\session_plain::get_user_hash() . $row_keys_text);
+        $this->auth_code_personal = md5(session_plain::get_user_hash() . $row_keys_text);
     }
 
     public function get_do_table_field_name_encrypt() {
@@ -377,7 +385,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                             case "image":
 //                                $div_container = new \k1lib\html\div_tag();
 
-                                $img_tag = new \k1lib\html\img_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field-value%");
+                                $img_tag = new \k1lib\html\img_tag(file_uploads::get_uploads_url() . "--fieldvalue--");
                                 $img_tag->set_attrib("class", "k1-data-img", TRUE);
 
 //                                $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/", "remove this file");
@@ -387,7 +395,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                                 return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
 
                             default:
-                                $link_tag = new \k1lib\html\a_tag(\k1lib\forms\file_uploads::get_uploads_url() . "%field-value%", "%field-value%", "_blank");
+                                $link_tag = new \k1lib\html\a_tag(url::do_url(file_uploads::get_uploads_url() . "--fieldvalue--"), "--fieldvalue--", "_blank");
                                 $link_tag->set_attrib("class", "k1-data-link", TRUE);
                                 return $this->apply_html_tag_on_field_filter($link_tag, array_keys($file_upload_fields));
                         }
@@ -402,7 +410,7 @@ class crudlexs_base_with_data extends crudlexs_base {
     public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null) {
         if ($this->get_state()) {
             $this->link_on_field_filter_applied = true;
-            $a_tag = new \k1lib\html\a_tag($link_to_apply, "");
+            $a_tag = new \k1lib\html\a_tag(url::do_url($link_to_apply), "");
             $a_tag->set_attrib("class", "k1-link-filter", TRUE);
             if (empty($fields_to_change)) {
                 $fields_to_change = crudlexs_base::USE_KEY_FIELDS;
@@ -447,9 +455,9 @@ class crudlexs_base_with_data extends crudlexs_base {
                             if (!empty($this->db_table_data_keys)) {
                                 $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                                 $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
-                                $tag_html = str_replace("%row_keys%", $key_array_text, $tag_html);
-                                $tag_html = str_replace("%field-value%", $row_data[$field_to_change], $tag_html);
-                                $tag_html = str_replace("%auth_code%", $auth_code, $tag_html);
+                                $tag_html = str_replace("--rowkeys--", $key_array_text, $tag_html);
+                                $tag_html = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_html);
+                                $tag_html = str_replace("--authcode--", $auth_code, $tag_html);
 //                            $tag_html = sprintf($tag_html, $key_array_text, $auth_code);
                             }
                             $this->db_table_data_filtered[$index][$field_to_change] = $tag_html;
@@ -593,6 +601,18 @@ class crudlexs_base_with_data extends crudlexs_base {
 
     function set_use_read_custom_template($use_read_custom_template = TRUE) {
         $this->use_read_custom_template = $use_read_custom_template;
+    }
+
+    public function get_db_table_data() {
+        return $this->db_table_data;
+    }
+
+    public function get_db_table_data_keys() {
+        return $this->db_table_data_keys;
+    }
+
+    public function get_db_table_data_filtered() {
+        return $this->db_table_data_filtered;
     }
 
 }
