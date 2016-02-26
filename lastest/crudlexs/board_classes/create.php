@@ -3,6 +3,7 @@
 namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
+use k1lib\urlrewrite\url as url;
 
 class board_create extends board_base implements board_interface {
 
@@ -57,13 +58,7 @@ class board_create extends board_base implements board_interface {
                 $this->create_object->put_post_data_on_table_data();
                 if (!$this->skip_form_action) {
                     if ($this->create_object->do_post_data_validation()) {
-                        if (isset($_GET['back-url'])) {
-                            $url_to_go = \k1lib\urlrewrite\get_back_url();
-                        } else {
-                            $back_url = (isset($_GET['back-url'])) ? "&back-url=" . urlencode(\k1lib\urlrewrite\get_back_url()) : "";
-                            $url_to_go = "{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/%row_keys%/?auth-code=%auth_code%{$back_url}";
-                        }
-                        $this->sql_action_result = $this->create_object->do_insert($url_to_go, FALSE);
+                        $this->sql_action_result = $this->create_object->do_insert();
                     } else {
                         \k1lib\common\show_message(board_create_strings::$error_form, board_base_strings::$alert_board, "warning");
                     }
@@ -73,8 +68,6 @@ class board_create extends board_base implements board_interface {
 
                 $this->create_object->apply_label_filter();
                 $this->create_object->insert_inputs_on_data_row();
-
-                $this->create_object->set_use_create_custom_template();
 
                 $this->create_object->do_html_object()->append_to($this->board_content_div);
 
@@ -93,11 +86,25 @@ class board_create extends board_base implements board_interface {
         }
     }
 
-    public function finish_board() {
-        if ($this->sql_action_result !== FALSE && $this->sql_action_result !== NULL) {
-            \k1lib\html\html_header_go($this->sql_action_result);
-        } elseif ($this->sql_action_result === FALSE) {
-            \k1lib\common\show_message(board_create_strings::$error_no_inserted, board_base_strings::$error_mysql, "alert");
+    public function finish_board($do_redirect = TRUE, $custom_redirect = FALSE) {
+        if ($this->sql_action_result !== NULL) {
+            if ($custom_redirect === FALSE) {
+
+                if (isset($_GET['back-url'])) {
+                    $get_params = [];
+                    $url_to_go = \k1lib\urlrewrite\get_back_url();
+                } else {
+                    $get_params = [
+//                        "back-url" => \k1lib\urlrewrite\get_back_url(),
+                        "auth-code" => "--authcode--"
+                    ];
+                    $url_to_go = "{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/--rowkeys--/";
+                }
+                $url_to_go = url::do_url($url_to_go, $get_params);
+            } else {
+                $url_to_go = url::do_url($custom_redirect);
+            }
+            $this->create_object->post_insert_redirect($url_to_go, $do_redirect);
         }
     }
 

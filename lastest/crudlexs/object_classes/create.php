@@ -27,6 +27,8 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      */
     protected $enable_foundation_form_check = FALSE;
     protected $show_cancel_button = TRUE;
+    protected $inserted_result = NULL;
+    protected $inserted = NULL;
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
@@ -155,6 +157,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              */
             if ($create_labels_on_headers) {
                 $label_tag = new \k1lib\html\label_tag($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
+                if ($this->db_table->get_field_config($field, 'required') === TRUE) {
+                    $label_tag->set_value(" *", TRUE);
+                }
                 if (isset($this->post_validation_errors[$field])) {
                     $label_tag->set_attrib("class", "is-invalid-label");
                 }
@@ -292,19 +297,21 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              */
             $hidden_input = new \k1lib\html\input_tag("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
-// FORM LAYOUT
-//            d(get_class($this));
-//            if ((get_class($this) == "") || (get_class($this) == ""))
-            $possible_read_template = "create-templates/" . $this->db_table->get_db_table_name();
-            $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
+            // FORM LAYOUT
             $html = "";
-            if ($template_file_path && $this->use_create_custom_template) {
-                ob_start();
-                include $template_file_path;
-                $html = ob_get_contents();
-                ob_end_clean();
+            if ($this->use_create_custom_template) {
+                /**
+                 * LOAD the custom HTMLtemplate 
+                 */
+                $possible_read_template = "create-templates/" . $this->db_table->get_db_table_name();
+                $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
 
                 if ($template_file_path) {
+                    ob_start();
+                    include $template_file_path;
+                    $html = ob_get_contents();
+                    ob_end_clean();
+
                     foreach ($this->db_table_data_filtered[1] as $field => $value) {
                         if (temply::is_place_registered("{$field}-label")) {
                             temply::set_place_value("{$field}-label", $this->db_table_data_filtered[0][$field]);
@@ -317,8 +324,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 $template_div = new \k1lib\html\div_tag();
                 $template_div->set_value($html);
                 $template_div->append_to($html_form);
-            } else {
+            }
 
+            if (empty($html)) {
                 $row_column_number = 1;
                 foreach ($this->db_table_data_filtered[1] as $field => $value) {
 // Variable variables names
@@ -368,33 +376,77 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * @param type $url_to_go
      * @return boolean TRUE on sucess or FALSE on error.
      */
-    public function do_insert($url_to_go = null, $do_redirect = true) {
+    public function do_insert() {
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
-        $insert_result = $this->db_table->insert_data($this->post_incoming_array);
-        $last_inserted_id = [];
-        if ($insert_result !== FALSE) {
-            if (is_numeric($insert_result)) {
+        $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array);
+        if ($this->inserted_result !== FALSE) {
+            $this->inserted = TRUE;
+            return TRUE;
+        } else {
+            $this->inserted = FALSE;
+            return FALSE;
+        }
+    }
+
+    public function get_inserted_keys() {
+        if (($this->inserted) && ($this->inserted_result !== FALSE)) {
+            $last_inserted_id = [];
+            if (is_numeric($this->inserted_result)) {
                 foreach ($this->db_table->get_db_table_config() as $field => $config) {
                     if ($config['extra'] == 'auto_increment') {
-                        $last_inserted_id[$field] = $insert_result;
+                        $last_inserted_id[$field] = $this->inserted_result;
                     }
                 }
             }
-            $new_key_text = \k1lib\sql\table_keys_to_text(array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields()), $this->db_table->get_db_table_config());
+            $new_keys_array = \k1lib\sql\get_keys_array_from_row_data(
+                    array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields())
+                    , $this->db_table->get_db_table_config()
+            );
+            return $new_keys_array;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function get_inserted_data() {
+        if (($this->inserted) && ($this->inserted_result !== FALSE)) {
+            $last_inserted_id = [];
+            if (is_numeric($this->inserted_result)) {
+                foreach ($this->db_table->get_db_table_config() as $field => $config) {
+                    if ($config['extra'] == 'auto_increment') {
+                        $last_inserted_id[$field] = $this->inserted_result;
+                    }
+                }
+            }
+            return array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields());
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function post_insert_redirect($url_to_go = "../", $do_redirect = TRUE) {
+        if (($this->inserted) && ($this->inserted_result !== FALSE)) {
+
+            $new_keys_text = \k1lib\sql\table_keys_to_text($this->get_inserted_keys(), $this->db_table->get_db_table_config());
+
             if (!empty($url_to_go)) {
-                $this->set_auth_code($new_key_text);
-                $this->set_auth_code_personal($new_key_text);
-                $url_to_go = str_replace("%row_keys%", $new_key_text, $url_to_go);
-                $url_to_go = str_replace("%auth_code%", $this->get_auth_code(), $url_to_go);
+                $this->set_auth_code($new_keys_text);
+                $this->set_auth_code_personal($new_keys_text);
+                $url_to_go = str_replace("--rowkeys--", $new_keys_text, $url_to_go);
+                $url_to_go = str_replace("--authcode--", $this->get_auth_code(), $url_to_go);
             }
             if ($do_redirect) {
-                \k1lib\html\html_header_go($url_to_go);
+                if ($new_keys_text) {
+                    \k1lib\html\html_header_go($url_to_go);
+                } else {
+                    \k1lib\html\html_header_go("../");
+                }
                 return TRUE;
             } else {
                 return $url_to_go;
             }
         } else {
-            return FALSE;
+            return "";
         }
     }
 

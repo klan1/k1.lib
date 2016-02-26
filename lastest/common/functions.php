@@ -339,3 +339,34 @@ function get_file_extension($file_name, $to_lower = FALSE) {
         return FALSE;
     }
 }
+
+/**
+ * Explode an Array with php function explode() two times with the 2 delimiters
+ * @param string $delimiter1
+ * @param string $delimiter2
+ * @param string $string
+ * @return array always return an Array, empty if the string is empty or invalid. Normal Array if atleast could find the first delimiter.
+ */
+function explode_with_2_delimiters($delimiter1, $delimiter2, $string, $offset = 0) {
+    if (!is_string($string)) {
+        return [];
+    }
+    if ($offset > 0) {
+        $string = substr($string, $offset);
+    }
+
+    $first_explode_array = [];
+    $second_explode_array = [];
+    if ($string != '') {
+        $first_explode_array = explode($delimiter1, $string);
+        foreach ($first_explode_array as $index => $var) {
+            if (strstr($var, $delimiter2) !== FALSE) {
+                list($key, $value) = explode($delimiter2, $var);
+                $second_explode_array[$key] = $value;
+            } else {
+                $second_explode_array[$var] = '';
+            }
+        }
+    }
+    return $second_explode_array;
+}

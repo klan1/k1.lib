@@ -28,6 +28,12 @@ class common_code {
     static public function enable() {
         self::$enabled = TRUE;
     }
+    /**
+     * Disable the engenie
+     */
+    static public function disable() {
+        self::$enabled = FALSE;
+    }
 
     /**
      * Query the enabled state
@@ -35,7 +41,7 @@ class common_code {
      */
     static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {
-            trigger_error("SQL Profile system is not enabled yet", E_USER_ERROR);
+            trigger_error("SQL Profile system is not enabled yet", E_USER_WARNING);
         }
         return self::$enabled;
     }

@@ -33,9 +33,9 @@ class listing_strings {
 
     /**
      *
-     * @var string You can use:  %total-rows-filter%, %total-rows%, %first-row-number%, %last-row-number%
+     * @var string You can use:  --totalrowsfilter--, --totalrows--, --firstrownumber--, --lastrownumber--
      */
-    static $stats_default_message = "Showing %total-rows-filter% of %total-rows% (rows: %first-row-number% to %last-row-number%)";
+    static $stats_default_message = "Showing --totalrowsfilter-- of --totalrows-- (rows: --firstrownumber-- to --lastrownumber--)";
     //
     static $no_fk_search_here = "Search on another table is not possible here, use the Key value to search";
 
@@ -57,7 +57,7 @@ class updating_strings {
 
 class input_helper_strings {
 
-    static $button_remove = "Remove %field-value%";
+    static $button_remove = "Remove --fieldvalue--";
     static $select_choose_option = "Select an option...";
     static $input_date_placeholder = "Click here to pick a date";
     static $input_fk_placeholder = "Use the reference ID";

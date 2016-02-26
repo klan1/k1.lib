@@ -3,7 +3,7 @@
 namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
-use k1lib\urlrewrite\url_manager as url_manager;
+use k1lib\urlrewrite\url as url;
 
 class controller_base {
 
@@ -145,8 +145,8 @@ class controller_base {
         /**
          * URL Management
          */
-        $this->controller_root_dir = $app_base_dir . url_manager::make_url_from_rewrite('this');
-        $this->controller_url_value = url_manager::get_url_level_value('this');
+        $this->controller_root_dir = $app_base_dir . url::make_url_from_rewrite('this');
+        $this->controller_url_value = url::get_url_level_value('this');
         $this->controller_board_url_value = $this->set_and_get_next_url_value();
         /**
          * DB Table 
@@ -252,9 +252,9 @@ class controller_base {
     }
 
     public function set_and_get_next_url_value() {
-        $next_url_level = url_manager::get_url_level_count();
+        $next_url_level = url::get_url_level_count();
         $controller_url_value = "controller_url_{$next_url_level}";
-        return url_manager::set_url_rewrite_var($next_url_level, $controller_url_value, FALSE);
+        return url::set_url_rewrite_var($next_url_level, $controller_url_value, FALSE);
     }
 
     /**
@@ -317,7 +317,7 @@ class controller_base {
 
             default:
                 $this->board_inited = FALSE;
-                \k1lib\html\html_header_go(url_manager::do_url($this->controller_root_dir . $this->get_board_list_url_name() . "/"));
+                \k1lib\html\html_header_go(url::do_url($this->controller_root_dir . $this->get_board_list_url_name() . "/"));
                 return FALSE;
         }
         $this->board_inited = TRUE;
@@ -329,7 +329,7 @@ class controller_base {
             /**
              * URL key text management
              */
-            $related_url_keys_text = url_manager::set_url_rewrite_var(url_manager::get_url_level_count(), "related_url_keys_text", FALSE);
+            $related_url_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "related_url_keys_text", FALSE);
             if (!empty($related_url_keys_text)) {
                 $related_table = $db_table_name;
                 $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
@@ -337,13 +337,16 @@ class controller_base {
                 $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
                     $this->db_table->set_field_constants($related_url_keys_array);
+                    return $related_url_keys_text;
                 } else {
                     $this->board_create_object->set_is_enabled(FALSE);
                     \k1lib\common\show_message(board_base_strings::$error_url_keys_no_auth, \k1lib\common_strings::$error, "alert");
+                    return FALSE;
                 }
             } else {
                 $this->board_create_object->set_is_enabled(FALSE);
                 \k1lib\common\show_message(board_base_strings::$error_url_keys_no_keys_text, \k1lib\common_strings::$error, "alert");
+                return FALSE;
             }
         }
     }
@@ -681,6 +684,89 @@ class controller_base {
 
     function set_board_delete_allowed_levels($board_delete_allowed_levels) {
         $this->board_delete_allowed_levels = $board_delete_allowed_levels;
+    }
+
+    /**
+     * ON BOARD
+     */
+    public function on_board_create() {
+        if (isset($this->board_create_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_object_create() {
+        if (isset($this->board_create_object->create_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_board_read() {
+        if (isset($this->board_read_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_object_read() {
+        if (isset($this->board_read_object->read_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_board_update() {
+        if (isset($this->board_update_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_object_update() {
+        if (isset($this->board_update_object->update_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_board_delete() {
+        if (isset($this->board_delete_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_object_delete() {
+        if (isset($this->board_delete_object->delete_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_board_list() {
+        if (isset($this->board_list_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_object_list() {
+        if (isset($this->board_list_object->list_object)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
 }

@@ -172,7 +172,7 @@ class temply {
                 break;
         }
         if ($relative) {
-            $code = str_replace("%url%", \k1lib\urlrewrite\url_manager::get_app_link($url), $code);
+            $code = str_replace("%url%", \k1lib\urlrewrite\url::do_url($url, [], FALSE), $code);
         } else {
             $code = str_replace("%url%", $url, $code);
         }
@@ -205,7 +205,7 @@ class temply {
                 break;
         }
         if ($relative) {
-            $code = str_replace("%url%", \k1lib\urlrewrite\url_manager::get_app_link($url), $code);
+            $code = str_replace("%url%", \k1lib\urlrewrite\url::do_url($url, [], FALSE), $code);
         } else {
             $code = str_replace("%url%", $url, $code);
         }

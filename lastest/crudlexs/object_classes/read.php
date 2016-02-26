@@ -9,9 +9,9 @@ use k1lib\templates\temply as temply;
  */
 class reading extends crudlexs_base_with_data implements crudlexs_base_interface {
 
-    public function __construct($db_table, $row_keys_text) {
+    public function __construct($db_table, $row_keys_text, $custom_auth_code = "") {
         if (!empty($row_keys_text)) {
-            parent::__construct($db_table, $row_keys_text);
+            parent::__construct($db_table, $row_keys_text, $custom_auth_code);
         } else {
             \k1lib\common\show_message(object_base_strings::$error_no_row_keys_text, common_strings::$error, "alert");
         }

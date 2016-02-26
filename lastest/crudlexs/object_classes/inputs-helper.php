@@ -2,6 +2,8 @@
 
 namespace k1lib\crudlexs;
 
+use k1lib\urlrewrite\url as url;
+
 class input_helper {
 
     static $do_fk_search_tool = TRUE;
@@ -75,7 +77,7 @@ class input_helper {
         if (isset($crudlex_obj->db_table_data[1][$field]['name']) || empty($crudlex_obj->db_table_data[1][$field])) {
             return $input_tag;
         } else {
-            $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/" . $field_encrypted . "/?auth-code=%auth_code%", input_helper_strings::$button_remove);
+            $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/" . $field_encrypted . "/?auth-code=--authcode--", input_helper_strings::$button_remove);
 
             $div_container = new \k1lib\html\div_tag();
             $div_container->append_child($input_tag);
@@ -115,16 +117,17 @@ class input_helper {
 //            $crudlex_obj->set_do_table_field_name_encrypt();
             $static_values = $crudlex_obj->db_table->get_constant_fields();
             $static_values_enconded = $crudlex_obj->encrypt_field_names($static_values);
-            $static_values_enconded_as_get_text = \k1lib\common\array_to_url_parameters($static_values_enconded);
-
-            $back_url = urlencode($_SERVER['REQUEST_URI']);
-
 
             $search_button = new \k1lib\html\input_tag("button", "search", "&#xf18d;", "button fi-page-search");
             $search_button->set_attrib("style", "font-family:foundation-icons");
 
             if (self::$do_fk_search_tool) {
-                $url_to_search_fk_data = self::$url_to_search_fk_data . "{$fk_table_alias}/list/$this_table_alias/?back-url={$back_url}&{$static_values_enconded_as_get_text}";
+                $url_params = [
+                    "back-url" => $_SERVER['REQUEST_URI']
+                ];
+                $url_params = array_merge($static_values_enconded, $url_params);
+
+                $url_to_search_fk_data = url::do_url(self::$url_to_search_fk_data . "{$fk_table_alias}/list/$this_table_alias/", $url_params);
                 $search_button->set_attrib("onclick", "javascript:use_select_row_keys(this.form,'{$url_to_search_fk_data}')");
             } else {
                 $url_to_search_fk_data = "#";

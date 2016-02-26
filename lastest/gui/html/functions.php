@@ -11,25 +11,9 @@ function js_back() {
  * @param string $url
  * @param bolean $app_format 
  */
-function html_header_go($url, $app_format = TRUE, $keep_vars = TRUE, $get_vars_to_keep = "") {
-//    die("Redirecting... [$url]");
+function html_header_go($url) {
     ob_clean();
-    if ($app_format) {
-        $url = \k1lib\urlrewrite\url_manager::get_app_link($url, $keep_vars, $get_vars_to_keep);
-    }
-//    trigger_error("No se que pasa!! " . __FUNCTION__, E_USER_ERROR);
-//    echo "$file - $line";
     header("X-K1.LIB-Message : Redirecting...");
-//    $html = <<<HTML
-//<html>
-//  <head>
-//    <title>X-K1.LIB-Message : Redirecting...</title>
-//    <META http-equiv="refresh" content="0;URL={$url}">
-//  </head>
-//  <body bgcolor="#ffffff"></body>
-//</html>
-//HTML;
-//    die($html);
     header("Location: {$url}");
     exit;
 }
@@ -40,14 +24,8 @@ function html_header_go($url, $app_format = TRUE, $keep_vars = TRUE, $get_vars_t
  * @param string $root The DOM object to redirect
  * @param bolean $app_format 
  */
-function js_go($url, $root = "window", $app_format = TRUE, $keep_vars = TRUE, $get_vars_to_keep = "") {
+function js_go($url, $root = "window") {
     ob_clean();
-//    trigger_error("No se que pasa!! " . __FUNCTION__, E_USER_ERROR);
-
-    if ($app_format) {
-        $url = \k1lib\urlrewrite\url_manager::get_app_link($url, $keep_vars, $get_vars_to_keep);
-    }
-//    echo "$file - $line";
     die("<script type='text/javascript'>{$root}.location.href = '{$url}';</script>");
 }
 
