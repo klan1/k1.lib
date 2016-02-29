@@ -7,6 +7,8 @@ use k1lib\urlrewrite\url as url;
 
 class controller_base {
 
+    protected $security_no_rules_enable = FALSE;
+
     /**
      * DB table main object
      * @var \k1lib\crudlexs\class_db_table 
@@ -262,6 +264,11 @@ class controller_base {
      * @return \k1lib\html\div_tag|boolean
      */
     public function init_board($specific_board_to_init = NULL) {
+        if ($this->security_no_rules_enable === FALSE) {
+            if (isset($_GET['no-rules'])) {
+                unset($_GET['no-rules']);
+            }
+        }
         if (empty($specific_board_to_init)) {
             $specific_board_to_init = ($this->controller_board_url_value) ? $this->controller_board_url_value : "no-url";
         }
@@ -324,7 +331,7 @@ class controller_base {
         return $this->board_div_content;
     }
 
-    public function read_url_keys_text($db_table_name) {
+    public function read_url_keys_text_for_create($db_table_name) {
         if (isset($this->board_create_object)) {
             /**
              * URL key text management
@@ -347,6 +354,35 @@ class controller_base {
                 $this->board_create_object->set_is_enabled(FALSE);
                 \k1lib\common\show_message(board_base_strings::$error_url_keys_no_keys_text, \k1lib\common_strings::$error, "alert");
                 return FALSE;
+            }
+        }
+    }
+
+    public function read_url_keys_text_for_list($db_table_name, $is_required = TRUE) {
+        if (isset($this->board_list_object)) {
+            /**
+             * URL key text management
+             */
+            $related_url_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "related_url_keys_text", FALSE);
+            if (!empty($related_url_keys_text)) {
+                $related_table = $db_table_name;
+                $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
+                $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
+                if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
+                    $this->db_table->set_query_filter($related_url_keys_array, TRUE);
+                    return $related_url_keys_text;
+                } else {
+                    $this->board_list_object->set_is_enabled(FALSE);
+                    \k1lib\common\show_message(board_base_strings::$error_url_keys_no_auth, \k1lib\common_strings::$error, "alert");
+                    return FALSE;
+                }
+            } else {
+                if ($is_required) {
+                    $this->board_list_object->set_is_enabled(FALSE);
+                    \k1lib\common\show_message(board_base_strings::$error_url_keys_no_keys_text, \k1lib\common_strings::$error, "alert");
+                    return FALSE;
+                }
             }
         }
     }
@@ -767,6 +803,14 @@ class controller_base {
         } else {
             return FALSE;
         }
+    }
+
+    public function get_security_no_rules_enable() {
+        return $this->security_no_rules_enable;
+    }
+
+    public function set_security_no_rules_enable($security_no_rules_enable) {
+        $this->security_no_rules_enable = $security_no_rules_enable;
     }
 
 }

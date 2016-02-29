@@ -433,6 +433,11 @@ class crudlexs_base_with_data extends crudlexs_base {
                     $fields_to_change = $this->db_table_data[0];
                 } elseif ($fields_to_change == crudlexs_base::USE_LABEL_FIELDS) {
                     $fields_to_change = \k1lib\sql\get_db_table_label_fields($this->db_table->get_db_table_config());
+                    if (empty($fields_to_change)) {
+                        $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
+                    }
+                } elseif (empty($fields_to_change)) {
+                    $fields_to_change = $this->db_table_data[0];
                 } else {
                     if (!is_array($fields_to_change) && is_string($fields_to_change)) {
                         $fields_to_change = Array($fields_to_change);

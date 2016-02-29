@@ -54,10 +54,10 @@ class board_read extends board_base implements board_interface {
                 /**
                  * ALL DATA
                  */
-                if ($this->all_data_enable && $this->data_loaded) {
-                    $all_data_url = "../../{$this->controller_object->get_board_list_url_name()}/";
+                if ($this->all_data_enable) {
+                    $all_data_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_list_url_name()}/";
                     $all_data_link = \k1lib\html\get_link_button(
-                            url::do_url($all_data_url, [], FALSE)
+                            url::do_url($all_data_url, [], TRUE,['no-rules'])
                             , board_read_strings::$button_all_data
                     );
                     $all_data_link->append_to($this->board_content_div);
@@ -66,7 +66,7 @@ class board_read extends board_base implements board_interface {
                  * EDIT BUTTON
                  */
                 if ($this->update_enable) {
-                    $edit_url = "../../{$this->controller_object->get_board_update_url_name()}/{$this->row_keys_text}/";
+                    $edit_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_update_url_name()}/{$this->row_keys_text}/";
                     $get_vars = [
                         "auth-code" => $this->read_object->get_auth_code(),
                         "back-url" => $_SERVER['REQUEST_URI'],
@@ -78,7 +78,7 @@ class board_read extends board_base implements board_interface {
                  * DELETE BUTTON
                  */
                 if ($this->delete_enable) {
-                    $delete_url = "../../{$this->controller_object->get_board_delete_url_name()}/{$this->row_keys_text}/";
+                    $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/{$this->row_keys_text}/";
                     if (\k1lib\urlrewrite\get_back_url(TRUE)) {
                         $get_vars = [
                             "auth-code" => $this->read_object->get_auth_code_personal(),
@@ -121,8 +121,12 @@ class board_read extends board_base implements board_interface {
 //                        $this->controller_object->board_read_object->set_board_name($data_label);
                     }
                 }
-                $this->read_object->apply_label_filter();
-                $this->read_object->apply_field_label_filter();
+                if ($this->apply_label_filter) {
+                    $this->read_object->apply_label_filter();
+                }
+                if ($this->apply_field_label_filter) {
+                    $this->read_object->apply_field_label_filter();
+                }
 //                $this->read_object->set_use_read_custom_template();
                 if (\k1lib\forms\file_uploads::is_enabled()) {
                     $this->read_object->apply_file_uploads_filter();
@@ -183,7 +187,7 @@ class board_read extends board_base implements board_interface {
      * @param boolean $show_create
      * @return \k1lib\html\div_tag|boolean
      */
-    public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $show_create = TRUE, $use_back_url = FALSE) {
+    public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE) {
 
         $detail_div = new \k1lib\html\div_tag();
 
@@ -233,9 +237,10 @@ class board_read extends board_base implements board_interface {
 
                 if ($this->related_show_all_data && $data_loaded) {
                     $get_vars = [
+                        "auth-code" => $current_row_keys_text_auth_code,
                         "back-url" => $_SERVER['REQUEST_URI'],
                     ];
-                    $all_data_url = url::do_url(APP_URL . $board_root . "/", $get_vars, FALSE);
+                    $all_data_url = url::do_url(APP_URL . $board_root . "/" . $board_list . "/{$current_row_keys_text}/", $get_vars, FALSE);
                     $all_data_button = \k1lib\html\get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
                     $related_title->set_value($all_data_button->generate_tag(), TRUE);
                 }
@@ -265,6 +270,7 @@ class board_read extends board_base implements board_interface {
                 return false;
             }
         }
+        $this->set_related_show_new(TRUE);
         return $detail_div;
     }
 
@@ -298,6 +304,14 @@ class board_read extends board_base implements board_interface {
 
     function set_use_label_as_title_enabled($use_label_as_title_enabled) {
         $this->use_label_as_title_enabled = $use_label_as_title_enabled;
+    }
+
+    public function set_related_show_new($related_show_new) {
+        $this->related_show_new = $related_show_new;
+    }
+
+    public function set_related_show_all_data($related_show_all_data) {
+        $this->related_show_all_data = $related_show_all_data;
     }
 
 }

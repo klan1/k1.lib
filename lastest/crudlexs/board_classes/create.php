@@ -65,8 +65,9 @@ class board_create extends board_base implements board_interface {
                 }
             }
             if (empty($this->sql_action_result)) {
-
-                $this->create_object->apply_label_filter();
+                if ($this->apply_label_filter) {
+                    $this->create_object->apply_label_filter();
+                }
                 $this->create_object->insert_inputs_on_data_row();
 
                 $this->create_object->do_html_object()->append_to($this->board_content_div);
