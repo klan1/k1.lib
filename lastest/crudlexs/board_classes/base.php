@@ -63,6 +63,18 @@ class board_base {
      */
     protected $show_rule_to_apply = NULL;
 
+    /**
+     *
+     * @var boolean
+     */
+    protected $apply_label_filter = TRUE;
+
+    /**
+     *
+     * @var boolean
+     */
+    protected $apply_field_label_filter = TRUE;
+
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         $this->controller_object = $controller_object;
         $this->board_content_div = new \k1lib\html\div_tag("board-content");
@@ -142,5 +154,21 @@ class board_base {
     public function set_show_rule_to_apply($show_rule_to_apply) {
         $this->show_rule_to_apply = $show_rule_to_apply;
     }
+
+    public function get_apply_field_label_filter() {
+        return $this->apply_field_label_filter;
+    }
+
+    public function set_apply_field_label_filter($apply_field_label_filter) {
+        $this->apply_field_label_filter = $apply_field_label_filter;
+    }
+    public function get_apply_label_filter() {
+        return $this->apply_label_filter;
+    }
+
+    public function set_apply_label_filter($apply_label_filter) {
+        $this->apply_label_filter = $apply_label_filter;
+    }
+
 
 }

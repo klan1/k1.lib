@@ -70,7 +70,9 @@ class board_update extends board_base implements board_interface {
                         }
                     }
                 }
-                $this->update_object->apply_label_filter();
+                if ($this->apply_label_filter) {
+                    $this->update_object->apply_label_filter();
+                }
                 $this->update_object->insert_inputs_on_data_row();
 
                 $this->update_object->do_html_object()->append_to($this->board_content_div);
