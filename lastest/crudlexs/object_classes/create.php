@@ -87,33 +87,31 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         return TRUE;
     }
 
-    function get_post_data() {
-        return $this->post_incoming_array;
-    }
-
     /**
      * Get and check the $_POST data, then remove the non table values. If do_table_field_name_encrypt is TRUE then will decrypt them too.
      * @return boolean
      */
     function catch_post_data() {
         $this->do_file_uploads_validation();
-        $this->post_incoming_array = $_POST;
+        $this->post_incoming_array = array_merge($this->post_incoming_array, $_POST);
         if (isset($this->post_incoming_array['k1magic'])) {
             self::set_k1magic_value($this->post_incoming_array['k1magic']);
             unset($this->post_incoming_array['k1magic']);
-        }
 
-        if (!empty($this->post_incoming_array)) {
-            if ($this->do_table_field_name_encrypt) {
-                $new_post_data = [];
-                foreach ($this->post_incoming_array as $field => $value) {
-                    $new_post_data[$this->decrypt_field_name($field)] = $value;
+            if (!empty($this->post_incoming_array)) {
+                if ($this->do_table_field_name_encrypt) {
+                    $new_post_data = [];
+                    foreach ($this->post_incoming_array as $field => $value) {
+                        $new_post_data[$this->decrypt_field_name($field)] = $value;
+                    }
+                    $this->post_incoming_array = $new_post_data;
+                    unset($new_post_data);
                 }
-                $this->post_incoming_array = $new_post_data;
-                unset($new_post_data);
+                $this->post_incoming_array = \k1lib\common\clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
+                return TRUE;
+            } else {
+                return FALSE;
             }
-            $this->post_incoming_array = \k1lib\common\clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
-            return TRUE;
         } else {
             return FALSE;
         }
@@ -448,6 +446,14 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         } else {
             return "";
         }
+    }
+
+    function get_post_data() {
+        return $this->post_incoming_array;
+    }
+
+    public function set_post_data(Array $post_incoming_array) {
+        $this->post_incoming_array = array_merge($this->post_incoming_array, $post_incoming_array);
     }
 
 }

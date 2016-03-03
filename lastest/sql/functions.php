@@ -579,6 +579,47 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
     }
     return $data_string;
 }
+/**
+ * Convert an ARRAY to SQL SET pairs with deferent <> or NOT LIKE
+ * @param Array $array Array to convert
+ * @param Bolean $use_nulls If should keep the null data, otherwise those will be skiped
+ * @param Bolean $for_where_stament If TRUE will join the pairs with AND, if not, will use coma instead
+ * @return type
+ */
+function array_to_sql_set_exclude(\PDO $db, array $array, $use_nulls = true, $for_where_stament = FALSE, $precise = TRUE) {
+    if (is_array($array) && (count($array) >= 1)) {
+
+        /**
+         * NEW CODE 2016
+         */
+        $pairs = [];
+        foreach ($array as $field => $value) {
+            if ($use_nulls === FALSE && $value === NULL) {
+                continue;
+            }
+            if ($precise) {
+                if ($value === NULL) {
+                    $pairs[] = "`{$field}`<> NULL";
+                } else {
+                    $pairs[] = "`{$field}`<> " . $db->quote($value);
+                }
+            } else {
+                $pairs[] = "`{$field}` NOT LIKE '%" . $db->quote($value) . "%'";
+            }
+        }
+        if ($for_where_stament) {
+            $glue = " AND ";
+        } else {
+            $glue = ", ";
+        }
+        $data_string = implode($glue, $pairs);
+
+    } else {
+        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
+        exit();
+    }
+    return $data_string;
+}
 
 function get_db_tables_config_from_sql(\PDO $db, $sql_query) {
     $sql_query = "EXPLAIN " . $sql_query;

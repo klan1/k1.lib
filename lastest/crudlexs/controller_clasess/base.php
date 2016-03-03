@@ -331,7 +331,7 @@ class controller_base {
         return $this->board_div_content;
     }
 
-    public function read_url_keys_text_for_create($db_table_name) {
+    public function read_url_keys_text_for_create($db_table_name, array &$keys_array_to_return = []) {
         if (isset($this->board_create_object)) {
             /**
              * URL key text management
@@ -341,6 +341,7 @@ class controller_base {
                 $related_table = $db_table_name;
                 $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
                 $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                $keys_array_to_return = $related_url_keys_array;
                 $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
                     $this->db_table->set_field_constants($related_url_keys_array);
