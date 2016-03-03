@@ -181,6 +181,46 @@ class class_db_table {
         }
     }
 
+    public function set_query_filter_exclude($filter_array, $exact_filter = FALSE, $do_clean_array = TRUE) {
+        if ($do_clean_array) {
+            $clean_filter_array = \k1lib\common\clean_array_with_guide($filter_array, $this->db_table_config);
+        } else {
+            $clean_filter_array = $filter_array;
+        }
+        if (empty($clean_filter_array)) {
+            return FALSE;
+        } else {
+            $query_where_pairs = "";
+            if ($exact_filter) {
+                $query_where_pairs = \k1lib\sql\array_to_sql_set_exclude($this->db, $clean_filter_array, FALSE, TRUE);
+            } else {
+                $doFilter = FALSE;
+                foreach ($clean_filter_array as $search_value) {
+                    if (!empty($search_value)) {
+                        $doFilter = TRUE;
+                    }
+                }
+                $i = 0;
+                if ($doFilter) {
+                    // and make the conditions, all with LIKE
+                    foreach ($clean_filter_array as $field => $search_value) {
+                        if (isset($this->db_table_config[$field]) && (!empty($search_value))) {
+                            $query_where_pairs .= ($i >= 1) ? " AND " : "";
+                            $query_where_pairs .= " $field NOT LIKE '%{$search_value}%'";
+                            $i++;
+                        }
+                    }
+                }
+            }
+            if (!empty($this->query_where_pairs)) {
+                $this->query_where_pairs = "({$this->query_where_pairs}) AND ($query_where_pairs)";
+            } else {
+                $this->query_where_pairs = $query_where_pairs;
+            }
+            return TRUE;
+        }
+    }
+
     public function set_field_constants(array $field_constants_array) {
 
         if (empty($field_constants_array)) {
