@@ -431,7 +431,7 @@ class session_db extends session_plain {
         if ($this->user_remember_me_value) {
             $coockie_time = time() + (15 * 60 * 60 * 24);
         } else {
-            $coockie_time = 0;
+            $coockie_time = time() + (10);
         }
         $this->coockie_data = $data_encoded;
         $coockie = setcookie($this->save_cookie_name, $data_encoded, $coockie_time, $path);
