@@ -176,7 +176,7 @@ class controller_base {
 //        $class_name::CONTROLLER_ALLOWED_LEVELS;
 
         /**
-         * URLS
+         * ENABLED
          */
         if (defined("{$class_name}::BOARD_CREATE_ENABLED")) {
             $this->set_board_create_enabled($class_name::BOARD_CREATE_ENABLED);
@@ -286,13 +286,13 @@ class controller_base {
                 $this->board_read_object->set_is_enabled($this->board_read_enabled);
                 $this->board_read_object->set_board_name($this->board_read_name);
                 $this->board_div_content = $this->board_read_object->board_content_div;
-                if (!$this->board_list_enabled) {
+                if (!$this->board_list_enabled || !$this->get_board_list_allowed_for_current_user()) {
                     $this->board_read_object->set_all_data_enable(FALSE);
                 }
-                if (!$this->board_update_enabled) {
+                if (!$this->board_update_enabled || !$this->get_board_update_allowed_for_current_user()) {
                     $this->board_read_object->set_update_enable(FALSE);
                 }
-                if (!$this->board_delete_enabled) {
+                if (!$this->board_delete_enabled || !$this->get_board_delete_allowed_for_current_user()) {
                     $this->board_read_object->set_delete_enable(FALSE);
                 }
                 break;
@@ -317,7 +317,7 @@ class controller_base {
                 $this->board_list_object->set_is_enabled($this->board_list_enabled);
                 $this->board_list_object->set_board_name($this->board_list_name);
                 $this->board_div_content = $this->board_list_object->board_content_div;
-                if (!$this->board_create_enabled) {
+                if (!$this->board_create_enabled || !$this->get_board_create_allowed_for_current_user()) {
                     $this->board_list_object->set_create_enable(FALSE);
                 }
                 break;
@@ -329,6 +329,46 @@ class controller_base {
         }
         $this->board_inited = TRUE;
         return $this->board_div_content;
+    }
+
+    public function get_board_create_allowed_for_current_user() {
+        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_create_allowed_levels)))) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function get_board_read_allowed_for_current_user() {
+        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_read_allowed_levels)))) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function get_board_update_allowed_for_current_user() {
+        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_update_allowed_levels)))) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function get_board_delete_allowed_for_current_user() {
+        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_delete_allowed_levels)))) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function get_board_list_allowed_for_current_user() {
+        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_list_allowed_levels)))) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
     }
 
     public function read_url_keys_text_for_create($db_table_name, array &$keys_array_to_return = []) {
