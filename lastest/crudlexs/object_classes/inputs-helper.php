@@ -44,11 +44,11 @@ class input_helper {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
 
         if (!empty(self::$main_css)) {
-            $css_option = "content_css: ['" . self::$main_css . "'],";
+            $css_option = "content_css: ['" . self::$main_css . "?' + new Date().getTime()],";
         } else {
             $css_option = "";
         }
-
+        
         $html_script = "tinymce.init({ "
                 . "selector: '#$field_encrypted',"
                 . "height: 300,"
@@ -58,6 +58,8 @@ class input_helper {
                     'insertdatetime media table contextmenu paste code'
                 ],"
                 . $css_option
+                . "body_class: 'html-editor',"
+//                . "content_style: 'div {margin: 100px; border: 50px solid red; padding: 3px}',"
                 . "toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',"
                 . "paste_data_images: true,"
                 . ""

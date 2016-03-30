@@ -437,28 +437,35 @@ class session_db extends session_plain {
         $coockie = setcookie($this->save_cookie_name, $data_encoded, $coockie_time, $path);
     }
 
-    public function load_data_from_coockie() {
+    public function load_data_from_coockie($return_coockie_data = FALSE) {
         if (!empty($this->coockie_data)) {
             $_COOKIE[$this->save_cookie_name] = $this->coockie_data;
         }
         if (isset($_COOKIE[$this->save_cookie_name])) {
-            $data = \k1lib\crypt::decrypt($_COOKIE[$this->save_cookie_name]);
-            if ($data['user_hash'] === self::get_user_hash($data['user_login_input_value'])) {
-                $this->set_config($data['db_table_name'], $data['user_login_field'], $data['user_password_field'], $data['user_level_field']);
-                $this->user_login_input_value = $data['user_login_input_value'];
-                $this->user_password_input_value = $data['user_password_input_value'];
-                $this->user_remember_me_value = $data['user_remember_me_value'];
 
-                $user_data = $this->check_login();
-                if ($user_data) {
-                    $this->user_data = $user_data;
-                    $this->start_logged_session($user_data[$this->user_login_field], $user_data, $user_data[$this->user_level_field]);
-                    return $user_data;
+            $data = \k1lib\crypt::decrypt($_COOKIE[$this->save_cookie_name]);
+
+            if ($return_coockie_data) {
+                return $data;
+            } else {
+
+                if ($data['user_hash'] === self::get_user_hash($data['user_login_input_value'])) {
+                    $this->set_config($data['db_table_name'], $data['user_login_field'], $data['user_password_field'], $data['user_level_field']);
+                    $this->user_login_input_value = $data['user_login_input_value'];
+                    $this->user_password_input_value = $data['user_password_input_value'];
+                    $this->user_remember_me_value = $data['user_remember_me_value'];
+
+                    $user_data = $this->check_login();
+                    if ($user_data) {
+                        $this->user_data = $user_data;
+                        $this->start_logged_session($user_data[$this->user_login_field], $user_data, $user_data[$this->user_level_field]);
+                        return $user_data;
+                    } else {
+                        return FALSE;
+                    }
                 } else {
                     return FALSE;
                 }
-            } else {
-                return FALSE;
             }
         } else {
             return FALSE;
