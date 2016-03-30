@@ -358,6 +358,16 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
     }
 }
 
+/**
+ * 
+ * @global type $controller_errors
+ * @param \PDO $db
+ * @param string $table
+ * @param array $data
+ * @param array $table_keys
+ * @param array $db_table_config
+ * @return boolean
+ */
 function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array()) {
     global $controller_errors;
 
@@ -383,7 +393,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
                 if (empty($table_keys)) {
                     $keys_where_condition = table_keys_to_where_condition($data, $db_table_config);
                 } else {
-                    $keys_where_condition = table_keys_to_where_condition($table_keys, $db_table_config);
+                    $keys_where_condition = array_to_sql_set($db, $table_keys, TRUE, TRUE);
                 }
                 $data_string = array_to_sql_set($db, $data);
                 $update_sql = "UPDATE $table SET $data_string WHERE $keys_where_condition;";
@@ -579,6 +589,7 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
     }
     return $data_string;
 }
+
 /**
  * Convert an ARRAY to SQL SET pairs with deferent <> or NOT LIKE
  * @param Array $array Array to convert
@@ -613,7 +624,6 @@ function array_to_sql_set_exclude(\PDO $db, array $array, $use_nulls = true, $fo
             $glue = ", ";
         }
         $data_string = implode($glue, $pairs);
-
     } else {
         trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
         exit();
@@ -863,7 +873,6 @@ function table_url_text_to_keys($url_text, $db_table_config) {
 }
 
 function table_keys_to_where_condition(&$row_data, $db_table_config, $use_table_name = FALSE) {
-//    d($db_table_config);
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }

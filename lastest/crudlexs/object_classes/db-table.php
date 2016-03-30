@@ -451,8 +451,13 @@ class class_db_table {
         $data_to_insert = array_merge($data_to_insert, $this->constant_fields);
         return \k1lib\sql\sql_insert($this->db, $this->db_table_name, $data_to_insert);
     }
-
-    public function update_data(Array $data_to_update, $key_to_update) {
+    /**
+     * SQL update method
+     * @param array $data_to_update
+     * @param array $key_to_update
+     * @return boolean
+     */
+    public function update_data(array $data_to_update, array $key_to_update) {
         if (empty($data_to_update)) {
             trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_update, E_USER_WARNING);
             return FALSE;
