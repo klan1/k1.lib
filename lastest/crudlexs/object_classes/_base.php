@@ -353,7 +353,12 @@ class crudlexs_base_with_data extends crudlexs_base {
                             $fk_label_field = \k1lib\sql\get_fk_field_label($this->db_table->db, $fk_table, $row_data);
 //                            $this->db_table_data_filtered[$index][$field] = $fk_label_field;
                             if (!empty($fk_label_field)) {
-                                $this->db_table_data_filtered[$index][$field] = $fk_label_field;
+//                                d($this->db_table_data_filtered[$index][$field], TRUE);
+                                if (is_object($this->db_table_data_filtered[$index][$field])) {
+                                    $this->db_table_data_filtered[$index][$field]->set_value($fk_label_field);
+                                } else {
+                                    $this->db_table_data_filtered[$index][$field] = $fk_label_field;
+                                }
                             }
                         }
                     }
@@ -407,21 +412,21 @@ class crudlexs_base_with_data extends crudlexs_base {
         }
     }
 
-    public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null) {
+    public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null, $custom_field_value = null, $href_target = null) {
         if ($this->get_state()) {
             $this->link_on_field_filter_applied = true;
-            $a_tag = new \k1lib\html\a_tag(url::do_url($link_to_apply), "");
+            $a_tag = new \k1lib\html\a_tag(url::do_url($link_to_apply), "", $href_target);
             $a_tag->set_attrib("class", "k1-link-filter", TRUE);
             if (empty($fields_to_change)) {
                 $fields_to_change = crudlexs_base::USE_KEY_FIELDS;
             }
-            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change);
+            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change, FALSE, $custom_field_value);
         } else {
             return FALSE;
         }
     }
 
-    public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $append_auth_code = FALSE) {
+    public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $append_auth_code = FALSE, $custom_field_value = null) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_NOTICE);
@@ -443,29 +448,58 @@ class crudlexs_base_with_data extends crudlexs_base {
                         $fields_to_change = Array($fields_to_change);
                     }
                 }
+                $table_constant_fields = $this->db_table->get_constant_fields();
                 foreach ($fields_to_change as $field_to_change) {
                     foreach ($this->db_table_data_filtered as $index => $row_data) {
                         if ($index === 0) {
                             continue;
                         }
                         if (!array_key_exists($field_to_change, $row_data)) {
-//                        trigger_error(__METHOD__ . "The field to change ($field_to_change) do no exist ", E_USER_WARNING);
+                            trigger_error(__METHOD__ . "The field to change ($field_to_change) do no exist ", E_USER_NOTICE);
                             continue;
                         } else {
+                            // Let's clone the $tag_object to reuse it properly
+                            $tag_object_original = clone $tag_object;
+                            
+                            $custom_field_value_original = $custom_field_value;
+                            
                             if ($this->skip_blanks_on_filters && empty($row_data[$field_to_change])) {
                                 continue;
                             }
                             $tag_object->set_value($row_data[$field_to_change]);
-                            $tag_html = $tag_object->generate_tag();
-                            if (!empty($this->db_table_data_keys)) {
-                                $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
-                                $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
-                                $tag_html = str_replace("--rowkeys--", $key_array_text, $tag_html);
-                                $tag_html = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_html);
-                                $tag_html = str_replace("--authcode--", $auth_code, $tag_html);
-//                            $tag_html = sprintf($tag_html, $key_array_text, $auth_code);
+                            if (get_class($tag_object) == "k1lib\html\a_tag") {
+                                $tag_href = $tag_object->get_attribute("href");
+                                if (!empty($this->db_table_data_keys)) {
+
+                                    if (is_array($custom_field_value)) {
+                                        foreach ($custom_field_value as $key => $field_value) {
+                                            if (isset($row_data[$field_value])) {
+                                                $custom_field_value[$key] = $this->db_table_data[$index][$field_value];
+                                            }
+                                            if (isset($table_constant_fields[$field_value])) {
+                                                $custom_field_value[$key] = $table_constant_fields[$field_value];
+                                            }
+                                        }
+                                        $custom_field_value = implode("--", $custom_field_value);
+                                    }
+
+                                    $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
+                                    $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
+                                    $tag_href = str_replace("--rowkeys--", $key_array_text, $tag_href);
+                                    $tag_href = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_href);
+                                    $actual_custom_field_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $custom_field_value);
+                                    $tag_href = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_href);
+                                    $tag_href = str_replace("--authcode--", $auth_code, $tag_href);
+                                    $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
+                                    $tag_object->set_attrib("href", $tag_href);
+                                }
                             }
-                            $this->db_table_data_filtered[$index][$field_to_change] = $tag_html;
+                            $this->db_table_data_filtered[$index][$field_to_change] = $tag_object;
+                            // Clean it... $tag_object 
+                            unset($tag_object);
+                            // Let's clone the original to re use it
+                            $tag_object = clone $tag_object_original;
+                            $custom_field_value = $custom_field_value_original;
                         }
                     }
                 }
