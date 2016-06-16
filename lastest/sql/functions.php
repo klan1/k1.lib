@@ -402,7 +402,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
             } else {
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
-            $update = $db->exec($update_sql) or ( trigger_error("Error on Update stament : " . $db->errorInfo()[2], E_USER_WARNING));
+            $update = $db->exec($update_sql) or ( trigger_error("Error on Update stament : ($update_sql) " . $db->errorInfo()[2], E_USER_WARNING));
             if ($update) {
                 return $update;
             } else {

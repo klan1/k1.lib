@@ -118,11 +118,14 @@ namespace k1lib\html {
          * @return \k1lib\html\html_tag
          */
         public function set_value($value, $append = false) {
-//            $this->value = $value;
-            if (empty($this->linked_html_obj)) {
-                $this->value = (($append === TRUE) && (!empty($this->value)) ) ? ($this->value . " " . $value) : ($value);
+            if (is_object($value)) {
+                $this->value = $value;
             } else {
-                $this->linked_html_obj->value = (($append === TRUE) && (!empty($this->linked_html_obj->value)) ) ? ($this->linked_html_obj->value . " " . $value) : ($value);
+                if (empty($this->linked_html_obj)) {
+                    $this->value = (($append === TRUE) && (!empty($this->value)) ) ? ($this->value . " " . $value) : ($value);
+                } else {
+                    $this->linked_html_obj->value = (($append === TRUE) && (!empty($this->linked_html_obj->value)) ) ? ($this->linked_html_obj->value . " " . $value) : ($value);
+                }
             }
             return $this;
         }
@@ -206,7 +209,11 @@ namespace k1lib\html {
          * @return String
          */
         public function get_value() {
-            return $this->value;
+            if (is_object($this->value)) {
+                return $this->value->generate_tag();
+            } else {
+                return $this->value;
+            }
         }
 
         /**
@@ -304,6 +311,10 @@ namespace k1lib\html {
 
         public function get_tag_code() {
             return $this->tag_code;
+        }
+
+        public function get_tag_name() {
+            return $this->tag_name;
         }
 
     }

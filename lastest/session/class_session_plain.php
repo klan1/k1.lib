@@ -311,6 +311,11 @@ class session_db extends session_plain {
     protected $user_password_input_value = NULL;
 
     /**
+     * @var boolean
+     */
+    static $user_password_use_md5 = TRUE;
+
+    /**
      * @var string
      */
     protected $user_level_field = NULL;
@@ -373,7 +378,7 @@ class session_db extends session_plain {
                 if (isset($form_values[$this->user_login_input_name]) && isset($form_values[$this->user_password_input_name])) {
 
                     $this->user_login_input_value = $form_values[$this->user_login_input_name];
-                    $this->user_password_input_value = md5($form_values[$this->user_password_input_name]);
+                    $this->user_password_input_value = (self::$user_password_use_md5) ? md5($form_values[$this->user_password_input_name]) : $form_values[$this->user_password_input_name];
 
                     if (isset($form_values[$this->user_remember_me_input])) {
                         $this->user_remember_me_value = $form_values[$this->user_remember_me_input];
@@ -486,6 +491,14 @@ class session_db extends session_plain {
         } else {
             return TRUE;
         }
+    }
+
+    static function get_user_password_use_md5() {
+        return self::$user_password_use_md5;
+    }
+
+    static function set_user_password_use_md5($user_password_use_md5) {
+        self::$user_password_use_md5 = $user_password_use_md5;
     }
 
 }
