@@ -10,6 +10,9 @@ This is the first public version.
 ## LICENSE
 Apache License Version 2.0, January 2004.
 
+## THANKS
+Thanks to Zend Inc. for the GNU Developer License of Zend Server, it amazing work on it!
+
 http://www.apache.org/licenses/
 
 Autor: http://klan1.com
