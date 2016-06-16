@@ -420,13 +420,13 @@ class crudlexs_base_with_data extends crudlexs_base {
             if (empty($fields_to_change)) {
                 $fields_to_change = crudlexs_base::USE_KEY_FIELDS;
             }
-            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change, FALSE, $custom_field_value);
+            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change, $custom_field_value);
         } else {
             return FALSE;
         }
     }
 
-    public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $append_auth_code = FALSE, $custom_field_value = null) {
+    public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $custom_field_value = null) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_NOTICE);
@@ -460,15 +460,22 @@ class crudlexs_base_with_data extends crudlexs_base {
                         } else {
                             // Let's clone the $tag_object to reuse it properly
                             $tag_object_original = clone $tag_object;
-                            
+
                             $custom_field_value_original = $custom_field_value;
-                            
+
                             if ($this->skip_blanks_on_filters && empty($row_data[$field_to_change])) {
                                 continue;
                             }
+
                             $tag_object->set_value($row_data[$field_to_change]);
-                            if (get_class($tag_object) == "k1lib\html\a_tag") {
-                                $tag_href = $tag_object->get_attribute("href");
+
+                            if (is_object($tag_object)) {
+                                if (get_class($tag_object) == "k1lib\html\a_tag") {
+                                    $tag_href = $tag_object->get_attribute("href");
+                                }
+                                if (get_class($tag_object) == "k1lib\html\img_tag") {
+                                    $tag_href = $tag_object->get_attribute("src");
+                                }
                                 if (!empty($this->db_table_data_keys)) {
 
                                     if (is_array($custom_field_value)) {
@@ -491,8 +498,16 @@ class crudlexs_base_with_data extends crudlexs_base {
                                     $tag_href = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_href);
                                     $tag_href = str_replace("--authcode--", $auth_code, $tag_href);
                                     $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
-                                    $tag_object->set_attrib("href", $tag_href);
+
+                                    if (get_class($tag_object) == "k1lib\html\a_tag") {
+                                        $tag_object->set_attrib("href", $tag_href);
+                                    }
+                                    if (get_class($tag_object) == "k1lib\html\img_tag") {
+                                        $tag_object->set_attrib("src", $tag_href);
+                                    }
                                 }
+                            } else {
+                                trigger_error("Not a HTML_TAG Object", E_USER_WARNING);
                             }
                             $this->db_table_data_filtered[$index][$field_to_change] = $tag_object;
                             // Clean it... $tag_object 
