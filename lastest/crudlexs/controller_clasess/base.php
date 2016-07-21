@@ -399,6 +399,17 @@ class controller_base {
         }
     }
 
+    public function read_url_keys_text_for_update() {
+        if (isset($this->board_update_object)) {
+            /**
+             * URL key text management
+             */
+            $update_row_keys_array = $this->board_update_object->update_object->get_row_keys_array();
+            $this->db_table->set_field_constants($update_row_keys_array);
+            return FALSE;
+        }
+    }
+
     public function read_url_keys_text_for_list($db_table_name, $is_required = TRUE) {
         if (isset($this->board_list_object)) {
             /**
@@ -468,7 +479,7 @@ class controller_base {
      * @param string $specific_board_to_exec
      * @return \k1lib\html\div_tag
      */
-    public function exec_board($do_echo = TRUE, $specific_board_to_exec = NULL) {
+    public function exec_board($do_echo = TRUE, $do_append = TRUE, $specific_board_to_exec = NULL) {
         $this->board_executed = TRUE;
 
         if ($this->board_started) {
@@ -477,19 +488,19 @@ class controller_base {
             }
             switch ($specific_board_to_exec) {
                 case $this->board_create_url_name:
-                    return $this->board_create_object->exec_board($do_echo);
+                    return $this->board_create_object->exec_board($do_echo, $do_append);
 
                 case $this->board_read_url_name:
-                    return $this->board_read_object->exec_board($do_echo);
+                    return $this->board_read_object->exec_board($do_echo, $do_append);
 
                 case $this->board_update_url_name:
-                    return $this->board_update_object->exec_board($do_echo);
+                    return $this->board_update_object->exec_board($do_echo, $do_append);
 
                 case $this->board_delete_url_name:
-                    return $this->board_delete_object->exec_board($do_echo);
+                    return $this->board_delete_object->exec_board($do_echo, $do_append);
 
                 case $this->board_list_url_name:
-                    return $this->board_list_object->exec_board($do_echo);
+                    return $this->board_list_object->exec_board($do_echo, $do_append);
 
                 default:
                     $this->board_executed = FALSE;
@@ -692,27 +703,37 @@ class controller_base {
 
     function set_board_list_url_name($board_list_url_name) {
         $this->board_list_url_name = $board_list_url_name;
-        $this->set_board_list_enabled($board_list_url_name);
+        if ($board_list_url_name === FALSE) {
+            $this->set_board_list_enabled(FALSE);
+        }
     }
 
     function set_board_create_url_name($board_create_url_name) {
         $this->board_create_url_name = $board_create_url_name;
-        $this->set_board_create_enabled($board_create_url_name);
+        if ($board_create_url_name === FALSE) {
+            $this->set_board_create_enabled(FALSE);
+        }
     }
 
     function set_board_read_url_name($board_read_url_name) {
         $this->board_read_url_name = $board_read_url_name;
-        $this->set_board_read_enabled($board_read_url_name);
+        if ($board_read_url_name === FALSE) {
+            $this->set_board_read_enabled(FALSE);
+        }
     }
 
     function set_board_update_url_name($board_update_url_name) {
         $this->board_update_url_name = $board_update_url_name;
-        $this->set_board_update_enabled($board_update_url_name);
+        if ($board_update_url_name === FALSE) {
+            $this->set_board_update_enabled(FALSE);
+        }
     }
 
     function set_board_delete_url_name($board_delete_url_name) {
         $this->board_delete_url_name = $board_delete_url_name;
-        $this->set_board_delete_enabled($board_delete_url_name);
+        if ($board_delete_url_name === FALSE) {
+            $this->set_board_delete_enabled(FALSE);
+        }
     }
 
     function get_controller_board_allowed_leves() {

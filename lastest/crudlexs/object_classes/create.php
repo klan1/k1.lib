@@ -29,6 +29,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     protected $show_cancel_button = TRUE;
     protected $inserted_result = NULL;
     protected $inserted = NULL;
+    protected $html_column_classes = "large-3 medium-4 small-6 column";
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
@@ -290,6 +291,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 $html_form->set_attrib("data-abide", TRUE);
             }
 
+            $form_header = $html_form->append_div("k1-form-header row");
+            $form_body = $html_form->append_div("k1-form-body row");
+            $form_footer = $html_form->append_div("k1-form-footer row");
+            $form_footer->set_attrib("style", "margintop-5px;");
+            $form_buttons = $html_form->append_div("k1-form-buttons row");
+
             /**
              * Hidden input
              */
@@ -319,39 +326,40 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                         }
                     }
                 }
-                $template_div = new \k1lib\html\div_tag();
-                $template_div->set_value($html);
-                $template_div->append_to($html_form);
+                $form_body->set_value($html);
             }
 
             if (empty($html)) {
+// <div class="row">
+
                 $row_column_number = 1;
+//                d($this->db_table_data_filtered);
                 foreach ($this->db_table_data_filtered[1] as $field => $value) {
 // Variable variables names
                     $row_column = "div_row" . $row_column_number;
-                    $actual_row_column = "div_row_column_" . $row_column_number;
-
-// <div class="row">
-                    ${$row_column} = new \k1lib\html\div_tag("row");
-                    ${$row_column}->append_to($html_form);
 
 // <div class="large-12 columns">
-                    ${$actual_row_column} = new \k1lib\html\div_tag("large-12 columns");
-                    ${$actual_row_column}->append_to(${$row_column});
-                    ${$actual_row_column}->set_value($this->db_table_data_filtered[0][$field], TRUE);
-                    ${$actual_row_column}->set_value($value, TRUE);
+
+                    $field_type = $this->db_table->get_field_config($field, 'type');
+                    if ($field_type != 'text') {
+                        $input_div = $form_body->append_div($this->html_column_classes);
+                        $last_normal_div = $input_div;
+                    } else {
+                        $input_div = $form_footer->append_div("large-12 column end");
+                        $last_non_text_div = FALSE;
+                    }
+                    $input_div->set_value($this->db_table_data_filtered[0][$field], TRUE);
+                    $input_div->set_value($value, TRUE);
 // put on div_row
                     $row_column++;
                 }
+                $last_normal_div->set_attrib("class", "end", TRUE);
             }
 
-//            $html = \k1lib\html\make_form_label_input_layout($this->db_table_data_filtered[1], $extra_css_clasess, );
-//            $div_content->set_value($html);
             /**
              * BUTTONS
              */
-            $div_buttons = new \k1lib\html\div_tag("row text-center");
-            $div_buttons->append_to($html_form);
+            $div_buttons = $form_buttons->append_div("row text-center k1-form-buttons");
             if ($this->show_cancel_button) {
                 $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
                 $cancel_button->append_to($div_buttons);
@@ -454,6 +462,10 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
     public function set_post_data(Array $post_incoming_array) {
         $this->post_incoming_array = array_merge($this->post_incoming_array, $post_incoming_array);
+    }
+
+    public function set_html_column_classes($html_column_classes) {
+        $this->html_column_classes = $html_column_classes;
     }
 
 }

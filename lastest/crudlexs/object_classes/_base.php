@@ -621,7 +621,7 @@ class crudlexs_base_with_data extends crudlexs_base {
 
     public function get_labels_from_data($row = 1) {
         if ($this->db_table_data) {
-            $data_label = \k1lib\sql\get_db_table_label_fields_from_row($this->db_table_data[$row], $this->db_table->get_db_table_config());
+            $data_label = \k1lib\sql\get_db_table_label_fields_from_row($this->db_table_data_filtered[$row], $this->db_table->get_db_table_config());
             if (!empty($data_label)) {
                 return $data_label;
             } else {

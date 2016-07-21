@@ -44,6 +44,7 @@ class board_list extends board_base implements board_interface {
         if ($this->list_object->get_state()) {
             if ($this->search_enable) {
                 $search_helper = new \k1lib\crudlexs\search_helper($this->controller_object->db_table, $this->list_object->get_object_id());
+                $search_helper->set_html_column_classes("column large-6 medium-6 small-12");
             }
             /**
              * BACK
@@ -138,7 +139,8 @@ class board_list extends board_base implements board_interface {
             /**
              * HTML OBJECT
              */
-            $this->list_object->do_html_object()->append_to($this->board_content_div);
+            $list_content_div = $this->list_object->do_html_object();
+            $list_content_div->append_to($this->board_content_div);
             // Show stats AFTER
             if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_AFTER_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {
                 $this->list_object->do_row_stats()->append_to($this->board_content_div);
@@ -148,7 +150,7 @@ class board_list extends board_base implements board_interface {
                 $this->board_content_div->generate_tag($do_echo);
                 return TRUE;
             } else {
-                return $this->board_content_div;
+                return $list_content_div;
             }
         } else {
             $this->list_object->do_html_object()->append_to($this->board_content_div);

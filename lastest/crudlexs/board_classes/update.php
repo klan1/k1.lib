@@ -3,6 +3,7 @@
 namespace k1lib\crudlexs;
 
 use k1lib\urlrewrite\url as url;
+use k1lib\session\session_plain as session_plain;
 
 class board_update extends board_base implements board_interface {
 
@@ -75,12 +76,33 @@ class board_update extends board_base implements board_interface {
                 }
                 $this->update_object->insert_inputs_on_data_row();
 
-                $this->update_object->do_html_object()->append_to($this->board_content_div);
+                /**
+                 * DELETE BUTTON
+                 */
+                if ($this->controller_object->get_board_delete_enabled()) {
+                    $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/{$this->row_keys_text}/";
+                    if (\k1lib\urlrewrite\get_back_url(TRUE)) {
+                        $get_vars = [
+                            "auth-code" => md5(session_plain::get_user_hash() . $this->row_keys_text),
+                            "back-url" => \k1lib\urlrewrite\get_back_url(TRUE),
+                        ];
+                    } else {
+                        $get_vars = [
+                            "auth-code" => $this->read_object->get_auth_code_personal(),
+                        ];
+                    }
+                    $delete_link = \k1lib\html\get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete);
+                    $delete_link->append_to($this->board_content_div);
+                }
+
+                $update_content_div = $this->update_object->do_html_object();
+                $update_content_div->append_to($this->board_content_div); 
+                
                 if ($do_echo) {
                     $this->board_content_div->generate_tag(TRUE);
                     return TRUE;
                 } else {
-                    return $this->board_content_div;
+                    return $update_content_div;
                 }
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
@@ -94,11 +116,14 @@ class board_update extends board_base implements board_interface {
     public function finish_board($do_redirect = TRUE, $custom_redirect = FALSE) {
         if ($this->sql_action_result !== NULL) {
             if ($custom_redirect === FALSE) {
-                $get_params = [
-                    "back-url" => \k1lib\urlrewrite\get_back_url(),
-                    "auth-code" => "--authcode--"
-                ];
-                $url_to_go = url::do_url("{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/--rowkeys--/?{$back_url}", $get_params);
+                if (isset($_GET['back-url'])) {
+                    $url_to_go = urldecode($_GET['back-url']);
+                } else {
+                    $get_params = [
+                        "auth-code" => "--authcode--"
+                    ];
+                    $url_to_go = url::do_url("{$this->controller_object->get_controller_root_dir()}{$this->controller_object->get_board_read_url_name()}/--rowkeys--/?", $get_params);
+                }
             } else {
                 $url_to_go = url::do_url($custom_redirect);
             }

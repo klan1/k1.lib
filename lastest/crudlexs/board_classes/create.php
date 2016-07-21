@@ -70,13 +70,14 @@ class board_create extends board_base implements board_interface {
                 }
                 $this->create_object->insert_inputs_on_data_row();
 
-                $this->create_object->do_html_object()->append_to($this->board_content_div);
+                $create_content_div = $this->create_object->do_html_object();
+                $create_content_div->append_to($this->board_content_div);
 
                 if ($do_echo) {
                     $this->board_content_div->generate_tag(TRUE);
                     return TRUE;
                 } else {
-                    return $this->board_content_div;
+                    return $create_content_div;
                 }
             }
         } else {
