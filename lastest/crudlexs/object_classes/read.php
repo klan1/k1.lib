@@ -9,6 +9,8 @@ use k1lib\templates\temply as temply;
  */
 class reading extends crudlexs_base_with_data implements crudlexs_base_interface {
 
+    private $html_column_classes = "large-4 medium-6 small-12 column";
+
     public function __construct($db_table, $row_keys_text, $custom_auth_code = "") {
         if (!empty($row_keys_text)) {
             parent::__construct($db_table, $row_keys_text, $custom_auth_code);
@@ -74,19 +76,21 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
                 $row = $data_group->append_div("row");
 
                 foreach ($values as $field => $value) {
+                    if (!empty($value)) {
+                        /**
+                         * ALL the TEXT field types are sendend to the last position to show nicely the HTML on it.
+                         */
+                        $field_type = $this->db_table->get_field_config($field, 'type');
+                        if ($field_type == 'text') {
+                            $div_rows = $text_fields_div->append_div("large-12 column k1-data-item");
+                            $last_div_row = $div_rows;
+                        } else {
+                            $div_rows = $row->append_div($this->html_column_classes . " k1-data-item");
+                        }
 
-                    /**
-                     * ALL the TEXT field types are sendend to the last position to show nicely the HTML on it.
-                     */
-                    $field_type = $this->db_table->get_field_config($field, 'type');
-                    if ($field_type == 'text') {
-                        $div_rows = $text_fields_div->append_div("large-12 column k1-data-item");
-                    } else {
-                        $div_rows = $row->append_div("large-4 medium-6 small-12 column k1-data-item");
+                        $div_rows->append_div("k1-data-item-label")->set_value($labels[$field]);
+                        $div_rows->append_div("k1-data-item-value")->set_value($value);
                     }
-
-                    $div_rows->append_div("k1-data-item-label")->set_value($labels[$field]);
-                    $div_rows->append_div("k1-data-item-value")->set_value($value);
                 }
                 $text_fields_div->append_to($data_group);
 
@@ -100,6 +104,14 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
         } else {
             return FALSE;
         }
+    }
+
+    public function get_html_column_classes() {
+        return $this->html_column_classes;
+    }
+
+    public function set_html_column_classes($html_column_classes) {
+        $this->html_column_classes = $html_column_classes;
     }
 
 }

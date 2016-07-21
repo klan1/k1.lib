@@ -51,7 +51,7 @@ class input_helper {
         
         $html_script = "tinymce.init({ "
                 . "selector: '#$field_encrypted',"
-                . "height: 300,"
+                . "height: 120,"
                 . "plugins: [ 
                     'advlist autolink lists link image charmap print preview anchor',
                     'searchreplace visualblocks code fullscreen',

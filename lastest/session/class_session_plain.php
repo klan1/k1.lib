@@ -105,7 +105,7 @@ class session_plain {
         if (!isset($_SESSION['k1lib_session']['user_login'])) {
             $_SESSION['k1lib_session']['user_login'] = NULL;
             $_SESSION['k1lib_session']['user_hash'] = NULL;
-            $_SESSION['k1lib_session']['user_level'] = 0;
+            $_SESSION['k1lib_session']['user_level'] = 'guest';
             $_SESSION['k1lib_session']['user_data'] = NULL;
         }
     }
@@ -195,7 +195,7 @@ class session_plain {
                 return TRUE;
             } else {
                 self::$user_login = -1;
-                self::$user_level = 0;
+                self::$user_level = 'guest';
 //                self::$session_data['user_data'] = null;
                 return FALSE;
             }
@@ -226,7 +226,6 @@ class session_plain {
      */
     static public function check_user_level(array $levels_to_check) {
         self::is_enabled(true);
-
         $has_access = FALSE;
         foreach ($levels_to_check as $level) {
             if (self::$user_level == $level) {

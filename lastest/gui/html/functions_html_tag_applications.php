@@ -194,7 +194,7 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
         "new" => ["agregar", "nuev", "new", "add", "añadir", "crear", "generar"],
         "edit" => ["edit", "editar", "cambiar", "change"],
         "delete" => ["delete", "borrar", "eliminar", "suprimir", "quitar", "cancelar"],
-        "list" => ["lista", "list", "all data", "view data", "data"],
+        "list" => ["lista", "list", "all data", "view data", "data","todos"],
     ];
 
     $label_low = strtolower($label);

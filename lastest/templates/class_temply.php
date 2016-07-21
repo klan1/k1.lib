@@ -85,9 +85,17 @@ class temply {
             return FALSE;
         }
 
-        if ((!is_string($place_name) || !is_string($value))) {
+        if (!is_string($place_name)) {
             trigger_error("The OUTPUT PLACE '{$place_name}' couldn't be registered with a value diferent a string " . __FUNCTION__, E_USER_WARNING);
         }
+        if (!is_string($value)) {
+            if (!is_object($value)) {
+                trigger_error("The OUTPUT VALUE '$place_name'->$value couldn't be used " . __FUNCTION__, E_USER_ERROR);
+            } elseif (strstr(get_class($value), 'tag') === false) {
+                trigger_error("The OUTPUT VALUE as object diferent from html_tag couldn't be used, now is (" . get_class($value) . ") ". __FUNCTION__, E_USER_ERROR);
+            }
+        }
+
         if (isset(self::$output_places[$place_name])) {
             self::$output_places[$place_name][] = $value;
         } else {

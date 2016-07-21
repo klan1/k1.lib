@@ -75,6 +75,10 @@ namespace k1lib\html {
          */
         protected $linked_html_obj = null;
 
+        public function __toString() {
+            return $this->generate_tag();
+        }
+
         /**
          * Chains an html tag into the actual html tag
          * @param html_tag $chlid_object
@@ -119,7 +123,13 @@ namespace k1lib\html {
          */
         public function set_value($value, $append = false) {
             if (is_object($value)) {
-                $this->value = $value;
+                if (is_object($this->value)) {
+                    $this->value .= $value;
+                } elseif (!empty($this->value)) {
+                    $this->value .= $value;
+                } else {
+                    $this->value = $value;
+                }
             } else {
                 if (empty($this->linked_html_obj)) {
                     $this->value = (($append === TRUE) && (!empty($this->value)) ) ? ($this->value . " " . $value) : ($value);
