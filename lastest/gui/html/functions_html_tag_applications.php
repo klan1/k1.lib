@@ -51,7 +51,7 @@ function label_input_text_combo($field_name, $value, $label, $required = FALSE, 
 
     $label_object = new html_classes\label_tag($label, $field_name, "right inline");
     $input_object = new html_classes\input_tag("text", $field_name, $value, $required_class);
-    $input_object->set_attrib("required", (!empty($required_class)) ? TRUE : FALSE);
+//    $input_object->set_attrib("required", (!empty($required_class)) ? TRUE : FALSE);
 
     if (!empty($error_msg)) {
         $input_object->set_attrib("class", "error", TRUE);
@@ -139,7 +139,7 @@ function select_list_from_array($name, $data_array, $default_value = "", $allow_
  * @param String $id
  * @return String
  */
-function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "") {
+function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "", $text_limit_to_trim = null) {
     if ((count($data_array) == 0) || (count(current($data_array)) == 0)) {
         trigger_error("Array to build HTML table is empty", E_USER_NOTICE);
         return FALSE;
@@ -160,6 +160,23 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
             if ($has_header && ($row_actual_index === 0)) {
                 $tr->append_th($col_value);
             } else {
+                if (!is_object($col_value)) {
+                    if (is_numeric($col_value)) {
+                        if (is_float($col_value)) {
+                            $col_value = number_format($col_value,2);
+                        } else {
+                            $col_value = number_format($col_value);
+                        }
+                    }
+                    if (is_numeric($text_limit_to_trim) && strlen($col_value) > $text_limit_to_trim) {
+                        $col_value = substr($col_value, 0, $text_limit_to_trim) . "...";
+                    }
+                } else {
+                    if (is_numeric($text_limit_to_trim) && strlen($col_value->get_value()) > $text_limit_to_trim) {
+                        $col_value->set_value(substr($col_value->get_value(), 0, $text_limit_to_trim) . "...");
+                    }
+//                    d($col_value->get_value());
+                }
                 $tr->append_td($col_value);
             }
         }
@@ -194,7 +211,7 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
         "new" => ["agregar", "nuev", "new", "add", "añadir", "crear", "generar"],
         "edit" => ["edit", "editar", "cambiar", "change"],
         "delete" => ["delete", "borrar", "eliminar", "suprimir", "quitar", "cancelar"],
-        "list" => ["lista", "list", "all data", "view data", "data","todos"],
+        "list" => ["lista", "list", "all data", "view data", "data", "todos"],
     ];
 
     $label_low = strtolower($label);

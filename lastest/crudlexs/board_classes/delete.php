@@ -9,6 +9,7 @@ class board_delete extends board_base implements board_interface {
 
     protected $redirect_url = null;
     private $row_keys_text;
+    private $row_keys_text_array;
     private $read_object;
 
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
@@ -43,10 +44,10 @@ class board_delete extends board_base implements board_interface {
         }
         if (!empty($this->row_keys_text)) {
             if ($this->read_object->load_db_table_data()) {
-                $row_key_text_array = \k1lib\sql\table_url_text_to_keys($this->row_keys_text, $this->controller_object->db_table->get_db_table_config());
+                $this->row_keys_text_array = \k1lib\sql\table_url_text_to_keys($this->row_keys_text, $this->controller_object->db_table->get_db_table_config());
                 if ($_GET['auth-code'] === $this->read_object->get_auth_code_personal()) {
-                    if ($this->controller_object->db_table->delete_data($row_key_text_array)) {
-                        \k1lib\html\html_header_go($this->redirect_url);
+                    $this->sql_action_result = $this->controller_object->db_table->delete_data($this->row_keys_text_array);
+                    if ($this->sql_action_result) {
                         return TRUE;
                     } else {
                         \k1lib\common\show_message(board_delete_strings::$error_no_data_deleted, \k1lib\common_strings::$error, "alert");
@@ -64,8 +65,18 @@ class board_delete extends board_base implements board_interface {
         }
     }
 
+    public function get_row_keys_text() {
+        return $this->row_keys_text;
+    }
+
+    public function get_row_keys_text_array() {
+        return $this->row_keys_text_array;
+    }
+
     public function finish_board() {
-        
+        if ($this->sql_action_result) {
+            \k1lib\html\html_header_go($this->redirect_url);
+        }
     }
 
 }

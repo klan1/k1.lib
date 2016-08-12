@@ -61,7 +61,7 @@ class board_read extends board_base implements board_interface {
                  */
                 if ($this->back_enable && (isset($_GET['back-url']))) {
                     $back_url = \k1lib\urlrewrite\get_back_url();
-                    $back_link = \k1lib\html\get_link_button($back_url, board_read_strings::$button_back);
+                    $back_link = \k1lib\html\get_link_button($back_url, board_read_strings::$button_back, "small");
                     $back_link->append_to($this->board_content_div);
                 }
                 /**
@@ -72,6 +72,7 @@ class board_read extends board_base implements board_interface {
                     $all_data_link = \k1lib\html\get_link_button(
                             url::do_url($all_data_url, [], TRUE, ['no-rules'])
                             , board_read_strings::$button_all_data
+                            , "small"
                     );
                     $all_data_link->append_to($this->board_content_div);
                 }
@@ -82,9 +83,9 @@ class board_read extends board_base implements board_interface {
                     $edit_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_update_url_name()}/{$this->row_keys_text}/";
                     $get_vars = [
                         "auth-code" => $this->read_object->get_auth_code(),
-                        "back-url" => $_SERVER['REQUEST_URI'],
+//                        "back-url" => $_SERVER['REQUEST_URI'],
                     ];
-                    $edit_link = \k1lib\html\get_link_button(url::do_url($edit_url, $get_vars), board_read_strings::$button_edit);
+                    $edit_link = \k1lib\html\get_link_button(url::do_url($edit_url, $get_vars), board_read_strings::$button_edit, "small");
                     $edit_link->append_to($this->board_content_div);
                 }
                 /**
@@ -102,7 +103,7 @@ class board_read extends board_base implements board_interface {
                             "auth-code" => $this->read_object->get_auth_code_personal(),
                         ];
                     }
-                    $delete_link = \k1lib\html\get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete);
+                    $delete_link = \k1lib\html\get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "small");
                     $delete_link->append_to($this->board_content_div);
                 }
 
@@ -211,7 +212,7 @@ class board_read extends board_base implements board_interface {
      * @param boolean $show_create
      * @return \k1lib\html\div_tag|boolean
      */
-    public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE) {
+    public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE) {
 
         $detail_div = new \k1lib\html\div_tag();
 
@@ -245,10 +246,14 @@ class board_read extends board_base implements board_interface {
 //                    $related_table_list->set
                         $related_table_list->apply_file_uploads_filter();
                     }
-                    $get_vars = [
-                        "auth-code" => "--authcode--",
-                        "back-url" => $_SERVER['REQUEST_URI'],
-                    ];
+                    if ($clear_url) {
+                        $get_vars = [];
+                    } else {
+                        $get_vars = [
+                            "auth-code" => "--authcode--",
+                            "back-url" => $_SERVER['REQUEST_URI'],
+                        ];
+                    }
                     if (empty($this->related_edit_url)) {
                         $link_row_url = url::do_url(APP_URL . $board_root . "/" . $board_read . "/--rowkeys--/", $get_vars);
                     } else {

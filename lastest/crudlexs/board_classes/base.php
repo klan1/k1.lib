@@ -170,5 +170,9 @@ class board_base {
         $this->apply_label_filter = $apply_label_filter;
     }
 
+    public function get_sql_action_result() {
+        return $this->sql_action_result;
+    }
+
 
 }

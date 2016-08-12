@@ -32,6 +32,8 @@ class board_delete_strings {
 
 class board_list_strings {
 
+    static $no_table_data = "Sin datos para mostrar";
+
     /**
      * BUTTON LABELS
      */

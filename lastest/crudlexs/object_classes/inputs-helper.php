@@ -40,7 +40,7 @@ class input_helper {
      * @param string $field
      * @return \k1lib\html\textarea_tag
      */
-    static function text_type(creating $crudlex_obj, $row_to_apply, $field) {
+    static function text_type(creating $crudlex_obj, $row_to_apply, $field, $load_tinymce = TRUE) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
 
         if (!empty(self::$main_css)) {
@@ -48,27 +48,29 @@ class input_helper {
         } else {
             $css_option = "";
         }
-        
-        $html_script = "tinymce.init({ "
-                . "selector: '#$field_encrypted',"
-                . "height: 120,"
-                . "plugins: [ 
+        $input_tag = new \k1lib\html\textarea_tag($field_encrypted);
+        $input_tag->set_attrib("rows", 5);
+
+        if ($load_tinymce) {
+            $html_script = "tinymce.init({ "
+                    . "selector: '#$field_encrypted',"
+                    . "height: 120,"
+                    . "plugins: [ 
                     'advlist autolink lists link image charmap print preview anchor',
                     'searchreplace visualblocks code fullscreen',
                     'insertdatetime media table contextmenu paste code'
                 ],"
-                . $css_option
-                . "body_class: 'html-editor',"
+                    . $css_option
+                    . "body_class: 'html-editor',"
 //                . "content_style: 'div {margin: 100px; border: 50px solid red; padding: 3px}',"
-                . "toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',"
-                . "paste_data_images: true,"
-                . ""
-                . "});";
-        $script = new \k1lib\html\script_tag($html_script);
+                    . "toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',"
+                    . "paste_data_images: true,"
+                    . ""
+                    . "});";
+            $script = new \k1lib\html\script_tag($html_script);
+            $input_tag->post_code($script->generate_tag());
+        }
 
-        $input_tag = new \k1lib\html\textarea_tag($field_encrypted);
-
-        $input_tag->post_code($script->generate_tag());
         return $input_tag;
     }
 

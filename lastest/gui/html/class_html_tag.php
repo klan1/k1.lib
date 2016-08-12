@@ -342,6 +342,17 @@ namespace k1lib\html {
             $this->append_child($new);
             return $new;
         }
+        /**
+         * 
+         * @param string $class
+         * @param string $id
+         * @return \k1lib\html\span_tag
+         */
+        function &append_span($class = "", $id = "") {
+            $new = new span_tag($class, $id);
+            $this->append_child($new);
+            return $new;
+        }
 
         /**
          * 

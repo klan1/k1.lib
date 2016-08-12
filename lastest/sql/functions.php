@@ -143,7 +143,7 @@ AND table_name = '{$table}'";
         $mysql_default_validation = array(
             'char' => 'mixed-symbols',
             'varchar' => 'mixed-symbols',
-            'text' => 'html',
+            'text' => 'mixed-symbols',
             'date' => 'date',
             'time' => 'time',
             'datetime' => 'datetime',
@@ -1024,7 +1024,23 @@ function get_table_definition_as_array(\PDO $db, $table_name) {
         $field_definition = substr($text, strpos($text, "`") + 2);
         $definition_array_clean[$field_name] = str_replace(strstr($text, "COMMENT"), "", $field_definition);
 //        $definition_array_clean[$field_name]['definition'] = str_replace(strstr($text, "COMMENT"), "", $field_definition);
-//        $definition_array_clean[$field_name]['comment'] = strstr($text, "COMMENT");
+//        $definition_array_cl´ean[$field_name]['comment'] = strstr($text, "COMMENT");
     }
     return ($definition_array_clean);
+}
+
+function get_table_data_as_key_value_pair(\PDO $db, $table_name) {
+    $sql_query = "SELECT * FROM $table_name";
+    $sql_result = sql_query($db, $sql_query);
+    if ($sql_result) {
+        $new_pair_array = [];
+        foreach ($sql_result as $row => $data) {
+            if (count($data) == 2) {
+                $new_pair_array[current($data)] = next($data);
+            }
+        }
+        return $new_pair_array;
+    } else {
+        return FALSE;
+    }
 }

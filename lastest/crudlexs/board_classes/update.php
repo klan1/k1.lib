@@ -88,10 +88,10 @@ class board_update extends board_base implements board_interface {
                         ];
                     } else {
                         $get_vars = [
-                            "auth-code" => $this->read_object->get_auth_code_personal(),
+                            "auth-code" => md5(session_plain::get_user_hash() . $this->row_keys_text),
                         ];
                     }
-                    $delete_link = \k1lib\html\get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete);
+                    $delete_link = \k1lib\html\get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "small");
                     $delete_link->append_to($this->board_content_div);
                 }
 

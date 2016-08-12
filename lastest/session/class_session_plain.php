@@ -228,8 +228,8 @@ class session_plain {
         self::is_enabled(true);
         $has_access = FALSE;
         foreach ($levels_to_check as $level) {
-            if (self::$user_level == $level) {
-                $has_access = TRUE;
+            if (self::$user_level === $level) {
+                return TRUE;
             }
         }
         return $has_access;

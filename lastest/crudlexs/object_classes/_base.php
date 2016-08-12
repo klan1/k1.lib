@@ -472,11 +472,14 @@ class crudlexs_base_with_data extends crudlexs_base {
                             if (is_object($tag_object)) {
                                 if (get_class($tag_object) == "k1lib\html\a_tag") {
                                     $tag_href = $tag_object->get_attribute("href");
-                                }
-                                if (get_class($tag_object) == "k1lib\html\img_tag") {
+                                } elseif (get_class($tag_object) == "k1lib\html\img_tag") {
                                     $tag_href = $tag_object->get_attribute("src");
+                                } else {
+                                    // TODO: CHECK THIS! - WTF line
+//                                    $tag_href = $tag_object->get_value();
+                                    $tag_href = NULL;
                                 }
-                                if (!empty($this->db_table_data_keys)) {
+                                if (!empty($this->db_table_data_keys) && !empty($tag_href)) {
 
                                     if (is_array($custom_field_value)) {
                                         foreach ($custom_field_value as $key => $field_value) {

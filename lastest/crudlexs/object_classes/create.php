@@ -29,7 +29,8 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     protected $show_cancel_button = TRUE;
     protected $inserted_result = NULL;
     protected $inserted = NULL;
-    protected $html_column_classes = "large-3 medium-4 small-6 column";
+    protected $html_form_column_classes = "large-5 medium-7 small-11";
+    protected $html_column_classes = "small-12 column";
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
@@ -135,7 +136,14 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     $input_tag = input_helper::enum_type($this, $row_to_apply, $field);
                     break;
                 case 'text':
-                    $input_tag = input_helper::text_type($this, $row_to_apply, $field);
+                    switch ($this->db_table->get_field_config($field, 'validation')) {
+                        case "html":
+                            $input_tag = input_helper::text_type($this, $row_to_apply, $field);
+                            break;
+                        default:
+                            $input_tag = input_helper::text_type($this, $row_to_apply, $field, FALSE);
+                            break;
+                    }
                     break;
                 default:
                     /**
@@ -178,7 +186,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              * END ERROR TESTING
              */
             if ($this->db_table->get_field_config($field, 'required') === TRUE) {
-                $input_tag->set_attrib("required", TRUE);
+                if ($this->enable_foundation_form_check) {
+                    $input_tag->set_attrib("required", TRUE);
+                }
             }
             $input_tag->set_attrib("k1-data-type", $this->db_table->get_field_config($field, 'validation'));
             $input_tag->set_attrib("id", $this->encrypt_field_name($field));
@@ -281,7 +291,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             /**
              * DIV content
              */
-            $this->div_container->set_attrib("class", "k1-form-generator", TRUE);
+            $this->div_container->set_attrib("class", "k1-form-generator " . $this->html_form_column_classes, TRUE);
+            $this->div_container->set_attrib("style", "margin:0 auto;", TRUE);
+
             /**
              * FORM time !!
              */
@@ -341,12 +353,13 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 // <div class="large-12 columns">
 
                     $field_type = $this->db_table->get_field_config($field, 'type');
-                    if ($field_type != 'text') {
-                        $input_div = $form_body->append_div($this->html_column_classes);
-                        $last_normal_div = $input_div;
-                    } else {
+                    $field_validation = $this->db_table->get_field_config($field, 'validation');
+                    if ($field_type == 'text' && $field_validation == 'html') {
                         $input_div = $form_footer->append_div("large-12 column end");
                         $last_non_text_div = FALSE;
+                    } else {
+                        $input_div = $form_body->append_div($this->html_column_classes);
+                        $last_normal_div = $input_div;
                     }
                     $input_div->set_value($this->db_table_data_filtered[0][$field], TRUE);
                     $input_div->set_value($value, TRUE);
@@ -466,6 +479,10 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
     public function set_html_column_classes($html_column_classes) {
         $this->html_column_classes = $html_column_classes;
+    }
+
+    public function set_html_form_column_classes($html_form_column_classes) {
+        $this->html_form_column_classes = $html_form_column_classes;
     }
 
 }

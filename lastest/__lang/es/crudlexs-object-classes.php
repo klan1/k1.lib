@@ -35,9 +35,9 @@ class listing_strings {
      *
      * @var string You can use:  --totalrowsfilter--, --totalrows--, --firstrownumber--, --lastrownumber--
      */
-    static $stats_default_message = "Showing --totalrowsfilter-- of --totalrows-- (rows: --firstrownumber-- to --lastrownumber--)";
+    static $stats_default_message = "Mostrando --totalrowsfilter-- de --totalrows-- (filas: --firstrownumber-- to --lastrownumber--)";
     //
-    static $no_fk_search_here = "Search on another table is not possible here, use the Key value to search";
+    static $no_fk_search_here = "Busquedas en otra tabla no es posible en esta seccion.";
 
 }
 
