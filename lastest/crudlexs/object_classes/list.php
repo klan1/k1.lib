@@ -27,6 +27,11 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     /**
      * @var int
      */
+    static public $characters_limit_on_cell = null;
+
+    /**
+     * @var int
+     */
     static public $rows_per_page = 25;
 
     /**
@@ -99,10 +104,10 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
         $this->div_container->set_attrib("class", "k1-crudlexs-table");
         $this->div_container->set_attrib("id", $this->object_id);
         if ($this->db_table_data) {
-            $html_table = \k1lib\html\table_from_array($this->db_table_data_filtered, TRUE, "scroll");
+            $html_table = \k1lib\html\table_from_array($this->db_table_data_filtered, TRUE, "scroll", null, self::$characters_limit_on_cell);
             $this->div_container->append_child($html_table);
         } else {
-            $div_message = new \k1lib\html\p_tag("No data to show", "callout primary");
+            $div_message = new \k1lib\html\p_tag(board_list_strings::$no_table_data, "callout primary");
             $div_message->append_to($this->div_container);
         }
         return $this->div_container;
@@ -145,7 +150,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             $page_get_var_name = $this->get_object_id() . "-page";
             $rows_get_var_name = $this->get_object_id() . "-rows";
 
-            $this_url = APP_URL. \k1lib\urlrewrite\url::get_this_url() . "#" . $this->get_object_id() . "-pagination";
+            $this_url = APP_URL . \k1lib\urlrewrite\url::get_this_url() . "#" . $this->get_object_id() . "-pagination";
             if ($this->actual_page > 2) {
                 $this->page_first = url::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => self::$rows_per_page]);
             } else {

@@ -20,6 +20,7 @@ class search_helper extends creating {
      * @var string
      */
     protected $caller_objetc_id = null;
+    protected $search_catch_post_enable = TRUE;
 
 // FILTERS
     public function __construct(\k1lib\crudlexs\class_db_table $db_table, $caller_object_id) {
@@ -42,14 +43,15 @@ class search_helper extends creating {
         $this->db_table->set_db_table_show_rule("show-search");
         $this->load_db_table_data(TRUE);
         $this->db_table->set_db_table_show_rule($last_show_rule);
-        if ($this->catch_post_data()) {
+    }
+
+    public function do_html_object() {
+        if ($this->search_catch_post_enable && $this->catch_post_data()) {
             $this->put_post_data_on_table_data();
             $this->db_table->set_query_filter($this->post_incoming_array, FALSE);
         }
         $this->apply_label_filter();
-    }
 
-    public function do_html_object() {
         input_helper::$do_fk_search_tool = FALSE;
         $this->insert_inputs_on_data_row();
 
@@ -80,6 +82,10 @@ class search_helper extends creating {
             }
             return FALSE;
         }
+    }
+
+    public function set_search_catch_post_enable($search_catch_post_enable) {
+        $this->search_catch_post_enable = $search_catch_post_enable;
     }
 
 }

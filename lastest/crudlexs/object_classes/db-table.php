@@ -221,13 +221,16 @@ class class_db_table {
         }
     }
 
-    public function set_field_constants(array $field_constants_array) {
+    public function set_field_constants(array $field_constants_array, $use_as_filter = FALSE) {
 
         if (empty($field_constants_array)) {
             return FALSE;
         } else {
             // DB table constants creation for inserts and updates
             $this->constant_fields = array_merge($this->constant_fields, $field_constants_array);
+            if ($use_as_filter) {
+                $this->set_query_filter($field_constants_array, TRUE);
+            }
             return TRUE;
         }
     }
@@ -451,6 +454,7 @@ class class_db_table {
         $data_to_insert = array_merge($data_to_insert, $this->constant_fields);
         return \k1lib\sql\sql_insert($this->db, $this->db_table_name, $data_to_insert);
     }
+
     /**
      * SQL update method
      * @param array $data_to_update

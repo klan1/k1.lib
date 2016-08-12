@@ -11,6 +11,7 @@ class board_list extends board_base implements board_interface {
     const SHOW_BEFORE_AND_AFTER_TABLE = 3;
 
     protected $search_enable = TRUE;
+    protected $search_catch_post_enable = TRUE;
     protected $create_enable = TRUE;
     protected $export_enable = TRUE;
     protected $pagination_enable = TRUE;
@@ -44,7 +45,9 @@ class board_list extends board_base implements board_interface {
         if ($this->list_object->get_state()) {
             if ($this->search_enable) {
                 $search_helper = new \k1lib\crudlexs\search_helper($this->controller_object->db_table, $this->list_object->get_object_id());
-                $search_helper->set_html_column_classes("column large-6 medium-6 small-12");
+                $search_helper->set_search_catch_post_enable($this->search_catch_post_enable);
+                $search_helper->set_html_column_classes("column large-11 medium-11 small-12");
+                $search_helper->set_html_form_column_classes("large-11");
             }
             /**
              * BACK
@@ -83,13 +86,13 @@ class board_list extends board_base implements board_interface {
                 /**
                  * Clear search
                  */
+                $search_helper->do_html_object()->append_to($this->board_content_div);
                 if ($this->search_enable && !empty($search_helper->get_post_data())) {
                     $clear_search_buttom = new \k1lib\html\a_tag(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self", board_list_strings::$button_search_cancel);
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->set_attrib("class", "button warning");
                     $clear_search_buttom->append_to($this->board_content_div);
                 }
-                $search_helper->do_html_object()->append_to($this->board_content_div);
             }
 
             $this->data_loaded = $this->list_object->load_db_table_data($this->show_rule_to_apply);
@@ -165,6 +168,10 @@ class board_list extends board_base implements board_interface {
 
     public function finish_board() {
         
+    }
+
+    public function set_search_catch_post_enable($search_catch_post_enable) {
+        $this->search_catch_post_enable = $search_catch_post_enable;
     }
 
     function set_where_to_show_stats($where_to_show_stats) {
