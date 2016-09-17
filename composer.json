@@ -2,10 +2,13 @@
     "name": "klan1/k1.lib",
     "description": "Classes and fuctions for rapid software development",
     "license": "Apache License Version 2.0, January 2004.",
+    "type": "library",
+    "homepage": "https://github.com/klan1/k1.lib",
     "authors": [
         {
-            "name": "Alejandro Trujillo J.",
-            "email": "contacto@klan1.com"
+            "name": "Klan1 Network",
+            "email": "contacto@klan1.com",
+            "homepage": "https://github.com/klan1/k1.lib/contributors"
         }
     ],
     "require": {
