@@ -15,4 +15,4 @@ Thanks to Zend Inc. for the GNU Developer License of Zend Server, it amazing wor
 
 http://www.apache.org/licenses/
 
-Autor: http://klan1.com
+Autor: Alejandro Trujillo J. - http://klan1.com
