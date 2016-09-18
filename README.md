@@ -7,6 +7,12 @@ This is the first public version.
 - Optional: MySQL Database.
 - PHP 5.4 with at least 2MB in memory allowed + Your code requirements. Maybe with 8MB in most cases is enough.
 
+## Installation
+
+```sh
+composer require klan1/k1.lib
+```
+
 ## LICENSE
 Apache License Version 2.0, January 2004.
 
