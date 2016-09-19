@@ -2,7 +2,7 @@
 $mem_usage['init'] = memory_get_usage() / 1024;
 $start = microtime(TRUE);
 
-include 'init.php';
+include_once 'init.php';
 
 // OVER RIDE THE DEFAULT k1LIB error reporting setting
 error_reporting(E_ALL);
