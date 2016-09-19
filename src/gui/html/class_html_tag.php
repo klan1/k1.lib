@@ -1,39 +1,9 @@
 <?php
 
 /**
- * HTML Classes for general propouses use
+ * HTML Classes for general purposes use
  */
-
 namespace k1lib\html {
-
-//    class html_tag_base { // FAIL !!
-//
-//        public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
-//            $html_code = "\n";
-//
-//            if (($with_childs) && (count($this->childs) >= 1)) {
-//                //lets move with index numbers begining from 0
-//                $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
-////            d($this->childs,TRUE);
-//                foreach ($this->childs as $index => &$child_object) {
-//                    if ($index > $n_childs) {
-//                        break;
-//                    }
-//                    $html_code .= "\n" . $child_object->generate_tag();
-//                }
-//            }
-//            $html_code .= $this->get_value();
-//
-//            $this->tag_code = $this->pre_code . $html_code . $this->post_code;
-//
-//            if ($do_echo) {
-//                echo $this->tag_code;
-//            } else {
-//                return $this->tag_code;
-//            }
-//        }
-//
-//    }
 
     /**
      * HTML Tag abstraction
