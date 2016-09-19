@@ -40,6 +40,7 @@ namespace k1lib\html {
 
         /** @var Array */
         protected $childs = array();
+        protected $child_level = 0;
 
         /**
          * @var html_tag;
@@ -263,7 +264,12 @@ namespace k1lib\html {
          * @return string Won't return any if is set $do_echo = TRUE
          */
         public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
-            $html_code = "\n<{$this->tag_name} ";
+            /**
+             * TAB constructor
+             */
+            $tabs = str_repeat("\t", $this->child_level);
+
+            $html_code = "\n{$tabs}<{$this->tag_name} ";
             $html_code .= $this->generate_attributes_code();
             if ($this->is_selfclosed) {
 //                $html_code .= " /";
@@ -280,7 +286,8 @@ namespace k1lib\html {
                     if ($index > $n_childs) {
                         break;
                     }
-                    $html_code .= "\t" . $child_object->generate_tag();
+                    $child_object->child_level = $this->child_level + 1;
+                    $html_code .= $child_object->generate_tag();
                 }
             }
             if (!$this->is_selfclosed) {
@@ -303,7 +310,15 @@ namespace k1lib\html {
          * @return string Won't return any if is set $do_echo = TRUE
          */
         protected function generate_close_tag($do_echo = FALSE) {
-            $html_code = "</{$this->tag_name}>";
+            /**
+             * TAB constructor
+             */
+            if (count($this->childs)) {
+                $tabs = str_repeat("\t", $this->child_level);
+            } else {
+                $tabs = '';
+            }
+            $html_code = "{$tabs}</{$this->tag_name}>\n";
             if ($do_echo) {
                 echo $html_code;
             } else {
