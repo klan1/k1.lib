@@ -41,6 +41,7 @@ namespace k1lib\html {
         function head() {
             return $this->head_tag;
         }
+
         /**
          * @return \k1lib\html\body_tag
          */
@@ -252,10 +253,11 @@ namespace k1lib\html {
          * @param String $class
          * @param String $id
          */
-        function __construct($code = "") {
+        function __construct($src = "") {
             parent::__construct("script", FALSE);
-            $this->set_value($code);
-//        $this->data_array &= $data_array;
+            if (!empty($src)) {
+                $this->set_attrib("src", $src);
+            }
         }
 
     }
