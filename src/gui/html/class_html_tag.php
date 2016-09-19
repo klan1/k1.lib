@@ -3,6 +3,7 @@
 /**
  * HTML Classes for general purposes use
  */
+
 namespace k1lib\html {
 
     /**
@@ -50,18 +51,23 @@ namespace k1lib\html {
         }
 
         /**
-         * Chains an html tag into the actual html tag
+         * Chains an HTML tag into the actual HTML tag, by default will put on last 
+         * position but with $put_last_position = FALSE will be the on first position
          * @param html_tag $child_object
          * @return \k1lib\html\html_tag 
          */
-        public function append_child($child_object) {
-            $this->childs[] = $child_object;
+        public function append_child($child_object, $put_last_position = TRUE) {
+            if ($put_last_position) {
+                $this->childs[] = $child_object;
+            } else {
+                array_unshift($this->childs, $child_object);
+            }
             $this->has_child = TRUE;
             return $child_object;
         }
 
         /**
-         * Chains THIS html tag to a another html tag
+         * Chains THIS HTML tag to a another HTML tag
          * @param html_tag $child_object
          * @return \k1lib\html\html_tag 
          */
@@ -139,7 +145,7 @@ namespace k1lib\html {
         }
 
         /**
-         * Return the reference for chained html tag object
+         * Return the reference for chained HTML tag object
          * @param Int $n Index beginning from 0
          * @return html_tag Returns FALSE if is not set
          */
@@ -312,6 +318,7 @@ namespace k1lib\html {
             $this->append_child($new);
             return $new;
         }
+
         /**
          * 
          * @param string $class
