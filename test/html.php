@@ -1,6 +1,6 @@
 <?php
 
-include_once 'init.php';
+include_once '../src/init.php';
 
 $html = new k1lib\html\html_document_tag("es");
 $html->head()->set_title("HTML TEST");
