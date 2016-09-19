@@ -6,7 +6,92 @@
 
 namespace k1lib\html {
 
+    class html_document_tag extends html_tag {
 
+        /**
+         * @var \k1lib\html\head_tag
+         */
+        protected $head_tag;
+
+        /**
+         * @var \k1lib\html\body_tag
+         */
+        private $body_tag;
+
+        function __construct($lang = "en") {
+            parent::__construct("html", FALSE);
+            $this->set_attrib("lang", $lang);
+            $this->append_head();
+            $this->append_body();
+        }
+
+        function append_head() {
+            $this->head_tag = new head_tag();
+            $this->append_child($this->head_tag);
+        }
+
+        function append_body() {
+            $this->body_tag = new body_tag();
+            $this->append_child($this->body_tag);
+        }
+
+        /**
+         * @return \k1lib\html\head_tag
+         */
+        function head() {
+            return $this->head_tag;
+        }
+        /**
+         * @return \k1lib\html\body_tag
+         */
+        function body() {
+            return $this->body_tag;
+        }
+
+    }
+
+    class head_tag extends html_tag {
+
+        /**
+         * @var \k1lib\html\title_tag
+         */
+        protected $title_tag;
+
+        function __construct() {
+            parent::__construct("head", FALSE);
+            $this->append_title();
+        }
+
+        /**
+         * 
+         * @return \k1lib\html\title_tag
+         */
+        function append_title() {
+            $this->title_tag = new title_tag();
+            $this->append_child($this->title_tag);
+        }
+
+        function set_title($document_title) {
+            $this->title_tag->set_value($document_title);
+        }
+
+    }
+
+    class title_tag extends html_tag {
+
+        function __construct() {
+            parent::__construct("title", FALSE);
+        }
+
+    }
+
+    class body_tag extends html_tag {
+
+        function __construct() {
+            parent::__construct("body", FALSE);
+        }
+
+    }
 
     class a_tag extends html_tag {
 
