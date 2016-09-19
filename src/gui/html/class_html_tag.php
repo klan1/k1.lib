@@ -178,6 +178,22 @@ namespace k1lib\html {
         }
 
         /**
+         * Shortcut for $html->set_attrib("id",$id);
+         * @param string $id
+         */
+        public function set_id($id) {
+            $this->set_attrib("id", $id);
+        }
+
+        /**
+         * Shortcut for $html->set_attrib("class",$class);
+         * @param string $class
+         */
+        public function set_class($class) {
+            $this->set_attrib("class", $class);
+        }
+
+        /**
          * If the attribute was set returns its value
          * @param String $attribute
          * @return String Returns FALSE if is not set
