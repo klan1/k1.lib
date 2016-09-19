@@ -6,6 +6,8 @@
 
 namespace k1lib\html {
 
+
+
     class a_tag extends html_tag {
 
         function __construct($href, $label, $target = "", $alt = "", $class = "", $id = "") {
@@ -14,8 +16,8 @@ namespace k1lib\html {
             $this->set_value($label);
             $this->set_attrib("target", $target);
             $this->set_attrib("alt", $alt);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -26,8 +28,8 @@ namespace k1lib\html {
             parent::__construct("img", FALSE);
             $this->set_attrib("src", $src);
             $this->set_attrib("alt", $alt);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         function set_value($value, $append = FALSE) {
@@ -46,8 +48,8 @@ namespace k1lib\html {
         function __construct($class = "", $id = "") {
             parent::__construct("div", FALSE);
 //        $this->data_array &= $data_array;
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -62,8 +64,8 @@ namespace k1lib\html {
         function __construct($class = "", $id = "") {
             parent::__construct("ul", FALSE);
 //        $this->data_array &= $data_array;
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         function set_value($value, $append = false) {
@@ -94,8 +96,8 @@ namespace k1lib\html {
         function __construct($class = "", $id = "") {
             parent::__construct("ol", FALSE);
 //        $this->data_array &= $data_array;
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         function set_value($value, $append = false) {
@@ -128,8 +130,8 @@ namespace k1lib\html {
             parent::__construct("li", FALSE);
 //        $this->data_array &= $data_array;
             $this->set_value($value);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         /**
@@ -183,8 +185,8 @@ namespace k1lib\html {
         function __construct($class = "", $id = "") {
             parent::__construct("small", FALSE);
 //        $this->data_array &= $data_array;
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -199,8 +201,8 @@ namespace k1lib\html {
         function __construct($class = "", $id = "") {
             parent::__construct("span", FALSE);
 //        $this->data_array &= $data_array;
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -215,8 +217,8 @@ namespace k1lib\html {
         function __construct($class = "", $id = "") {
             parent::__construct("table", FALSE);
 //        $this->data_array &= $data_array;
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         /**
@@ -253,8 +255,8 @@ namespace k1lib\html {
          */
         function __construct($class = "", $id = "") {
             parent::__construct("thead", FALSE);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         /**
@@ -279,8 +281,8 @@ namespace k1lib\html {
          */
         function __construct($class = "", $id = "") {
             parent::__construct("tbody", FALSE);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         /**
@@ -305,8 +307,8 @@ namespace k1lib\html {
          */
         function __construct($class = "", $id = "") {
             parent::__construct("tr", FALSE);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         /**
@@ -347,8 +349,8 @@ namespace k1lib\html {
         function __construct($value, $class = "", $id = "") {
             parent::__construct("th", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -363,8 +365,8 @@ namespace k1lib\html {
         function __construct($value, $class = "", $id = "") {
             parent::__construct("td", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -383,8 +385,8 @@ namespace k1lib\html {
             $this->set_attrib("type", $type);
             $this->set_attrib("name", $name);
             $this->set_value($value);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -400,8 +402,8 @@ namespace k1lib\html {
         function __construct($name, $class = "", $id = "") {
             parent::__construct("textarea", FALSE);
             $this->set_attrib("name", $name);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
             $this->set_attrib("rows", 10);
         }
 
@@ -419,8 +421,8 @@ namespace k1lib\html {
             parent::__construct("label", FALSE);
             $this->set_value($label);
             $this->set_attrib("for", $for);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -435,8 +437,8 @@ namespace k1lib\html {
         function __construct($name, $class = "", $id = "") {
             parent::__construct("select", FALSE);
             $this->set_attrib("name", $name);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
         /**
@@ -470,8 +472,8 @@ namespace k1lib\html {
             $this->set_value($label);
             $this->set_attrib("value", $value);
             $this->set_attrib("selected", $selected);
-            $this->set_attrib("class", $class, TRUE);
-            $this->set_attrib("id", $id);
+            $this->set_class($class, TRUE);
+            $this->set_id($id);
         }
 
     }
@@ -483,7 +485,7 @@ namespace k1lib\html {
 
         function __construct($id = "k1-form") {
             parent::__construct("form", FALSE);
-            $this->set_attrib("id", $id);
+            $this->set_id($id);
             $this->set_attrib("name", "k1-form");
             $this->set_attrib("method", "post");
             $this->set_attrib("autocomplete", "yes");
@@ -516,8 +518,8 @@ namespace k1lib\html {
         function __construct($value = "", $class = "", $id = "") {
             parent::__construct("p", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class);
-            $this->set_attrib("id", $id);
+            $this->set_class($class);
+            $this->set_id($id);
         }
 
     }
@@ -530,7 +532,7 @@ namespace k1lib\html {
         function __construct($value = "", $class = "") {
             parent::__construct("h1", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class);
+            $this->set_class($class);
         }
 
     }
@@ -543,7 +545,7 @@ namespace k1lib\html {
         function __construct($value = "", $class = "") {
             parent::__construct("h2", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class);
+            $this->set_class($class);
         }
 
     }
@@ -556,7 +558,7 @@ namespace k1lib\html {
         function __construct($value = "", $class = "") {
             parent::__construct("h3", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class);
+            $this->set_class($class);
         }
 
     }
@@ -569,7 +571,7 @@ namespace k1lib\html {
         function __construct($value = "", $class = "") {
             parent::__construct("h4", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class);
+            $this->set_class($class);
         }
 
     }
@@ -582,7 +584,7 @@ namespace k1lib\html {
         function __construct($value = "", $class = "") {
             parent::__construct("h5", FALSE);
             $this->set_value($value);
-            $this->set_attrib("class", $class);
+            $this->set_class($class);
         }
 
     }
@@ -594,7 +596,7 @@ namespace k1lib\html {
 
         function __construct($legend) {
             parent::__construct("fieldset", FALSE);
-            $this->set_attrib("class", "fieldset");
+            $this->set_class("fieldset");
             $legend = new legend_tag($legend);
             $this->append_child($legend);
         }
