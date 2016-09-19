@@ -6,6 +6,25 @@
 
 namespace k1lib\html {
 
+    class DOM {
+
+        /**
+         * @var \k1lib\html\html_document_tag
+         */
+        static protected $html;
+
+        static function start($lang = "en") {
+            self::$html = new html_document_tag($lang);
+        }
+        /**
+         * @return \k1lib\html\html_document_tag
+         */
+        static function html() {
+            return self::$html;
+        }
+
+    }
+
     class html_document_tag extends html_tag {
 
         /**
@@ -69,11 +88,16 @@ namespace k1lib\html {
          */
         function append_title() {
             $this->title_tag = new title_tag();
-            $this->append_child($this->title_tag);
+            $this->append_child_head($this->title_tag);
         }
 
         function set_title($document_title) {
             $this->title_tag->set_value($document_title);
+        }
+
+        function link_css($href) {
+            $new = new link_tag($href);
+            $this->append_child_tail($new);
         }
 
     }
@@ -201,6 +225,17 @@ namespace k1lib\html {
             $this->set_value($value);
             $this->append_child($new);
             return $new;
+        }
+
+    }
+
+    class link_tag extends html_tag {
+
+        function __construct($href) {
+            parent::__construct("link");
+            $this->set_attrib("rel", "stylesheet");
+            $this->set_attrib("type", "text/css");
+            $this->set_attrib("href", $href);
         }
 
     }

@@ -2,13 +2,19 @@
 
 include_once '../src/init.php';
 
-$html = new k1lib\html\html_document_tag("es");
-$html->head()->set_title("HTML TEST");
+use k1lib\html\DOM as DOM;
 
-$html->body()->append_child_tail(new \k1lib\html\script_tag("https://code.jquery.com/jquery-3.1.0.min.js"));
+DOM::start();
 
-$html->body()->append_p("Hello world");
+DOM::html()->head()->set_title("HTML TEST");
 
-$html->body()->append_div("new-div")->append_p("An P element inside the DIV element");
+DOM::html()->head()->link_css("https://cdnjs.cloudflare.com/ajax/libs/foundation/6.2.3/foundation.css");
+DOM::html()->body()->append_child_tail(new \k1lib\html\script_tag("https://code.jquery.com/jquery-3.1.0.min.js"));
+DOM::html()->body()->append_child_tail(new \k1lib\html\script_tag("https://cdnjs.cloudflare.com/ajax/libs/foundation/6.2.3/foundation.min.js"));
+DOM::html()->body()->append_child_tail((new \k1lib\html\script_tag())->set_value("$(document).foundation();"));
 
-$html->generate_tag(TRUE);
+DOM::html()->body()->append_p("Hello world");
+
+DOM::html()->body()->append_div("new-div")->append_p("An P element inside the DIV element");
+
+DOM::html()->generate_tag(TRUE);

@@ -267,7 +267,7 @@ namespace k1lib\html {
          * @return string Returns FALSE if is not attributes to generate
          */
         protected function generate_attributes_code() {
-            if ($this->is_selfclosed) {
+            if ($this->is_selfclosed && !empty($this->value)) {
                 $this->set_attrib("value", $this->value);
             }
 
