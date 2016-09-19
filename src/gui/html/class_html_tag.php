@@ -51,18 +51,18 @@ namespace k1lib\html {
 
         /**
          * Chains an html tag into the actual html tag
-         * @param html_tag $chlid_object
+         * @param html_tag $child_object
          * @return \k1lib\html\html_tag 
          */
-        public function append_child($chlid_object) {
-            $this->childs[] = $chlid_object;
+        public function append_child($child_object) {
+            $this->childs[] = $child_object;
             $this->has_child = TRUE;
-            return $chlid_object;
+            return $child_object;
         }
 
         /**
          * Chains THIS html tag to a another html tag
-         * @param html_tag $chlid_object
+         * @param html_tag $child_object
          * @return \k1lib\html\html_tag 
          */
         public function append_to($html_object) {
