@@ -142,7 +142,7 @@ namespace k1lib\html {
             } else {
                 trigger_error("Self closed value has to be boolean", E_USER_WARNING);
             }
-            $this->set_attrib("class", "k1-{$tag_name}-object");
+//            $this->set_attrib("class", "k1-{$tag_name}-object");
         }
 
         /**
@@ -183,7 +183,9 @@ namespace k1lib\html {
          * @param string $id
          */
         public function set_id($id) {
-            $this->set_attrib("id", $id);
+            if (!empty($id)) {
+                $this->set_attrib("id", $id);
+            }
         }
 
         /**
@@ -191,7 +193,9 @@ namespace k1lib\html {
          * @param string $class
          */
         public function set_class($class) {
-            $this->set_attrib("class", $class);
+            if (!empty($class)) {
+                $this->set_attrib("class", $class);
+            }
         }
 
         /**
@@ -224,7 +228,7 @@ namespace k1lib\html {
          * @param Boolean $do_echo
          * @return string Returns FALSE if is not attributes to generate
          */
-        protected function generate_attributes_code($do_echo = FALSE) {
+        protected function generate_attributes_code() {
             if ($this->is_selfclosed) {
                 $this->set_attrib("value", $this->value);
             }
@@ -246,13 +250,9 @@ namespace k1lib\html {
                     $attributes_code .= ($current_attribute < $attributes_count) ? " " : "";
                 }
                 $this->attributes_code = $attributes_code;
-                if ($do_echo) {
-                    echo $this->attributes_code;
-                } else {
-                    return $this->attributes_code;
-                }
+                return " " . $this->attributes_code;
             } else {
-                return FALSE;
+                return "";
             }
         }
 
@@ -265,7 +265,7 @@ namespace k1lib\html {
          */
         public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
             $object_childs = count($this->childs);
-            
+
             /**
              * TAB constructor
              */
@@ -273,15 +273,13 @@ namespace k1lib\html {
 
             $new_line = ($this->child_level >= 1) ? "\n" : "";
 
-            $html_code = "{$new_line}{$tabs}<{$this->tag_name} ";
+            $html_code = "{$new_line}{$tabs}<{$this->tag_name}";
             $html_code .= $this->generate_attributes_code();
             if ($this->is_selfclosed) {
 //                $html_code .= " /";
             }
             $html_code .= ">";
-            if (!$this->is_selfclosed) {
-                
-            }
+
             $has_childs = FALSE;
             if (($with_childs) && ($object_childs >= 1)) {
                 $has_childs = TRUE;
