@@ -244,7 +244,7 @@ namespace k1lib\html {
             $html_code = "\n<{$this->tag_name} ";
             $html_code .= $this->generate_attributes_code();
             if ($this->is_selfclosed) {
-                $html_code .= " /";
+//                $html_code .= " /";
             }
             $html_code .= ">";
             if (!$this->is_selfclosed) {
