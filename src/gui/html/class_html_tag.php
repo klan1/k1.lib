@@ -264,12 +264,16 @@ namespace k1lib\html {
          * @return string Won't return any if is set $do_echo = TRUE
          */
         public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
+            $object_childs = count($this->childs);
+            
             /**
              * TAB constructor
              */
             $tabs = str_repeat("\t", $this->child_level);
 
-            $html_code = "\n{$tabs}<{$this->tag_name} ";
+            $new_line = ($this->child_level >= 1) ? "\n" : "";
+
+            $html_code = "{$new_line}{$tabs}<{$this->tag_name} ";
             $html_code .= $this->generate_attributes_code();
             if ($this->is_selfclosed) {
 //                $html_code .= " /";
@@ -278,10 +282,11 @@ namespace k1lib\html {
             if (!$this->is_selfclosed) {
                 
             }
-            if (($with_childs) && (count($this->childs) >= 1)) {
+            $has_childs = FALSE;
+            if (($with_childs) && ($object_childs >= 1)) {
+                $has_childs = TRUE;
                 //lets move with index numbers begining from 0
-                $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
-//            d($this->childs,TRUE);
+                $n_childs = (($n_childs === 0) ? $object_childs : $n_childs) - 1;
                 foreach ($this->childs as $index => &$child_object) {
                     if ($index > $n_childs) {
                         break;
@@ -291,7 +296,15 @@ namespace k1lib\html {
                 }
             }
             if (!$this->is_selfclosed) {
+                if ($has_childs && !empty($this->value)) {
+                    $html_code .= "\n{$tabs}\t";
+                }
+
                 $html_code .= $this->get_value();
+
+                if ($has_childs) {
+                    $html_code .= "\n";
+                }
                 $html_code .= $this->generate_close_tag();
             }
 
@@ -309,7 +322,7 @@ namespace k1lib\html {
          * @param Boolean $do_echo Do ECHO action or RETURN HTML
          * @return string Won't return any if is set $do_echo = TRUE
          */
-        protected function generate_close_tag($do_echo = FALSE) {
+        protected function generate_close_tag() {
             /**
              * TAB constructor
              */
@@ -318,12 +331,9 @@ namespace k1lib\html {
             } else {
                 $tabs = '';
             }
-            $html_code = "{$tabs}</{$this->tag_name}>\n";
-            if ($do_echo) {
-                echo $html_code;
-            } else {
-                return $html_code;
-            }
+            $html_code = "{$tabs}</{$this->tag_name}>";
+
+            return $html_code;
         }
 
         public function get_tag_code() {
