@@ -39,7 +39,13 @@ namespace k1lib\html {
         protected $has_child = FALSE;
 
         /** @var Array */
+        protected $childs_head = array();
+
+        /** @var Array */
         protected $childs = array();
+
+        /** @var Array */
+        protected $childs_tail = array();
         protected $child_level = 0;
 
         /**
@@ -52,7 +58,7 @@ namespace k1lib\html {
         }
 
         /**
-         * Chains an HTML tag into the actual HTML tag, by default will put on last 
+         * Chains an HTML tag into the actual HTML tag on MAIN collection, by default will put on last 
          * position but with $put_last_position = FALSE will be the on first position
          * @param html_tag $child_object
          * @return \k1lib\html\html_tag 
@@ -62,6 +68,38 @@ namespace k1lib\html {
                 $this->childs[] = $child_object;
             } else {
                 array_unshift($this->childs, $child_object);
+            }
+            $this->has_child = TRUE;
+            return $child_object;
+        }
+
+        /**
+         * Chains an HTML tag into the actual HTML tag on TAIL collection, by default will put on last 
+         * position but with $put_last_position = FALSE will be the on first position
+         * @param html_tag $child_object
+         * @return \k1lib\html\html_tag 
+         */
+        public function append_child_tail($child_object, $put_last_position = TRUE) {
+            if ($put_last_position) {
+                $this->childs_tail[] = $child_object;
+            } else {
+                array_unshift($this->childs_tail, $child_object);
+            }
+            $this->has_child = TRUE;
+            return $child_object;
+        }
+
+        /**
+         * Chains an HTML tag into the actual HTML tag on HEAD collection, by default will put on last 
+         * position but with $put_last_position = FALSE will be the on first position
+         * @param html_tag $child_object
+         * @return \k1lib\html\html_tag 
+         */
+        public function append_child_head($child_object, $put_last_position = TRUE) {
+            if ($put_last_position) {
+                $this->childs_head[] = $child_object;
+            } else {
+                array_unshift($this->childs_head, $child_object);
             }
             $this->has_child = TRUE;
             return $child_object;
@@ -264,6 +302,27 @@ namespace k1lib\html {
          * @return string Won't return any if is set $do_echo = TRUE
          */
         public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
+            /**
+             * Merge the child arrays HEAD, MAIN and TAIL collections
+             */
+            $merged_childs = [];
+            if (!empty($this->childs_head)) {
+                foreach ($this->childs_head as $index => $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            if (!empty($this->childs)) {
+                foreach ($this->childs as $index => $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            if (!empty($this->childs_tail)) {
+                foreach ($this->childs_tail as $index => $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            $this->childs = $merged_childs;
+
             $object_childs = count($this->childs);
 
             /**
