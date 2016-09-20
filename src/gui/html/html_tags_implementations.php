@@ -176,11 +176,11 @@ namespace k1lib\html {
 
         function init_sections() {
             $this->section_header = new section_tag("k1app-header");
-            $this->section_header->append_to($this->body_tag);
+            $this->section_header->append_to($this);
             $this->section_content = new section_tag("k1app-content");
-            $this->section_content->append_to($this->body_tag);
+            $this->section_content->append_to($this);
             $this->section_footer = new section_tag("k1app-footer");
-            $this->section_footer->append_to($this->body_tag);
+            $this->section_footer->append_to($this);
         }
         /**
          * return \k1lib\html\section_tag
