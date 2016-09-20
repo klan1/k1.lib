@@ -163,23 +163,23 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              * LABELS 
              */
             if ($create_labels_on_headers) {
-                $label_tag = new \k1lib\html\label_tag($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
+                $label_tag = new \k1lib\html\label($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
                 if ($this->db_table->get_field_config($field, 'required') === TRUE) {
                     $label_tag->set_value(" *", TRUE);
                 }
                 if (isset($this->post_validation_errors[$field])) {
                     $label_tag->set_attrib("class", "is-invalid-label");
                 }
-                $this->db_table_data_filtered[0][$field] = $label_tag->generate_tag();
+                $this->db_table_data_filtered[0][$field] = $label_tag->generate();
             }
             /**
              * ERROR TESTING
              */
             if (isset($this->post_validation_errors[$field])) {
 
-                $span_error = new \k1lib\html\span_tag("form-error is-visible");
+                $span_error = new \k1lib\html\span("form-error is-visible");
                 $span_error->set_value($this->post_validation_errors[$field]);
-                $input_tag->post_code($span_error->generate_tag());
+                $input_tag->post_code($span_error->generate());
                 $input_tag->set_attrib("class", "is-invalid-input", TRUE);
             }
             /**
@@ -297,7 +297,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             /**
              * FORM time !!
              */
-            $html_form = new \k1lib\html\form_tag();
+            $html_form = new \k1lib\html\form();
             $html_form->append_to($this->div_container);
             if ($this->enable_foundation_form_check) {
                 $html_form->set_attrib("data-abide", TRUE);
@@ -312,7 +312,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             /**
              * Hidden input
              */
-            $hidden_input = new \k1lib\html\input_tag("hidden", "k1magic", "123123");
+            $hidden_input = new \k1lib\html\input("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
             // FORM LAYOUT
             $html = "";
@@ -377,7 +377,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
                 $cancel_button->append_to($div_buttons);
             }
-            $submit_button = new \k1lib\html\input_tag("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
+            $submit_button = new \k1lib\html\input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
             $submit_button->append_to($div_buttons);
 
             /**

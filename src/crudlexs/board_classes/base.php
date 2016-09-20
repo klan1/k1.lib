@@ -77,7 +77,7 @@ class board_base {
 
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         $this->controller_object = $controller_object;
-        $this->board_content_div = new \k1lib\html\div_tag("board-content");
+        $this->board_content_div = new \k1lib\html\div("board-content");
 
         $this->user_levels_allowed = $user_levels_allowed;
 

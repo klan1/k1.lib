@@ -99,7 +99,7 @@ class board_update extends board_base implements board_interface {
                 $update_content_div->append_to($this->board_content_div); 
                 
                 if ($do_echo) {
-                    $this->board_content_div->generate_tag(TRUE);
+                    $this->board_content_div->generate(TRUE);
                     return TRUE;
                 } else {
                     return $update_content_div;
