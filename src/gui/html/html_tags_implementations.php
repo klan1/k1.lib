@@ -84,26 +84,34 @@ namespace k1lib\html {
         }
 
         /**
-         * 
          * @return \k1lib\html\title_tag
          */
         function append_title() {
             $this->title_tag = new title_tag();
             $this->append_child_head($this->title_tag);
+            return $this->title_tag;
         }
 
         function set_title($document_title) {
             $this->title_tag->set_value($document_title);
         }
 
+        /**
+         * @return \k1lib\html\link_tag
+         */
         function link_css($href) {
             $new = new link_tag($href);
             $this->append_child_tail($new);
+            return $new;
         }
-
+        /**
+         * 
+         * @return \k1lib\html\meta_tag
+         */
         function append_meta($name = "", $content = "") {
             $new = new meta_tag($name, $content);
             $this->append_child_tail($new);
+            return $new;
         }
 
     }
