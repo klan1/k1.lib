@@ -16,6 +16,7 @@ namespace k1lib\html {
         static function start($lang = "en") {
             self::$html = new html_document_tag($lang);
         }
+
         /**
          * @return \k1lib\html\html_document_tag
          */
@@ -100,12 +101,31 @@ namespace k1lib\html {
             $this->append_child_tail($new);
         }
 
+        function append_meta($name = "", $content = "") {
+            $new = new meta_tag($name, $content);
+            $this->append_child_tail($new);
+        }
+
     }
 
     class title_tag extends html_tag {
 
         function __construct() {
             parent::__construct("title", FALSE);
+        }
+
+    }
+
+    class meta_tag extends html_tag {
+
+        function __construct($name = "", $content = "") {
+            parent::__construct("meta", FALSE);
+            if (!empty($name)) {
+                $this->set_attrib("name", $name);
+            }
+            if (!empty($content)) {
+                $this->set_attrib("content", $content);
+            }
         }
 
     }
