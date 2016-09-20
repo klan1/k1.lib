@@ -23,7 +23,7 @@ class board_base {
 
     /**
      *
-     * @var \k1lib\html\div_tag;
+     * @var \k1lib\html\div;
      */
     public $board_content_div;
 

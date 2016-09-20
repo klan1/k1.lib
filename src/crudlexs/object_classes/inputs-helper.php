@@ -14,7 +14,7 @@ class input_helper {
      * *
      * @param \k1lib\crudlexs\class_db_table $db_table
      * @param array $db_table_row_data
-     * @return \k1lib\html\select_tag
+     * @return \k1lib\html\select
      */
     static function enum_type(creating $crudlex_obj, $row_to_apply, $field) {
         $enum_data = $crudlex_obj->db_table->get_enum_options($field);
@@ -38,7 +38,7 @@ class input_helper {
      * @param \k1lib\crudlexs\creating $crudlex_obj
      * @param int $row_to_apply
      * @param string $field
-     * @return \k1lib\html\textarea_tag
+     * @return \k1lib\html\textarea
      */
     static function text_type(creating $crudlex_obj, $row_to_apply, $field, $load_tinymce = TRUE) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);

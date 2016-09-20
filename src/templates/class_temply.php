@@ -92,7 +92,7 @@ class temply {
             if (!is_object($value)) {
                 trigger_error("The OUTPUT VALUE '$place_name'->$value couldn't be used " . __FUNCTION__, E_USER_ERROR);
             } elseif (strstr(get_class($value), 'tag') === false) {
-                trigger_error("The OUTPUT VALUE as object diferent from html_tag couldn't be used, now is (" . get_class($value) . ") ". __FUNCTION__, E_USER_ERROR);
+                trigger_error("The OUTPUT VALUE as object diferent from html couldn't be used, now is (" . get_class($value) . ") ". __FUNCTION__, E_USER_ERROR);
             }
         }
 

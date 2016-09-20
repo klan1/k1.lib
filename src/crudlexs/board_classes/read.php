@@ -28,12 +28,12 @@ class board_read extends board_base implements board_interface {
     protected $related_edit_url = NULL;
     //RELATED HTML OBJECTS
     /**
-     * @var type \k1lib\html\a_tag
+     * @var type \k1lib\html\a
      */
     protected $related_html_object_show_new = NULL;
 
     /**
-     * @var type \k1lib\html\a_tag
+     * @var type \k1lib\html\a
      */
     protected $related_html_object_show_all_data = NULL;
 
@@ -47,7 +47,7 @@ class board_read extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function start_board() {
         if (!$this->is_enabled) {
@@ -119,7 +119,7 @@ class board_read extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function exec_board($do_echo = TRUE, $do_append = TRUE) {
         if (!$this->is_enabled) {
@@ -210,7 +210,7 @@ class board_read extends board_base implements board_interface {
      * @param string $board_create
      * @param string $board_read
      * @param boolean $show_create
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE) {
 
@@ -329,14 +329,14 @@ class board_read extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\a_tag
+     * @return \k1lib\html\a
      */
     public function get_related_html_object_show_new() {
         return $this->related_html_object_show_new;
     }
 
     /**
-     * @return \k1lib\html\a_tag
+     * @return \k1lib\html\a
      */
     public function get_related_html_object_show_all_data() {
         return $this->related_html_object_show_all_data;

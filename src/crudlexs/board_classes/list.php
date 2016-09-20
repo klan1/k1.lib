@@ -34,7 +34,7 @@ class board_list extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function start_board() {
         if (!$this->is_enabled) {
@@ -107,7 +107,7 @@ class board_list extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function exec_board($do_echo = FALSE) {
         if (!$this->is_enabled) {

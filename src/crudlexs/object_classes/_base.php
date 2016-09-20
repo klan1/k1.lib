@@ -29,7 +29,7 @@ class crudlexs_base {
 
     /**
      *
-     * @var \k1lib\html\div_tag
+     * @var \k1lib\html\div
      */
     protected $div_container;
 
