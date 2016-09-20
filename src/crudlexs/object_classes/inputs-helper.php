@@ -67,7 +67,7 @@ class input_helper {
                     . "paste_data_images: true,"
                     . ""
                     . "});";
-            $script = new \k1lib\html\script_tag($html_script);
+            $script = (new \k1lib\html\script_tag())->set_value($html_script);
             $input_tag->post_code($script->generate_tag());
         }
 

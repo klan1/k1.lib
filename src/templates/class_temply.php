@@ -138,7 +138,7 @@ class temply {
             \trigger_error("The place name HAS to be a string", E_USER_ERROR);
         }
         // prints the place html code
-        echo self::convert_place_name($place_name) . "\n";
+        return self::convert_place_name($place_name) . "\n";
     }
 
     /**

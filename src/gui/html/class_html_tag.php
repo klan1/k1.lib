@@ -1,39 +1,10 @@
 <?php
 
 /**
- * HTML Classes for general propouses use
+ * HTML Classes for general purposes use
  */
 
 namespace k1lib\html {
-
-//    class html_tag_base { // FAIL !!
-//
-//        public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
-//            $html_code = "\n";
-//
-//            if (($with_childs) && (count($this->childs) >= 1)) {
-//                //lets move with index numbers begining from 0
-//                $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
-////            d($this->childs,TRUE);
-//                foreach ($this->childs as $index => &$child_object) {
-//                    if ($index > $n_childs) {
-//                        break;
-//                    }
-//                    $html_code .= "\n" . $child_object->generate_tag();
-//                }
-//            }
-//            $html_code .= $this->get_value();
-//
-//            $this->tag_code = $this->pre_code . $html_code . $this->post_code;
-//
-//            if ($do_echo) {
-//                echo $this->tag_code;
-//            } else {
-//                return $this->tag_code;
-//            }
-//        }
-//
-//    }
 
     /**
      * HTML Tag abstraction
@@ -68,7 +39,16 @@ namespace k1lib\html {
         protected $has_child = FALSE;
 
         /** @var Array */
+        protected $childs_head = array();
+
+        /** @var Array */
         protected $childs = array();
+
+        /** @var Array */
+        protected $childs_tail = array();
+
+        /** @var Integer */
+        protected $child_level = 0;
 
         /**
          * @var html_tag;
@@ -80,19 +60,56 @@ namespace k1lib\html {
         }
 
         /**
-         * Chains an html tag into the actual html tag
-         * @param html_tag $chlid_object
+         * Chains an HTML tag into the actual HTML tag on MAIN collection, by default will put on last 
+         * position but with $put_last_position = FALSE will be the on first position
+         * @param html_tag $child_object
          * @return \k1lib\html\html_tag 
          */
-        public function append_child($chlid_object) {
-            $this->childs[] = $chlid_object;
+        public function append_child($child_object, $put_last_position = TRUE) {
+            if ($put_last_position) {
+                $this->childs[] = $child_object;
+            } else {
+                array_unshift($this->childs, $child_object);
+            }
             $this->has_child = TRUE;
-            return $chlid_object;
+            return $child_object;
         }
 
         /**
-         * Chains THIS html tag to a another html tag
-         * @param html_tag $chlid_object
+         * Chains an HTML tag into the actual HTML tag on TAIL collection, by default will put on last 
+         * position but with $put_last_position = FALSE will be the on first position
+         * @param html_tag $child_object
+         * @return \k1lib\html\html_tag 
+         */
+        public function append_child_tail($child_object, $put_last_position = TRUE) {
+            if ($put_last_position) {
+                $this->childs_tail[] = $child_object;
+            } else {
+                array_unshift($this->childs_tail, $child_object);
+            }
+            $this->has_child = TRUE;
+            return $child_object;
+        }
+
+        /**
+         * Chains an HTML tag into the actual HTML tag on HEAD collection, by default will put on last 
+         * position but with $put_last_position = FALSE will be the on first position
+         * @param html_tag $child_object
+         * @return \k1lib\html\html_tag 
+         */
+        public function append_child_head($child_object, $put_last_position = TRUE) {
+            if ($put_last_position) {
+                $this->childs_head[] = $child_object;
+            } else {
+                array_unshift($this->childs_head, $child_object);
+            }
+            $this->has_child = TRUE;
+            return $child_object;
+        }
+
+        /**
+         * Chains THIS HTML tag to a another HTML tag
+         * @param html_tag $child_object
          * @return \k1lib\html\html_tag 
          */
         public function append_to($html_object) {
@@ -165,11 +182,11 @@ namespace k1lib\html {
             } else {
                 trigger_error("Self closed value has to be boolean", E_USER_WARNING);
             }
-            $this->set_attrib("class", "k1-{$tag_name}-object");
+//            $this->set_attrib("class", "k1-{$tag_name}-object");
         }
 
         /**
-         * Return the reference for chained html tag object
+         * Return the reference for chained HTML tag object
          * @param Int $n Index beginning from 0
          * @return html_tag Returns FALSE if is not set
          */
@@ -202,6 +219,26 @@ namespace k1lib\html {
         }
 
         /**
+         * Shortcut for $html->set_attrib("id",$id);
+         * @param string $id
+         */
+        public function set_id($id) {
+            if (!empty($id)) {
+                $this->set_attrib("id", $id);
+            }
+        }
+
+        /**
+         * Shortcut for $html->set_attrib("class",$class);
+         * @param string $class
+         */
+        public function set_class($class) {
+            if (!empty($class)) {
+                $this->set_attrib("class", $class);
+            }
+        }
+
+        /**
          * If the attribute was set returns its value
          * @param String $attribute
          * @return String Returns FALSE if is not set
@@ -231,8 +268,8 @@ namespace k1lib\html {
          * @param Boolean $do_echo
          * @return string Returns FALSE if is not attributes to generate
          */
-        protected function generate_attributes_code($do_echo = FALSE) {
-            if ($this->is_selfclosed) {
+        protected function generate_attributes_code() {
+            if ($this->is_selfclosed && !empty($this->value)) {
                 $this->set_attrib("value", $this->value);
             }
 
@@ -253,13 +290,9 @@ namespace k1lib\html {
                     $attributes_code .= ($current_attribute < $attributes_count) ? " " : "";
                 }
                 $this->attributes_code = $attributes_code;
-                if ($do_echo) {
-                    echo $this->attributes_code;
-                } else {
-                    return $this->attributes_code;
-                }
+                return " " . $this->attributes_code;
             } else {
-                return FALSE;
+                return "";
             }
         }
 
@@ -271,28 +304,50 @@ namespace k1lib\html {
          * @return string Won't return any if is set $do_echo = TRUE
          */
         public function generate_tag($do_echo = \FALSE, $with_childs = \TRUE, $n_childs = 0) {
-            $html_code = "\n<{$this->tag_name} ";
+            /**
+             * Merge the child arrays HEAD, MAIN and TAIL collections
+             */
+            $this->childs = $this->get_all_childs();
+
+            $object_childs = count($this->childs);
+
+            /**
+             * TAB constructor
+             */
+            $tabs = str_repeat("\t", $this->child_level);
+
+            $new_line = ($this->child_level >= 1) ? "\n" : "";
+
+            $html_code = "{$new_line}{$tabs}<{$this->tag_name}";
             $html_code .= $this->generate_attributes_code();
             if ($this->is_selfclosed) {
-                $html_code .= " /";
+//                $html_code .= " /";
             }
             $html_code .= ">";
-            if (!$this->is_selfclosed) {
-                
-            }
-            if (($with_childs) && (count($this->childs) >= 1)) {
+
+            $has_childs = FALSE;
+            if (($with_childs) && ($object_childs >= 1)) {
+                $has_childs = TRUE;
                 //lets move with index numbers begining from 0
-                $n_childs = (($n_childs === 0) ? count($this->childs) : $n_childs) - 1;
-//            d($this->childs,TRUE);
+                $n_childs = (($n_childs === 0) ? $object_childs : $n_childs) - 1;
                 foreach ($this->childs as $index => &$child_object) {
                     if ($index > $n_childs) {
                         break;
                     }
-                    $html_code .= "\t" . $child_object->generate_tag();
+                    $child_object->child_level = $this->child_level + 1;
+                    $html_code .= $child_object->generate_tag();
                 }
             }
             if (!$this->is_selfclosed) {
+                if ($has_childs && !empty($this->value)) {
+                    $html_code .= "\n{$tabs}\t";
+                }
+
                 $html_code .= $this->get_value();
+
+                if ($has_childs) {
+                    $html_code .= "\n";
+                }
                 $html_code .= $this->generate_close_tag();
             }
 
@@ -310,13 +365,18 @@ namespace k1lib\html {
          * @param Boolean $do_echo Do ECHO action or RETURN HTML
          * @return string Won't return any if is set $do_echo = TRUE
          */
-        protected function generate_close_tag($do_echo = FALSE) {
-            $html_code = "</{$this->tag_name}>";
-            if ($do_echo) {
-                echo $html_code;
+        protected function generate_close_tag() {
+            /**
+             * TAB constructor
+             */
+            if (count($this->childs)) {
+                $tabs = str_repeat("\t", $this->child_level);
             } else {
-                return $html_code;
+                $tabs = '';
             }
+            $html_code = "{$tabs}</{$this->tag_name}>";
+
+            return $html_code;
         }
 
         public function get_tag_code() {
@@ -325,6 +385,64 @@ namespace k1lib\html {
 
         public function get_tag_name() {
             return $this->tag_name;
+        }
+
+        /**
+         * 
+         * @param string $id
+         * @return html_tag
+         */
+        public function get_element_by_id($id) {
+            $all_childs = $this->get_all_childs();
+            if (!empty($all_childs)) {
+                /**
+                 * @var html_tag
+                 */
+                foreach ($all_childs as $child) {
+                    if ($child->get_attribute("id") == $id) {
+                        return $child;
+                    } else {
+                        if ($child->has_childs()) {
+                            $child_get_by_result = $child->get_element_by_id($id);
+                            if (!empty($child_get_by_result)) {
+                                return $child_get_by_result;
+                            }
+                        }
+                    }
+                }
+                 return NULL;
+            }
+        }
+
+        function has_childs() {
+            return $this->has_child;
+        }
+
+        /**
+         * Merge and return the $childs_head, $childs and $childs_tail
+         * @return array
+         */
+        protected function get_all_childs() {
+            /**
+             * Merge the child arrays HEAD, MAIN and TAIL collections
+             */
+            $merged_childs = [];
+            if (!empty($this->childs_head)) {
+                foreach ($this->childs_head as $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            if (!empty($this->childs)) {
+                foreach ($this->childs as $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            if (!empty($this->childs_tail)) {
+                foreach ($this->childs_tail as $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            return $merged_childs;
         }
 
     }
@@ -342,6 +460,7 @@ namespace k1lib\html {
             $this->append_child($new);
             return $new;
         }
+
         /**
          * 
          * @param string $class
