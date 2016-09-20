@@ -282,7 +282,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     }
 
     /**
-     * @return \k1lib\html\div_tag
+     * @return \k1lib\html\div
      */
     public function do_html_object() {
         if (!empty($this->db_table_data_filtered)) {

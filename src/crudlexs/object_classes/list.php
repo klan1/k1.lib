@@ -98,7 +98,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
     /**
      * 
-     * @return \k1lib\html\div_tag
+     * @return \k1lib\html\div
      */
     public function do_html_object() {
         $this->div_container->set_attrib("class", "k1-crudlexs-table");
@@ -115,7 +115,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
     /**
      * 
-     * @return \k1lib\html\div_tag
+     * @return \k1lib\html\div
      */
     public function do_row_stats($custom_msg = "") {
         $div_stats = new \k1lib\html\div("k1-crudlexs-table-stats clearfix");
@@ -137,7 +137,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
     /**
      * 
-     * @return \k1lib\html\div_tag
+     * @return \k1lib\html\div
      */
     public function do_pagination() {
 
