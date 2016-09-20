@@ -46,6 +46,8 @@ namespace k1lib\html {
 
         /** @var Array */
         protected $childs_tail = array();
+
+        /** @var Integer */
         protected $child_level = 0;
 
         /**
@@ -305,23 +307,7 @@ namespace k1lib\html {
             /**
              * Merge the child arrays HEAD, MAIN and TAIL collections
              */
-            $merged_childs = [];
-            if (!empty($this->childs_head)) {
-                foreach ($this->childs_head as $index => $child) {
-                    $merged_childs[] = $child;
-                }
-            }
-            if (!empty($this->childs)) {
-                foreach ($this->childs as $index => $child) {
-                    $merged_childs[] = $child;
-                }
-            }
-            if (!empty($this->childs_tail)) {
-                foreach ($this->childs_tail as $index => $child) {
-                    $merged_childs[] = $child;
-                }
-            }
-            $this->childs = $merged_childs;
+            $this->childs = $this->get_all_childs();
 
             $object_childs = count($this->childs);
 
@@ -399,6 +385,64 @@ namespace k1lib\html {
 
         public function get_tag_name() {
             return $this->tag_name;
+        }
+
+        /**
+         * 
+         * @param string $id
+         * @return html_tag
+         */
+        public function get_element_by_id($id) {
+            $all_childs = $this->get_all_childs();
+            if (!empty($all_childs)) {
+                /**
+                 * @var html_tag
+                 */
+                foreach ($all_childs as $child) {
+                    if ($child->get_attribute("id") == $id) {
+                        return $child;
+                    } else {
+                        if ($child->has_childs()) {
+                            $child_get_by_result = $child->get_element_by_id($id);
+                            if (!empty($child_get_by_result)) {
+                                return $child_get_by_result;
+                            }
+                        }
+                    }
+                }
+                 return NULL;
+            }
+        }
+
+        function has_childs() {
+            return $this->has_child;
+        }
+
+        /**
+         * Merge and return the $childs_head, $childs and $childs_tail
+         * @return array
+         */
+        protected function get_all_childs() {
+            /**
+             * Merge the child arrays HEAD, MAIN and TAIL collections
+             */
+            $merged_childs = [];
+            if (!empty($this->childs_head)) {
+                foreach ($this->childs_head as $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            if (!empty($this->childs)) {
+                foreach ($this->childs as $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            if (!empty($this->childs_tail)) {
+                foreach ($this->childs_tail as $child) {
+                    $merged_childs[] = $child;
+                }
+            }
+            return $merged_childs;
         }
 
     }
