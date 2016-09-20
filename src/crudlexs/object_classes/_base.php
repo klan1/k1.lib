@@ -470,9 +470,9 @@ class crudlexs_base_with_data extends crudlexs_base {
                             $tag_object->set_value($row_data[$field_to_change]);
 
                             if (is_object($tag_object)) {
-                                if (get_class($tag_object) == "k1lib\html\a_tag") {
+                                if (get_class($tag_object) == "k1lib\html\a") {
                                     $tag_href = $tag_object->get_attribute("href");
-                                } elseif (get_class($tag_object) == "k1lib\html\img_tag") {
+                                } elseif (get_class($tag_object) == "k1lib\html\img") {
                                     $tag_href = $tag_object->get_attribute("src");
                                 } else {
                                     // TODO: CHECK THIS! - WTF line
@@ -502,10 +502,10 @@ class crudlexs_base_with_data extends crudlexs_base {
                                     $tag_href = str_replace("--authcode--", $auth_code, $tag_href);
                                     $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
 
-                                    if (get_class($tag_object) == "k1lib\html\a_tag") {
+                                    if (get_class($tag_object) == "k1lib\html\a") {
                                         $tag_object->set_attrib("href", $tag_href);
                                     }
-                                    if (get_class($tag_object) == "k1lib\html\img_tag") {
+                                    if (get_class($tag_object) == "k1lib\html\img") {
                                         $tag_object->set_attrib("src", $tag_href);
                                     }
                                 }
