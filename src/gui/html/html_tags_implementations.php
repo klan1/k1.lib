@@ -99,11 +99,12 @@ namespace k1lib\html {
         /**
          * @return \k1lib\html\link_tag
          */
-        function link_css($href) {
+        function link_css($href = "") {
             $new = new link_tag($href);
             $this->append_child_tail($new);
             return $new;
         }
+
         /**
          * 
          * @return \k1lib\html\meta_tag
@@ -261,9 +262,11 @@ namespace k1lib\html {
 
         function __construct($href) {
             parent::__construct("link");
-            $this->set_attrib("rel", "stylesheet");
-            $this->set_attrib("type", "text/css");
-            $this->set_attrib("href", $href);
+            if (!empty($href)) {
+                $this->set_attrib("rel", "stylesheet");
+                $this->set_attrib("type", "text/css");
+                $this->set_attrib("href", $href);
+            }
         }
 
     }
