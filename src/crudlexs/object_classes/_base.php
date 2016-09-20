@@ -426,7 +426,7 @@ class crudlexs_base_with_data extends crudlexs_base {
         }
     }
 
-    public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $custom_field_value = null) {
+    public function apply_html_tag_on_field_filter(\k1lib\html\html $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $custom_field_value = null) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_NOTICE);
