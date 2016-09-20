@@ -148,7 +148,7 @@ class board_read extends board_base implements board_interface {
 
 //                $this->board_content_div->set_attrib("class", "row", TRUE);
 
-                $span_tag = new \k1lib\html\span_tag("key-field");
+                $span_tag = new \k1lib\html\span("key-field");
                 $this->read_object->apply_html_tag_on_field_filter($span_tag, \k1lib\crudlexs\crudlexs_base::USE_KEY_FIELDS);
 
                 $read_content_div = $this->read_object->do_html_object();
@@ -157,7 +157,7 @@ class board_read extends board_base implements board_interface {
                 }
 
                 if ($do_echo) {
-                    $this->board_content_div->generate_tag(TRUE);
+                    $this->board_content_div->generate(TRUE);
                     return TRUE;
                 } else {
                     return $read_content_div;
@@ -214,7 +214,7 @@ class board_read extends board_base implements board_interface {
      */
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE) {
 
-        $detail_div = new \k1lib\html\div_tag();
+        $detail_div = new \k1lib\html\div();
 
         if ($this->is_enabled && $this->read_object->is_valid()) {
             $current_row_keys_text = $this->controller_object->board_read_object->read_object->get_row_keys_text();
@@ -264,7 +264,7 @@ class board_read extends board_base implements board_interface {
 
                 $detail_div->set_attrib("class", "k1app-related-list {$db_table->get_db_table_name()}-realted-list");
 
-                $related_title = new \k1lib\html\h4_tag("sub-title");
+                $related_title = new \k1lib\html\h4("sub-title");
                 $related_title->set_value($title);
                 $related_title->append_to($detail_div);
 
