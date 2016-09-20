@@ -11,7 +11,7 @@ namespace k1lib\html {
         /**
          * @var \k1lib\html\html_document_tag
          */
-        static protected $html;
+        static protected $html = null;
 
         static function start($lang = "en") {
             self::$html = new html_document_tag($lang);
@@ -31,12 +31,12 @@ namespace k1lib\html {
         /**
          * @var \k1lib\html\head_tag
          */
-        protected $head_tag;
+        protected $head_tag = null;
 
         /**
          * @var \k1lib\html\body_tag
          */
-        private $body_tag;
+        private $body_tag = null;
 
         function __construct($lang = "en") {
             parent::__construct("html", FALSE);
@@ -125,6 +125,20 @@ namespace k1lib\html {
 
     }
 
+    class section_tag extends html_tag {
+
+        function __construct($id = "", $class = "") {
+            parent::__construct("section", FALSE);
+            if (!empty($id)) {
+                $this->set_attrib("id", $id);
+            }
+            if (!empty($class)) {
+                $this->set_attrib("class", $class);
+            }
+        }
+
+    }
+
     class meta_tag extends html_tag {
 
         function __construct($name = "", $content = "") {
@@ -141,8 +155,50 @@ namespace k1lib\html {
 
     class body_tag extends html_tag {
 
+        /**
+         * @var \k1lib\html\section_tag
+         */
+        protected $section_header = null;
+
+        /**
+         * @var \k1lib\html\section_tag
+         */
+        protected $section_content = null;
+
+        /**
+         * @var \k1lib\html\section_tag
+         */
+        protected $section_footer = null;
+
         function __construct() {
             parent::__construct("body", FALSE);
+        }
+
+        function init_sections() {
+            $this->section_header = new section_tag("k1app-header");
+            $this->section_header->append_to($this->body_tag);
+            $this->section_content = new section_tag("k1app-content");
+            $this->section_content->append_to($this->body_tag);
+            $this->section_footer = new section_tag("k1app-footer");
+            $this->section_footer->append_to($this->body_tag);
+        }
+        /**
+         * return \k1lib\html\section_tag
+         */
+        function header() {
+            return $this->section_header;
+        }
+        /**
+         * return \k1lib\html\section_tag
+         */
+        function content() {
+            return $this->section_content;
+        }
+        /**
+         * return \k1lib\html\section_tag
+         */
+        function footer() {
+            return $this->section_footer;
         }
 
     }
