@@ -470,6 +470,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                             $tag_object->set_value($row_data[$field_to_change]);
 
                             if (is_object($tag_object)) {
+                                d($tag_object);
                                 if (get_class($tag_object) == "k1lib\html\a") {
                                     $tag_href = $tag_object->get_attribute("href");
                                 } elseif (get_class($tag_object) == "k1lib\html\img") {

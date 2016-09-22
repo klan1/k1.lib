@@ -83,7 +83,7 @@ class input_helper {
         } else {
             $delete_file_link = new \k1lib\html\a("./unlink-uploaded-file/" . $field_encrypted . "/?auth-code=--authcode--", input_helper_strings::$button_remove);
 
-            $div_container = new \k1lib\html\div();
+            $div_container = new \k1lib\html\div(null, "img-delete-link");
             $div_container->append_child($input_tag);
             $div_container->append_child($delete_file_link);
             $div_container->link_value_obj($input_tag);
