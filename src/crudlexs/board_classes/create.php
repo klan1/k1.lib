@@ -22,7 +22,7 @@ class board_create extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function start_board() {
         if (!$this->is_enabled) {
@@ -46,7 +46,7 @@ class board_create extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function exec_board($do_echo = TRUE) {
         if (!$this->is_enabled) {
@@ -74,7 +74,7 @@ class board_create extends board_base implements board_interface {
                 $create_content_div->append_to($this->board_content_div);
 
                 if ($do_echo) {
-                    $this->board_content_div->generate_tag(TRUE);
+                    $this->board_content_div->generate(TRUE);
                     return TRUE;
                 } else {
                     return $create_content_div;

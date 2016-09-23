@@ -426,8 +426,8 @@ function make_form_select_list(&$field_name, &$value, &$table_config_array, &$er
     } elseif (!empty($table_config_array[$field_name]['refereced_table_name'])) {
         $select_data_array = \k1lib\forms\get_labels_from_table($db, $table_config_array[$field_name]['refereced_table_name']);
     }
-    $label_object = new html\label_tag($table_config_array[$field_name]['label'], $field_name, "right inline");
-//    $select_object = new html\select_tag($field_name);
+    $label_object = new html\label($table_config_array[$field_name]['label'], $field_name, "right inline");
+//    $select_object = new html\select($field_name);
 
     if (empty($value) && (!$table_config_array[$field_name]['null'])) {
         $value = $table_config_array[$field_name]['default'];
@@ -436,11 +436,11 @@ function make_form_select_list(&$field_name, &$value, &$table_config_array, &$er
     if (!empty($error_msg)) {
         $select_html = html\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null'], "error");
         $html_template = html\load_html_template("label_input_combo-error");
-        $html_code = sprintf($html_template, $label_object->generate_tag(), $select_html, $error_msg);
+        $html_code = sprintf($html_template, $label_object->generate(), $select_html, $error_msg);
     } else {
         $select_html = html\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null']);
         $html_template = html\load_html_template("label_input_combo");
-        $html_code = sprintf($html_template, $label_object->generate_tag(), $select_html);
+        $html_code = sprintf($html_template, $label_object->generate(), $select_html);
     }
 
     return $html_code;

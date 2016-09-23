@@ -55,7 +55,7 @@ class search_helper extends creating {
         input_helper::$do_fk_search_tool = FALSE;
         $this->insert_inputs_on_data_row();
 
-        $div_callout = new \k1lib\html\div_tag("reveal", "search-modal");
+        $div_callout = new \k1lib\html\div("reveal", "search-modal");
         $div_callout->set_attrib("data-reveal", TRUE);
         $div_callout->append_child(parent::do_html_object());
         return $div_callout;
