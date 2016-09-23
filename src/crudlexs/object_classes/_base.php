@@ -470,18 +470,26 @@ class crudlexs_base_with_data extends crudlexs_base {
                             $tag_object->set_value($row_data[$field_to_change]);
 
                             if (is_object($tag_object)) {
-                                d($tag_object);
+                                $a_tags = [];
+                                $tag_value = null;
                                 if (get_class($tag_object) == "k1lib\html\a") {
                                     $tag_href = $tag_object->get_attribute("href");
+                                    $tag_value = $tag_object->get_value();
                                 } elseif (get_class($tag_object) == "k1lib\html\img") {
                                     $tag_href = $tag_object->get_attribute("src");
                                 } else {
-                                    // TODO: CHECK THIS! - WTF line
+                                    // Let's try to get an A object from this object searching for it
+                                    $a_tags = $tag_object->get_elements_by_tag("a");
+                                    if (count($a_tags) === 1) {
+                                        $tag_href = $a_tags[0]->get_attribute("href");
+                                        $tag_value = $a_tags[0]->get_value();
+                                    } else {
+                                        // TODO: CHECK THIS! - WTF line
 //                                    $tag_href = $tag_object->get_value();
-                                    $tag_href = NULL;
+                                        $tag_href = NULL;
+                                    }
                                 }
                                 if (!empty($this->db_table_data_keys) && !empty($tag_href)) {
-
                                     if (is_array($custom_field_value)) {
                                         foreach ($custom_field_value as $key => $field_value) {
                                             if (isset($row_data[$field_value])) {
@@ -496,18 +504,37 @@ class crudlexs_base_with_data extends crudlexs_base {
 
                                     $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                                     $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
+
+                                    /**
+                                     * HREF STR_REPLACE
+                                     */
                                     $tag_href = str_replace("--rowkeys--", $key_array_text, $tag_href);
                                     $tag_href = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_href);
+                                    // TODO: Why did I needed this ? WFT Line
                                     $actual_custom_field_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $custom_field_value);
                                     $tag_href = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_href);
                                     $tag_href = str_replace("--authcode--", $auth_code, $tag_href);
                                     $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
+                                    /**
+                                     * VALUE STR_REPLACE
+                                     */
+                                    $tag_value = str_replace("--rowkeys--", $key_array_text, $tag_value);
+                                    $tag_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_value);
+                                    $tag_value = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_value);
+                                    $tag_value = str_replace("--authcode--", $auth_code, $tag_value);
+                                    $tag_value = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_value);
 
                                     if (get_class($tag_object) == "k1lib\html\a") {
                                         $tag_object->set_attrib("href", $tag_href);
+                                        $tag_object->set_value($tag_value);
                                     }
                                     if (get_class($tag_object) == "k1lib\html\img") {
                                         $tag_object->set_attrib("src", $tag_href);
+                                    }
+                                    // get-elements-by-tags fix
+                                    foreach ($a_tags as $a_tag) {
+                                        $a_tag->set_attrib("href", $tag_href);
+                                        $a_tag->set_value($tag_value);
                                     }
                                 }
                             } else {
