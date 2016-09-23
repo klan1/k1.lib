@@ -477,6 +477,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                                     $tag_value = $tag_object->get_value();
                                 } elseif (get_class($tag_object) == "k1lib\html\img") {
                                     $tag_href = $tag_object->get_attribute("src");
+                                    $tag_value = $tag_object->get_attribute("alt");
                                 } else {
                                     // Let's try to get an A object from this object searching for it
                                     $a_tags = $tag_object->get_elements_by_tag("a");
