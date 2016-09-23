@@ -34,7 +34,7 @@ class board_list extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function start_board() {
         if (!$this->is_enabled) {
@@ -78,7 +78,7 @@ class board_list extends board_base implements board_interface {
              * Search buttom
              */
             if ($this->search_enable) {
-                $search_buttom = new \k1lib\html\a_tag("#", " " . board_list_strings::$button_search, "_self", board_list_strings::$button_search);
+                $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self", board_list_strings::$button_search);
                 $search_buttom->set_attrib("class", "button fi-page-search");
                 $search_buttom->set_attrib("data-open", "search-modal");
                 $search_buttom->append_to($this->board_content_div);
@@ -88,7 +88,7 @@ class board_list extends board_base implements board_interface {
                  */
                 $search_helper->do_html_object()->append_to($this->board_content_div);
                 if ($this->search_enable && !empty($search_helper->get_post_data())) {
-                    $clear_search_buttom = new \k1lib\html\a_tag(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self", board_list_strings::$button_search_cancel);
+                    $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self", board_list_strings::$button_search_cancel);
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->set_attrib("class", "button warning");
                     $clear_search_buttom->append_to($this->board_content_div);
@@ -107,7 +107,7 @@ class board_list extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function exec_board($do_echo = FALSE) {
         if (!$this->is_enabled) {
@@ -150,7 +150,7 @@ class board_list extends board_base implements board_interface {
                 $this->list_object->do_pagination()->append_to($this->board_content_div);
             }
             if ($do_echo) {
-                $this->board_content_div->generate_tag($do_echo);
+                $this->board_content_div->generate($do_echo);
                 return TRUE;
             } else {
                 return $list_content_div;
@@ -158,7 +158,7 @@ class board_list extends board_base implements board_interface {
         } else {
             $this->list_object->do_html_object()->append_to($this->board_content_div);
             if ($do_echo) {
-                $this->board_content_div->generate_tag($do_echo);
+                $this->board_content_div->generate($do_echo);
                 return TRUE;
             } else {
                 return $this->board_content_div;

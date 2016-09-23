@@ -29,7 +29,7 @@ class crudlexs_base {
 
     /**
      *
-     * @var \k1lib\html\div_tag
+     * @var \k1lib\html\div
      */
     protected $div_container;
 
@@ -61,7 +61,7 @@ class crudlexs_base {
 
     public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
         $this->db_table = $db_table;
-        $this->div_container = new \k1lib\html\div_tag();
+        $this->div_container = new \k1lib\html\div();
         $this->is_valid = TRUE;
     }
 
@@ -388,19 +388,19 @@ class crudlexs_base_with_data extends crudlexs_base {
                     foreach ($file_upload_fields as $field => $file_type) {
                         switch ($file_type) {
                             case "image":
-//                                $div_container = new \k1lib\html\div_tag();
+//                                $div_container = new \k1lib\html\div();
 
-                                $img_tag = new \k1lib\html\img_tag(file_uploads::get_uploads_url() . "--fieldvalue--");
+                                $img_tag = new \k1lib\html\img(file_uploads::get_uploads_url() . "--fieldvalue--");
                                 $img_tag->set_attrib("class", "k1-data-img", TRUE);
 
-//                                $delete_file_link = new \k1lib\html\a_tag("./unlink-uploaded-file/", "remove this file");
+//                                $delete_file_link = new \k1lib\html\a("./unlink-uploaded-file/", "remove this file");
 //                                $div_container->append_child($img_tag);
 //                                $div_container->append_child($delete_file_link);
 
                                 return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
 
                             default:
-                                $link_tag = new \k1lib\html\a_tag(url::do_url(file_uploads::get_uploads_url() . "--fieldvalue--"), "--fieldvalue--", "_blank");
+                                $link_tag = new \k1lib\html\a(url::do_url(file_uploads::get_uploads_url() . "--fieldvalue--"), "--fieldvalue--", "_blank");
                                 $link_tag->set_attrib("class", "k1-data-link", TRUE);
                                 return $this->apply_html_tag_on_field_filter($link_tag, array_keys($file_upload_fields));
                         }
@@ -415,7 +415,7 @@ class crudlexs_base_with_data extends crudlexs_base {
     public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null, $custom_field_value = null, $href_target = null) {
         if ($this->get_state()) {
             $this->link_on_field_filter_applied = true;
-            $a_tag = new \k1lib\html\a_tag(url::do_url($link_to_apply), "", $href_target);
+            $a_tag = new \k1lib\html\a(url::do_url($link_to_apply), "", $href_target);
             $a_tag->set_attrib("class", "k1-link-filter", TRUE);
             if (empty($fields_to_change)) {
                 $fields_to_change = crudlexs_base::USE_KEY_FIELDS;
@@ -426,7 +426,7 @@ class crudlexs_base_with_data extends crudlexs_base {
         }
     }
 
-    public function apply_html_tag_on_field_filter(\k1lib\html\html_tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $custom_field_value = null) {
+    public function apply_html_tag_on_field_filter(\k1lib\html\tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $custom_field_value = null) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_NOTICE);
@@ -470,17 +470,27 @@ class crudlexs_base_with_data extends crudlexs_base {
                             $tag_object->set_value($row_data[$field_to_change]);
 
                             if (is_object($tag_object)) {
-                                if (get_class($tag_object) == "k1lib\html\a_tag") {
+                                $a_tags = [];
+                                $tag_value = null;
+                                if (get_class($tag_object) == "k1lib\html\a") {
                                     $tag_href = $tag_object->get_attribute("href");
-                                } elseif (get_class($tag_object) == "k1lib\html\img_tag") {
+                                    $tag_value = $tag_object->get_value();
+                                } elseif (get_class($tag_object) == "k1lib\html\img") {
                                     $tag_href = $tag_object->get_attribute("src");
+                                    $tag_value = $tag_object->get_attribute("alt");
                                 } else {
-                                    // TODO: CHECK THIS! - WTF line
+                                    // Let's try to get an A object from this object searching for it
+                                    $a_tags = $tag_object->get_elements_by_tag("a");
+                                    if (count($a_tags) === 1) {
+                                        $tag_href = $a_tags[0]->get_attribute("href");
+                                        $tag_value = $a_tags[0]->get_value();
+                                    } else {
+                                        // TODO: CHECK THIS! - WTF line
 //                                    $tag_href = $tag_object->get_value();
-                                    $tag_href = NULL;
+                                        $tag_href = NULL;
+                                    }
                                 }
                                 if (!empty($this->db_table_data_keys) && !empty($tag_href)) {
-
                                     if (is_array($custom_field_value)) {
                                         foreach ($custom_field_value as $key => $field_value) {
                                             if (isset($row_data[$field_value])) {
@@ -495,18 +505,37 @@ class crudlexs_base_with_data extends crudlexs_base {
 
                                     $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                                     $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
+
+                                    /**
+                                     * HREF STR_REPLACE
+                                     */
                                     $tag_href = str_replace("--rowkeys--", $key_array_text, $tag_href);
                                     $tag_href = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_href);
+                                    // TODO: Why did I needed this ? WFT Line
                                     $actual_custom_field_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $custom_field_value);
                                     $tag_href = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_href);
                                     $tag_href = str_replace("--authcode--", $auth_code, $tag_href);
                                     $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
+                                    /**
+                                     * VALUE STR_REPLACE
+                                     */
+                                    $tag_value = str_replace("--rowkeys--", $key_array_text, $tag_value);
+                                    $tag_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_value);
+                                    $tag_value = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_value);
+                                    $tag_value = str_replace("--authcode--", $auth_code, $tag_value);
+                                    $tag_value = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_value);
 
-                                    if (get_class($tag_object) == "k1lib\html\a_tag") {
+                                    if (get_class($tag_object) == "k1lib\html\a") {
                                         $tag_object->set_attrib("href", $tag_href);
+                                        $tag_object->set_value($tag_value);
                                     }
-                                    if (get_class($tag_object) == "k1lib\html\img_tag") {
+                                    if (get_class($tag_object) == "k1lib\html\img") {
                                         $tag_object->set_attrib("src", $tag_href);
+                                    }
+                                    // get-elements-by-tags fix
+                                    foreach ($a_tags as $a_tag) {
+                                        $a_tag->set_attrib("href", $tag_href);
+                                        $a_tag->set_value($tag_value);
                                     }
                                 }
                             } else {

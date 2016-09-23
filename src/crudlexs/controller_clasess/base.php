@@ -50,7 +50,7 @@ class controller_base {
 
     /**
      *
-     * @var \k1lib\html\div_tag
+     * @var \k1lib\html\div
      */
     public $board_div_content;
     /**
@@ -261,7 +261,7 @@ class controller_base {
 
     /**
      * @param string $specific_board_to_init 
-     * @return \k1lib\html\div_tag|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function init_board($specific_board_to_init = NULL) {
         if ($this->security_no_rules_enable === FALSE) {
@@ -477,7 +477,7 @@ class controller_base {
      * 
      * @param boolean $do_echo
      * @param string $specific_board_to_exec
-     * @return \k1lib\html\div_tag
+     * @return \k1lib\html\div
      */
     public function exec_board($do_echo = TRUE, $do_append = TRUE, $specific_board_to_exec = NULL) {
         $this->board_executed = TRUE;
