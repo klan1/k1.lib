@@ -37,15 +37,13 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
                 /**
                  * LOAD the custom HTMLtemplate 
                  */
-                $possible_read_template = "read-templates/" . $this->db_table->get_db_table_name();
-                $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
-                if ($template_file_path) {
+                if (file_exists($this->read_custom_template)) {
                     ob_start();
-                    include $template_file_path;
+                    include $this->read_custom_template;
                     $html = ob_get_contents();
                     ob_end_clean();
 
-                    if ($template_file_path) {
+                    if (!empty($html)) {
                         foreach ($this->db_table_data_filtered[1] as $field => $value) {
                             /**
                              * Let's try to convert the object here, I don't know why is not converted later

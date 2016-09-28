@@ -320,21 +320,31 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 /**
                  * LOAD the custom HTMLtemplate 
                  */
-                $possible_read_template = "create-templates/" . $this->db_table->get_db_table_name();
-                $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
-
-                if ($template_file_path) {
+                if (file_exists($this->create_custom_template)) {
                     ob_start();
-                    include $template_file_path;
+                    include $this->create_custom_template;
                     $html = ob_get_contents();
                     ob_end_clean();
-
-                    foreach ($this->db_table_data_filtered[1] as $field => $value) {
-                        if (temply::is_place_registered("{$field}-label")) {
-                            temply::set_place_value("{$field}-label", $this->db_table_data_filtered[0][$field]);
-                        }
-                        if (temply::is_place_registered($field)) {
-                            temply::set_place_value($field, $value);
+                    if (!empty($html)) {
+                        foreach ($this->db_table_data_filtered[1] as $field => $value) {
+                            /**
+                             * Let's try to convert the object here, I don't know why is not converted later
+                             * TODO: Know why!
+                             */
+                            if (temply::is_place_registered("{$field}-label")) {
+                                if (method_exists($this->db_table_data_filtered[0][$field], "generate")) {
+                                    $value = $this->db_table_data_filtered[0][$field]->generate();
+                                } else {
+                                    $value = $this->db_table_data_filtered[0][$field];
+                                }
+                                temply::set_place_value("{$field}-label", $this->db_table_data_filtered[0][$field]);
+                            }
+                            if (temply::is_place_registered($field)) {
+                                if (method_exists($value, "generate")) {
+                                    $value = $value->generate();
+                                }
+                                temply::set_place_value($field, $value);
+                            }
                         }
                     }
                 }
