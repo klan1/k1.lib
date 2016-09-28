@@ -315,59 +315,32 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $hidden_input = new \k1lib\html\input("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
             // FORM LAYOUT
-            $html = "";
-            if ($this->use_create_custom_template) {
-                /**
-                 * LOAD the custom HTMLtemplate 
-                 */
-                $possible_read_template = "create-templates/" . $this->db_table->get_db_table_name();
-                $template_file_path = temply::load_view($possible_read_template, APP_VIEWS_PATH);
-
-                if ($template_file_path) {
-                    ob_start();
-                    include $template_file_path;
-                    $html = ob_get_contents();
-                    ob_end_clean();
-
-                    foreach ($this->db_table_data_filtered[1] as $field => $value) {
-                        if (temply::is_place_registered("{$field}-label")) {
-                            temply::set_place_value("{$field}-label", $this->db_table_data_filtered[0][$field]);
-                        }
-                        if (temply::is_place_registered($field)) {
-                            temply::set_place_value($field, $value);
-                        }
-                    }
-                }
-                $form_body->set_value($html);
-            }
-
-            if (empty($html)) {
 // <div class="row">
 
-                $row_column_number = 1;
+            $row_column_number = 1;
 //                d($this->db_table_data_filtered);
-                foreach ($this->db_table_data_filtered[1] as $field => $value) {
+            foreach ($this->db_table_data_filtered[1] as $field => $value) {
 // Variable variables names
-                    $row_column = "div_row" . $row_column_number;
+                $row_column = "div_row" . $row_column_number;
 
 // <div class="large-12 columns">
 
-                    $field_type = $this->db_table->get_field_config($field, 'type');
-                    $field_validation = $this->db_table->get_field_config($field, 'validation');
-                    if ($field_type == 'text' && $field_validation == 'html') {
-                        $input_div = $form_footer->append_div("large-12 column end");
-                        $last_non_text_div = FALSE;
-                    } else {
-                        $input_div = $form_body->append_div($this->html_column_classes);
-                        $last_normal_div = $input_div;
-                    }
-                    $input_div->set_value($this->db_table_data_filtered[0][$field], TRUE);
-                    $input_div->set_value($value, TRUE);
-// put on div_row
-                    $row_column++;
+                $field_type = $this->db_table->get_field_config($field, 'type');
+                $field_validation = $this->db_table->get_field_config($field, 'validation');
+                if ($field_type == 'text' && $field_validation == 'html') {
+                    $input_div = $form_footer->append_div("large-12 column end");
+                    $last_non_text_div = FALSE;
+                } else {
+                    $input_div = $form_body->append_div($this->html_column_classes);
+                    $last_normal_div = $input_div;
                 }
-                $last_normal_div->set_attrib("class", "end", TRUE);
+                $input_div->set_value($this->db_table_data_filtered[0][$field], TRUE);
+                $input_div->set_value($value, TRUE);
+// put on div_row
+                $row_column++;
             }
+            $last_normal_div->set_attrib("class", "end", TRUE);
+
 
             /**
              * BUTTONS
