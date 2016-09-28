@@ -691,14 +691,6 @@ class crudlexs_base_with_data extends crudlexs_base {
         return $this->use_read_custom_template;
     }
 
-    function set_use_create_custom_template($use_create_custom_template = TRUE) {
-        $this->use_create_custom_template = $use_create_custom_template;
-    }
-
-    function set_use_read_custom_template($use_read_custom_template = TRUE) {
-        $this->use_read_custom_template = $use_read_custom_template;
-    }
-
     public function get_db_table_data() {
         return $this->db_table_data;
     }
@@ -720,10 +712,12 @@ class crudlexs_base_with_data extends crudlexs_base {
     }
 
     public function set_create_custom_template($create_custom_template) {
+        $this->use_create_custom_template = TRUE;
         $this->create_custom_template = $create_custom_template;
     }
 
     public function set_read_custom_template($read_custom_template) {
+        $this->use_read_custom_template = TRUE;
         $this->read_custom_template = $read_custom_template;
     }
 
