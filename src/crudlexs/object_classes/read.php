@@ -47,10 +47,22 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
 
                     if ($template_file_path) {
                         foreach ($this->db_table_data_filtered[1] as $field => $value) {
+                            /**
+                             * Let's try to convert the object here, I don't know why is not converted later
+                             * TODO: Know why!
+                             */
                             if (temply::is_place_registered("{$field}-label")) {
+                                if (method_exists($this->db_table_data_filtered[0][$field], "generate")) {
+                                    $value = $this->db_table_data_filtered[0][$field]->generate();
+                                } else {
+                                    $value = $this->db_table_data_filtered[0][$field];
+                                }
                                 temply::set_place_value("{$field}-label", $this->db_table_data_filtered[0][$field]);
                             }
                             if (temply::is_place_registered($field)) {
+                                if (method_exists($value, "generate")) {
+                                    $value = $value->generate();
+                                }
                                 temply::set_place_value($field, $value);
                             }
                         }
