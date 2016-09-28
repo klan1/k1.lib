@@ -181,9 +181,19 @@ class crudlexs_base_with_data extends crudlexs_base {
     protected $use_create_custom_template = FALSE;
 
     /**
+     * @var string
+     */
+    protected $create_custom_template = '';
+
+    /**
      * @var boolean
      */
     protected $use_read_custom_template = FALSE;
+
+    /**
+     * @var string
+     */
+    protected $read_custom_template = '';
 
     /**
      * Always to create the object you must have a valid DB Table object already 
@@ -699,6 +709,22 @@ class crudlexs_base_with_data extends crudlexs_base {
 
     public function get_db_table_data_filtered() {
         return $this->db_table_data_filtered;
+    }
+
+    public function get_create_custom_template() {
+        return $this->create_custom_template;
+    }
+
+    public function get_read_custom_template() {
+        return $this->read_custom_template;
+    }
+
+    public function set_create_custom_template($create_custom_template) {
+        $this->create_custom_template = $create_custom_template;
+    }
+
+    public function set_read_custom_template($read_custom_template) {
+        $this->read_custom_template = $read_custom_template;
     }
 
 }
