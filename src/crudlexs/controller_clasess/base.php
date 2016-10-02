@@ -4,6 +4,7 @@ namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url as url;
+use \k1lib\html\DOM as DOM;
 
 class controller_base {
 
@@ -143,7 +144,7 @@ class controller_base {
      * @param string $template_place_name_html_title 
      * @param string $template_place_name_controller_name 
      */
-    public function __construct($app_base_dir, \PDO $db, $db_table_name, $controller_name) {
+    public function __construct($app_base_dir, \PDO $db, $db_table_name, $controller_name, \k1lib\html\foundation\top_bar $top_bar = null) {
         /**
          * URL Management
          */
@@ -159,8 +160,15 @@ class controller_base {
          * Controller name for add on <html><title> and controller name tag
          */
         $this->controller_name = $controller_name;
-        temply::set_place_value($this->template_place_name_html_title, " | $controller_name");
-        temply::set_place_value($this->template_place_name_controller_name, $controller_name);
+        if (!empty($top_bar)) {
+            $span = (new \k1lib\html\span("subheader"))->set_value($controller_name);
+            $top_bar->set_title(3, $span);
+            DOM::html()->head()->set_title(DOM::html()->head()->get_title() . " | $controller_name");
+        }
+
+
+//        temply::set_place_value($this->template_place_name_html_title, " | $controller_name");
+//        temply::set_place_value($this->template_place_name_controller_name, $controller_name);
 
         /**
          * SET FROM LANG HACK
