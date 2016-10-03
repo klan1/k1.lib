@@ -109,7 +109,7 @@ class board_list extends board_base implements board_interface {
     /**
      * @return \k1lib\html\div|boolean
      */
-    public function exec_board($do_echo = FALSE) {
+    public function exec_board() {
         if (!$this->is_enabled) {
             return FALSE;
         }
@@ -149,20 +149,11 @@ class board_list extends board_base implements board_interface {
                 $this->list_object->do_row_stats()->append_to($this->board_content_div);
                 $this->list_object->do_pagination()->append_to($this->board_content_div);
             }
-            if ($do_echo) {
-                $this->board_content_div->generate($do_echo);
-                return TRUE;
-            } else {
-                return $list_content_div;
-            }
+
+            return $this->board_content_div;
         } else {
             $this->list_object->do_html_object()->append_to($this->board_content_div);
-            if ($do_echo) {
-                $this->board_content_div->generate($do_echo);
-                return TRUE;
-            } else {
-                return $this->board_content_div;
-            }
+            return $this->board_content_div;
         }
     }
 

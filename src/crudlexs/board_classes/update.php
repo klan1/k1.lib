@@ -53,7 +53,7 @@ class board_update extends board_base implements board_interface {
     /**
      * @return \k1lib\html\div|boolean
      */
-    public function exec_board($do_echo = TRUE) {
+    public function exec_board() {
         if (!$this->is_enabled) {
             return FALSE;
         }
@@ -96,14 +96,9 @@ class board_update extends board_base implements board_interface {
                 }
 
                 $update_content_div = $this->update_object->do_html_object();
-                $update_content_div->append_to($this->board_content_div); 
-                
-                if ($do_echo) {
-                    $this->board_content_div->generate(TRUE);
-                    return TRUE;
-                } else {
-                    return $update_content_div;
-                }
+                $update_content_div->append_to($this->board_content_div);
+
+                return $this->board_content_div;
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
                 $this->update_object->make_invalid();

@@ -10,6 +10,11 @@ use k1lib\urlrewrite\url as url;
 class listing extends crudlexs_base_with_data implements crudlexs_base_interface {
 
     /**
+     * @var \k1lib\html\foundation\table_from_data
+     */
+    public $html_table;
+
+    /**
      * @var int
      */
     protected $total_rows = 0;
@@ -104,13 +109,21 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
         $this->div_container->set_attrib("class", "k1-crudlexs-table");
         $this->div_container->set_attrib("id", $this->object_id);
         if ($this->db_table_data) {
-            $html_table = \k1lib\html\table_from_array($this->db_table_data_filtered, TRUE, "scroll", null, self::$characters_limit_on_cell);
-            $this->div_container->append_child($html_table);
+            $this->html_table = new \k1lib\html\foundation\table_from_data($this->div_container, "scroll");
+            $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
+            $this->html_table->set_data($this->db_table_data_filtered);
         } else {
             $div_message = new \k1lib\html\p(board_list_strings::$no_table_data, "callout primary");
             $div_message->append_to($this->div_container);
         }
         return $this->div_container;
+    }
+
+    /**
+     * @return \k1lib\html\foundation\table_from_data
+     */
+    public function get_html_table() {
+        return $this->html_table;
     }
 
     /**

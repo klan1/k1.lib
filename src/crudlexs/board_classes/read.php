@@ -121,7 +121,7 @@ class board_read extends board_base implements board_interface {
     /**
      * @return \k1lib\html\div|boolean
      */
-    public function exec_board($do_echo = TRUE, $do_append = TRUE) {
+    public function exec_board() {
         if (!$this->is_enabled) {
             return FALSE;
         }
@@ -152,16 +152,9 @@ class board_read extends board_base implements board_interface {
                 $this->read_object->apply_html_tag_on_field_filter($span_tag, \k1lib\crudlexs\crudlexs_base::USE_KEY_FIELDS);
 
                 $read_content_div = $this->read_object->do_html_object();
-                if ($do_append) {
-                    $read_content_div->append_to($this->board_content_div);
-                }
+                $read_content_div->append_to($this->board_content_div);
 
-                if ($do_echo) {
-                    $this->board_content_div->generate(TRUE);
-                    return TRUE;
-                } else {
-                    return $read_content_div;
-                }
+                return $this->board_content_div;
             } else {
                 \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
                 $this->read_object->make_invalid();
