@@ -64,6 +64,7 @@ class temply {
     }
 
     static public function register_place($place_name) {
+        trigger_error("Do not use me " . __METHOD__, E_USER_WARNING);
         self::is_enabled(true);
         if (!is_string($place_name)) {
             \trigger_error("The place name HAS to be a string", E_USER_ERROR);
@@ -79,6 +80,7 @@ class temply {
      * @return none
      */
     static public function set_place_value($place_name, $value) {
+        trigger_error("Do not use me " . __METHOD__, E_USER_WARNING);
         self::is_enabled(true);
 
         if (empty($value)) {
@@ -128,6 +130,7 @@ class temply {
      * Rev 1: Now register the place name if is not registererd
      */
     static public function set_template_place($place_name) {
+        trigger_error("Do not use me " . __METHOD__, E_USER_WARNING);
         self::is_enabled(true);
         //check if the place name exist
         if (!self::is_place_registered($place_name)) {
@@ -155,6 +158,7 @@ class temply {
     }
 
     static public function register_header($url, $relative = FALSE, $type = "auto") {
+        trigger_error("Do not use me " . __METHOD__, E_USER_WARNING);
         self::is_enabled(true);
         if (!is_string($url)) {
             \trigger_error("The URL HAS to be a string", E_USER_ERROR);
@@ -188,6 +192,7 @@ class temply {
     }
 
     static public function register_footer($url, $relative = FALSE, $type = "auto") {
+        trigger_error("Do not use me " . __METHOD__, E_USER_WARNING);
         self::is_enabled(true);
         if (!is_string($url)) {
             \trigger_error("The URL HAS to be a string", E_USER_ERROR);
@@ -267,6 +272,7 @@ class temply {
     }
 
     static public function load_view($view_name, $view_path, $js_auto_load = TRUE) {
+        trigger_error("Do not use me " . __METHOD__, E_USER_WARNING);
         self::is_enabled(true);
         if (is_string($view_name)) {
             // Try with subfolder scheme
