@@ -78,7 +78,7 @@ class board_list extends board_base implements board_interface {
              * Search buttom
              */
             if ($this->search_enable) {
-                $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self", board_list_strings::$button_search);
+                $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self");
                 $search_buttom->set_attrib("class", "button fi-page-search");
                 $search_buttom->set_attrib("data-open", "search-modal");
                 $search_buttom->append_to($this->board_content_div);
@@ -88,7 +88,7 @@ class board_list extends board_base implements board_interface {
                  */
                 $search_helper->do_html_object()->append_to($this->board_content_div);
                 if ($this->search_enable && !empty($search_helper->get_post_data())) {
-                    $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self", board_list_strings::$button_search_cancel);
+                    $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self");
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->set_attrib("class", "button warning");
                     $clear_search_buttom->append_to($this->board_content_div);
