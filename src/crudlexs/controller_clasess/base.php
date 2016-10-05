@@ -55,6 +55,11 @@ class controller_base {
      */
     public $board_div_content;
     /**
+     *
+     * @var \k1lib\html\foundation\top_bar
+     */
+    public $html_top_bar;
+    /**
      * 
      * URL MANAGEMENT VALUES
      * 
@@ -160,9 +165,10 @@ class controller_base {
          * Controller name for add on <html><title> and controller name tag
          */
         $this->controller_name = $controller_name;
-        if (!empty($top_bar)) {
+        $this->html_top_bar = $top_bar;
+        if (!empty($this->html_top_bar)) {
             $span = (new \k1lib\html\span("subheader"))->set_value($controller_name);
-            $top_bar->set_title(3, $span);
+            $this->html_top_bar->set_title(3, $span);
             DOM::html()->head()->set_title(DOM::html()->head()->get_title() . " | $controller_name");
         }
 

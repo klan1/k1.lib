@@ -3,6 +3,7 @@
 namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
+use k1lib\html\DOM as DOM;
 
 interface board_interface {
 
@@ -120,8 +121,15 @@ class board_base {
 
     public function set_board_name($board_name) {
         if (!empty($board_name)) {
-            temply::set_place_value($this->controller_object->get_template_place_name_html_title(), " - {$board_name}");
-            temply::set_place_value($this->controller_object->get_template_place_name_board_name(), $board_name);
+            $head = DOM::html()->head();
+            $current_html_title = $head->get_title();
+            $head->set_title($current_html_title . " - " . $board_name);
+            
+            if ($this->controller_object->html_top_bar) {
+                $this->controller_object->html_top_bar->set_title(3, " - {$board_name}", TRUE);
+            }
+//            temply::set_place_value($this->controller_object->get_template_place_name_html_title(), " - {$board_name}");
+//            temply::set_place_value($this->controller_object->get_template_place_name_board_name(), $board_name);
         }
     }
 
@@ -162,6 +170,7 @@ class board_base {
     public function set_apply_field_label_filter($apply_field_label_filter) {
         $this->apply_field_label_filter = $apply_field_label_filter;
     }
+
     public function get_apply_label_filter() {
         return $this->apply_label_filter;
     }
@@ -173,6 +182,5 @@ class board_base {
     public function get_sql_action_result() {
         return $this->sql_action_result;
     }
-
 
 }
