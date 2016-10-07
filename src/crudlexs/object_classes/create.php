@@ -29,7 +29,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     protected $show_cancel_button = TRUE;
     protected $inserted_result = NULL;
     protected $inserted = NULL;
-    protected $html_form_column_classes = "large-5 medium-7 small-11";
+    protected $html_form_column_classes = "large-8 medium-10 small-11";
     protected $html_column_classes = "small-12 column";
 
     public function __construct($db_table, $row_keys_text) {
@@ -170,7 +170,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 if (isset($this->post_validation_errors[$field])) {
                     $label_tag->set_attrib("class", "is-invalid-label");
                 }
-                $this->db_table_data_filtered[0][$field] = $label_tag->generate();
+                $this->db_table_data_filtered[0][$field] = $label_tag;
             }
             /**
              * ERROR TESTING
@@ -317,29 +317,33 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             // FORM LAYOUT
 // <div class="row">
 
-            $row_column_number = 1;
+            $row_column_number = 0;
 //                d($this->db_table_data_filtered);
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
-// Variable variables names
-                $row_column = "div_row" . $row_column_number;
-
-// <div class="large-12 columns">
-
-                $field_type = $this->db_table->get_field_config($field, 'type');
-                $field_validation = $this->db_table->get_field_config($field, 'validation');
-                if ($field_type == 'text' && $field_validation == 'html') {
-                    $input_div = $form_footer->append_div("large-12 column end");
-                    $last_non_text_div = FALSE;
-                } else {
-                    $input_div = $form_body->append_div($this->html_column_classes);
-                    $last_normal_div = $input_div;
-                }
-                $input_div->set_value($this->db_table_data_filtered[0][$field], TRUE);
-                $input_div->set_value($value, TRUE);
-// put on div_row
                 $row_column++;
+                $row = new \k1lib\html\foundation\label_value_row($form_body, $this->db_table_data_filtered[0][$field], $value, $grid_row);
             }
-            $last_normal_div->set_attrib("class", "end", TRUE);
+//            foreach ($this->db_table_data_filtered[1] as $field => $value) {
+//// Variable variables names
+//                $row_column = "div_row" . $row_column_number;
+//
+//// <div class="large-12 columns">
+//
+//                $field_type = $this->db_table->get_field_config($field, 'type');
+//                $field_validation = $this->db_table->get_field_config($field, 'validation');
+//                if ($field_type == 'text' && $field_validation == 'html') {
+//                    $input_div = $form_footer->append_div("large-12 column end");
+//                    $last_non_text_div = FALSE;
+//                } else {
+//                    $input_div = $form_body->append_div($this->html_column_classes);
+//                    $last_normal_div = $input_div;
+//                }
+//                $input_div->set_value($this->db_table_data_filtered[0][$field], TRUE);
+//                $input_div->set_value($value, TRUE);
+//// put on div_row
+//                $row_column++;
+//            }
+//            $last_normal_div->set_attrib("class", "end", TRUE);
 
 
             /**
