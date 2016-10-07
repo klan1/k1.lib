@@ -315,35 +315,13 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $hidden_input = new \k1lib\html\input("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
             // FORM LAYOUT
-// <div class="row">
+            // <div class="row">
 
-            $row_column_number = 0;
-//                d($this->db_table_data_filtered);
+            $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
-                $row_column++;
-                $row = new \k1lib\html\foundation\label_value_row($form_body, $this->db_table_data_filtered[0][$field], $value, $grid_row);
+                $row_number++;
+                $row = new \k1lib\html\foundation\label_value_row($form_body, $this->db_table_data_filtered[0][$field], $value, $row_number);
             }
-//            foreach ($this->db_table_data_filtered[1] as $field => $value) {
-//// Variable variables names
-//                $row_column = "div_row" . $row_column_number;
-//
-//// <div class="large-12 columns">
-//
-//                $field_type = $this->db_table->get_field_config($field, 'type');
-//                $field_validation = $this->db_table->get_field_config($field, 'validation');
-//                if ($field_type == 'text' && $field_validation == 'html') {
-//                    $input_div = $form_footer->append_div("large-12 column end");
-//                    $last_non_text_div = FALSE;
-//                } else {
-//                    $input_div = $form_body->append_div($this->html_column_classes);
-//                    $last_normal_div = $input_div;
-//                }
-//                $input_div->set_value($this->db_table_data_filtered[0][$field], TRUE);
-//                $input_div->set_value($value, TRUE);
-//// put on div_row
-//                $row_column++;
-//            }
-//            $last_normal_div->set_attrib("class", "end", TRUE);
 
 
             /**
