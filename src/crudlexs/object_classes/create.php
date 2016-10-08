@@ -176,11 +176,18 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              * ERROR TESTING
              */
             if (isset($this->post_validation_errors[$field])) {
+                $div_error = new \k1lib\html\foundation\grid_row(2);
 
-                $span_error = new \k1lib\html\span("form-error is-visible");
+                $div_input = $div_error->col(1)->large(12);
+                $div_message = $div_error->col(2)->large(12)->end();
+
+                $span_error = $div_message->append_span("clearfix form-error is-visible");
                 $span_error->set_value($this->post_validation_errors[$field]);
-                $input_tag->post_code($span_error->generate());
+
+                $input_tag->append_to($div_input);
                 $input_tag->set_attrib("class", "is-invalid-input", TRUE);
+
+                $div_error->link_value_obj($input_tag);
             }
             /**
              * END ERROR TESTING
@@ -193,7 +200,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $input_tag->set_attrib("k1-data-type", $this->db_table->get_field_config($field, 'validation'));
             $input_tag->set_attrib("id", $this->encrypt_field_name($field));
 
-            $this->apply_html_tag_on_field_filter($input_tag, $field);
+            if (isset($div_error)) {
+                $this->apply_html_tag_on_field_filter($div_error, $field);
+                unset($div_error);
+            } else {
+                $this->apply_html_tag_on_field_filter($input_tag, $field);
+            }
 
             unset($input_tag);
         }
@@ -306,7 +318,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $form_header = $html_form->append_div("k1-form-header row");
             $form_body = $html_form->append_div("k1-form-body row");
             $form_footer = $html_form->append_div("k1-form-footer row");
-            $form_footer->set_attrib("style", "margintop-5px;");
+            $form_footer->set_attrib("style", "margin-top:0.9em;");
             $form_buttons = $html_form->append_div("k1-form-buttons row");
 
             /**
@@ -320,20 +332,24 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
                 $row_number++;
-                $row = new \k1lib\html\foundation\label_value_row($form_body, $this->db_table_data_filtered[0][$field], $value, $row_number);
+                $row = new \k1lib\html\foundation\label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
+                $row->append_to($form_body);
             }
 
 
             /**
              * BUTTONS
              */
-            $div_buttons = $form_buttons->append_div("row text-center k1-form-buttons");
             if ($this->show_cancel_button) {
                 $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
-                $cancel_button->append_to($div_buttons);
             }
             $submit_button = new \k1lib\html\input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
-            $submit_button->append_to($div_buttons);
+
+            $buttons_div = new \k1lib\html\foundation\label_value_row(NULL, "{$cancel_button} {$submit_button}");
+            $buttons_div->append_to($form_buttons);
+            $buttons_div->col(1)->remove_childs();
+            $buttons_div->col(2)->set_class("text-center", TRUE);
+
 
             /**
              * Prepare output
