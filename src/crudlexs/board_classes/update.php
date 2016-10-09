@@ -27,6 +27,7 @@ class board_update extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function start_board() {
+        parent::start_board();
         if (!$this->is_enabled) {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
@@ -92,7 +93,7 @@ class board_update extends board_base implements board_interface {
                         ];
                     }
                     $delete_link = \k1lib\html\get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "small");
-                    $delete_link->append_to($this->board_content_div);
+                    $delete_link->append_to($this->button_div_tag);
                 }
 
                 $update_content_div = $this->update_object->do_html_object();

@@ -28,6 +28,7 @@ class board_delete extends board_base implements board_interface {
     /**
      * @return \k1lib\html\div|boolean
      */ public function start_board() {
+        parent::start_board();
         if (!$this->is_enabled) {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;

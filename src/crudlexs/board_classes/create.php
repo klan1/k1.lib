@@ -25,6 +25,7 @@ class board_create extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function start_board() {
+        parent::start_board();
         if (!$this->is_enabled) {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
@@ -72,7 +73,7 @@ class board_create extends board_base implements board_interface {
 
                 $create_content_div = $this->create_object->do_html_object();
                 $create_content_div->append_to($this->board_content_div);
-                
+
                 return $this->board_content_div;
             }
         } else {

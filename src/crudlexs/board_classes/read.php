@@ -50,6 +50,7 @@ class board_read extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function start_board() {
+        parent::start_board();
         if (!$this->is_enabled) {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
@@ -62,7 +63,7 @@ class board_read extends board_base implements board_interface {
                 if ($this->back_enable && (isset($_GET['back-url']))) {
                     $back_url = \k1lib\urlrewrite\get_back_url();
                     $back_link = \k1lib\html\get_link_button($back_url, board_read_strings::$button_back, "small");
-                    $back_link->append_to($this->board_content_div);
+                    $back_link->append_to($this->button_div_tag);
                 }
                 /**
                  * ALL DATA
@@ -74,7 +75,7 @@ class board_read extends board_base implements board_interface {
                             , board_read_strings::$button_all_data
                             , "small"
                     );
-                    $all_data_link->append_to($this->board_content_div);
+                    $all_data_link->append_to($this->button_div_tag);
                 }
                 /**
                  * EDIT BUTTON
@@ -86,7 +87,7 @@ class board_read extends board_base implements board_interface {
 //                        "back-url" => $_SERVER['REQUEST_URI'],
                     ];
                     $edit_link = \k1lib\html\get_link_button(url::do_url($edit_url, $get_vars), board_read_strings::$button_edit, "small");
-                    $edit_link->append_to($this->board_content_div);
+                    $edit_link->append_to($this->button_div_tag);
                 }
                 /**
                  * DELETE BUTTON
@@ -104,7 +105,7 @@ class board_read extends board_base implements board_interface {
                         ];
                     }
                     $delete_link = \k1lib\html\get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "small");
-                    $delete_link->append_to($this->board_content_div);
+                    $delete_link->append_to($this->button_div_tag);
                 }
 
                 $this->data_loaded = $this->read_object->load_db_table_data($this->show_rule_to_apply);
