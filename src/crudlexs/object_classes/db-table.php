@@ -372,6 +372,12 @@ class class_db_table {
         return $this->query_sql;
     }
 
+    /**
+     * Generates the SQL code and make the query with it. Then return the result as an Array.
+     * @param boolean $return_all
+     * @param boolean $do_fields
+     * @return array|boolean
+     */
     public function get_data($return_all = TRUE, $do_fields = TRUE) {
         if ($this->generate_sql_query()) {
             $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql, $return_all, $do_fields);

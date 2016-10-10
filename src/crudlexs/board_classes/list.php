@@ -37,6 +37,7 @@ class board_list extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function start_board() {
+        parent::start_board();
         if (!$this->is_enabled) {
             \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
             return FALSE;
@@ -55,7 +56,7 @@ class board_list extends board_base implements board_interface {
             if ($this->back_enable && (isset($_GET['back-url']))) {
                 $back_url = \k1lib\urlrewrite\get_back_url();
                 $back_link = \k1lib\html\get_link_button($back_url, board_read_strings::$button_back);
-                $back_link->append_to($this->board_content_div);
+                $back_link->append_to($this->button_div_tag);
             }
             /**
              * NEW BUTTON
@@ -71,27 +72,27 @@ class board_list extends board_base implements board_interface {
             if ($this->create_enable) {
 //                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
 //                $new_link = \k1lib\html\get_link_button("../{$this->controller_object->get_board_create_url_name()}/?back-url={$this_url}", board_list_strings::$button_new);
-                $new_link->append_to($this->board_content_div);
+                $new_link->append_to($this->button_div_tag);
             }
 
             /**
              * Search buttom
              */
             if ($this->search_enable) {
-                $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self", board_list_strings::$button_search);
+                $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self");
                 $search_buttom->set_attrib("class", "button fi-page-search");
                 $search_buttom->set_attrib("data-open", "search-modal");
-                $search_buttom->append_to($this->board_content_div);
+                $search_buttom->append_to($this->button_div_tag);
 
                 /**
                  * Clear search
                  */
                 $search_helper->do_html_object()->append_to($this->board_content_div);
                 if ($this->search_enable && !empty($search_helper->get_post_data())) {
-                    $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self", board_list_strings::$button_search_cancel);
+                    $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self");
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->set_attrib("class", "button warning");
-                    $clear_search_buttom->append_to($this->board_content_div);
+                    $clear_search_buttom->append_to($this->button_div_tag);
                 }
             }
 
@@ -109,7 +110,7 @@ class board_list extends board_base implements board_interface {
     /**
      * @return \k1lib\html\div|boolean
      */
-    public function exec_board($do_echo = FALSE) {
+    public function exec_board() {
         if (!$this->is_enabled) {
             return FALSE;
         }
@@ -149,20 +150,11 @@ class board_list extends board_base implements board_interface {
                 $this->list_object->do_row_stats()->append_to($this->board_content_div);
                 $this->list_object->do_pagination()->append_to($this->board_content_div);
             }
-            if ($do_echo) {
-                $this->board_content_div->generate($do_echo);
-                return TRUE;
-            } else {
-                return $list_content_div;
-            }
+
+            return $this->board_content_div;
         } else {
             $this->list_object->do_html_object()->append_to($this->board_content_div);
-            if ($do_echo) {
-                $this->board_content_div->generate($do_echo);
-                return TRUE;
-            } else {
-                return $this->board_content_div;
-            }
+            return $this->board_content_div;
         }
     }
 

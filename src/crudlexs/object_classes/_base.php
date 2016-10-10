@@ -495,7 +495,7 @@ class crudlexs_base_with_data extends crudlexs_base {
 
                                     $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                                     $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
-
+                                    
                                     /**
                                      * HREF STR_REPLACE
                                      */

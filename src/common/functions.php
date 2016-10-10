@@ -50,15 +50,11 @@ function get_error($e, $title = "ERROR", $app_mode = "web") {
  * @param String $app_mode this should be "web" to return HTML, is not will return plain text format.
  * @return string
  */
-function get_message($msg, $title = "", $type = "info", $app_mode = "web") {
-//    trigger_error("Using this!", E_USER_NOTICE);
-    if ($app_mode == 'web') {
-        $tpl = \k1lib\html\load_html_template("message_template");
-        $output = sprintf($tpl, $title, $msg, $type);
-    } else {
-        $output = "- $type - " . ((!empty($title)) ? "$title :" : "") . $msg;
-    }
-    return $output;
+function get_message($msg, $title = "", $type = "info") {
+    $callout = new \k1lib\html\foundation\callout($msg, $title);
+    $callout->set_class($type, TRUE);
+    $callout->margin("20px");
+    return $callout;
 }
 
 /**
@@ -68,8 +64,13 @@ function get_message($msg, $title = "", $type = "info", $app_mode = "web") {
  * @param String $type This should be "success", "warning", "info", "alert" or NULL. This is a Foundation CLASS.
  * @param String $app_mode this should be "web" to return HTML, is not will return plain text format.
  */
-function show_message($msg, $title = "", $type = "", $app_mode = "web") {
-    echo get_message($msg, $title, $type, $app_mode);
+function show_message($msg, $title = "", $type = "", $tag_id = "k1lib-output") {
+    $callout = get_message($msg, $title, $type);
+    $output_div = \k1lib\html\DOM::html()->body()->get_element_by_id($tag_id);
+    if (!empty($output_div)) {
+        $output_div->append_child($callout);
+    }
+    return $callout;
 }
 
 /**
