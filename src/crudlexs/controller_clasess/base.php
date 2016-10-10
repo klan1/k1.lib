@@ -4,6 +4,7 @@ namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url as url;
+use \k1lib\html\DOM as DOM;
 
 class controller_base {
 
@@ -53,6 +54,11 @@ class controller_base {
      * @var \k1lib\html\div
      */
     public $board_div_content;
+    /**
+     *
+     * @var \k1lib\html\foundation\top_bar
+     */
+    public $html_top_bar;
     /**
      * 
      * URL MANAGEMENT VALUES
@@ -143,7 +149,7 @@ class controller_base {
      * @param string $template_place_name_html_title 
      * @param string $template_place_name_controller_name 
      */
-    public function __construct($app_base_dir, \PDO $db, $db_table_name, $controller_name) {
+    public function __construct($app_base_dir, \PDO $db, $db_table_name, $controller_name, \k1lib\html\foundation\top_bar $top_bar = null) {
         /**
          * URL Management
          */
@@ -159,8 +165,16 @@ class controller_base {
          * Controller name for add on <html><title> and controller name tag
          */
         $this->controller_name = $controller_name;
-        temply::set_place_value($this->template_place_name_html_title, " | $controller_name");
-        temply::set_place_value($this->template_place_name_controller_name, $controller_name);
+        $this->html_top_bar = $top_bar;
+        if (!empty($this->html_top_bar)) {
+            $span = (new \k1lib\html\span("subheader"))->set_value($controller_name);
+            $this->html_top_bar->set_title(3, $span);
+            DOM::html()->head()->set_title(DOM::html()->head()->get_title() . " | $controller_name");
+        }
+
+
+//        temply::set_place_value($this->template_place_name_html_title, " | $controller_name");
+//        temply::set_place_value($this->template_place_name_controller_name, $controller_name);
 
         /**
          * SET FROM LANG HACK
@@ -479,7 +493,7 @@ class controller_base {
      * @param string $specific_board_to_exec
      * @return \k1lib\html\div
      */
-    public function exec_board($do_echo = TRUE, $do_append = TRUE, $specific_board_to_exec = NULL) {
+    public function exec_board($specific_board_to_exec = NULL) {
         $this->board_executed = TRUE;
 
         if ($this->board_started) {
@@ -488,19 +502,19 @@ class controller_base {
             }
             switch ($specific_board_to_exec) {
                 case $this->board_create_url_name:
-                    return $this->board_create_object->exec_board($do_echo, $do_append);
+                    return $this->board_create_object->exec_board();
 
                 case $this->board_read_url_name:
-                    return $this->board_read_object->exec_board($do_echo, $do_append);
+                    return $this->board_read_object->exec_board();
 
                 case $this->board_update_url_name:
-                    return $this->board_update_object->exec_board($do_echo, $do_append);
+                    return $this->board_update_object->exec_board();
 
                 case $this->board_delete_url_name:
-                    return $this->board_delete_object->exec_board($do_echo, $do_append);
+                    return $this->board_delete_object->exec_board();
 
                 case $this->board_list_url_name:
-                    return $this->board_list_object->exec_board($do_echo, $do_append);
+                    return $this->board_list_object->exec_board();
 
                 default:
                     $this->board_executed = FALSE;

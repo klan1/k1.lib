@@ -66,12 +66,6 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             }
             $text_fields_div->append_to($data_group);
 
-            $div_rows->set_attrib("class", 'end', TRUE);
-
-//              $this->controller_object->board_read_object->set_board_name($data_label);
-//              $html = \k1lib\html\make_row_2columns_layout($this->db_table_data_filtered[1], $extra_css_clasess, $this->db_table_data_filtered[0]);
-
-            $this->div_container->set_value($html);
             return $this->div_container;
         } else {
             return FALSE;

@@ -17,7 +17,7 @@ composer require klan1/k1.lib
 Apache License Version 2.0, January 2004.
 
 ## THANKS
-Thanks to Zend Inc. for the GNU Developer License of Zend Server, it amazing work on it!
+Thanks to Zend Inc. for the GNU Developer License of Zend Server, it's amazing work on it!
 
 http://www.apache.org/licenses/
 

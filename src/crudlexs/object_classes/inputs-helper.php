@@ -153,7 +153,7 @@ class input_helper {
             $div_input_group_button = new \k1lib\html\div("input-group-button");
             $div_input_group_button->append_to($div_input_group);
 
-            $search_button = new \k1lib\html\a("#", "", "_self", search_helper_strings::$button_submit, "button fi-calendar");
+            $search_button = new \k1lib\html\a("#", "", "_self", "button fi-calendar");
             $search_button->append_to($div_input_group_button);
 
             $div_input_group->link_value_obj($input_tag);
