@@ -66,7 +66,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             }
             $text_fields_div->append_to($data_group);
 
-            $div_rows->set_attrib("class", 'end', TRUE);
+//            $div_rows->set_attrib("class", 'end', TRUE);
 
             return $this->div_container;
         } else {
