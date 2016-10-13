@@ -7,7 +7,7 @@ use k1lib\urlrewrite\url as url;
 class input_helper {
 
     static $do_fk_search_tool = TRUE;
-    static $url_to_search_fk_data = APP_URL . "utils/select-row-keys/";
+    static $url_to_search_fk_data = APP_URL . "general-utils/select-row-keys/";
     static $main_css = "";
 
     /**
