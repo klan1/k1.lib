@@ -138,7 +138,7 @@ class crudlexs_base_with_data extends crudlexs_base {
      *
      * @var Array 
      */
-    protected $db_table_data_filtered = FALSE;
+    public $db_table_data_filtered = FALSE;
 
     /**
      *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Controller related functions, K1.lib.
  * 
@@ -7,6 +8,7 @@
  * @version 1.0
  * @package controllers
  */
+
 namespace k1lib\controllers;
 
 /**
@@ -34,6 +36,7 @@ function load_controller($controller_name, $controllers_path) {
                 return $controller_to_load;
             } else {
                 \trigger_error("The controller '{$controller_name}' could not be found on '{$controllers_path}'", E_USER_ERROR);
+                return false;
             }
         }
     } else {

@@ -7,8 +7,35 @@ use k1lib\urlrewrite\url as url;
 class input_helper {
 
     static $do_fk_search_tool = TRUE;
-    static $url_to_search_fk_data = APP_URL . "utils/select-row-keys/";
+    static $url_to_search_fk_data = APP_URL . "general-utils/select-row-keys/";
     static $main_css = "";
+
+    static function password_type(creating $crudlex_obj, $field, $case = "create") {
+        // First we have the CLEAR the password data, we do not need it!
+        $field_encrypted = $crudlex_obj->encrypt_field_name($field) . "_password";
+        $tag_id = $crudlex_obj->encrypt_field_name($field) . "-reveal";
+        $crudlex_obj->db_table_data_filtered[1][$field] = null;
+
+        $div_continer = new \k1lib\html\div();
+
+
+        if ($case == "create") {
+            
+        } elseif ($case == "update") {
+            $input_tag_current = new \k1lib\html\input("password", $field_encrypted . "_current", NULL, "k1-input-insert");
+            $input_tag_current->set_attrib("placeholder", "Current password");
+            $div_continer->append_div()->append_child($input_tag_current);
+        }
+        $input_tag_new = new \k1lib\html\input("password", $field_encrypted . "_new", NULL, "k1-input-insert");
+        $input_tag_new->set_attrib("placeholder", "New password");
+        $input_tag_confirm = new \k1lib\html\input("password", $field_encrypted . "_confirm", NULL, "k1-input-insert");
+        $input_tag_confirm->set_attrib("placeholder", "Confirm password");
+
+        $div_continer->append_div()->append_child($input_tag_new);
+        $div_continer->append_div()->append_child($input_tag_confirm);
+
+        return $div_continer;
+    }
 
     /**
      * *
@@ -16,14 +43,14 @@ class input_helper {
      * @param array $db_table_row_data
      * @return \k1lib\html\select
      */
-    static function enum_type(creating $crudlex_obj, $row_to_apply, $field) {
+    static function enum_type(creating $crudlex_obj, $field) {
         $enum_data = $crudlex_obj->db_table->get_enum_options($field);
         $input_tag = new \k1lib\html\select($field);
         $input_tag->append_option("", input_helper_strings::$select_choose_option);
 
         foreach ($enum_data as $index => $value) {
             // SELETED work around
-            if ($crudlex_obj->db_table_data[$row_to_apply][$field] == $value) {
+            if ($crudlex_obj->db_table_data[1][$field] == $value) {
                 $selected = TRUE;
             } else {
                 $selected = FALSE;
@@ -40,7 +67,8 @@ class input_helper {
      * @param string $field
      * @return \k1lib\html\textarea
      */
-    static function text_type(creating $crudlex_obj, $row_to_apply, $field, $load_tinymce = TRUE) {
+    static function text_type(creating $crudlex_obj, $field, $load_tinymce = TRUE) {
+        // Row to apply is constant coz this is CREATE or EDIT and there is allways just 1 set of data to manipulate.
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
 
         if (!empty(self::$main_css)) {

@@ -21,6 +21,8 @@ class updating extends \k1lib\crudlexs\creating {
 
         creating_strings::$button_submit = updating_strings::$button_submit;
         creating_strings::$button_cancel = updating_strings::$button_cancel;
+        
+        $this->object_state = "update";
     }
 
     public function load_db_table_data($blank_data = FALSE) {

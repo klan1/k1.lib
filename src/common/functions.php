@@ -19,11 +19,7 @@ namespace k1lib\common;
  *  @return boolean 
  */
 function check_on_k1lib() {
-    if (!defined("\k1app\IN_K1APP")) {
-        \trigger_error("Hacking attemp '^_^", E_USER_ERROR);
-    } else {
-        return TRUE;
-    }
+    d(__FUNCTION__ . " do not use me more!");
 }
 
 /**
