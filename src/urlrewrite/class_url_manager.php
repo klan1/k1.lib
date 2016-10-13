@@ -357,13 +357,17 @@ class url {
     }
 
     static function set_next_url_level($controller_path, $required_level = FALSE) {
-        $next_url_level = url::get_url_level_count();
+        $next_url_level = self::get_url_level_count();
         // get the base URL to load the next one
-        $actual_url = url::get_this_url();
+        $actual_url = self::get_this_url();
         // get from the URL the next level value :   /$actual_url/next_level_value
-        $next_directory_name = url::set_url_rewrite_var($next_url_level, "next_directory_name", FALSE);
-        $file_to_include = \k1lib\controllers\load_controller($next_directory_name, $controller_path . $actual_url);
-        return $file_to_include;
+        $next_directory_name = self::set_url_rewrite_var($next_url_level, "next_directory_name", FALSE);
+        if (!empty($next_directory_name)) {
+            $file_to_include = \k1lib\controllers\load_controller($next_directory_name, $controller_path . $actual_url);
+            return $file_to_include;
+        } else {
+            return FALSE;
+        }
     }
 
 }
