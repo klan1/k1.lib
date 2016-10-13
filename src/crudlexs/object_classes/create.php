@@ -22,6 +22,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     protected $post_validation_errors = [];
 
     /**
+     * @var array
+     */
+    protected $post_password_fields = [];
+    protected $object_state = "create";
+
+    /**
      *
      * @var Boolean
      */
@@ -75,14 +81,14 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * @param int $row_to_put_on
      * @return boolean
      */
-    public function put_post_data_on_table_data($row_to_put_on = 1) {
+    public function put_post_data_on_table_data() {
         if ((empty($this->db_table_data)) || empty($this->post_incoming_array)) {
 //            trigger_error(__FUNCTION__ . ": There are not data to work yet", E_USER_WARNING);
             return FALSE;
         }
-        foreach ($this->db_table_data[$row_to_put_on] as $field => $value) {
+        foreach ($this->db_table_data[1] as $field => $value) {
             if (isset($this->post_incoming_array[$field])) {
-                $this->db_table_data[$row_to_put_on][$field] = $this->post_incoming_array[$field];
+                $this->db_table_data[1][$field] = $this->post_incoming_array[$field];
             }
         }
         $this->db_table_data_filtered = $this->db_table_data;
@@ -95,6 +101,64 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      */
     function catch_post_data() {
         $this->do_file_uploads_validation();
+        // EXTRACT THE PASSWORD DATA
+        $password_fields = [];
+        $current = null;
+        $new = null;
+        $confirm = null;
+        foreach ($_POST as $field => $value) {
+            $actual_password_field = strstr($field, "_password_", TRUE);
+            if ($actual_password_field !== FALSE) {
+                if (strstr($field, "_password_current") !== FALSE) {
+                    $password_fields[$actual_password_field]['current'] = (empty($value)) ? NULL : md5($value);
+                }
+                if (strstr($field, "_password_new") !== FALSE) {
+                    $password_fields[$actual_password_field]['new'] = (empty($value)) ? NULL : md5($value);
+                }
+                if (strstr($field, "_password_confirm") !== FALSE) {
+                    $password_fields[$actual_password_field]['confirm'] = (empty($value)) ? NULL : md5($value);
+                }
+                unset($_POST[$field]);
+                if ($this->do_table_field_name_encrypt) {
+                    $this->post_password_fields[] = $this->decrypt_field_name($field);
+                } else {
+                    $this->post_password_fields[] = $field;
+                }
+            }
+        }
+        foreach ($password_fields as $field => $passwords) {
+            if (array_key_exists('new', $passwords) && array_key_exists('confirm', $passwords)) {
+                if (($passwords['new'] === $passwords['confirm']) && (!empty($passwords['new']))) {
+                    $new_password = TRUE;
+                } else {
+                    $new_password = FALSE;
+                }
+            }
+            if (array_key_exists('current', $passwords) && array_key_exists('new', $passwords) && array_key_exists('confirm', $passwords)) {
+                if (empty($passwords['current'])) {
+                    $this->post_incoming_array[$field] = $this->db_table_data[1][$this->decrypt_field_name($field)];
+                } else {
+                    if (($passwords['current'] === $this->db_table_data[1][$this->decrypt_field_name($field)])) {
+                        if ($new_password) {
+                            $this->post_incoming_array[$field] = $passwords['new'];
+                        } else {
+                            $this->post_validation_errors[$this->decrypt_field_name($field)] = "New password and confirmation must be equal";
+                        }
+                    } else {
+                        $this->post_validation_errors[$this->decrypt_field_name($field)] = "Actual password is incorrect";
+                    }
+                }
+            } else if (array_key_exists('new', $passwords) && array_key_exists('confirm', $passwords)) {
+                if ($new_password) {
+                    $this->post_incoming_array[$field] = $passwords['new'];
+                } else {
+                    $this->post_incoming_array[$field] = null;
+                    if (empty($passwords['new'])) {
+                        $this->post_validation_errors[$this->decrypt_field_name($field)] = "New password and confirmation must be equal";
+                    }
+                }
+            }
+        }
         $this->post_incoming_array = array_merge($this->post_incoming_array, $_POST);
         if (isset($this->post_incoming_array['k1magic'])) {
             self::set_k1magic_value($this->post_incoming_array['k1magic']);
@@ -110,6 +174,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     unset($new_post_data);
                 }
                 $this->post_incoming_array = \k1lib\common\clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
+
+                // PUT BACK the password data
+//                $this->post_incoming_array = array_merge($this->post_incoming_array, $password_array);
                 return TRUE;
             } else {
                 return FALSE;
@@ -123,7 +190,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * Put an input object of certain type depending of the MySQL Table Feld Type on each data row[n]
      * @param Int $row_to_apply
      */
-    public function insert_inputs_on_data_row($row_to_apply = 1, $create_labels_on_headers = TRUE) {
+    public function insert_inputs_on_data_row($create_labels_tags_on_headers = TRUE) {
+        // Row to apply is constant coz this is CREATE or EDIT and there is allways just 1 set of data to manipulate.
+        $row_to_apply = 1;
         /**
          * VALUES
          */
@@ -133,15 +202,15 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
              */
             switch ($this->db_table->get_field_config($field, 'type')) {
                 case 'enum':
-                    $input_tag = input_helper::enum_type($this, $row_to_apply, $field);
+                    $input_tag = input_helper::enum_type($this, $field);
                     break;
                 case 'text':
                     switch ($this->db_table->get_field_config($field, 'validation')) {
                         case "html":
-                            $input_tag = input_helper::text_type($this, $row_to_apply, $field);
+                            $input_tag = input_helper::text_type($this, $field);
                             break;
                         default:
-                            $input_tag = input_helper::text_type($this, $row_to_apply, $field, FALSE);
+                            $input_tag = input_helper::text_type($this, $field, FALSE);
                             break;
                     }
                     break;
@@ -153,6 +222,13 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                         case "file-upload":
                             $input_tag = input_helper::file_upload($this, $field);
                             break;
+                        case "password":
+                            if (empty($value)) {
+                                $input_tag = input_helper::password_type($this, $field, $this->object_state);
+                            } else {
+                                $input_tag = input_helper::password_type($this, $field, $this->object_state);
+                            }
+                            break;
                         default:
                             $input_tag = input_helper::default_type($this, $field);
                             break;
@@ -162,7 +238,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             /**
              * LABELS 
              */
-            if ($create_labels_on_headers) {
+            if ($create_labels_tags_on_headers) {
                 $label_tag = new \k1lib\html\label($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
                 if ($this->db_table->get_field_config($field, 'required') === TRUE) {
                     $label_tag->set_value(" *", TRUE);
@@ -217,10 +293,19 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      */
     public function do_post_data_validation() {
 //        $this->do_file_uploads_validation();
-        $this->post_validation_errors = $this->db_table->do_data_validation($this->post_incoming_array);
-        if (!is_array($this->post_validation_errors)) {
+        $validation_result = $this->db_table->do_data_validation($this->post_incoming_array);
+        if ($validation_result !== TRUE) {
+            $this->post_validation_errors = array_merge($this->post_validation_errors, $validation_result);
+        }
+        if (empty($this->post_validation_errors)) {
             return TRUE;
         } else {
+            if ($this->object_state == "create") {
+                foreach ($this->post_password_fields as $field) {
+                    $this->db_table_data[1][$field] = null;
+                    $this->db_table_data_filtered[1][$field] = null;
+                }
+            }
             return FALSE;
         }
     }
