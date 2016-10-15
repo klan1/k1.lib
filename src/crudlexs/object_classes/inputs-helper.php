@@ -18,17 +18,18 @@ class input_helper {
 
         $div_continer = new \k1lib\html\div();
 
+        $input_tag_new = new \k1lib\html\input("password", $field_encrypted . "_new", NULL, "k1-input-insert");
+        $input_tag_confirm = new \k1lib\html\input("password", $field_encrypted . "_confirm", NULL, "k1-input-insert");
 
         if ($case == "create") {
-            
+            $div_continer->link_value_obj($input_tag_new);
         } elseif ($case == "update") {
             $input_tag_current = new \k1lib\html\input("password", $field_encrypted . "_current", NULL, "k1-input-insert");
             $input_tag_current->set_attrib("placeholder", "Current password");
             $div_continer->append_div()->append_child($input_tag_current);
+            $div_continer->link_value_obj($input_tag_current);
         }
-        $input_tag_new = new \k1lib\html\input("password", $field_encrypted . "_new", NULL, "k1-input-insert");
         $input_tag_new->set_attrib("placeholder", "New password");
-        $input_tag_confirm = new \k1lib\html\input("password", $field_encrypted . "_confirm", NULL, "k1-input-insert");
         $input_tag_confirm->set_attrib("placeholder", "Confirm password");
 
         $div_continer->append_div()->append_child($input_tag_new);
