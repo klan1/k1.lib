@@ -129,13 +129,6 @@ class board_read extends board_base implements board_interface {
 
         if ($this->read_object->get_state() && !empty($this->row_keys_text)) {
             if ($this->data_loaded) {
-                if ($this->use_label_as_title_enabled) {
-                    $data_label = $this->read_object->get_labels_from_data(1);
-                    if (!empty($data_label)) {
-//                        $this->read_object->remove_labels_from_data_filtered();
-//                        $this->controller_object->board_read_object->set_board_name($data_label);
-                    }
-                }
                 if ($this->apply_label_filter) {
                     $this->read_object->apply_label_filter();
                 }
@@ -362,10 +355,6 @@ class board_read extends board_base implements board_interface {
 
     function set_delete_enable($delete_enable) {
         $this->delete_enable = $delete_enable;
-    }
-
-    function set_use_label_as_title_enabled($use_label_as_title_enabled) {
-        $this->use_label_as_title_enabled = $use_label_as_title_enabled;
     }
 
     public function set_related_show_new($related_show_new) {
