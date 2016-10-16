@@ -4,6 +4,7 @@ namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url as url;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 class board_create extends board_base implements board_interface {
 
@@ -27,7 +28,8 @@ class board_create extends board_base implements board_interface {
     public function start_board() {
         parent::start_board();
         if (!$this->is_enabled) {
-            \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
+            DOM_notification::queue_mesasage(board_base_strings::$error_board_disabled, "warning", $this->notifications_div_id);
+            DOM_notification::queue_title(board_base_strings::$alert_board);
             return FALSE;
         }
 
@@ -41,7 +43,8 @@ class board_create extends board_base implements board_interface {
             $this->data_loaded = $this->create_object->load_db_table_data(TRUE);
             return $this->board_content_div;
         } else {
-            \k1lib\common\show_message(board_base_labels::$error_mysql_table_not_opened, board_base_labels::$error_mysql, "alert");
+            DOM_notification::queue_mesasage(board_base_labels::$error_mysql_table_not_opened, "alert", $this->notifications_div_id);
+            DOM_notification::queue_title(board_base_labels::$error_mysql);
             return FALSE;
         }
     }
@@ -61,7 +64,8 @@ class board_create extends board_base implements board_interface {
                     if ($this->create_object->do_post_data_validation()) {
                         $this->sql_action_result = $this->create_object->do_insert();
                     } else {
-                        \k1lib\common\show_message(board_create_strings::$error_form, board_base_strings::$alert_board, "warning");
+                        DOM_notification::queue_mesasage(board_create_strings::$error_form, "warning", $this->notifications_div_id);
+                        DOM_notification::queue_title(board_base_strings::$alert_board);
                     }
                 }
             }
@@ -77,7 +81,8 @@ class board_create extends board_base implements board_interface {
                 return $this->board_content_div;
             }
         } else {
-            \k1lib\common\show_message(board_create_strings::$error_no_blank_data, board_base_strings::$alert_board, "alert");
+            DOM_notification::queue_mesasage(board_create_strings::$error_no_blank_data, "alert", $this->notifications_div_id);
+            DOM_notification::queue_title(board_base_strings::$alert_board);
             $this->create_object->make_invalid();
             $this->is_enabled = FALSE;
             return FALSE;

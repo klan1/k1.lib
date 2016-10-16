@@ -73,6 +73,11 @@ class board_base {
     protected $button_div_id = "k1lib-crudlexs-buttons";
 
     /**
+     * @var string
+     */
+    protected $notifications_div_id = "k1lib-output";
+
+    /**
      * @var \k1lib\html\div
      */
     protected $button_div_tag;
@@ -212,6 +217,14 @@ class board_base {
 
     public function set_board_content_div(\k1lib\html\div $board_content_div) {
         $this->board_content_div = $board_content_div;
+    }
+
+    public function get_notifications_div_id() {
+        return $this->notifications_div_id;
+    }
+
+    public function set_notifications_div_id($notifications_div_id) {
+        $this->notifications_div_id = $notifications_div_id;
     }
 
 }
