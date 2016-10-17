@@ -95,7 +95,7 @@ class on_DOM extends common_code {
             self::$data_titles = & $_SESSION['k1lib_notifications_titles'];
         }
 
-        if (!empty(self::$data[self::$section_name])) {
+        if (isset(self::$data[self::$section_name]) && !empty(self::$data[self::$section_name])) {
             if ($order == 'asc') {
                 self::$data[self::$section_name] = array_reverse(self::$data[self::$section_name]);
             }
@@ -114,7 +114,7 @@ class on_DOM extends common_code {
                 foreach ($types_messages as $type => $messages) {
                     $call_out = new \k1lib\html\foundation\callout();
                     $call_out->set_class($type);
-                    if (array_key_exists($type, self::$data_titles[self::$section_name])) {
+                    if (isset(self::$data_titles[self::$section_name][$type]) && !empty(self::$data_titles[self::$section_name][$type])) {
                         $call_out->set_title(self::$data_titles[self::$section_name][$type]);
                     }
                     if (count($messages) === 1) {

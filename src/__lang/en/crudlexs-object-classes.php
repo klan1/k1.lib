@@ -28,8 +28,8 @@ class creating_strings {
     static $error_file_upload = "File upload error : ";
     static $error_new_password_not_match = "New password and confirmation must be equal";
     static $error_actual_password_not_match = "Actual password is incorrect";
-    static $data_inserted = "Data inserted on table";
-    static $data_not_inserted = "Data not inserted on table";
+    static $data_inserted = "Data saved";
+    static $data_not_inserted = "Data not saved";
 
 }
 
@@ -57,8 +57,8 @@ class updating_strings {
     static $button_submit = "Update";
     static $button_cancel = "Back";
     static $password_set_successfully = "New password stored";
-    static $data_updated = "Data updated on table";
-    static $data_not_updated = "Data not updated on table";
+    static $data_updated = "Data updated";
+    static $data_not_updated = "Data not updated";
 
 }
 

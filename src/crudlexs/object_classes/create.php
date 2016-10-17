@@ -458,16 +458,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         if ($this->inserted_result !== FALSE) {
             if ($this->object_state == 'create') {
                 DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
-            } elseif ($this->object_state == 'update') {
-                DOM_notification::queue_mesasage(updating_strings::$data_updated, "success", $this->notifications_div_id);
             }
             $this->inserted = TRUE;
             return TRUE;
         } else {
             if ($this->object_state == 'create') {
                 DOM_notification::queue_mesasage(creating_strings::$data_not_inserted, "warning", $this->notifications_div_id);
-            } elseif ($this->object_state == 'update') {
-                DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
             }
             $this->inserted = FALSE;
             return FALSE;

@@ -52,9 +52,15 @@ class updating extends \k1lib\crudlexs\creating {
         $this->update_perfomed = TRUE;
         if ($update_result !== FALSE) {
             $this->updated = TRUE;
+            if ($this->object_state == 'update') {
+                DOM_notification::queue_mesasage(updating_strings::$data_updated, "success", $this->notifications_div_id);
+            }
             return TRUE;
         } else {
             $this->updated = FALSE;
+            if ($this->object_state == 'update') {
+                DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
+            }
             return FALSE;
         }
     }
@@ -79,8 +85,8 @@ class updating extends \k1lib\crudlexs\creating {
                 $url_to_go = str_replace("--authcode--", $this->get_auth_code(), $url_to_go);
             }
             if ($do_redirect) {
-//                \k1lib\html\html_header_go($url_to_go);
-//                exit;
+                \k1lib\html\html_header_go($url_to_go);
+                exit;
                 return TRUE;
             } else {
                 return $url_to_go;

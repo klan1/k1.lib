@@ -50,20 +50,18 @@ class board_delete extends board_base implements board_interface {
                 if ($_GET['auth-code'] === $this->read_object->get_auth_code_personal()) {
                     $this->sql_action_result = $this->controller_object->db_table->delete_data($this->row_keys_text_array);
                     if ($this->sql_action_result) {
+                        DOM_notification::queue_mesasage(board_delete_strings::$data_deleted, "success", $this->notifications_div_id);
                         return TRUE;
                     } else {
-                        DOM_notification::queue_mesasage(board_delete_strings::$error_no_data_deleted, "alert", $this->notifications_div_id);
-                        DOM_notification::queue_title(\k1lib\common_strings::$error);
+                        DOM_notification::queue_mesasage(board_delete_strings::$error_no_data_deleted, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
                         return FALSE;
                     }
                 } else if ($_GET['auth-code'] === $this->read_object->get_auth_code()) {
-                    DOM_notification::queue_mesasage(board_delete_strings::$error_no_data_deleted_hacker, "alert", $this->notifications_div_id);
-                    DOM_notification::queue_title(\k1lib\common_strings::$error_hacker);
+                    DOM_notification::queue_mesasage(board_delete_strings::$error_no_data_deleted_hacker, "alert", $this->notifications_div_id, \k1lib\common_strings::$error_hacker);
                     return FALSE;
                 }
             } else {
-                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert", $this->notifications_div_id);
-                DOM_notification::queue_title(board_base_strings::$error_mysql);
+                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert", $this->notifications_div_id, board_base_strings::$error_mysql);
                 $this->is_enabled = FALSE;
                 return FALSE;
             }
