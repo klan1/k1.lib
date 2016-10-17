@@ -67,9 +67,12 @@ class on_DOM extends common_code {
 
     static protected $section_name = 'on_DOM';
 
-    static function queue_mesasage($message, $type = "primary", $tag_id = 'k1lib-output') {
+    static function queue_mesasage($message, $type = "primary", $tag_id = 'k1lib-output', $title = NULL) {
         parent::test();
         parent::_queue_mesasage(self::$section_name, $message, $type, $tag_id);
+        if (!empty($title)) {
+            self::queue_title($title, $type);
+        }
     }
 
     static function queue_title($title, $type = "primary") {

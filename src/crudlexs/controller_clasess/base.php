@@ -5,6 +5,7 @@ namespace k1lib\crudlexs;
 use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url as url;
 use \k1lib\html\DOM as DOM;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 class controller_base {
 
@@ -54,6 +55,7 @@ class controller_base {
      * @var \k1lib\html\div
      */
     public $board_div_content;
+
     /**
      *
      * @var \k1lib\html\foundation\top_bar
@@ -402,12 +404,12 @@ class controller_base {
                     return $related_url_keys_text;
                 } else {
                     $this->board_create_object->set_is_enabled(FALSE);
-                    \k1lib\common\show_message(board_base_strings::$error_url_keys_no_auth, \k1lib\common_strings::$error, "alert");
+                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_auth, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
                     return FALSE;
                 }
             } else {
                 $this->board_create_object->set_is_enabled(FALSE);
-                \k1lib\common\show_message(board_base_strings::$error_url_keys_no_keys_text, \k1lib\common_strings::$error, "alert");
+                DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
                 return FALSE;
             }
         }
@@ -440,13 +442,13 @@ class controller_base {
                     return $related_url_keys_text;
                 } else {
                     $this->board_list_object->set_is_enabled(FALSE);
-                    \k1lib\common\show_message(board_base_strings::$error_url_keys_no_auth, \k1lib\common_strings::$error, "alert");
+                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_auth, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
                     return FALSE;
                 }
             } else {
                 if ($is_required) {
                     $this->board_list_object->set_is_enabled(FALSE);
-                    \k1lib\common\show_message(board_base_strings::$error_url_keys_no_keys_text, \k1lib\common_strings::$error, "alert");
+                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
                     return FALSE;
                 }
             }

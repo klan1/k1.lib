@@ -7,6 +7,8 @@ use \k1lib\urlrewrite\url as url;
 use \k1lib\db\security\db_table_aliases as db_table_aliases;
 use \k1lib\session\session_plain as session_plain;
 use \k1lib\forms\file_uploads as file_uploads;
+use \k1lib\html\DOM as DOM;
+use \k1lib\notifications\on_DOM as DOM_notification;
 
 interface crudlexs_base_interface {
 
@@ -50,6 +52,11 @@ class crudlexs_base {
      * @var boolean
      */
     private $is_valid = FALSE;
+
+    /**
+     * @var string
+     */
+    protected $notifications_div_id = "k1lib-output";
 
     static function get_k1magic_value() {
         return self::$k1magic_value;
@@ -102,10 +109,12 @@ class crudlexs_base {
     }
 
     function set_object_id($class_name) {
-        if (key_exists($this->db_table->get_db_table_name(), db_table_aliases::$aliases)) {
+        if (isset($this->db_table) && key_exists($this->db_table->get_db_table_name(), db_table_aliases::$aliases)) {
             $table_name = db_table_aliases::$aliases[$this->db_table->get_db_table_name()];
-        } else {
+        } else if (isset($this->db_table)) {
             $table_name = $this->db_table->get_db_table_name();
+        } else {
+            $table_name = "no-table";
         }
         return $this->object_id = $table_name . "-" . basename(str_replace("\\", "/", $class_name));
     }
@@ -116,6 +125,14 @@ class crudlexs_base {
 
     function set_css_class($class_name) {
         $this->css_class = basename(str_replace("\\", "/", $class_name));
+    }
+
+    public function get_notifications_div_id() {
+        return $this->notifications_div_id;
+    }
+
+    public function set_notifications_div_id($notifications_div_id) {
+        $this->notifications_div_id = $notifications_div_id;
     }
 
 }
@@ -202,11 +219,11 @@ class crudlexs_base_with_data extends crudlexs_base {
                         $this->db_table->set_query_filter($this->row_keys_array, TRUE);
                         $this->is_valid = TRUE;
                     } else {
-                        \k1lib\common\show_message(object_base_strings::$error_bad_auth_code, common_strings::$error, "alert");
+                        DOM_notification::queue_mesasage(object_base_strings::$error_bad_auth_code, "alert", $this->notifications_div_id, common_strings::$error);
                         $this->is_valid = FALSE;
                     }
                 } else {
-                    \k1lib\common\show_message(object_base_strings::$alert_empty_auth_code, common_strings::$alert, "alert");
+                    DOM_notification::queue_mesasage(object_base_strings::$alert_empty_auth_code, "alert", $this->notifications_div_id, common_strings::$alert);
                     $this->is_valid = FALSE;
                 }
             } else {
@@ -495,7 +512,7 @@ class crudlexs_base_with_data extends crudlexs_base {
 
                                     $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                                     $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
-                                    
+
                                     /**
                                      * HREF STR_REPLACE
                                      */

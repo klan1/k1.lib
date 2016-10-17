@@ -3,6 +3,8 @@
 namespace k1lib\crudlexs;
 
 use \k1lib\urlrewrite\url as url;
+use \k1lib\html\DOM as DOM;
+use \k1lib\notifications\on_DOM as DOM_notification;
 
 class updating extends \k1lib\crudlexs\creating {
 
@@ -13,7 +15,7 @@ class updating extends \k1lib\crudlexs\creating {
         if (!empty($row_keys_text)) {
             parent::__construct($db_table, $row_keys_text);
         } else {
-            \k1lib\common\show_message(object_base_strings::$error_no_row_keys_text, common_strings::$error, "alert");
+            DOM_notification::queue_mesasage(object_base_strings::$error_no_row_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
         }
 
         $this->set_object_id(get_class($this));
@@ -21,7 +23,7 @@ class updating extends \k1lib\crudlexs\creating {
 
         creating_strings::$button_submit = updating_strings::$button_submit;
         creating_strings::$button_cancel = updating_strings::$button_cancel;
-        
+
         $this->object_state = "update";
     }
 

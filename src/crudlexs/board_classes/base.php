@@ -4,6 +4,7 @@ namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
 use k1lib\html\DOM as DOM;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 interface board_interface {
 
@@ -108,7 +109,13 @@ class board_base {
     }
 
     public function start_board() {
+        if (!$this->is_enabled) {
+            DOM_notification::queue_mesasage(board_base_strings::$error_board_disabled, "warning", $this->notifications_div_id);
+            DOM_notification::queue_title(board_base_strings::$alert_board);
+            return FALSE;
+        }
         $this->button_div_tag = $this->board_content_div->append_div($this->button_div_id);
+        return TRUE;
     }
 
     public function exec_board() {

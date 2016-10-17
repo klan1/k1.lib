@@ -3,6 +3,8 @@
 namespace k1lib\crudlexs;
 
 use \k1lib\urlrewrite\url as url;
+use k1lib\html\DOM as DOM;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 class board_read extends board_base implements board_interface {
 
@@ -50,11 +52,10 @@ class board_read extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function start_board() {
-        parent::start_board();
-        if (!$this->is_enabled) {
-            \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
+        if (!parent::start_board()) {
             return FALSE;
         }
+
         if (!empty($this->row_keys_text)) {
             if ($this->read_object->get_state()) {
                 /**
@@ -111,7 +112,8 @@ class board_read extends board_base implements board_interface {
                 $this->data_loaded = $this->read_object->load_db_table_data($this->show_rule_to_apply);
                 return $this->board_content_div;
             } else {
-                \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
+                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert", $this->notifications_div_id);
+                DOM_notification::queue_title(board_base_strings::$error_mysql);
                 return FALSE;
             }
         } else {
@@ -150,7 +152,8 @@ class board_read extends board_base implements board_interface {
 
                 return $this->board_content_div;
             } else {
-                \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
+                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_no_data, "alert", $this->notifications_div_id);
+                DOM_notification::queue_title(board_base_strings::$error_mysql);
                 $this->read_object->make_invalid();
                 $this->is_enabled = FALSE;
                 return FALSE;

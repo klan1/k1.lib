@@ -26,10 +26,7 @@ class board_create extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function start_board() {
-        parent::start_board();
-        if (!$this->is_enabled) {
-            DOM_notification::queue_mesasage(board_base_strings::$error_board_disabled, "warning", $this->notifications_div_id);
-            DOM_notification::queue_title(board_base_strings::$alert_board);
+        if (!parent::start_board()) {
             return FALSE;
         }
 
