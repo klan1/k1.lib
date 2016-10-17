@@ -79,7 +79,8 @@ class updating extends \k1lib\crudlexs\creating {
                 $url_to_go = str_replace("--authcode--", $this->get_auth_code(), $url_to_go);
             }
             if ($do_redirect) {
-                \k1lib\html\html_header_go($url_to_go);
+//                \k1lib\html\html_header_go($url_to_go);
+//                exit;
                 return TRUE;
             } else {
                 return $url_to_go;

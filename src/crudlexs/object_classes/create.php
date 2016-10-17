@@ -2,7 +2,7 @@
 
 namespace k1lib\crudlexs;
 
-use k1lib\templates\temply as temply;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 /**
  * 
@@ -141,11 +141,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     if (($passwords['current'] === $this->db_table_data[1][$this->decrypt_field_name($field)])) {
                         if ($new_password) {
                             $this->post_incoming_array[$field] = $passwords['new'];
+                            DOM_notification::queue_mesasage(updating_strings::$password_set_successfully, "success", $this->notifications_div_id);
                         } else {
-                            $this->post_validation_errors[$this->decrypt_field_name($field)] = "New password and confirmation must be equal";
+                            $this->post_validation_errors[$this->decrypt_field_name($field)] = creating_strings::$error_new_password_not_match;
                         }
                     } else {
-                        $this->post_validation_errors[$this->decrypt_field_name($field)] = "Actual password is incorrect";
+                        $this->post_validation_errors[$this->decrypt_field_name($field)] = creating_strings::$error_actual_password_not_match;
                     }
                 }
             } else if (array_key_exists('new', $passwords) && array_key_exists('confirm', $passwords)) {
@@ -154,7 +155,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 } else {
                     $this->post_incoming_array[$field] = null;
                     if (empty($passwords['new'])) {
-                        $this->post_validation_errors[$this->decrypt_field_name($field)] = "New password and confirmation must be equal";
+                        $this->post_validation_errors[$this->decrypt_field_name($field)] = creating_strings::$error_new_password_not_match;
                     }
                 }
             }
@@ -455,9 +456,19 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
         $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array);
         if ($this->inserted_result !== FALSE) {
+            if ($this->object_state == 'create') {
+                DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
+            } elseif ($this->object_state == 'update') {
+                DOM_notification::queue_mesasage(updating_strings::$data_updated, "success", $this->notifications_div_id);
+            }
             $this->inserted = TRUE;
             return TRUE;
         } else {
+            if ($this->object_state == 'create') {
+                DOM_notification::queue_mesasage(creating_strings::$data_not_inserted, "warning", $this->notifications_div_id);
+            } elseif ($this->object_state == 'update') {
+                DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
+            }
             $this->inserted = FALSE;
             return FALSE;
         }
@@ -513,8 +524,10 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             if ($do_redirect) {
                 if ($new_keys_text) {
                     \k1lib\html\html_header_go($url_to_go);
+                    exit;
                 } else {
                     \k1lib\html\html_header_go("../");
+                    exit;
                 }
                 return TRUE;
             } else {
