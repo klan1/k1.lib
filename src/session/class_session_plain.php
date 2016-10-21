@@ -554,4 +554,12 @@ class session_db extends session_plain {
         $this->user_level_field = $user_level_field;
     }
 
+    public function get_user_remember_me_input() {
+        return $this->user_remember_me_input;
+    }
+
+    public function set_user_remember_me_input($user_remember_me_input) {
+        $this->user_remember_me_input = $user_remember_me_input;
+    }
+
 }
