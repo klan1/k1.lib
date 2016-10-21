@@ -254,7 +254,7 @@ class board_read extends board_base implements board_interface {
                     $related_table_list->apply_link_on_field_filter($link_row_url, $field_links_array);
                 }
 
-                $detail_div->set_id("{$table_alias}-realted-list");
+                $detail_div->set_class("k1lib-related-data-list {$table_alias}");
 
                 $related_title = new \k1lib\html\h4("sub-title");
                 $related_title->set_value($title);
