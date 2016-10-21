@@ -205,6 +205,7 @@ class board_read extends board_base implements board_interface {
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE) {
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
+        $detail_div = new \k1lib\html\div();
 
         if ($this->is_enabled && $this->read_object->is_valid()) {
             $current_row_keys_text = $this->controller_object->board_read_object->read_object->get_row_keys_text();
