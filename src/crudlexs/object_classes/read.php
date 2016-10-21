@@ -45,7 +45,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $data_label = $this->get_labels_from_data(1);
             if (!empty($data_label)) {
                 $this->remove_labels_from_data_filtered();
-                (new \k1lib\html\h3($data_label, "k1-data-group-title " . $this->css_class, $this->object_id))->append_to($data_group);
+                (new \k1lib\html\h3($data_label, "k1-data-group-title " . $this->css_class, "label-field-{$this->object_id}"))->append_to($data_group);
             }
             $labels = $this->db_table_data_filtered[0];
             $values = $this->db_table_data_filtered[1];
