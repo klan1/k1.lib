@@ -34,8 +34,10 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $this->div_container->set_attrib("class", "row k1-crudlexs-" . $this->css_class);
             $this->div_container->set_attrib("id", $this->object_id);
 
-
+            $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
+            
             $data_group = new \k1lib\html\div("k1-data-group");
+            $data_group->set_id("{$table_alias}-fields");
 
             $data_group->append_to($this->div_container);
             $text_fields_div = new \k1lib\html\div("row");
@@ -55,15 +57,22 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
                      * ALL the TEXT field types are sendend to the last position to show nicely the HTML on it.
                      */
                     $field_type = $this->db_table->get_field_config($field, 'type');
+                    $field_alias = $this->db_table->get_field_config($field, 'alias');
                     if ($field_type == 'text') {
                         $div_rows = $text_fields_div->append_div("large-12 column k1-data-item");
-                        $last_div_row = $div_rows;
                     } else {
                         $div_rows = $row->append_div($this->html_column_classes . " k1-data-item");
                     }
-
-                    $div_rows->append_div("k1-data-item-label")->set_value($labels[$field]);
-                    $div_rows->append_div("k1-data-item-value")->set_value($value);
+                    if (!empty($field_alias)) {
+                        $div_rows->set_id("{$field_alias}-row");
+                    }
+                    $label = $div_rows->append_div("k1-data-item-label")->set_value($labels[$field]);
+                    $value = $div_rows->append_div("k1-data-item-value")->set_value($value);
+                    if (!empty($field_alias)) {
+                        $div_rows->set_id("row-{$field_alias}");
+                        $label->set_id("label-{$field_alias}");
+                        $value->set_id("value-{$field_alias}");
+                    }
                 }
             }
             $text_fields_div->append_to($data_group);
