@@ -195,13 +195,14 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
             // First page LI
             $li = $ul->append_li();
-            $a = $li->append_a($this->page_first, "‹‹", "_self", "First page", "k1lib-crudlexs-first-page");
+//    function append_a($href = NULL, $label = NULL, $target = NULL, $alt = NULL, $class = NULL, $id = NULL) {
+            $a = $li->append_a($this->page_first, "‹‹", "_self", "k1lib-crudlexs-first-page");
             if ($this->page_first == "#") {
                 $a->set_attrib("class", "disabled");
             }
             // Previuos page LI
             $li = $ul->append_li("");
-            $a = $li->append_a($this->page_previous, "‹", "_self", "Previous page", "k1lib-crudlexs-previous-page");
+            $a = $li->append_a($this->page_previous, "‹", "_self", "k1lib-crudlexs-previous-page");
             if ($this->page_previous == "#") {
                 $a->set_attrib("class", "disabled");
             }
@@ -217,13 +218,13 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             $ul->append_li()->append_child($page_selector);
             // Next page LI
             $li = $ul->append_li("");
-            $a = $li->append_a($this->page_next, "›", "_self", "Next page", "k1lib-crudlexs-next-page");
+            $a = $li->append_a($this->page_next, "›", "_self", "k1lib-crudlexs-next-page");
             if ($this->page_next == "#") {
                 $a->set_attrib("class", "disabled");
             }
             // Last page LI
             $li = $ul->append_li("");
-            $a = $li->append_a($this->page_last, "››", "_self", "Last page", "k1lib-crudlexs-last-page");
+            $a = $li->append_a($this->page_last, "››", "_self", "k1lib-crudlexs-last-page");
             if ($this->page_last == "#") {
                 $a->set_attrib("class", "disabled");
             }

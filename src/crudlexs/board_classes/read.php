@@ -206,7 +206,7 @@ class board_read extends board_base implements board_interface {
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
                 
-        $detail_div = new \k1lib\html\div();
+        $detail_div = new \k1lib\html\div("related-data-list");
 
         if ($this->is_enabled && $this->read_object->is_valid()) {
             $current_row_keys_text = $this->controller_object->board_read_object->read_object->get_row_keys_text();
