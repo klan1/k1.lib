@@ -282,6 +282,11 @@ class session_db extends session_plain {
     /**
      * @var string
      */
+    protected $user_login_db_table = NULL;
+
+    /**
+     * @var string
+     */
     protected $user_login_field = NULL;
 
     /**
@@ -345,7 +350,8 @@ class session_db extends session_plain {
     }
 
     public function set_config($login_db_table, $user_login_field, $user_password_field, $user_level_field = NULL) {
-        $this->db_table = new \k1lib\crudlexs\class_db_table($this->db_object, $login_db_table);
+        $this->user_login_db_table = $login_db_table;
+        $this->db_table = new \k1lib\crudlexs\class_db_table($this->db_object, $this->user_login_db_table);
         if ($this->db_table->get_state()) {
             $this->user_login_field = $user_login_field;
             $this->user_password_field = $user_password_field;
@@ -498,6 +504,54 @@ class session_db extends session_plain {
 
     static function set_user_password_use_md5($user_password_use_md5) {
         self::$user_password_use_md5 = $user_password_use_md5;
+    }
+
+    public function get_user_login_db_table() {
+        return $this->user_login_db_table;
+    }
+
+    public function get_user_login_field() {
+        return $this->user_login_field;
+    }
+
+    public function get_user_login_input_name() {
+        return $this->user_login_input_name;
+    }
+
+    public function get_user_password_field() {
+        return $this->user_password_field;
+    }
+
+    public function get_user_password_input_name() {
+        return $this->user_password_input_name;
+    }
+
+    public function get_user_level_field() {
+        return $this->user_level_field;
+    }
+
+    public function set_user_login_db_table($user_login_db_table) {
+        $this->user_login_db_table = $user_login_db_table;
+    }
+
+    public function set_user_login_field($user_login_field) {
+        $this->user_login_field = $user_login_field;
+    }
+
+    public function set_user_login_input_name($user_login_input_name) {
+        $this->user_login_input_name = $user_login_input_name;
+    }
+
+    public function set_user_password_field($user_password_field) {
+        $this->user_password_field = $user_password_field;
+    }
+
+    public function set_user_password_input_name($user_password_input_name) {
+        $this->user_password_input_name = $user_password_input_name;
+    }
+
+    public function set_user_level_field($user_level_field) {
+        $this->user_level_field = $user_level_field;
     }
 
 }
