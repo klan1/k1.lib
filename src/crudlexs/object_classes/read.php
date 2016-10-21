@@ -35,7 +35,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $this->div_container->set_attrib("id", $this->object_id);
 
             $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
-            
+
             $data_group = new \k1lib\html\div("k1-data-group");
             $data_group->set_id("{$table_alias}-fields");
 
@@ -67,11 +67,15 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
                         $div_rows->set_id("{$field_alias}-row");
                     }
                     $label = $div_rows->append_div("k1-data-item-label")->set_value($labels[$field]);
-                    $value = $div_rows->append_div("k1-data-item-value")->set_value($value);
+                    $value_div = $div_rows->append_div("k1-data-item-value")->set_value($value);
                     if (!empty($field_alias)) {
                         $div_rows->set_id("row-{$field_alias}");
                         $label->set_id("label-{$field_alias}");
-                        $value->set_id("value-{$field_alias}");
+                        if (method_exists($value, "set_id")) {
+                            $value->set_id("value-{$field_alias}");
+                        } else {
+                            $value_div->set_id("value-{$field_alias}");
+                        }
                     }
                 }
             }
