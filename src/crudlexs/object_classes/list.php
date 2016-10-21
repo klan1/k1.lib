@@ -133,7 +133,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
      * @return \k1lib\html\div
      */
     public function do_row_stats($custom_msg = "") {
-        $div_stats = new \k1lib\html\div("k1-crudlexs-table-stats clearfix");
+        $div_stats = new \k1lib\html\div("k1lib-crudlexs-list-stats clearfix");
         if (($this->db_table_data)) {
             if (empty($custom_msg)) {
                 $stat_msg = $this->stat_msg;
@@ -156,7 +156,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
      */
     public function do_pagination() {
 
-        $div_pagination = new \k1lib\html\div("k1-crudlexs-table-pagination clearfix", $this->get_object_id() . "-pagination");
+        $div_pagination = new \k1lib\html\div("k1lib-crudlexs-list-pagination clearfix", $this->get_object_id() . "-pagination");
         $div_scroller = $div_pagination->append_div("float-left pagination-scroller");
         $div_page_chooser = $div_pagination->append_div("float-left pagination-rows");
 
@@ -210,7 +210,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             /**
              * Page GOTO selector
              */
-            $page_selector = new \k1lib\html\select("goto_page", "k1-crudlexs-page-goto", $this->get_object_id() . "-page-goto");
+            $page_selector = new \k1lib\html\select("goto_page", "k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-goto");
             $page_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
             for ($i = 1; $i <= $this->total_pages; $i++) {
                 $option_url = url::do_url($this_url, [$page_get_var_name => $i, $rows_get_var_name => self::$rows_per_page]);
@@ -232,7 +232,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             /**
              * PAGE ROWS selector
              */
-            $num_rows_selector = new \k1lib\html\select("goto_page", "k1-crudlexs-page-goto", $this->get_object_id() . "-page-rows-goto");
+            $num_rows_selector = new \k1lib\html\select("goto_page", "k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-rows-goto");
             $num_rows_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
             foreach (self::$rows_per_page_options as $num_rows) {
                 if ($num_rows <= $this->total_rows) {

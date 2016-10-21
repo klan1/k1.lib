@@ -274,7 +274,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     $input_tag->set_attrib("required", TRUE);
                 }
             }
-            $input_tag->set_attrib("k1-data-type", $this->db_table->get_field_config($field, 'validation'));
+            $input_tag->set_attrib("k1lib-data-type", $this->db_table->get_field_config($field, 'validation'));
             $input_tag->set_attrib("id", $this->encrypt_field_name($field));
 
             if (isset($div_error)) {
@@ -384,12 +384,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      */
     public function do_html_object() {
         if (!empty($this->db_table_data_filtered)) {
-            $this->div_container->set_attrib("class", "k1-crudlexs-create");
+            $this->div_container->set_attrib("class", "k1lib-crudlexs-create");
 
             /**
              * DIV content
              */
-            $this->div_container->set_attrib("class", "k1-form-generator " . $this->html_form_column_classes, TRUE);
+            $this->div_container->set_attrib("class", "k1lib-form-generator " . $this->html_form_column_classes, TRUE);
             $this->div_container->set_attrib("style", "margin:0 auto;", TRUE);
 
             /**
@@ -401,11 +401,11 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 $html_form->set_attrib("data-abide", TRUE);
             }
 
-            $form_header = $html_form->append_div("k1-form-header row");
-            $form_body = $html_form->append_div("k1-form-body row");
-            $form_footer = $html_form->append_div("k1-form-footer row");
+            $form_header = $html_form->append_div("k1lib-form-header row");
+            $form_body = $html_form->append_div("k1lib-form-body row");
+            $form_footer = $html_form->append_div("k1lib-form-footer row");
             $form_footer->set_attrib("style", "margin-top:0.9em;");
-            $form_buttons = $html_form->append_div("k1-form-buttons row");
+            $form_buttons = $html_form->append_div("k1lib-form-buttons row");
 
             /**
              * Hidden input

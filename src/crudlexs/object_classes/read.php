@@ -31,12 +31,12 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
 
     public function do_html_object() {
         if ($this->db_table_data) {
-            $this->div_container->set_attrib("class", "row k1-crudlexs-" . $this->css_class);
+            $this->div_container->set_attrib("class", "row k1lib-crudlexs-" . $this->css_class);
             $this->div_container->set_attrib("id", $this->object_id);
 
             $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
 
-            $data_group = new \k1lib\html\div("k1-data-group");
+            $data_group = new \k1lib\html\div("k1lib-data-group");
             $data_group->set_id("{$table_alias}-fields");
 
             $data_group->append_to($this->div_container);
@@ -45,7 +45,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $data_label = $this->get_labels_from_data(1);
             if (!empty($data_label)) {
                 $this->remove_labels_from_data_filtered();
-                (new \k1lib\html\h3($data_label, "k1-data-group-title " . $this->css_class, "label-field-{$this->object_id}"))->append_to($data_group);
+                (new \k1lib\html\h3($data_label, "k1lib-data-group-title " . $this->css_class, "label-field-{$this->object_id}"))->append_to($data_group);
             }
             $labels = $this->db_table_data_filtered[0];
             $values = $this->db_table_data_filtered[1];
@@ -59,15 +59,15 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
                     $field_type = $this->db_table->get_field_config($field, 'type');
                     $field_alias = $this->db_table->get_field_config($field, 'alias');
                     if ($field_type == 'text') {
-                        $div_rows = $text_fields_div->append_div("large-12 column k1-data-item");
+                        $div_rows = $text_fields_div->append_div("large-12 column k1lib-data-item");
                     } else {
-                        $div_rows = $row->append_div($this->html_column_classes . " k1-data-item");
+                        $div_rows = $row->append_div($this->html_column_classes . " k1lib-data-item");
                     }
                     if (!empty($field_alias)) {
                         $div_rows->set_id("{$field_alias}-row");
                     }
-                    $label = $div_rows->append_div("k1-data-item-label")->set_value($labels[$field]);
-                    $value_div = $div_rows->append_div("k1-data-item-value")->set_value($value);
+                    $label = $div_rows->append_div("k1lib-data-item-label")->set_value($labels[$field]);
+                    $value_div = $div_rows->append_div("k1lib-data-item-value")->set_value($value);
                     if (!empty($field_alias)) {
                         $div_rows->set_id("row-{$field_alias}");
                         $label->set_id("label-{$field_alias}");

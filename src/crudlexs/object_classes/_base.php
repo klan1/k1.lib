@@ -398,7 +398,7 @@ class crudlexs_base_with_data extends crudlexs_base {
 //                                $div_container = new \k1lib\html\div();
 
                                 $img_tag = new \k1lib\html\img(file_uploads::get_uploads_url() . "--fieldvalue--");
-                                $img_tag->set_attrib("class", "k1-data-img", TRUE);
+                                $img_tag->set_attrib("class", "k1lib-data-img", TRUE);
 
 //                                $delete_file_link = new \k1lib\html\a("./unlink-uploaded-file/", "remove this file");
 //                                $div_container->append_child($img_tag);
@@ -408,7 +408,7 @@ class crudlexs_base_with_data extends crudlexs_base {
 
                             default:
                                 $link_tag = new \k1lib\html\a(url::do_url(file_uploads::get_uploads_url() . "--fieldvalue--"), "--fieldvalue--", "_blank");
-                                $link_tag->set_attrib("class", "k1-data-link", TRUE);
+                                $link_tag->set_attrib("class", "k1lib-data-link", TRUE);
                                 return $this->apply_html_tag_on_field_filter($link_tag, array_keys($file_upload_fields));
                         }
                     }
@@ -423,7 +423,7 @@ class crudlexs_base_with_data extends crudlexs_base {
         if ($this->get_state()) {
             $this->link_on_field_filter_applied = true;
             $a_tag = new \k1lib\html\a(url::do_url($link_to_apply), "", $href_target);
-            $a_tag->set_attrib("class", "k1-link-filter", TRUE);
+            $a_tag->set_attrib("class", "k1lib-link-filter", TRUE);
             if (empty($fields_to_change)) {
                 $fields_to_change = crudlexs_base::USE_KEY_FIELDS;
             }

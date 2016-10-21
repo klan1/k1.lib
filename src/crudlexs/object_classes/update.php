@@ -46,7 +46,7 @@ class updating extends \k1lib\crudlexs\creating {
 
     public function do_update() {
         //$this->set_back_url("javascript:history.back()");
-        $this->div_container->set_attrib("class", "k1-crudlexs-update");
+        $this->div_container->set_attrib("class", "k1lib-crudlexs-update");
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
         $update_result = $this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1]);
         $this->update_perfomed = TRUE;
