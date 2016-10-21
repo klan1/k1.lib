@@ -204,6 +204,8 @@ class board_read extends board_base implements board_interface {
      */
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE) {
 
+        $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
+                
         $detail_div = new \k1lib\html\div();
 
         if ($this->is_enabled && $this->read_object->is_valid()) {
@@ -252,7 +254,7 @@ class board_read extends board_base implements board_interface {
                     $related_table_list->apply_link_on_field_filter($link_row_url, $field_links_array);
                 }
 
-                $detail_div->set_attrib("class", "k1app-related-list {$db_table->get_db_table_name()}-realted-list");
+                $detail_div->set_attrib("class", "k1app-related-list {$table_alias}-realted-list");
 
                 $related_title = new \k1lib\html\h4("sub-title");
                 $related_title->set_value($title);
