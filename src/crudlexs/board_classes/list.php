@@ -32,6 +32,7 @@ class board_list extends board_base implements board_interface {
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-list";
             $this->list_object = new \k1lib\crudlexs\listing($this->controller_object->db_table, FALSE);
+            $this->list_object->set_do_table_field_name_encrypt(TRUE);
         }
     }
 
@@ -86,13 +87,22 @@ class board_list extends board_base implements board_interface {
                 $search_buttom->set_attrib("data-open", "search-modal");
                 $search_buttom->append_to($this->button_div_tag);
 
-                /**
-                 * Clear search
-                 */
-                if (isset($_POST) && isset($_POST['from-search'])) {
+                if (isset($_POST) && isset($_POST['from-search']) && (urldecode($_POST['from-search']) == $_SERVER['REQUEST_URI'])) {
 //                    if ($this->)
-                    $this->controller_object->db_table->set_query_filter($_POST);
+                    /**
+                     * decrypt post field names
+                     */
+                    $incomming_search_data = \k1lib\forms\check_all_incomming_vars($_POST);
+                    if ($this->list_object->get_do_table_field_name_encrypt()) {
+                        $search_data = $this->list_object->decrypt_field_names($incomming_search_data);
+                    } else {
+                        $search_data = $incomming_search_data;
+                    }
+                    $this->controller_object->db_table->set_query_filter($search_data);
                     $search_post = \k1lib\common\serialize_var($_POST, urlencode($_SERVER['REQUEST_URI']));
+                    /**
+                     * Clear search
+                     */
                     $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self");
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->set_attrib("class", "button warning");

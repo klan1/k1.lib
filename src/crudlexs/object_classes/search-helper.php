@@ -60,14 +60,14 @@ class search_helper extends creating {
         $search_html = parent::do_html_object();
         $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $this->caller_url);
         $search_html->get_elements_by_tag("form")[0]->set_attrib("target", "_parent");
-        $search_html->get_elements_by_tag("form")[0]->append_child(new \k1lib\html\input("hidden", "from-search", "yes"));
+        $search_html->get_elements_by_tag("form")[0]->append_child(new \k1lib\html\input("hidden", "from-search", urlencode($this->caller_url)));
         return $search_html;
     }
 
     function catch_post_data() {
         $search_post = \k1lib\common\unserialize_var(urlencode($this->caller_url));
         if (!empty($search_post)) {
-            $_POST = $search_post;
+            $_POST = array_merge($search_post, $_POST);
             if (parent::catch_post_data()) {
                 return TRUE;
             } else {
