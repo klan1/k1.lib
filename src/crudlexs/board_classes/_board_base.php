@@ -141,8 +141,6 @@ class board_base {
             if ($this->controller_object->html_top_bar) {
                 $this->controller_object->html_top_bar->set_title(3, " - {$board_name}", TRUE);
             }
-//            temply::set_place_value($this->controller_object->get_template_place_name_html_title(), " - {$board_name}");
-//            temply::set_place_value($this->controller_object->get_template_place_name_board_name(), $board_name);
         }
     }
 

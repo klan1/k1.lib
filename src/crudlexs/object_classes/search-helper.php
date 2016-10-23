@@ -31,9 +31,6 @@ class search_helper extends creating {
         } else {
             d("No caller url");
         }
-
-//        $this->caller_objetc_id = $caller_object_id;
-
         creating_strings::$button_submit = search_helper_strings::$button_submit;
         creating_strings::$button_cancel = search_helper_strings::$button_cancel;
 
@@ -43,8 +40,6 @@ class search_helper extends creating {
 
 
         $this->db_table->set_db_table_show_rule("show-search");
-//        $this->load_db_table_data(TRUE);
-//        $this->get_post_data();
     }
 
     public function do_html_object() {
@@ -54,7 +49,6 @@ class search_helper extends creating {
         }
         $this->apply_label_filter();
 
-//        input_helper::$do_fk_search_tool = FALSE;
         $this->insert_inputs_on_data_row();
 
         $search_html = parent::do_html_object();
