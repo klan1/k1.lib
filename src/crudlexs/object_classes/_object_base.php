@@ -596,14 +596,16 @@ class crudlexs_base_with_data extends crudlexs_base {
     }
 
     public function encrypt_field_name($field_name) {
-        if ($this->do_table_field_name_encrypt) {
-// first, we need to know in what position is the field on the table design.
-            if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
-                $rnd = $_SESSION['CRUDLEXS-RND'];
-            } else {
-                $rnd = rand(5000, 10000);
-                $_SESSION['CRUDLEXS-RND'] = $rnd;
-            }
+        // first, we need to know in what position is the field on the table design.
+        if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
+            $rnd = $_SESSION['CRUDLEXS-RND'];
+        } else {
+            $rnd = rand(5000, 10000);
+            $_SESSION['CRUDLEXS-RND'] = $rnd;
+        }
+        if (!$this->do_table_field_name_encrypt) {
+            return $field_name;
+        } else {
             $field_pos = 0;
             foreach ($this->db_table->get_db_table_config() as $field => $config) {
                 if ($field == $field_name) {
@@ -617,8 +619,6 @@ class crudlexs_base_with_data extends crudlexs_base {
 //            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos);
             $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos + $rnd);
             return $new_field_name;
-        } else {
-            return($field_name);
         }
     }
 
@@ -636,7 +636,7 @@ class crudlexs_base_with_data extends crudlexs_base {
             if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
                 $rnd = $_SESSION['CRUDLEXS-RND'];
             } else {
-                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_session_random, E_USER_ERROR);
+                trigger_error(__METHOD__ . ' ' . object_base_strings::$error_no_session_random, E_USER_ERROR);
             }
             $field_position = \k1lib\utils\n36_to_decimal($n36_number) - $rnd;
             $fields_from_table_config = array_keys($this->db_table->get_db_table_config());
