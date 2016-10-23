@@ -60,13 +60,14 @@ class search_helper extends creating {
 
     function catch_post_data() {
         $search_post = \k1lib\common\unserialize_var(urlencode($this->caller_url));
-        if (!empty($search_post)) {
-            $_POST = array_merge($search_post, $_POST);
-            if (parent::catch_post_data()) {
-                return TRUE;
-            } else {
-                return FALSE;
-            }
+        if (empty($search_post)) {
+            $search_post = [];
+        }
+        $_POST = array_merge($search_post, $_POST);
+        if (parent::catch_post_data()) {
+            return TRUE;
+        } else {
+            return FALSE;
         }
     }
 
