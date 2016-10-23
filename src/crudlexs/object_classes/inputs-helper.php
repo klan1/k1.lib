@@ -45,6 +45,9 @@ class input_helper {
      * @return \k1lib\html\select
      */
     static function enum_type(creating $crudlex_obj, $field) {
+        /**
+         * @todo Use FIELD encryption here, I tried but it doesn't work just pasting the normal lines
+         */
         $enum_data = $crudlex_obj->db_table->get_enum_options($field);
         $input_tag = new \k1lib\html\select($field);
         $input_tag->append_option("", input_helper_strings::$select_choose_option);

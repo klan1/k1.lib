@@ -107,6 +107,14 @@ class controller_base {
     protected $board_delete_url_name = "delete";
     protected $board_delete_allowed_levels = [];
 
+    /**
+     *
+     * @var \k1lib\crudlexs\board_search
+     */
+    public $board_search_object;
+    protected $board_search_url_name = "search";
+    protected $board_search_allowed_levels = [];
+
 
     /**
      *
@@ -337,6 +345,12 @@ class controller_base {
                     $this->board_list_object->set_create_enable(FALSE);
                 }
                 break;
+            case $this->board_search_url_name:
+                $this->board_search_object = new board_search($this, $this->board_list_allowed_levels);
+                $this->board_search_object->set_is_enabled($this->board_list_enabled);
+                $this->board_search_object->set_board_name($this->board_search_url_name);
+                $this->board_div_content = $this->board_search_object->board_content_div;
+                break;
 
             default:
                 $this->board_inited = FALSE;
@@ -464,18 +478,27 @@ class controller_base {
             switch ($specific_board_to_start) {
                 case $this->board_create_url_name:
                     return $this->board_create_object->start_board();
+                    break;
 
                 case $this->board_read_url_name:
                     return $this->board_read_object->start_board();
+                    break;
 
                 case $this->board_update_url_name:
                     return $this->board_update_object->start_board();
+                    break;
 
                 case $this->board_delete_url_name:
                     return $this->board_delete_object->start_board();
+                    break;
 
                 case $this->board_list_url_name:
                     return $this->board_list_object->start_board();
+                    break;
+
+                case $this->board_search_url_name:
+                    return $this->board_search_object->start_board();
+                    break;
 
                 default:
                     $this->board_started = FALSE;
@@ -518,6 +541,9 @@ class controller_base {
                 case $this->board_list_url_name:
                     return $this->board_list_object->exec_board();
 
+                case $this->board_search_url_name:
+                    return $this->board_search_object->exec_board();
+
                 default:
                     $this->board_executed = FALSE;
                     \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
@@ -553,6 +579,9 @@ class controller_base {
 
                 case $this->board_list_url_name:
                     return $this->board_list_object->finish_board();
+
+                case $this->board_search_url_name:
+                    return $this->board_search_object->finish_board();
 
                 default:
                     $this->board_finished = FALSE;

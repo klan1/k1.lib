@@ -232,6 +232,8 @@ class crudlexs_base_with_data extends crudlexs_base {
         } else {
             parent::__construct($db_table);
         }
+        $this->set_object_id(get_class($this));
+        $this->set_css_class(get_class($this));
     }
 
     public function get_auth_code() {
@@ -594,16 +596,14 @@ class crudlexs_base_with_data extends crudlexs_base {
     }
 
     public function encrypt_field_name($field_name) {
-        // first, we need to know in what position is the field on the table design.
-        if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
-            $rnd = $_SESSION['CRUDLEXS-RND'];
-        } else {
-            $rnd = rand(5000, 10000);
-            $_SESSION['CRUDLEXS-RND'] = $rnd;
-        }
-        if (!$this->do_table_field_name_encrypt) {
-            return $field_name;
-        } else {
+        if ($this->do_table_field_name_encrypt) {
+// first, we need to know in what position is the field on the table design.
+            if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
+                $rnd = $_SESSION['CRUDLEXS-RND'];
+            } else {
+                $rnd = rand(5000, 10000);
+                $_SESSION['CRUDLEXS-RND'] = $rnd;
+            }
             $field_pos = 0;
             foreach ($this->db_table->get_db_table_config() as $field => $config) {
                 if ($field == $field_name) {
@@ -617,6 +617,8 @@ class crudlexs_base_with_data extends crudlexs_base {
 //            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos);
             $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos + $rnd);
             return $new_field_name;
+        } else {
+            return($field_name);
         }
     }
 

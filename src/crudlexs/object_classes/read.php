@@ -20,9 +20,6 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             DOM_notification::queue_mesasage(object_base_strings::$error_no_row_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
         }
 
-        $this->set_object_id(get_class($this));
-        $this->set_css_class(get_class($this));
-
         /**
          * Necessary for do not loose the inputs with blank or null data
          */

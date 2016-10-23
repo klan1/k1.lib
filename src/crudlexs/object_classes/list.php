@@ -93,9 +93,6 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
 
-        $this->set_object_id(get_class($this));
-        $this->set_css_class(get_class($this));
-
         $this->skip_blanks_on_filters = TRUE;
 
         $this->stat_msg = listing_strings::$stats_default_message;

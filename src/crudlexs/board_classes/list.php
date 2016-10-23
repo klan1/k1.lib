@@ -44,12 +44,7 @@ class board_list extends board_base implements board_interface {
         }
 
         if ($this->list_object->get_state()) {
-            if ($this->search_enable) {
-                $search_helper = new \k1lib\crudlexs\search_helper($this->controller_object->db_table, $this->list_object->get_object_id());
-                $search_helper->set_search_catch_post_enable($this->search_catch_post_enable);
-                $search_helper->set_html_column_classes("column large-11 medium-11 small-12");
-                $search_helper->set_html_form_column_classes("large-11");
-            }
+
             /**
              * BACK
              */
@@ -76,9 +71,16 @@ class board_list extends board_base implements board_interface {
             }
 
             /**
-             * Search buttom
+             * Search button
              */
             if ($this->search_enable) {
+                $div_callout = new \k1lib\html\div("reveal", "search-modal");
+                $div_callout->set_attrib("data-reveal", TRUE);
+                $div_callout->append_to($this->board_content_div);
+
+                $search_iframe = new \k1lib\html\iframe(url::do_url("../search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI'])), "search-iframe");
+                $search_iframe->append_to($div_callout);
+
                 $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self");
                 $search_buttom->set_attrib("class", "button fi-page-search");
                 $search_buttom->set_attrib("data-open", "search-modal");
@@ -87,12 +89,16 @@ class board_list extends board_base implements board_interface {
                 /**
                  * Clear search
                  */
-                $search_helper->do_html_object()->append_to($this->board_content_div);
-                if ($this->search_enable && !empty($search_helper->get_post_data())) {
+                if (isset($_POST) && isset($_POST['from-search'])) {
+//                    if ($this->)
+                    $this->controller_object->db_table->set_query_filter($_POST);
+                    $search_post = \k1lib\common\serialize_var($_POST, urlencode($_SERVER['REQUEST_URI']));
                     $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self");
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->set_attrib("class", "button warning");
                     $clear_search_buttom->append_to($this->button_div_tag);
+                } else {
+                    $search_post = \k1lib\common\unset_serialize_var(urlencode($_SERVER['REQUEST_URI']));
                 }
             }
 
