@@ -75,8 +75,11 @@ class board_list extends board_base implements board_interface {
              * Search button
              */
             if ($this->search_enable) {
-                $div_callout = new \k1lib\html\div("reveal", "search-modal");
+                $div_callout = new \k1lib\html\foundation\callout(NULL, "SEARCH FIELDS", TRUE, "");
+                $div_callout->set_id("search-modal");
+                $div_callout->set_class("reveal full");
                 $div_callout->set_attrib("data-reveal", TRUE);
+//                $div_callout->
                 $div_callout->append_to($this->board_content_div);
 
                 $search_iframe = new \k1lib\html\iframe(url::do_url("../search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI'])), "search-iframe");
