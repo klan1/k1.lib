@@ -82,7 +82,7 @@ class board_list extends board_base implements board_interface {
 //                $div_callout->
                 $div_callout->append_to($this->board_content_div);
 
-                $search_iframe = new \k1lib\html\iframe(url::do_url("../search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI'])), "search-iframe");
+                $search_iframe = new \k1lib\html\iframe(url::do_url($this->controller_object->get_controller_root_dir() . "/search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI'])), "search-iframe");
                 $search_iframe->append_to($div_callout);
 
                 $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self");
