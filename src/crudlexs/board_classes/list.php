@@ -78,7 +78,7 @@ class board_list extends board_base implements board_interface {
 //                $div_callout = new \k1lib\html\foundation\callout(NULL, "SEARCH FIELDS", TRUE, "");
                 $div_callout = new \k1lib\html\div();
                 $div_callout->set_id("search-modal");
-                $div_callout->set_class("reveal full");
+                $div_callout->set_class("reveal large");
                 $div_callout->set_attrib("data-reveal", TRUE);
                 $div_callout->set_attrib("data-overlay", "true");
                 $div_callout->append_h3("SEARCH");
