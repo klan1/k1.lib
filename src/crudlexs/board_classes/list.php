@@ -75,11 +75,19 @@ class board_list extends board_base implements board_interface {
              * Search button
              */
             if ($this->search_enable) {
-                $div_callout = new \k1lib\html\foundation\callout(NULL, "SEARCH FIELDS", TRUE, "");
+//                $div_callout = new \k1lib\html\foundation\callout(NULL, "SEARCH FIELDS", TRUE, "");
+                $div_callout = new \k1lib\html\div();
                 $div_callout->set_id("search-modal");
-                $div_callout->set_class("reveal");
+                $div_callout->set_class("reveal full");
                 $div_callout->set_attrib("data-reveal", TRUE);
                 $div_callout->set_attrib("data-overlay", "true");
+                $div_callout->append_h3("SEARCH");
+
+                $close_button = new \k1lib\html\button(NULL, "close-button");
+                $close_button->set_attrib("data-close", TRUE);
+                $close_button->set_attrib("aria-label", "Close reveal");
+                $close_button->append_span()->set_attrib("aria-hidden", TRUE)->set_value("&times;");
+                $div_callout->append_child_tail($close_button);
                 
 //                $div_callout->
                 $div_callout->append_to($this->board_content_div);
