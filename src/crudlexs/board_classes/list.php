@@ -79,6 +79,8 @@ class board_list extends board_base implements board_interface {
                 $div_callout->set_id("search-modal");
                 $div_callout->set_class("reveal full");
                 $div_callout->set_attrib("data-reveal", TRUE);
+                $div_callout->set_attrib("data-overlay", "true");
+                
 //                $div_callout->
                 $div_callout->append_to($this->board_content_div);
 
