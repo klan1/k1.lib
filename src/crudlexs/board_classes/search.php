@@ -31,7 +31,7 @@ class board_search extends board_base implements board_interface {
             return FALSE;
         }
         if ($this->search_object->get_state()) {
-            $close_search_buttom = new \k1lib\html\a(NULL, " " . board_list_strings::$button_search, "_parent");
+            $close_search_buttom = new \k1lib\html\a(NULL, " " . \k1lib\common_strings::$button_cancel, "_parent");
             $close_search_buttom->set_id("close-search-button");
             $close_search_buttom->set_attrib("class", "button alert fi-page-close");
             $close_search_buttom->set_attrib("onClick", "parent.close_search();");
