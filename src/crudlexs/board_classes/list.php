@@ -72,32 +72,22 @@ class board_list extends board_base implements board_interface {
             }
 
             /**
-             * Search button
+             * Search
              */
             if ($this->search_enable) {
-//                $div_callout = new \k1lib\html\foundation\callout(NULL, "SEARCH FIELDS", TRUE, "");
-                $div_callout = new \k1lib\html\div();
-                $div_callout->set_id("search-modal");
-                $div_callout->set_class("reveal large");
-                $div_callout->set_attrib("data-reveal", TRUE);
-                $div_callout->set_attrib("data-overlay", "true");
-                $div_callout->append_h3("SEARCH");
 
-                $close_button = new \k1lib\html\button(NULL, "close-button");
-                $close_button->set_attrib("data-close", TRUE);
-                $close_button->set_attrib("aria-label", "Close reveal");
-                $close_button->append_span()->set_attrib("aria-hidden", TRUE)->set_value("&times;");
-                $div_callout->append_child_tail($close_button);
-                
-//                $div_callout->
-                $div_callout->append_to($this->board_content_div);
 
-                $search_iframe = new \k1lib\html\iframe(url::do_url($this->controller_object->get_controller_root_dir() . "search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI'])), "search-iframe");
-                $search_iframe->append_to($div_callout);
+                $search_iframe = new \k1lib\html\iframe(url::do_url(
+                                $this->controller_object->get_controller_root_dir() . "search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI']))
+                        , NULL, "search-iframe"
+                );
+//                $this->board_content_div->append_child_tail($search_iframe);
+                DOM::html()->body()->append_child_tail($search_iframe);
+//                $search_iframe->append_to($this->board_content_div);
 
-                $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self");
+                $search_buttom = new \k1lib\html\a(NULL, " " . board_list_strings::$button_search, "_self");
+                $search_buttom->set_id("search-button");
                 $search_buttom->set_attrib("class", "button fi-page-search");
-                $search_buttom->set_attrib("data-open", "search-modal");
                 $search_buttom->append_to($this->button_div_tag);
 
                 if (isset($_POST) && isset($_POST['from-search']) && (urldecode($_POST['from-search']) == $_SERVER['REQUEST_URI'])) {
