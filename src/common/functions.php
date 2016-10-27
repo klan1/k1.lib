@@ -22,52 +22,6 @@ function check_on_k1lib() {
     d(__FUNCTION__ . " do not use me more!");
 }
 
-/**
- * Based on a HTML template if the APP_MODE is WEB will return a HTML formated error.
- * @param mixed $e This coud be an String, Object or Array
- * @param String $title Subject
- * @param String $app_mode this should be "web" to return HTML, is not will return plain text format.
- * @return string
- */
-function get_error($e, $title = "ERROR", $app_mode = "web") {
-    if (is_object($e) || is_array($e)) {
-        $msg = print_r($e, TRUE);
-    } else {
-        $msg = $e;
-    }
-    return get_message($msg, $title, "alert", $app_mode);
-}
-
-/**
- * Based on a HTML template if the APP_MODE is WEB will return a HTML formated message
- * @param String $msg Message to show
- * @param String $title Subject
- * @param String $type This should be "success", "warning", "info", "alert" or NULL. This is a Foundation CLASS.
- * @param String $app_mode this should be "web" to return HTML, is not will return plain text format.
- * @return string
- */
-function get_message($msg, $title = "", $type = "info") {
-    $callout = new \k1lib\html\foundation\callout($msg, $title);
-    $callout->set_class($type, TRUE);
-    $callout->margin("20px");
-    return $callout;
-}
-
-/**
- * Based on a HTML template if the APP_MODE is WEB will echo a HTML formated message
- * @param String $msg Message to show
- * @param String $title Subject
- * @param String $type This should be "success", "warning", "info", "alert" or NULL. This is a Foundation CLASS.
- * @param String $app_mode this should be "web" to return HTML, is not will return plain text format.
- */
-function show_message($msg, $title = "", $type = "", $tag_id = "k1lib-output") {
-    $callout = get_message($msg, $title, $type);
-    $output_div = \k1lib\html\DOM::html()->body()->get_element_by_id($tag_id);
-    if (!empty($output_div)) {
-        $output_div->append_child($callout);
-    }
-    return $callout;
-}
 
 /**
  * This will make an Array with $data_array[keys] as values as $return_array[0] = value0 .. $return_array[N] = $valueN. Is recursive.

@@ -3,6 +3,8 @@
 namespace k1lib\crudlexs;
 
 use \k1lib\urlrewrite\url as url;
+use k1lib\html\DOM as DOM;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 class board_list extends board_base implements board_interface {
 
@@ -30,6 +32,7 @@ class board_list extends board_base implements board_interface {
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-list";
             $this->list_object = new \k1lib\crudlexs\listing($this->controller_object->db_table, FALSE);
+            $this->list_object->set_do_table_field_name_encrypt(TRUE);
         }
     }
 
@@ -37,19 +40,12 @@ class board_list extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function start_board() {
-        parent::start_board();
-        if (!$this->is_enabled) {
-            \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
+        if (!parent::start_board()) {
             return FALSE;
         }
 
         if ($this->list_object->get_state()) {
-            if ($this->search_enable) {
-                $search_helper = new \k1lib\crudlexs\search_helper($this->controller_object->db_table, $this->list_object->get_object_id());
-                $search_helper->set_search_catch_post_enable($this->search_catch_post_enable);
-                $search_helper->set_html_column_classes("column large-11 medium-11 small-12");
-                $search_helper->set_html_form_column_classes("large-11");
-            }
+
             /**
              * BACK
              */
@@ -76,30 +72,54 @@ class board_list extends board_base implements board_interface {
             }
 
             /**
-             * Search buttom
+             * Search
              */
             if ($this->search_enable) {
-                $search_buttom = new \k1lib\html\a("#", " " . board_list_strings::$button_search, "_self");
+
+
+                $search_iframe = new \k1lib\html\iframe(url::do_url(
+                                $this->controller_object->get_controller_root_dir() . "search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI']))
+                        , NULL, "search-iframe"
+                );
+//                $this->board_content_div->append_child_tail($search_iframe);
+                DOM::html()->body()->append_child_tail($search_iframe);
+//                $search_iframe->append_to($this->board_content_div);
+
+                $search_buttom = new \k1lib\html\a(NULL, " " . board_list_strings::$button_search, "_self");
+                $search_buttom->set_id("search-button");
                 $search_buttom->set_attrib("class", "button fi-page-search");
-                $search_buttom->set_attrib("data-open", "search-modal");
                 $search_buttom->append_to($this->button_div_tag);
 
-                /**
-                 * Clear search
-                 */
-                $search_helper->do_html_object()->append_to($this->board_content_div);
-                if ($this->search_enable && !empty($search_helper->get_post_data())) {
+                if (isset($_POST) && isset($_POST['from-search']) && (urldecode($_POST['from-search']) == $_SERVER['REQUEST_URI'])) {
+//                    if ($this->)
+                    /**
+                     * decrypt post field names
+                     */
+                    $incomming_search_data = \k1lib\forms\check_all_incomming_vars($_POST);
+                    if ($this->list_object->get_do_table_field_name_encrypt()) {
+                        $search_data = $this->list_object->decrypt_field_names($incomming_search_data);
+                    } else {
+                        $search_data = $incomming_search_data;
+                    }
+                    $this->controller_object->db_table->set_query_filter($search_data);
+                    $search_post = \k1lib\common\serialize_var($_POST, urlencode($_SERVER['REQUEST_URI']));
+                    /**
+                     * Clear search
+                     */
                     $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self");
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->set_attrib("class", "button warning");
                     $clear_search_buttom->append_to($this->button_div_tag);
+                } else {
+                    $search_post = \k1lib\common\unset_serialize_var(urlencode($_SERVER['REQUEST_URI']));
                 }
             }
 
             $this->data_loaded = $this->list_object->load_db_table_data($this->show_rule_to_apply);
             return $this->board_content_div;
         } else {
-            \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
+            DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert", $this->notifications_div_id);
+            DOM_notification::queue_title(board_base_strings::$error_mysql);
             $this->list_object->make_invalid();
             $this->is_enabled = FALSE;
 

@@ -18,17 +18,18 @@ class input_helper {
 
         $div_continer = new \k1lib\html\div();
 
+        $input_tag_new = new \k1lib\html\input("password", $field_encrypted . "_new", NULL, "k1lib-input-insert");
+        $input_tag_confirm = new \k1lib\html\input("password", $field_encrypted . "_confirm", NULL, "k1lib-input-insert");
 
         if ($case == "create") {
-            
+            $div_continer->link_value_obj($input_tag_new);
         } elseif ($case == "update") {
-            $input_tag_current = new \k1lib\html\input("password", $field_encrypted . "_current", NULL, "k1-input-insert");
+            $input_tag_current = new \k1lib\html\input("password", $field_encrypted . "_current", NULL, "k1lib-input-insert");
             $input_tag_current->set_attrib("placeholder", "Current password");
             $div_continer->append_div()->append_child($input_tag_current);
+            $div_continer->link_value_obj($input_tag_current);
         }
-        $input_tag_new = new \k1lib\html\input("password", $field_encrypted . "_new", NULL, "k1-input-insert");
         $input_tag_new->set_attrib("placeholder", "New password");
-        $input_tag_confirm = new \k1lib\html\input("password", $field_encrypted . "_confirm", NULL, "k1-input-insert");
         $input_tag_confirm->set_attrib("placeholder", "Confirm password");
 
         $div_continer->append_div()->append_child($input_tag_new);
@@ -44,6 +45,9 @@ class input_helper {
      * @return \k1lib\html\select
      */
     static function enum_type(creating $crudlex_obj, $field) {
+        /**
+         * @todo Use FIELD encryption here, I tried but it doesn't work just pasting the normal lines
+         */
         $enum_data = $crudlex_obj->db_table->get_enum_options($field);
         $input_tag = new \k1lib\html\select($field);
         $input_tag->append_option("", input_helper_strings::$select_choose_option);
@@ -105,7 +109,7 @@ class input_helper {
     static function file_upload(creating $crudlex_obj, $field) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
 
-        $input_tag = new \k1lib\html\input("file", $field_encrypted, "", "k1-file-upload");
+        $input_tag = new \k1lib\html\input("file", $field_encrypted, "", "k1lib-file-upload");
         if (isset($crudlex_obj->db_table_data[1][$field]['name']) || empty($crudlex_obj->db_table_data[1][$field])) {
             return $input_tag;
         } else {
@@ -125,9 +129,9 @@ class input_helper {
         if (!empty($crudlex_obj->db_table->get_field_config($field, 'refereced_table_name'))) {
             $div_input_group = new \k1lib\html\div("input-group");
 
-            $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1-input-insert input-group-field");
+            $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field");
             $input_tag->set_attrib("placeholder", input_helper_strings::$input_fk_placeholder);
-            $input_tag->set_attrib("k1-data-group-" . $crudlex_obj->db_table->get_field_config($field, 'refereced_table_name'), TRUE);
+            $input_tag->set_attrib("k1lib-data-group-" . $crudlex_obj->db_table->get_field_config($field, 'refereced_table_name'), TRUE);
             $input_tag->append_to($div_input_group);
 
             $div_input_group_button = new \k1lib\html\div("input-group-button");
@@ -173,9 +177,9 @@ class input_helper {
         } elseif (strstr("date,date-past,date-future", $crudlex_obj->db_table->get_field_config($field, 'validation')) !== FALSE) {
             $div_input_group = new \k1lib\html\div("input-group");
 
-            $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1-input-insert input-group-field datepicker");
+            $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field datepicker");
             $input_tag->set_attrib("placeholder", input_helper_strings::$input_date_placeholder);
-            $input_tag->set_attrib("k1-data-datepickup", TRUE);
+            $input_tag->set_attrib("k1lib-data-datepickup", TRUE);
             $input_tag->append_to($div_input_group);
 
             $div_input_group_button = new \k1lib\html\div("input-group-button");
@@ -187,7 +191,7 @@ class input_helper {
             $div_input_group->link_value_obj($input_tag);
             return $div_input_group;
         } else {
-            $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1-input-insert");
+            $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1lib-input-insert");
             $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
             return $input_tag;
         }

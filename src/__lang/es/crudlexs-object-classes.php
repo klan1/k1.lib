@@ -26,7 +26,10 @@ class creating_strings {
     static $button_submit = "Insertar";
     static $button_cancel = "Cancelar";
     static $error_file_upload = "File upload error : ";
-
+    static $error_new_password_not_match = "El nuevo password y la confirmacion deben ser iguales";
+    static $error_actual_password_not_match = "Contraseña actual incorrecta";
+    static $data_inserted = "Datos guardados";
+    static $data_not_inserted = "Los datos no han sido ingresados";
 }
 
 class listing_strings {
@@ -52,7 +55,9 @@ class updating_strings {
 
     static $button_submit = "Actualizar";
     static $button_cancel = "Volver";
-
+    static $password_set_successfully = "Nueva contraseña aceptada";
+    static $data_updated = "Datos actualizados";
+    static $data_not_updated = "Datos no actualizados";
 }
 
 class input_helper_strings {

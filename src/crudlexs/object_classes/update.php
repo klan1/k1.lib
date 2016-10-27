@@ -3,6 +3,8 @@
 namespace k1lib\crudlexs;
 
 use \k1lib\urlrewrite\url as url;
+use \k1lib\html\DOM as DOM;
+use \k1lib\notifications\on_DOM as DOM_notification;
 
 class updating extends \k1lib\crudlexs\creating {
 
@@ -13,15 +15,12 @@ class updating extends \k1lib\crudlexs\creating {
         if (!empty($row_keys_text)) {
             parent::__construct($db_table, $row_keys_text);
         } else {
-            \k1lib\common\show_message(object_base_strings::$error_no_row_keys_text, common_strings::$error, "alert");
+            DOM_notification::queue_mesasage(object_base_strings::$error_no_row_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
         }
-
-        $this->set_object_id(get_class($this));
-        $this->set_css_class(get_class($this));
 
         creating_strings::$button_submit = updating_strings::$button_submit;
         creating_strings::$button_cancel = updating_strings::$button_cancel;
-        
+
         $this->object_state = "update";
     }
 
@@ -44,15 +43,21 @@ class updating extends \k1lib\crudlexs\creating {
 
     public function do_update() {
         //$this->set_back_url("javascript:history.back()");
-        $this->div_container->set_attrib("class", "k1-crudlexs-update");
+        $this->div_container->set_attrib("class", "k1lib-crudlexs-update");
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
         $update_result = $this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1]);
         $this->update_perfomed = TRUE;
         if ($update_result !== FALSE) {
             $this->updated = TRUE;
+            if ($this->object_state == 'update') {
+                DOM_notification::queue_mesasage(updating_strings::$data_updated, "success", $this->notifications_div_id);
+            }
             return TRUE;
         } else {
             $this->updated = FALSE;
+            if ($this->object_state == 'update') {
+                DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
+            }
             return FALSE;
         }
     }
@@ -78,6 +83,7 @@ class updating extends \k1lib\crudlexs\creating {
             }
             if ($do_redirect) {
                 \k1lib\html\html_header_go($url_to_go);
+                exit;
                 return TRUE;
             } else {
                 return $url_to_go;
