@@ -3,6 +3,8 @@
 namespace k1lib\crudlexs;
 
 use \k1lib\urlrewrite\url as url;
+use k1lib\html\DOM as DOM;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 class board_read extends board_base implements board_interface {
 
@@ -50,11 +52,10 @@ class board_read extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function start_board() {
-        parent::start_board();
-        if (!$this->is_enabled) {
-            \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
+        if (!parent::start_board()) {
             return FALSE;
         }
+
         if (!empty($this->row_keys_text)) {
             if ($this->read_object->get_state()) {
                 /**
@@ -111,7 +112,8 @@ class board_read extends board_base implements board_interface {
                 $this->data_loaded = $this->read_object->load_db_table_data($this->show_rule_to_apply);
                 return $this->board_content_div;
             } else {
-                \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
+                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert", $this->notifications_div_id);
+                DOM_notification::queue_title(board_base_strings::$error_mysql);
                 return FALSE;
             }
         } else {
@@ -129,13 +131,6 @@ class board_read extends board_base implements board_interface {
 
         if ($this->read_object->get_state() && !empty($this->row_keys_text)) {
             if ($this->data_loaded) {
-                if ($this->use_label_as_title_enabled) {
-                    $data_label = $this->read_object->get_labels_from_data(1);
-                    if (!empty($data_label)) {
-//                        $this->read_object->remove_labels_from_data_filtered();
-//                        $this->controller_object->board_read_object->set_board_name($data_label);
-                    }
-                }
                 if ($this->apply_label_filter) {
                     $this->read_object->apply_label_filter();
                 }
@@ -157,7 +152,8 @@ class board_read extends board_base implements board_interface {
 
                 return $this->board_content_div;
             } else {
-                \k1lib\common\show_message(board_base_strings::$error_mysql_table_no_data, board_base_strings::$error_mysql, "alert");
+                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_no_data, "alert", $this->notifications_div_id);
+                DOM_notification::queue_title(board_base_strings::$error_mysql);
                 $this->read_object->make_invalid();
                 $this->is_enabled = FALSE;
                 return FALSE;
@@ -208,6 +204,7 @@ class board_read extends board_base implements board_interface {
      */
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE) {
 
+        $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new \k1lib\html\div();
 
         if ($this->is_enabled && $this->read_object->is_valid()) {
@@ -256,10 +253,9 @@ class board_read extends board_base implements board_interface {
                     $related_table_list->apply_link_on_field_filter($link_row_url, $field_links_array);
                 }
 
-                $detail_div->set_attrib("class", "k1app-related-list {$db_table->get_db_table_name()}-realted-list");
+                $detail_div->set_class("k1lib-related-data-list {$table_alias}");
 
-                $related_title = new \k1lib\html\h4("sub-title");
-                $related_title->set_value($title);
+                $related_title = new \k1lib\html\h4($title, "{$table_alias}");
                 $related_title->append_to($detail_div);
 
                 if ($data_loaded) {
@@ -362,10 +358,6 @@ class board_read extends board_base implements board_interface {
 
     function set_delete_enable($delete_enable) {
         $this->delete_enable = $delete_enable;
-    }
-
-    function set_use_label_as_title_enabled($use_label_as_title_enabled) {
-        $this->use_label_as_title_enabled = $use_label_as_title_enabled;
     }
 
     public function set_related_show_new($related_show_new) {

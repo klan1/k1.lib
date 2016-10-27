@@ -25,6 +25,7 @@ class board_create_strings {
 
 class board_delete_strings {
 
+    static $data_deleted = "Data deleted";
     static $error_no_data_deleted = "The record to delete can't be deleted";
     static $error_no_data_deleted_hacker = "Too genius of you trying to delete something with a normal auth-code ;)";
 

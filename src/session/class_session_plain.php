@@ -2,6 +2,8 @@
 
 namespace k1lib\session;
 
+use k1lib\notifications\on_DOM as DOM_notifications;
+
 class session_plain {
 
     /**
@@ -282,6 +284,11 @@ class session_db extends session_plain {
     /**
      * @var string
      */
+    protected $user_login_db_table = NULL;
+
+    /**
+     * @var string
+     */
     protected $user_login_field = NULL;
 
     /**
@@ -345,7 +352,8 @@ class session_db extends session_plain {
     }
 
     public function set_config($login_db_table, $user_login_field, $user_password_field, $user_level_field = NULL) {
-        $this->db_table = new \k1lib\crudlexs\class_db_table($this->db_object, $login_db_table);
+        $this->user_login_db_table = $login_db_table;
+        $this->db_table = new \k1lib\crudlexs\class_db_table($this->db_object, $this->user_login_db_table);
         if ($this->db_table->get_state()) {
             $this->user_login_field = $user_login_field;
             $this->user_password_field = $user_password_field;
@@ -396,6 +404,7 @@ class session_db extends session_plain {
                 return FALSE;
             }
         } else {
+            DOM_notifications::queue_mesasage("There is not magic present here!", "alert");
             return NULL;
         }
     }
@@ -426,8 +435,11 @@ class session_db extends session_plain {
             'db_table_name' => $this->db_table->get_db_table_name(),
             'user_login_field' => $this->user_login_field,
             'user_login_input_value' => $this->user_login_input_value,
+            'user_login_input_name' => $this->user_login_input_name,
             'user_password_field' => $this->user_password_field,
             'user_password_input_value' => $this->user_password_input_value,
+            'user_password_input_name' => $this->user_password_input_name,
+            'user_remember_me_input' => $this->user_remember_me_input,
             'user_level_field' => $this->user_level_field,
             'user_hash' => parent::get_user_hash($this->user_login_input_value),
         ];
@@ -455,6 +467,7 @@ class session_db extends session_plain {
 
                 if ($data['user_hash'] === self::get_user_hash($data['user_login_input_value'])) {
                     $this->set_config($data['db_table_name'], $data['user_login_field'], $data['user_password_field'], $data['user_level_field']);
+                    $this->set_inputs($data['user_login_input_name'], $data['user_password_input_name'], $data['user_remember_me_input']);
                     $this->user_login_input_value = $data['user_login_input_value'];
                     $this->user_password_input_value = $data['user_password_input_value'];
                     $this->user_remember_me_value = $data['user_remember_me_value'];
@@ -498,6 +511,62 @@ class session_db extends session_plain {
 
     static function set_user_password_use_md5($user_password_use_md5) {
         self::$user_password_use_md5 = $user_password_use_md5;
+    }
+
+    public function get_user_login_db_table() {
+        return $this->user_login_db_table;
+    }
+
+    public function get_user_login_field() {
+        return $this->user_login_field;
+    }
+
+    public function get_user_login_input_name() {
+        return $this->user_login_input_name;
+    }
+
+    public function get_user_password_field() {
+        return $this->user_password_field;
+    }
+
+    public function get_user_password_input_name() {
+        return $this->user_password_input_name;
+    }
+
+    public function get_user_level_field() {
+        return $this->user_level_field;
+    }
+
+    public function set_user_login_db_table($user_login_db_table) {
+        $this->user_login_db_table = $user_login_db_table;
+    }
+
+    public function set_user_login_field($user_login_field) {
+        $this->user_login_field = $user_login_field;
+    }
+
+    public function set_user_login_input_name($user_login_input_name) {
+        $this->user_login_input_name = $user_login_input_name;
+    }
+
+    public function set_user_password_field($user_password_field) {
+        $this->user_password_field = $user_password_field;
+    }
+
+    public function set_user_password_input_name($user_password_input_name) {
+        $this->user_password_input_name = $user_password_input_name;
+    }
+
+    public function set_user_level_field($user_level_field) {
+        $this->user_level_field = $user_level_field;
+    }
+
+    public function get_user_remember_me_input() {
+        return $this->user_remember_me_input;
+    }
+
+    public function set_user_remember_me_input($user_remember_me_input) {
+        $this->user_remember_me_input = $user_remember_me_input;
     }
 
 }

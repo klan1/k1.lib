@@ -2,7 +2,7 @@
 
 namespace k1lib\crudlexs;
 
-use k1lib\templates\temply as temply;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 /**
  * 
@@ -40,9 +40,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
-
-        $this->set_object_id(get_class($this));
-        $this->set_css_class(get_class($this));
     }
 
     /**
@@ -141,11 +138,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     if (($passwords['current'] === $this->db_table_data[1][$this->decrypt_field_name($field)])) {
                         if ($new_password) {
                             $this->post_incoming_array[$field] = $passwords['new'];
+                            DOM_notification::queue_mesasage(updating_strings::$password_set_successfully, "success", $this->notifications_div_id);
                         } else {
-                            $this->post_validation_errors[$this->decrypt_field_name($field)] = "New password and confirmation must be equal";
+                            $this->post_validation_errors[$this->decrypt_field_name($field)] = creating_strings::$error_new_password_not_match;
                         }
                     } else {
-                        $this->post_validation_errors[$this->decrypt_field_name($field)] = "Actual password is incorrect";
+                        $this->post_validation_errors[$this->decrypt_field_name($field)] = creating_strings::$error_actual_password_not_match;
                     }
                 }
             } else if (array_key_exists('new', $passwords) && array_key_exists('confirm', $passwords)) {
@@ -154,7 +152,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 } else {
                     $this->post_incoming_array[$field] = null;
                     if (empty($passwords['new'])) {
-                        $this->post_validation_errors[$this->decrypt_field_name($field)] = "New password and confirmation must be equal";
+                        $this->post_validation_errors[$this->decrypt_field_name($field)] = creating_strings::$error_new_password_not_match;
                     }
                 }
             }
@@ -273,7 +271,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     $input_tag->set_attrib("required", TRUE);
                 }
             }
-            $input_tag->set_attrib("k1-data-type", $this->db_table->get_field_config($field, 'validation'));
+            $input_tag->set_attrib("k1lib-data-type", $this->db_table->get_field_config($field, 'validation'));
             $input_tag->set_attrib("id", $this->encrypt_field_name($field));
 
             if (isset($div_error)) {
@@ -325,55 +323,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         }
     }
 
-    public function encrypt_field_name($field_name) {
-        if ($this->do_table_field_name_encrypt) {
-// first, we need to know in what position is the field on the table design.
-            if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
-                $rnd = $_SESSION['CRUDLEXS-RND'];
-            } else {
-                $rnd = rand(5000, 10000);
-                $_SESSION['CRUDLEXS-RND'] = $rnd;
-            }
-            $field_pos = 0;
-            foreach ($this->db_table->get_db_table_config() as $field => $config) {
-                if ($field == $field_name) {
-                    if ($config['alias']) {
-                        return $config['alias'];
-                    }
-                    break;
-                }
-                $field_pos++;
-            }
-//            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos);
-            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos + $rnd);
-            return $new_field_name;
-        } else {
-            return($field_name);
-        }
-    }
-
-    public function decrypt_field_name($encrypted_name) {
-        if (strstr($encrypted_name, "k1_") !== FALSE) {
-            list($prefix, $n36_number) = explode("_", $encrypted_name);
-            if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
-                $rnd = $_SESSION['CRUDLEXS-RND'];
-            } else {
-                trigger_error(__METHOD__ . ' ' . object_base_strings::$error_no_session_random, E_USER_ERROR);
-            }
-            $field_position = \k1lib\utils\n36_to_decimal($n36_number) - $rnd;
-            $fields_from_table_config = array_keys($this->db_table->get_db_table_config());
-//            $field_position = \k1lib\utils\n36_to_decimal($n36_number);
-            return $fields_from_table_config[$field_position];
-        } else {
-            foreach ($this->db_table->get_db_table_config() as $field => $config) {
-                if ($config['alias'] == $encrypted_name) {
-                    return $field;
-                }
-            }
-            return $encrypted_name;
-        }
-    }
-
     public function enable_foundation_form_check() {
         $this->enable_foundation_form_check = TRUE;
     }
@@ -383,12 +332,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      */
     public function do_html_object() {
         if (!empty($this->db_table_data_filtered)) {
-            $this->div_container->set_attrib("class", "k1-crudlexs-create");
+            $this->div_container->set_attrib("class", "k1lib-crudlexs-create");
 
             /**
              * DIV content
              */
-            $this->div_container->set_attrib("class", "k1-form-generator " . $this->html_form_column_classes, TRUE);
+            $this->div_container->set_attrib("class", "k1lib-form-generator " . $this->html_form_column_classes, TRUE);
             $this->div_container->set_attrib("style", "margin:0 auto;", TRUE);
 
             /**
@@ -400,11 +349,11 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 $html_form->set_attrib("data-abide", TRUE);
             }
 
-            $form_header = $html_form->append_div("k1-form-header row");
-            $form_body = $html_form->append_div("k1-form-body row");
-            $form_footer = $html_form->append_div("k1-form-footer row");
+            $form_header = $html_form->append_div("k1lib-form-header row");
+            $form_body = $html_form->append_div("k1lib-form-body row");
+            $form_footer = $html_form->append_div("k1lib-form-footer row");
             $form_footer->set_attrib("style", "margin-top:0.9em;");
-            $form_buttons = $html_form->append_div("k1-form-buttons row");
+            $form_buttons = $html_form->append_div("k1lib-form-buttons row");
 
             /**
              * Hidden input
@@ -455,9 +404,15 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
         $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array);
         if ($this->inserted_result !== FALSE) {
+            if ($this->object_state == 'create') {
+                DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
+            }
             $this->inserted = TRUE;
             return TRUE;
         } else {
+            if ($this->object_state == 'create') {
+                DOM_notification::queue_mesasage(creating_strings::$data_not_inserted, "warning", $this->notifications_div_id);
+            }
             $this->inserted = FALSE;
             return FALSE;
         }
@@ -513,8 +468,10 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             if ($do_redirect) {
                 if ($new_keys_text) {
                     \k1lib\html\html_header_go($url_to_go);
+                    exit;
                 } else {
                     \k1lib\html\html_header_go("../");
+                    exit;
                 }
                 return TRUE;
             } else {

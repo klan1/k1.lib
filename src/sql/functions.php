@@ -199,7 +199,7 @@ AND table_name = '{$table}'";
         }
 // LABEL-FIELD
         if (!isset($field_config['label-field'])) {
-            $field_config['label-field'] = NULL;
+            $field_config['label-field'] = FALSE;
         }
 // NEW 2016: ALIAS-FIELD
         if (!isset($field_config['alias'])) {

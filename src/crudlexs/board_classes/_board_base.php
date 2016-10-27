@@ -4,6 +4,7 @@ namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
 use k1lib\html\DOM as DOM;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 interface board_interface {
 
@@ -73,6 +74,11 @@ class board_base {
     protected $button_div_id = "k1lib-crudlexs-buttons";
 
     /**
+     * @var string
+     */
+    protected $notifications_div_id = "k1lib-output";
+
+    /**
      * @var \k1lib\html\div
      */
     protected $button_div_tag;
@@ -103,7 +109,13 @@ class board_base {
     }
 
     public function start_board() {
+        if (!$this->is_enabled) {
+            DOM_notification::queue_mesasage(board_base_strings::$error_board_disabled, "warning", $this->notifications_div_id);
+            DOM_notification::queue_title(board_base_strings::$alert_board);
+            return FALSE;
+        }
         $this->button_div_tag = $this->board_content_div->append_div($this->button_div_id);
+        return TRUE;
     }
 
     public function exec_board() {
@@ -129,8 +141,6 @@ class board_base {
             if ($this->controller_object->html_top_bar) {
                 $this->controller_object->html_top_bar->set_title(3, " - {$board_name}", TRUE);
             }
-//            temply::set_place_value($this->controller_object->get_template_place_name_html_title(), " - {$board_name}");
-//            temply::set_place_value($this->controller_object->get_template_place_name_board_name(), $board_name);
         }
     }
 
@@ -212,6 +222,14 @@ class board_base {
 
     public function set_board_content_div(\k1lib\html\div $board_content_div) {
         $this->board_content_div = $board_content_div;
+    }
+
+    public function get_notifications_div_id() {
+        return $this->notifications_div_id;
+    }
+
+    public function set_notifications_div_id($notifications_div_id) {
+        $this->notifications_div_id = $notifications_div_id;
     }
 
 }

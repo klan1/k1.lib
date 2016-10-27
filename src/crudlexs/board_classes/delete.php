@@ -4,6 +4,8 @@ namespace k1lib\crudlexs;
 
 use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url as url;
+use k1lib\html\DOM as DOM;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 class board_delete extends board_base implements board_interface {
 
@@ -27,10 +29,9 @@ class board_delete extends board_base implements board_interface {
 
     /**
      * @return \k1lib\html\div|boolean
-     */ public function start_board() {
-        parent::start_board();
-        if (!$this->is_enabled) {
-            \k1lib\common\show_message(board_base_strings::$error_board_disabled, board_base_strings::$alert_board, "warning");
+     */
+    public function start_board() {
+        if (!parent::start_board()) {
             return FALSE;
         }
         return $this->board_content_div;
@@ -49,17 +50,18 @@ class board_delete extends board_base implements board_interface {
                 if ($_GET['auth-code'] === $this->read_object->get_auth_code_personal()) {
                     $this->sql_action_result = $this->controller_object->db_table->delete_data($this->row_keys_text_array);
                     if ($this->sql_action_result) {
+                        DOM_notification::queue_mesasage(board_delete_strings::$data_deleted, "success", $this->notifications_div_id);
                         return TRUE;
                     } else {
-                        \k1lib\common\show_message(board_delete_strings::$error_no_data_deleted, \k1lib\common_strings::$error, "alert");
+                        DOM_notification::queue_mesasage(board_delete_strings::$error_no_data_deleted, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
                         return FALSE;
                     }
                 } else if ($_GET['auth-code'] === $this->read_object->get_auth_code()) {
-                    \k1lib\common\show_message(board_delete_strings::$error_no_data_deleted_hacker, \k1lib\common_strings::$error_hacker, "alert");
+                    DOM_notification::queue_mesasage(board_delete_strings::$error_no_data_deleted_hacker, "alert", $this->notifications_div_id, \k1lib\common_strings::$error_hacker);
                     return FALSE;
                 }
             } else {
-                \k1lib\common\show_message(board_base_strings::$error_mysql_table_not_opened, board_base_strings::$error_mysql, "alert");
+                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert", $this->notifications_div_id, board_base_strings::$error_mysql);
                 $this->is_enabled = FALSE;
                 return FALSE;
             }
