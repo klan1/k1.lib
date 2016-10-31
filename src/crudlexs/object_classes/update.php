@@ -8,7 +8,7 @@ use \k1lib\notifications\on_DOM as DOM_notification;
 
 class updating extends \k1lib\crudlexs\creating {
 
-    protected $update_perfomed = NULL;
+    protected $update_perfomed = FALSE;
     protected $updated = NULL;
 
     public function __construct(\k1lib\crudlexs\class_db_table $db_table, $row_keys_text) {
@@ -43,17 +43,25 @@ class updating extends \k1lib\crudlexs\creating {
 
     public function do_update() {
         //$this->set_back_url("javascript:history.back()");
+        $error_data = NULL;
+
         $this->div_container->set_attrib("class", "k1lib-crudlexs-update");
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
-        $update_result = $this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1]);
-        $this->update_perfomed = TRUE;
+        $update_result = $this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1], $error_data);
         if ($update_result !== FALSE) {
+            $this->update_perfomed = TRUE;
             $this->updated = TRUE;
             if ($this->object_state == 'update') {
                 DOM_notification::queue_mesasage(updating_strings::$data_updated, "success", $this->notifications_div_id);
             }
             return TRUE;
         } else {
+            if (is_array($error_data) && !empty($error_data)) {
+                $this->post_validation_errors = array_merge($this->post_validation_errors, $error_data);
+            } else {
+                $this->update_perfomed = TRUE;
+            }
+
             $this->updated = FALSE;
             if ($this->object_state == 'update') {
                 DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
