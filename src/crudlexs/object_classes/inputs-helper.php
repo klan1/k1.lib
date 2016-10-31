@@ -130,7 +130,11 @@ class input_helper {
             $div_input_group = new \k1lib\html\div("input-group");
 
             $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field");
-            $input_tag->set_attrib("placeholder", input_helper_strings::$input_fk_placeholder);
+            if (!empty($crudlex_obj->db_table->get_field_config($field, 'placeholder'))) {
+                $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
+            } else {
+                $input_tag->set_attrib("placeholder", input_helper_strings::$input_fk_placeholder);
+            }
             $input_tag->set_attrib("k1lib-data-group-" . $crudlex_obj->db_table->get_field_config($field, 'refereced_table_name'), TRUE);
             $input_tag->append_to($div_input_group);
 
