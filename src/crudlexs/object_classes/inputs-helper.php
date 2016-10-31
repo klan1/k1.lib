@@ -127,7 +127,7 @@ class input_helper {
 
     static function default_type(creating $crudlex_obj, $field) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
-        if ((!empty($crudlex_obj->db_table->get_field_config($field, 'refereced_table_name')) && self::$do_fk_search_tool) && (array_search($field, self::$fk_fields_to_skip))) {
+        if ((!empty($crudlex_obj->db_table->get_field_config($field, 'refereced_table_name')) && self::$do_fk_search_tool) && (array_search($field, self::$fk_fields_to_skip) === FALSE)) {
             $div_input_group = new \k1lib\html\div("input-group");
 
             $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field");
