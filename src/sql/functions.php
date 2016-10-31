@@ -297,7 +297,7 @@ function get_field_label_default($table, $field_name) {
  * @return Array NULL on empty result and FALSE on failure.
  * TODO: Fix the NON optional cache isue !!
  */
-function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE) {
+function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE, &$error_data = null) {
 //$query_result = new PDOStatement();
     $queryReturn = NULL;
     if (profiler::is_enabled()) {
@@ -368,7 +368,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
  * @param array $db_table_config
  * @return boolean
  */
-function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array()) {
+function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array(), &$error_data = null) {
     global $controller_errors;
 
     if (!is_string($table) || empty($table)) {
@@ -402,7 +402,25 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
             } else {
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
-            $update = $db->exec($update_sql) or ( trigger_error("Error on Update stament : ($update_sql) " . $db->errorInfo()[2], E_USER_WARNING));
+            $update = $db->exec($update_sql);
+
+            if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {
+//                $regexp = "/\((?:`(\w+)`,?)+\)/ix";
+                $regexp = "/FOREIGN KEY \((.*)?\) REFERENCES/i";
+                $match = [];
+                if (preg_match($regexp, $db->errorInfo()[2], $match)) {
+                    $match[1] = str_replace(' ', '', $match[1]);
+                    $fk_fields_error = explode(',', str_replace('`', '', $match[1]));
+                    if (!empty($fk_fields_error)) {
+                        foreach ($fk_fields_error as $value) {
+                            $error_data[$value] = 'Key error';
+                        }
+                    }
+                } else {
+                    $error_data = "Error on Update stament : ($update_sql) " . $db->errorInfo()[2];
+                }
+            }
+            
             if ($update) {
                 return $update;
             } else {
@@ -418,7 +436,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
     }
 }
 
-function sql_insert(\PDO $db, $table, $data, &$error_fields = []) {
+function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
     if (\k1lib\db\handler::is_enabled()) {
         if (is_array($data)) {
             if (!@is_array($data[0])) {
@@ -428,7 +446,7 @@ function sql_insert(\PDO $db, $table, $data, &$error_fields = []) {
                 $data_string = array_to_sql_values($data);
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
-            $insert = $db->exec($insert_sql) or ( trigger_error("Error on Insert stament : " . $db->errorInfo()[2], E_USER_WARNING));
+            $insert = $db->exec($insert_sql);
 
             if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {
 //                $regexp = "/\((?:`(\w+)`,?)+\)/ix";
@@ -438,8 +456,12 @@ function sql_insert(\PDO $db, $table, $data, &$error_fields = []) {
                     $match[1] = str_replace(' ', '', $match[1]);
                     $fk_fields_error = explode(',', str_replace('`', '', $match[1]));
                     if (!empty($fk_fields_error)) {
-                        $error_fields = $fk_fields_error;
+                        foreach ($fk_fields_error as $value) {
+                            $error_data[$value] = 'Key error';
+                        }
                     }
+                } else {
+                    $error_data = "Error on Insert stament : " . $db->errorInfo()[2];
                 }
             }
             if ($insert) {

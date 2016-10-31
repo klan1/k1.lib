@@ -401,18 +401,18 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
      * @return boolean TRUE on sucess or FALSE on error.
      */
     public function do_insert() {
+        $error_data = NULL;
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
-        $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array);
+        $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array, $error_data);
         if ($this->inserted_result !== FALSE) {
-            if ($this->object_state == 'create') {
-                DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
-            }
+            DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
             $this->inserted = TRUE;
             return TRUE;
         } else {
-            if ($this->object_state == 'create') {
-                DOM_notification::queue_mesasage(creating_strings::$data_not_inserted, "warning", $this->notifications_div_id);
+            if (is_array($error_data) && !empty($error_data)) {
+                $this->post_validation_errors = array_merge($this->post_validation_errors, $error_data);
             }
+            DOM_notification::queue_mesasage(creating_strings::$data_not_inserted, "warning", $this->notifications_div_id);
             $this->inserted = FALSE;
             return FALSE;
         }
