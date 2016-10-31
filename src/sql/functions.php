@@ -418,7 +418,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
     }
 }
 
-function sql_insert(\PDO $db, $table, $data) {
+function sql_insert(\PDO $db, $table, $data, &$error_fields = []) {
     if (\k1lib\db\handler::is_enabled()) {
         if (is_array($data)) {
             if (!@is_array($data[0])) {
@@ -429,6 +429,19 @@ function sql_insert(\PDO $db, $table, $data) {
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
             $insert = $db->exec($insert_sql) or ( trigger_error("Error on Insert stament : " . $db->errorInfo()[2], E_USER_WARNING));
+
+            if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {
+//                $regexp = "/\((?:`(\w+)`,?)+\)/ix";
+                $regexp = "/FOREIGN KEY \((.*)?\) REFERENCES/i";
+                $match = [];
+                if (preg_match($regexp, $db->errorInfo()[2], $match)) {
+                    $match[1] = str_replace(' ', '', $match[1]);
+                    $fk_fields_error = explode(',', str_replace('`', '', $match[1]));
+                    if (!empty($fk_fields_error)) {
+                        $error_fields = $fk_fields_error;
+                    }
+                }
+            }
             if ($insert) {
                 $last_insert_sql = "SELECT LAST_INSERT_ID() as 'LAST_ID'";
                 $last_insert_result = sql_query($db, $last_insert_sql, FALSE);
