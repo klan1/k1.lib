@@ -162,18 +162,13 @@ class input_helper {
             $search_button = new \k1lib\html\input("button", "search", "&#xf18d;", "button fi-page-search");
             $search_button->set_attrib("style", "font-family:foundation-icons");
 
-            if (self::$do_fk_search_tool) {
-                $url_params = [
-                    "back-url" => $_SERVER['REQUEST_URI']
-                ];
-                $url_params = array_merge($static_values_enconded, $url_params);
+            $url_params = [
+                "back-url" => $_SERVER['REQUEST_URI']
+            ];
+            $url_params = array_merge($static_values_enconded, $url_params);
 
-                $url_to_search_fk_data = url::do_url(self::$url_to_search_fk_data . "{$fk_table_alias}/list/$this_table_alias/", $url_params);
-                $search_button->set_attrib("onclick", "javascript:use_select_row_keys(this.form,'{$url_to_search_fk_data}')");
-            } else {
-                $url_to_search_fk_data = "#";
-                $search_button->set_attrib("onclick", "javascript:alert('" . listing_strings::$no_fk_search_here . "')");
-            }
+            $url_to_search_fk_data = url::do_url(self::$url_to_search_fk_data . "{$fk_table_alias}/list/$this_table_alias/", $url_params);
+            $search_button->set_attrib("onclick", "javascript:use_select_row_keys(this.form,'{$url_to_search_fk_data}')");
 
             $search_button->append_to($div_input_group_button);
 
