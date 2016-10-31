@@ -9,6 +9,7 @@ class input_helper {
     static $do_fk_search_tool = TRUE;
     static $url_to_search_fk_data = APP_URL . "general-utils/select-row-keys/";
     static $main_css = "";
+    static private $fk_field_to_skip = [];
 
     static function password_type(creating $crudlex_obj, $field, $case = "create") {
         // First we have the CLEAR the password data, we do not need it!
@@ -199,6 +200,22 @@ class input_helper {
             $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
             return $input_tag;
         }
+    }
+
+    public static function get_do_fk_search_tool() {
+        return self::$do_fk_search_tool;
+    }
+
+    public static function get_fk_field_to_skip() {
+        return self::$fk_field_to_skip;
+    }
+
+    public static function set_do_fk_search_tool($do_fk_search_tool) {
+        self::$do_fk_search_tool = $do_fk_search_tool;
+    }
+
+    public static function set_fk_field_to_skip($fk_field_to_skip) {
+        self::$fk_field_to_skip = $fk_field_to_skip;
     }
 
 }
