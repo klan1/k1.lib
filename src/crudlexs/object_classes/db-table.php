@@ -153,7 +153,7 @@ class class_db_table {
         } else {
             $query_where_pairs = "";
             if ($exact_filter) {
-                $query_where_pairs = \k1lib\sql\array_to_sql_set($this->db, $clean_filter_array, TRUE, TRUE);
+                $query_where_pairs = \k1lib\sql\array_to_sql_set($this->db, $clean_filter_array, FALSE, TRUE);
             } else {
                 $doFilter = FALSE;
                 foreach ($clean_filter_array as $search_value) {
@@ -193,7 +193,7 @@ class class_db_table {
         } else {
             $query_where_pairs = "";
             if ($exact_filter) {
-                $query_where_pairs = \k1lib\sql\array_to_sql_set_exclude($this->db, $clean_filter_array, TRUE, TRUE);
+                $query_where_pairs = \k1lib\sql\array_to_sql_set_exclude($this->db, $clean_filter_array, FALSE, TRUE);
             } else {
                 $doFilter = FALSE;
                 foreach ($clean_filter_array as $search_value) {
