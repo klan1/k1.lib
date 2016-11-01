@@ -414,8 +414,7 @@ class class_db_table {
 
                 return $query_result[$field];
             } else {
-                // EMPTY RESULT TO DO NOT BREAK THE FOREACH LOOPS
-                return FALSE;
+                return 0;
             }
         } else {
             return FALSE;
