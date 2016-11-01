@@ -20,6 +20,7 @@ class class_db_table {
     private $query_offset = 0;
     private $query_row_count_limit = NULL;
     private $query_where_pairs = NULL;
+    private $query_where_custom = NULL;
     private $query_sql = NULL;
     private $query_sql_total_rows = NULL;
     private $query_sql_keys = NULL;
@@ -316,6 +317,15 @@ class class_db_table {
             if (!empty($this->query_where_pairs)) {
                 $sql_code .= "WHERE {$this->query_where_pairs} ";
                 $this->query_sql_total_rows .= "WHERE {$this->query_where_pairs} ";
+                if (!empty($this->query_where_custom)) {
+                    $sql_code .= " {$this->query_where_custom} ";
+                    $this->query_sql_total_rows .= " {$this->query_where_pairs} ";
+                }
+            } else {
+                if (!empty($this->query_where_custom)) {
+                    $sql_code .= "WHERE {$this->query_where_custom} ";
+                    $this->query_sql_total_rows .= "WHERE {$this->query_where_pairs} ";
+                }
             }
             /**
              * ORDER BY
@@ -493,6 +503,14 @@ class class_db_table {
     public function set_order_by($field, $order = 'ASC') {
         $this->query_order_by_fields_array[] = $field;
         $this->query_order_by_order_arry[] = $order;
+    }
+
+    public function get_query_where_custom() {
+        return $this->query_where_custom;
+    }
+
+    public function set_query_where_custom($query_where_custom) {
+        $this->query_where_custom = $query_where_custom;
     }
 
 }
