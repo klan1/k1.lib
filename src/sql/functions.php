@@ -571,9 +571,7 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
             }
             if ($precise) {
                 if ($value === NULL) {
-                    $pairs[] = "`{$field}` IS NULL";
-                } elseif ($value == '!NULL') {
-                    $pairs[] = "`{$field}` IS NO NULL";
+                    $pairs[] = "`{$field}` = NULL";
                 } else {
                     $pairs[] = "`{$field}`= " . $db->quote($value);
                 }
