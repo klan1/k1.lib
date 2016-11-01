@@ -404,6 +404,24 @@ class class_db_table {
         }
     }
 
+    public function get_field_operation($field, $operation = 'SUM') {
+        if ($this->generate_sql_query()) {
+            $sql_last_part = strstr($this->query_sql, "FROM", FALSE);
+            $operation_sql = "SELECT {$operation}($field)) FROM {$sql_last_part}";
+            $query_result = \k1lib\sql\sql_query($this->db, $operation_sql, FALSE);
+
+            if (!empty($query_result)) {
+
+                return $query_result[$field];
+            } else {
+                // EMPTY RESULT TO DO NOT BREAK THE FOREACH LOOPS
+                return [];
+            }
+        } else {
+            return FALSE;
+        }
+    }
+
     public function get_data_keys() {
         if ($this->generate_sql_query('keys')) {
             $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql_keys, TRUE, TRUE);
