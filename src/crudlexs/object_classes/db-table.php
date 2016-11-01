@@ -408,6 +408,7 @@ class class_db_table {
         if ($this->generate_sql_query()) {
             $sql_last_part = strstr($this->query_sql, "FROM", FALSE);
             $operation_sql = "SELECT {$operation}($field)) FROM {$sql_last_part}";
+            d($operation_sql);
             $query_result = \k1lib\sql\sql_query($this->db, $operation_sql, FALSE);
 
             if (!empty($query_result)) {
