@@ -403,7 +403,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
             $update = $db->exec($update_sql);
-            
+
             if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {
 //                $regexp = "/\((?:`(\w+)`,?)+\)/ix";
                 $regexp = "/FOREIGN KEY \((.*)?\)/i";
@@ -420,7 +420,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
                     $error_data = "Error on Update stament : ($update_sql) " . $db->errorInfo()[2];
                 }
             }
-            
+
             if ($update) {
                 return $update;
             } else {
@@ -571,7 +571,9 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
             }
             if ($precise) {
                 if ($value === NULL) {
-                    $pairs[] = "`{$field}`= NULL";
+                    $pairs[] = "`{$field}` IS NULL";
+                } elseif ($value == '!NULL') {
+                    $pairs[] = "`{$field}` IS NO NULL";
                 } else {
                     $pairs[] = "`{$field}`= " . $db->quote($value);
                 }
