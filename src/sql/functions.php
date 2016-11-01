@@ -403,10 +403,10 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
             $update = $db->exec($update_sql);
-
+            
             if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {
 //                $regexp = "/\((?:`(\w+)`,?)+\)/ix";
-                $regexp = "/FOREIGN KEY \((.*)?\) REFERENCES/i";
+                $regexp = "/FOREIGN KEY \((.*)?\)/i";
                 $match = [];
                 if (preg_match($regexp, $db->errorInfo()[2], $match)) {
                     $match[1] = str_replace(' ', '', $match[1]);
