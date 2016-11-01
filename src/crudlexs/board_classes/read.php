@@ -255,6 +255,7 @@ class board_read extends board_base implements board_interface {
 
                 $detail_div->set_class("k1lib-related-data-list {$table_alias}");
                 $related_title = $detail_div->append_h4($title, "{$table_alias}");
+                $detail_div->append_div("related-messaje");
 
                 if ($data_loaded) {
                     $get_vars = [
