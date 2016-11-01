@@ -647,7 +647,7 @@ function array_to_sql_set_exclude(\PDO $db, array $array, $use_nulls = true, $fo
             }
             if ($precise) {
                 if ($value === NULL) {
-                    $pairs[] = "`{$field}`<> NULL";
+                    $pairs[] = "`{$field}`IS NOT NULL";
                 } else {
                     $pairs[] = "`{$field}`<> " . $db->quote($value);
                 }
