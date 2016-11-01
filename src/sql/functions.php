@@ -590,38 +590,6 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
         }
         $data_string = implode($glue, $pairs);
 
-        /**
-         * OLD OLD CODE FROM 2012 !!
-         */
-//        foreach ($array as $field => $value) {
-//            if ($use_nulls === FALSE && $value === NULL) {
-//                continue;
-//            }
-//
-//            //put the , to the string
-//            if (!$first) {
-//                if ($for_where_stament) {
-//                    $data_string .= " AND ";
-//                } else {
-//                    $data_string .= ", ";
-//                }
-//            } else {
-//                $first = FALSE;
-//            }
-//            $field = trim($field);
-//            $value = \k1lib\forms\check_single_incomming_var($value);
-//            if ($precise) {
-//                if ($value === NULL) {
-//                    $data_string .= "`$field` = NULL";
-//                } elseif (!is_int($value) && !is_float($value)) {
-//                    $data_string .= "`$field` = '{$value}'";
-//                } else {
-//                    $data_string .= "`{$field}` = {$value}";
-//                }
-//            } else {
-//                $data_string .= "`{$field}` LIKE '%{$value}%'";
-//            }
-//        }
     } else {
         trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
         exit();
