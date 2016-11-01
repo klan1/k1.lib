@@ -386,7 +386,7 @@ class class_db_table {
                 $this->total_rows_filtered_result = count($query_result) - 1;
                 return $query_result;
             } else {
-                return FALSE;
+                return [];
             }
         } else {
             return FALSE;
