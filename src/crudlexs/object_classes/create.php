@@ -498,7 +498,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         $this->html_form_column_classes = $html_form_column_classes;
     }
 
-    public function get_post_incoming_array() {
+    public function &get_post_incoming_array() {
         return $this->post_incoming_array;
     }
 
