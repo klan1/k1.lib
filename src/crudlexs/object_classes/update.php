@@ -51,21 +51,18 @@ class updating extends \k1lib\crudlexs\creating {
         if ($update_result !== FALSE) {
             $this->update_perfomed = TRUE;
             $this->updated = TRUE;
-            if ($this->object_state == 'update') {
-                DOM_notification::queue_mesasage(updating_strings::$data_updated, "success", $this->notifications_div_id);
-            }
+            DOM_notification::queue_mesasage(updating_strings::$data_updated, "success", $this->notifications_div_id);
             return TRUE;
         } else {
+            $this->update_perfomed = FALSE;
             if (is_array($error_data) && !empty($error_data)) {
                 $this->post_validation_errors = array_merge($this->post_validation_errors, $error_data);
-            } else {
-                $this->update_perfomed = TRUE;
+            } elseif (is_string($error_data)) {
+                DOM_notification::queue_mesasage($error_data, "alert", $this->notifications_div_id);
             }
 
             $this->updated = FALSE;
-            if ($this->object_state == 'update') {
-                DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
-            }
+            DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
             return FALSE;
         }
     }
