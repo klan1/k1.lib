@@ -167,7 +167,7 @@ class class_db_table {
                     foreach ($clean_filter_array as $field => $search_value) {
                         if (isset($this->db_table_config[$field]) && (!empty($search_value))) {
                             $query_where_pairs .= ($i >= 1) ? " AND " : "";
-                            $query_where_pairs .= " $field LIKE '%{$search_value}%'";
+                            $query_where_pairs .= " $field LIKE '{$search_value}'";
                             $i++;
                         }
                     }
