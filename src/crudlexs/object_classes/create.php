@@ -10,13 +10,16 @@ use k1lib\notifications\on_DOM as DOM_notification;
 class creating extends crudlexs_base_with_data implements crudlexs_base_interface {
 
     /**
-     *
      * @var Array
      */
     protected $post_incoming_array = [];
 
     /**
-     *
+     * @var boolean
+     */
+    protected $post_data_catched = FALSE;
+
+    /**
      * @var Array
      */
     protected $post_validation_errors = [];
@@ -73,6 +76,12 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         }
     }
 
+    public function set_post_incomming_value($field, $value) {
+        if ($this->post_data_catched) {
+            $this->post_incoming_array[$field] = $value;
+        }
+    }
+
     /**
      * Use the $_POST data received by catch_post_data() to put in db_table_data and db_table_data_filtered. THIS HAVE be used before filters.
      * @param int $row_to_put_on
@@ -92,17 +101,15 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         return TRUE;
     }
 
-    /**
-     * Get and check the $_POST data, then remove the non table values. If do_table_field_name_encrypt is TRUE then will decrypt them too.
-     * @return boolean
-     */
-    function catch_post_data() {
-        $this->do_file_uploads_validation();
-        // EXTRACT THE PASSWORD DATA
+    function do_password_fields_validation() {
+        /**
+         * PASSWORD CATCH
+         */
         $password_fields = [];
         $current = null;
         $new = null;
         $confirm = null;
+        // EXTRACT THE PASSWORD DATA
         foreach ($_POST as $field => $value) {
             $actual_password_field = strstr($field, "_password_", TRUE);
             if ($actual_password_field !== FALSE) {
@@ -123,6 +130,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 }
             }
         }
+        //  verify
         foreach ($password_fields as $field => $passwords) {
             if (array_key_exists('new', $passwords) && array_key_exists('confirm', $passwords)) {
                 if (($passwords['new'] === $passwords['confirm']) && (!empty($passwords['new']))) {
@@ -157,6 +165,22 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 }
             }
         }
+    }
+
+    public function get_post_data_catched() {
+        return $this->post_data_catched;
+    }
+
+    /**
+     * Get and check the $_POST data, then remove the non table values. If do_table_field_name_encrypt is TRUE then will decrypt them too.
+     * @return boolean
+     */
+    function catch_post_data() {
+        $this->do_file_uploads_validation();
+        $this->do_password_fields_validation();
+
+        $_POST = \k1lib\forms\check_all_incomming_vars($_POST);
+
         $this->post_incoming_array = array_merge($this->post_incoming_array, $_POST);
         if (isset($this->post_incoming_array['k1magic'])) {
             self::set_k1magic_value($this->post_incoming_array['k1magic']);
@@ -175,6 +199,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
 
                 // PUT BACK the password data
 //                $this->post_incoming_array = array_merge($this->post_incoming_array, $password_array);
+                $this->post_data_catched = TRUE;
                 return TRUE;
             } else {
                 return FALSE;
