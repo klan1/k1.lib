@@ -833,7 +833,7 @@ class controller_base {
      * ON BOARD
      */
     public function on_board_create() {
-        if (isset($this->board_create_object)) {
+        if (isset($this->board_create_object) && $this->board_create_object->get_is_enabled()) {
             return TRUE;
         } else {
             return FALSE;
@@ -849,7 +849,7 @@ class controller_base {
     }
 
     public function on_board_read() {
-        if (isset($this->board_read_object)) {
+        if (isset($this->board_read_object) && $this->board_read_object->get_is_enabled()) {
             return TRUE;
         } else {
             return FALSE;
@@ -865,7 +865,7 @@ class controller_base {
     }
 
     public function on_board_update() {
-        if (isset($this->board_update_object)) {
+        if (isset($this->board_update_object) && $this->board_update_object->get_is_enabled()) {
             return TRUE;
         } else {
             return FALSE;
@@ -881,7 +881,7 @@ class controller_base {
     }
 
     public function on_board_delete() {
-        if (isset($this->board_delete_object)) {
+        if (isset($this->board_delete_object) && $this->board_delete_object->get_is_enabled()) {
             return TRUE;
         } else {
             return FALSE;
@@ -897,7 +897,7 @@ class controller_base {
     }
 
     public function on_board_list() {
-        if (isset($this->board_list_object)) {
+        if (isset($this->board_list_object) && $this->board_list_object->get_is_enabled()) {
             return TRUE;
         } else {
             return FALSE;
