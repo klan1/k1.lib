@@ -28,13 +28,17 @@ class class_db_table {
     private $total_rows_result;
 
     /**
-     * ORDER BY
+     * GROUP BY
      */
 
     /**
      * @var array
      */
-    private $query_order_by_fields_array = [];
+    private $query_group_by_fields_array = [];
+
+    /**
+     * ORDER BY
+     */
 
     /**
      * @var array
@@ -328,6 +332,10 @@ class class_db_table {
                 }
             }
             /**
+             * GROUP BY
+             */
+            $sql_code .= $this->get_sql_group_by_code();
+            /**
              * ORDER BY
              */
             $sql_code .= $this->get_sql_order_by_code();
@@ -345,6 +353,15 @@ class class_db_table {
                     break;
             }
             return $sql_code;
+        }
+    }
+
+    public function get_sql_group_by_code() {
+        if (!empty($this->query_group_by_fields_array)) {
+            $group_code = "\n\tGROUP BY\n\t\t" . implode(",", $this->query_group_by_fields_array) . " ";
+            return $group_code;
+        } else {
+            return '';
         }
     }
 
@@ -529,5 +546,9 @@ class class_db_table {
     public function set_query_where_custom($query_where_custom) {
         $this->query_where_custom = $query_where_custom;
     }
+    public function set_group_by(array $query_group_by_fields_array) {
+        $this->query_group_by_fields_array = $query_group_by_fields_array;
+    }
+
 
 }
