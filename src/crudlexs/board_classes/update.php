@@ -42,6 +42,7 @@ class board_update extends board_base implements board_interface {
                 $this->controller_object->db_table->set_db_table_show_rule($this->show_rule_to_apply);
 
                 $this->data_loaded = $this->update_object->load_db_table_data();
+                $this->update_object->catch_post_data();
                 return $this->board_content_div;
             } else {
                 DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert", $this->notifications_div_id);
@@ -64,7 +65,7 @@ class board_update extends board_base implements board_interface {
         if ($this->update_object->get_state() && !empty($this->row_keys_text)) {
 
             if ($this->data_loaded) {
-                if ($this->update_object->catch_post_data(TRUE)) {
+                if ($this->update_object->get_post_data_catched()) {
                     $this->update_object->put_post_data_on_table_data();
                     if (!$this->skip_form_action) {
                         if ($this->update_object->do_post_data_validation()) {
