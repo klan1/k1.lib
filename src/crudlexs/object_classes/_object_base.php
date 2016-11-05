@@ -7,7 +7,7 @@ use \k1lib\urlrewrite\url as url;
 use \k1lib\db\security\db_table_aliases as db_table_aliases;
 use \k1lib\session\session_plain as session_plain;
 use \k1lib\forms\file_uploads as file_uploads;
-use \k1lib\html\DOM as DOM;
+use k1app\k1app_template as DOM;
 use \k1lib\notifications\on_DOM as DOM_notification;
 
 interface crudlexs_base_interface {

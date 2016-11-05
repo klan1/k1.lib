@@ -10,7 +10,7 @@
 
 namespace k1lib\notifications;
 
-use \k1lib\html\DOM as DOM;
+use k1app\k1app_template as DOM;
 
 class common_code {
 
