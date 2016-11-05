@@ -138,8 +138,10 @@ class board_base {
             $current_html_title = $head->get_title();
             $head->set_title($current_html_title . " - " . $board_name);
 
-            if ($this->controller_object->html_top_bar) {
-                $this->controller_object->html_top_bar->set_title(3, " - {$board_name}", TRUE);
+            if (is_array($this->controller_object->html_title_tags)) {
+                foreach ($this->controller_object->html_title_tags as $tag) {
+                    $tag->set_value(" - {$board_name}", TRUE);
+                }
             }
         }
     }

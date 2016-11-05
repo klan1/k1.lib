@@ -58,9 +58,9 @@ class controller_base {
 
     /**
      *
-     * @var \k1lib\html\foundation\top_bar
+     * @var \k1lib\html\tag
      */
-    public $html_top_bar;
+    public $html_title_tags = NULL;
     /**
      * 
      * URL MANAGEMENT VALUES
@@ -159,7 +159,7 @@ class controller_base {
      * @param string $template_place_name_html_title 
      * @param string $template_place_name_controller_name 
      */
-    public function __construct($app_base_dir, \PDO $db, $db_table_name, $controller_name, \k1lib\html\foundation\top_bar $top_bar = null) {
+    public function __construct($app_base_dir, \PDO $db, $db_table_name, $controller_name, $title_tag_class = null) {
         /**
          * URL Management
          */
@@ -175,10 +175,12 @@ class controller_base {
          * Controller name for add on <html><title> and controller name tag
          */
         $this->controller_name = $controller_name;
-        $this->html_top_bar = $top_bar;
-        if (!empty($this->html_top_bar)) {
+        $this->html_title_tags = DOM::html()->body()->get_elements_by_class($title_tag_class);
+        if (!empty($this->html_title_tags)) {
             $span = (new \k1lib\html\span("subheader"))->set_value($controller_name);
-            $this->html_top_bar->set_title(3, $span);
+            foreach ($this->html_title_tags as $tag) {
+                $tag->set_value($span);
+            }
             DOM::html()->head()->set_title(DOM::html()->head()->get_title() . " | $controller_name");
         }
 
