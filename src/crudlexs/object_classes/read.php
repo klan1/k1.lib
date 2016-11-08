@@ -49,7 +49,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $row = $data_group->append_div("row");
 
             foreach ($values as $field => $value) {
-                if (!empty($value)) {
+                if (($value !== 0) && ($value !== NULL)) {
                     /**
                      * ALL the TEXT field types are sendend to the last position to show nicely the HTML on it.
                      */
