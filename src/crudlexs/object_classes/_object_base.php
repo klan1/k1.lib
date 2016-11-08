@@ -192,7 +192,7 @@ class crudlexs_base_with_data extends crudlexs_base {
      */
     protected $force_file_uploads_as_links = TRUE;
     protected $custom_field_labels = [];
-    protected $fields_to_skip = [];
+    protected $fields_to_hide = [];
 
     /**
      * Always to create the object you must have a valid DB Table object already 
@@ -724,15 +724,15 @@ class crudlexs_base_with_data extends crudlexs_base {
     /**
      * @return array
      */
-    public function get_fields_to_skip() {
-        return $this->fields_to_skip;
+    public function get_fields_to_hide() {
+        return $this->fields_to_hide;
     }
 
     /**
-     * @param array $fields_to_skip
+     * @param array $fields_to_hide
      */
-    public function set_fields_to_skip(array $fields_to_skip) {
-        $this->fields_to_skip = $fields_to_skip;
+    public function set_fields_to_hide(array $fields_to_hide) {
+        $this->fields_to_hide = $fields_to_hide;
     }
 
 }
