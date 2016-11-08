@@ -338,7 +338,7 @@ class crudlexs_base_with_data extends crudlexs_base {
         }
     }
 
-    public function apply_field_label_filter() {
+    public function apply_field_label_filter(array $apply_to = []) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_WARNING);
@@ -350,6 +350,9 @@ class crudlexs_base_with_data extends crudlexs_base {
                         continue;
                     }
                     foreach ($row_data as $field => $value) {
+                        if (!empty($apply_to) && !array_key_exists($field, array_flip($apply_to))) {
+                            continue;
+                        }
                         if (!empty($table_config_array[$field]['refereced_column_config'])) {
                             $refereced_column_config = $table_config_array[$field]['refereced_column_config'];
                             while (!empty($refereced_column_config['refereced_column_config'])) {
