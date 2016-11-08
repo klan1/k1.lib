@@ -842,9 +842,31 @@ class controller_base {
         }
     }
 
+    /**
+     * @return board_create
+     */
+    public function board_create() {
+        if (isset($this->board_create_object) && $this->board_create_object->get_is_enabled()) {
+            return $this->board_create_object;
+        } else {
+            return FALSE;
+        }
+    }
+
     public function on_object_create() {
         if (isset($this->board_create_object->create_object)) {
             return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * @return creating
+     */
+    public function object_create() {
+        if (isset($this->board_create_object->create_object)) {
+            return $this->board_create_object->create_object;
         } else {
             return FALSE;
         }
@@ -858,9 +880,31 @@ class controller_base {
         }
     }
 
+    /**
+     * @return board_read
+     */
+    public function board_read() {
+        if (isset($this->board_read_object) && $this->board_read_object->get_is_enabled()) {
+            return $this->board_read_object;
+        } else {
+            return FALSE;
+        }
+    }
+
     public function on_object_read() {
         if (isset($this->board_read_object->read_object)) {
             return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * @return reading
+     */
+    public function object_read() {
+        if (isset($this->board_read_object->read_object)) {
+            return $this->board_read_object->read_object;
         } else {
             return FALSE;
         }
@@ -874,9 +918,31 @@ class controller_base {
         }
     }
 
+    /**
+     * @return board_update
+     */
+    public function board_update() {
+        if (isset($this->board_update_object) && $this->board_update_object->get_is_enabled()) {
+            return $this->board_update_object;
+        } else {
+            return FALSE;
+        }
+    }
+
     public function on_object_update() {
         if (isset($this->board_update_object->update_object)) {
             return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * @return updating
+     */
+    public function object_update() {
+        if (isset($this->board_update_object->update_object)) {
+            return $this->board_update_object->update_object;
         } else {
             return FALSE;
         }
@@ -890,9 +956,12 @@ class controller_base {
         }
     }
 
-    public function on_object_delete() {
-        if (isset($this->board_delete_object->delete_object)) {
-            return TRUE;
+    /**
+     * @return board_delete
+     */
+    public function board_delete() {
+        if (isset($this->board_delete_object) && $this->board_delete_object->get_is_enabled()) {
+            return $this->board_delete_object;
         } else {
             return FALSE;
         }
@@ -906,9 +975,31 @@ class controller_base {
         }
     }
 
+    /**
+     * @return board_list
+     */
+    public function board_list() {
+        if (isset($this->board_list_object) && $this->board_list_object->get_is_enabled()) {
+            return $this->board_list_object;
+        } else {
+            return FALSE;
+        }
+    }
+
     public function on_object_list() {
         if (isset($this->board_list_object->list_object)) {
             return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * @return listing
+     */
+    public function object_list() {
+        if (isset($this->board_list_object->list_object)) {
+            return $this->board_list_object->list_object;
         } else {
             return FALSE;
         }
