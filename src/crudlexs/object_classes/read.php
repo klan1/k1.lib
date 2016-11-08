@@ -49,7 +49,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $row = $data_group->append_div("row");
 
             foreach ($values as $field => $value) {
-                if (array_search($field, $this->fields_to_skip) !== FALSE) {
+                if (array_search($field, $this->fields_to_hide) !== FALSE) {
                     continue;
                 }
                 if (($value !== 0) && ($value !== NULL)) {
