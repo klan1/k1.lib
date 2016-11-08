@@ -22,29 +22,7 @@ use k1lib\html as html;
  */
 function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE) {
     if ((is_string($var) || is_numeric($var)) && !is_array($var)) {
-        if (($request == TRUE) && isset($_REQUEST[$var])) {
-            $value = $_REQUEST[$var];
-        } elseif ($request == FALSE) {
-            $value = $var;
-        } else {
-            $value = NULL;
-        }
-        if ($value === '') {
-            return NULL;
-        } elseif (($value === 0)) {
-            return 0;
-        } elseif (($value === '0')) {
-            return '0';
-        }
-        if ($url_decode) {
-            $value = urldecode($value);
-        }
-        if (\json_decode($value) === NULL) {
-//            $search = ['\\', "\0", "\n", "\r", "'", '"', "\x1a"];
-//            $replace = ['\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'];
-//            $value = str_replace($search, $replace, $value);
-//            $value = mysql_escape_string($value);
-        }
+
         return $value;
     } else {
         return NULL;
