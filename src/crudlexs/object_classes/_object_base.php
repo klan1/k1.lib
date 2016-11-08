@@ -191,6 +191,7 @@ class crudlexs_base_with_data extends crudlexs_base {
      * @var boolean
      */
     protected $force_file_uploads_as_links = TRUE;
+    protected $custom_field_labels = [];
 
     /**
      * Always to create the object you must have a valid DB Table object already 
@@ -329,7 +330,15 @@ class crudlexs_base_with_data extends crudlexs_base {
             $db_table_config = $this->db_table->get_db_table_config();
             if (isset($this->db_table_data[0]) && (count($this->db_table_data[0]) > 0)) {
                 foreach ($this->db_table_data[0] as $index => $field_name) {
-                    $this->db_table_data_filtered[0][$index] = (isset($db_table_config[$field_name]['label'])) ? $db_table_config[$field_name]['label'] : $field_name;
+                    if (isset($db_table_config[$field_name]['label'])) {
+                        $this->db_table_data_filtered[0][$index] = $db_table_config[$field_name]['label'];
+                    } else {
+                        if (isset($this->custom_field_labels[$field_name])) {
+                            $this->db_table_data_filtered[0][$index] = $this->custom_field_labels[$field_name];
+                        } else {
+                            $this->db_table_data_filtered[0][$index] = $field_name;
+                        }
+                    }
                 }
             } else {
                 return FALSE;
@@ -695,6 +704,20 @@ class crudlexs_base_with_data extends crudlexs_base {
 
     public function get_db_table_data_filtered() {
         return $this->db_table_data_filtered;
+    }
+
+    /**
+     * @return array
+     */
+    function get_custom_field_labels() {
+        return $this->custom_field_labels;
+    }
+
+    /**
+     * @param array $custom_field_labels
+     */
+    function set_custom_field_labels(array $custom_field_labels) {
+        $this->custom_field_labels = $custom_field_labels;
     }
 
 }
