@@ -23,8 +23,9 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
         trigger_error($msg, E_USER_NOTICE);
     }
     if (DOM::is_started()) {
-        k1lib\notifications\on_DOM::queue_mesasage($msg);
-    }else{
+        k1lib\notifications\on_DOM::queue_title('Message from K1.lib');
+        k1lib\notifications\on_DOM::queue_mesasage($msg, 'warning');
+    } else {
         echo $msg;
     }
 }
