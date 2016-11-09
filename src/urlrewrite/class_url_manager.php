@@ -145,8 +145,8 @@ class url {
 
         if (is_string($level_name)) {
             foreach (self::$url_data as $index => $array) {
+                d($array['name'] . ' == ' . $level_name);
                 if ($array['name'] == $level_name) {
-                    d($array['name'] . ' == ' . $level_name);
                     return $array['value'];
                 }
             }
