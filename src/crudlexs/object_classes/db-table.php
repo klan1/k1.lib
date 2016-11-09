@@ -115,10 +115,14 @@ class class_db_table {
     }
 
     public function get_db_table_config($reload = FALSE) {
-        if ($reload) {
+        if ($reload && !empty($this->db_table_config)) {
             $this->db_table_config = $this->_get_db_table_config($this->db_table_name, TRUE, FALSE);
         }
         return $this->db_table_config;
+    }
+
+    public function get_db_table_keys_array() {
+        return $this->_get_db_table_keys_array($this->get_db_table_config());
     }
 
     public function get_db_table_field_config($field) {
@@ -131,6 +135,10 @@ class class_db_table {
 
     private function _get_db_table_config($db_table_name, $recursion = TRUE, $use_cache = TRUE) {
         return \k1lib\sql\get_db_table_config($this->db, $db_table_name, $recursion, $use_cache);
+    }
+
+    private function _get_db_table_keys_array($db_table_config) {
+        return \k1lib\sql\get_db_table_keys_array($db_table_config);
     }
 
     public function set_query_limit($offset = 0, $row_count = NULL) {
@@ -546,9 +554,9 @@ class class_db_table {
     public function set_query_where_custom($query_where_custom) {
         $this->query_where_custom = $query_where_custom;
     }
+
     public function set_group_by(array $query_group_by_fields_array) {
         $this->query_group_by_fields_array = $query_group_by_fields_array;
     }
-
 
 }
