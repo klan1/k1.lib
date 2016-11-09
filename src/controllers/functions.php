@@ -11,6 +11,8 @@
 
 namespace k1lib\controllers;
 
+use k1lib\html\DOM as DOM;
+
 /**
  * Return the controller PATH for include it, we cant do it from the function by the var scope, so we do here some esential checks before the include
  * @global array $url_data url_rewrite data variable from K1FW
@@ -35,12 +37,47 @@ function load_controller($controller_name, $controllers_path) {
                 // QUERY Auto load
                 return $controller_to_load;
             } else {
-                \trigger_error("The controller '{$controller_name}' could not be found on '{$controllers_path}'", E_USER_ERROR);
-                return false;
+                error_404($controller_name);
+//                \trigger_error("The controller '{$controller_name}' could not be found on '{$controllers_path}'", E_USER_ERROR);
+//                return false;
             }
         }
     } else {
         \trigger_error("The controller name value only can be string", E_USER_ERROR);
         exit;
     }
+}
+
+function error_404($non_found_name) {
+    header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found", true, 404);
+    DOM::start();
+    DOM::html()->body()->append_h1('404 Not found');
+    DOM::html()->body()->append_p('The controller file \'' . $non_found_name . '\' is not on path.');
+    echo DOM::generate();
+    exit;
+}
+
+function load_template($template_name, $path_to_use) {
+    if (is_string($template_name)) {
+        if ($template_to_load = template_exist($template_name, $path_to_use)) {
+            return $template_to_load;
+        } else {
+            trigger_error("Template ($template_name) do not exist", E_USER_ERROR);
+        }
+    } else {
+        trigger_error("The template names value only can be string", E_USER_ERROR);
+    }
+}
+
+function template_exist($template_name, $path_to_use) {
+    if (is_string($template_name)) {
+        // Try with subfolder scheme
+        $template_to_load = $path_to_use . "/{$template_name}.php";
+        if (file_exists($template_to_load)) {
+            return $template_to_load;
+        } else {
+            trigger_error("Template ($template_to_load) is not on disk", E_USER_ERROR);
+        }
+    }
+    return FALSE;
 }
