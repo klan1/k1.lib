@@ -43,6 +43,7 @@ class template {
         DOM::html()->body()->append_h1('500 Internal error');
         DOM::html()->body()->append_p($error_message);
         echo DOM::generate();
+        trigger_error('App error fired', E_USER_NOTICE);
         exit;
     }
 
@@ -52,7 +53,7 @@ class template {
      */
     static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {
-            trigger_error("Template load system is not enabled yet", E_USER_ERROR);
+            self::error_500('Template load system is not enabled yet: ' . $template_path);
         }
         return self::$enabled;
     }

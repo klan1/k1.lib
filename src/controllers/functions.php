@@ -54,6 +54,7 @@ function error_404($non_found_name) {
     DOM::html()->body()->append_h1('404 Not found');
     DOM::html()->body()->append_p('The controller file \'' . $non_found_name . '\' is not on path.');
     echo DOM::generate();
+    trigger_error('App error fired', E_USER_NOTICE);
     exit;
 }
 
