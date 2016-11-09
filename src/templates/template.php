@@ -52,7 +52,7 @@ class template {
      */
     static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {
-            trigger_error("URL Rewrite system is not enabled yet", E_USER_ERROR);
+            trigger_error("Template load system is not enabled yet", E_USER_ERROR);
         }
         return self::$enabled;
     }
