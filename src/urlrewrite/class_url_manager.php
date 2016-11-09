@@ -144,11 +144,9 @@ class url {
     static public function get_url_level_value_by_name($level_name) {
 
         if (is_string($level_name)) {
-            d(self::$url_data);
             foreach (self::$url_data as $index => $array) {
-                d($array['name'] . ' == ' . $level_name);
-                d($array);
                 if ($array['name'] == $level_name) {
+                    d($array['name'] . ' == ' . $level_name);
                     return $array['value'];
                 }
             }
