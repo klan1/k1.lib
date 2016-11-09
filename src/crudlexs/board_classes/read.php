@@ -43,7 +43,7 @@ class board_read extends board_base implements board_interface {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-read";
-            $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "row_keys_text", FALSE);
+            $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
             $this->read_object = new \k1lib\crudlexs\reading($this->controller_object->db_table, $this->row_keys_text);
         }
     }
