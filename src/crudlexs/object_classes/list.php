@@ -105,9 +105,9 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     public function do_html_object() {
         $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
 
-        $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content");
+        $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content scroll-x");
         if ($this->db_table_data) {
-            $this->html_table = new \k1lib\html\foundation\table_from_data("k1lib-crudlexs-list {$table_alias} scroll");
+            $this->html_table = new \k1lib\html\foundation\table_from_data("k1lib-crudlexs-list {$table_alias}");
             $this->html_table->append_to($this->div_container);
             $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
             $this->html_table->set_data($this->db_table_data_filtered);
