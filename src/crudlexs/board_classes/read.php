@@ -30,14 +30,19 @@ class board_read extends board_base implements board_interface {
     protected $related_edit_url = NULL;
     //RELATED HTML OBJECTS
     /**
-     * @var type \k1lib\html\a
+     * @var  \k1lib\html\a
      */
     protected $related_html_object_show_new = NULL;
 
     /**
-     * @var type \k1lib\html\a
+     * @var \k1lib\html\a
      */
     protected $related_html_object_show_all_data = NULL;
+
+    /**
+     * @var \k1lib\html\foundation\table_from_data
+     */
+    protected $related_html_table_object = NULL;
 
     public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
@@ -289,6 +294,7 @@ class board_read extends board_base implements board_interface {
                 }
 
                 $related_table_list->do_html_object()->append_to($detail_div);
+                $this->related_html_table_object = $related_table_list->get_html_table();
                 if ($db_table->get_total_rows() > $this->related_rows_to_show) {
                     $related_table_list->do_pagination()->append_to($detail_div);
                     $related_table_list->do_row_stats()->append_to($detail_div);
@@ -365,6 +371,12 @@ class board_read extends board_base implements board_interface {
 
     public function set_related_show_all_data($related_show_all_data) {
         $this->related_show_all_data = $related_show_all_data;
+    }
+    /**
+     * @return \k1lib\html\foundation\table_from_data
+     */
+    public function get_related_html_table_object() {
+        return $this->related_html_table_object;
     }
 
 }
