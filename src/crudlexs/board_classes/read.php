@@ -24,10 +24,15 @@ class board_read extends board_base implements board_interface {
     protected $related_use_rows_key_text = TRUE;
     protected $related_use_show_rule = "show-related";
     //RELATED CONFIG
+    /**
+     * @var listing
+     */
+    protected $related_list = NULL;
     protected $related_show_new = TRUE;
     protected $related_show_all_data = TRUE;
     protected $related_rows_to_show = 5;
     protected $related_edit_url = NULL;
+    protected $related_apply_filters = TRUE;
     //RELATED HTML OBJECTS
     /**
      * @var  \k1lib\html\a
@@ -212,16 +217,81 @@ class board_read extends board_base implements board_interface {
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new \k1lib\html\div();
 
-        if ($this->is_enabled && $this->read_object->is_valid()) {
-            $current_row_keys_text = $this->controller_object->board_read_object->read_object->get_row_keys_text();
+        $this->related_list = $this->do_related_list($db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list);
+
+        if (!empty($this->related_list)) {
+            $current_row_keys_text = $this->read_object->get_row_keys_text();
             $current_row_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $current_row_keys_text);
+
+            $detail_div->set_class("k1lib-related-data-list {$table_alias}");
+            $related_title = $detail_div->append_h4($title, "{$table_alias}");
+            $detail_div->append_div("related-messaje");
+
+            if ($data_loaded) {
+                $get_vars = [
+                    "auth-code" => $current_row_keys_text_auth_code,
+                    "back-url" => $_SERVER['REQUEST_URI'],
+                ];
+                $all_data_url = url::do_url(APP_URL . $board_root . "/" . $board_list . "/{$current_row_keys_text}/", $get_vars, FALSE);
+                $this->related_html_object_show_all_data = \k1lib\html\get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
+                if ($this->related_show_all_data) {
+                    $related_title->set_value($this->related_html_object_show_all_data, TRUE);
+                }
+            }
+
+            if ($use_back_url) {
+                $get_vars = [
+                    "auth-code" => $current_row_keys_text_auth_code,
+                    "back-url" => $_SERVER['REQUEST_URI'],
+                ];
+                $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE);
+            } else {
+                $get_vars = [
+                    "auth-code" => $current_row_keys_text_auth_code,
+//                        "back-url" => $_SERVER['REQUEST_URI'],
+                ];
+                $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE, ['back-url'], FALSE);
+            }
+            $this->related_html_object_show_new = \k1lib\html\get_link_button($create_url, board_list_strings::$button_new, "tiny");
+
+            if ($this->related_show_new) {
+                $related_title->set_value($this->related_html_object_show_new, TRUE);
+            }
+
+            $this->related_list->do_html_object()->append_to($detail_div);
+            $this->related_html_table_object = $this->related_list->get_html_table();
+            if ($db_table->get_total_rows() > $this->related_rows_to_show) {
+                $this->related_list->do_pagination()->append_to($detail_div);
+                $this->related_list->do_row_stats()->append_to($detail_div);
+            }
+
+            listing::$rows_per_page = $actual_rows_per_page;
+        }
+// TODO: NONSENSE line !
+//        $this->set_related_show_new(TRUE);
+        return $detail_div;
+    }
+
+    /**
+     * @param \k1lib\crudlexs\class_db_table $db_table
+     * @param array $field_links_array
+     * @param string $board_root
+     * @param string $board_read
+     * @param boolean $clear_url
+     * @return \k1lib\crudlexs\listing|boolean
+     */
+    public function do_related_list(class_db_table $db_table, $field_links_array, $board_root, $board_read, $clear_url = FALSE) {
+
+        $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
+
+        if ($this->is_enabled && $this->read_object->is_valid()) {
 
             /**
              * Clients list
              */
             if ($db_table->get_state()) {
                 if ($this->related_use_rows_key_text) {
-                    $current_row_keys_array = $this->controller_object->board_read_object->read_object->get_row_keys_array();
+                    $current_row_keys_array = $this->read_object->get_row_keys_array();
                     $db_table->set_field_constants($current_row_keys_array);
                     $db_table->set_query_filter($current_row_keys_array, TRUE, $this->related_do_clean_array_on_query_filter);
                 }
@@ -230,85 +300,55 @@ class board_read extends board_base implements board_interface {
                  * LIST OBJECT must be created here to know if ther is data or not to show
                  * all data button.
                  */
-                $related_table_list = new \k1lib\crudlexs\listing($db_table, FALSE);
-                $actual_rows_per_page = listing::$rows_per_page;
-                listing::$rows_per_page = $this->related_rows_to_show;
-                $data_loaded = $related_table_list->load_db_table_data($this->related_use_show_rule);
+                $this->related_list = new \k1lib\crudlexs\listing($db_table, FALSE);
+                $this->related_list->set_rows_per_page($this->related_rows_to_show);
+                $data_loaded = $this->related_list->load_db_table_data($this->related_use_show_rule);
                 if ($data_loaded) {
-
-                    $related_table_list->apply_label_filter();
-                    $related_table_list->apply_field_label_filter();
-                    if (\k1lib\forms\file_uploads::is_enabled()) {
-//                    $related_table_list->set
-                        $related_table_list->apply_file_uploads_filter();
-                    }
-                    if ($clear_url) {
-                        $get_vars = [];
-                    } else {
-                        $get_vars = [
-                            "auth-code" => "--authcode--",
-                            "back-url" => $_SERVER['REQUEST_URI'],
-                        ];
-                    }
-                    if (empty($this->related_edit_url)) {
-                        $link_row_url = url::do_url(APP_URL . $board_root . "/" . $board_read . "/--rowkeys--/", $get_vars);
-                    } else {
-                        $link_row_url = url::do_url(APP_URL . $board_root . "/" . $this->related_edit_url . "/--rowkeys--/", $get_vars);
-                    }
-                    $related_table_list->apply_link_on_field_filter($link_row_url, $field_links_array);
-                }
-
-                $detail_div->set_class("k1lib-related-data-list {$table_alias}");
-                $related_title = $detail_div->append_h4($title, "{$table_alias}");
-                $detail_div->append_div("related-messaje");
-
-                if ($data_loaded) {
-                    $get_vars = [
-                        "auth-code" => $current_row_keys_text_auth_code,
-                        "back-url" => $_SERVER['REQUEST_URI'],
-                    ];
-                    $all_data_url = url::do_url(APP_URL . $board_root . "/" . $board_list . "/{$current_row_keys_text}/", $get_vars, FALSE);
-                    $this->related_html_object_show_all_data = \k1lib\html\get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
-                    if ($this->related_show_all_data) {
-                        $related_title->set_value($this->related_html_object_show_all_data, TRUE);
+                    if ($this->related_apply_filters) {
+                        $this->related_apply_filters();
+                        $this->related_apply_link_read_field($field_links_array, $board_root, $board_read, $clear_url);
                     }
                 }
-
-                if ($use_back_url) {
-                    $get_vars = [
-                        "auth-code" => $current_row_keys_text_auth_code,
-                        "back-url" => $_SERVER['REQUEST_URI'],
-                    ];
-                    $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE);
-                } else {
-                    $get_vars = [
-                        "auth-code" => $current_row_keys_text_auth_code,
-//                        "back-url" => $_SERVER['REQUEST_URI'],
-                    ];
-                    $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE, ['back-url'], FALSE);
-                }
-                $this->related_html_object_show_new = \k1lib\html\get_link_button($create_url, board_list_strings::$button_new, "tiny");
-
-                if ($this->related_show_new) {
-                    $related_title->set_value($this->related_html_object_show_new, TRUE);
-                }
-
-                $related_table_list->do_html_object()->append_to($detail_div);
-                $this->related_html_table_object = $related_table_list->get_html_table();
-                if ($db_table->get_total_rows() > $this->related_rows_to_show) {
-                    $related_table_list->do_pagination()->append_to($detail_div);
-                    $related_table_list->do_row_stats()->append_to($detail_div);
-                }
-
-                listing::$rows_per_page = $actual_rows_per_page;
+                return $this->related_list;
             } else {
                 trigger_error("DB Table couldn't be opened : " . $db_table->get_db_table_name(), E_USER_NOTICE);
-                return false;
+                return FALSE;
             }
+        } else {
+            return FALSE;
         }
-// TODO: NONSENSE line !
-//        $this->set_related_show_new(TRUE);
-        return $detail_div;
+    }
+
+    public function related_apply_link_read_field($field_links_array, $board_root, $board_read, $clear_url = FALSE) {
+        if ($this->related_list->get_db_table_data()) {
+            if ($clear_url) {
+                $get_vars = [];
+            } else {
+                $get_vars = [
+                    "auth-code" => "--authcode--",
+                    "back-url" => $_SERVER['REQUEST_URI'],
+                ];
+            }
+            $link_row_url = url::do_url(APP_URL . $board_root . "/" . $board_read . "/--rowkeys--/", $get_vars);
+            $this->related_list->apply_link_on_field_filter($link_row_url, $field_links_array);
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function related_apply_filters() {
+        if ($this->related_list->get_db_table_data()) {
+            $this->related_list->apply_label_filter();
+            $this->related_list->apply_field_label_filter();
+            if (\k1lib\forms\file_uploads::is_enabled()) {
+//                    $this->related_list->set
+                $this->related_list->apply_file_uploads_filter();
+            }
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     public function set_related_edit_url($related_edit_url) {
@@ -372,11 +412,23 @@ class board_read extends board_base implements board_interface {
     public function set_related_show_all_data($related_show_all_data) {
         $this->related_show_all_data = $related_show_all_data;
     }
+
     /**
      * @return \k1lib\html\foundation\table_from_data
      */
     public function get_related_html_table_object() {
         return $this->related_html_table_object;
+    }
+
+    public function set_related_apply_filters($related_apply_filters) {
+        $this->related_apply_filters = $related_apply_filters;
+    }
+
+    /**
+     * @return listing
+     */
+    public function get_related_list() {
+        return $this->related_list;
     }
 
 }
