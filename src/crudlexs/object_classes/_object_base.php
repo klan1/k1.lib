@@ -620,18 +620,22 @@ class crudlexs_base_with_data extends crudlexs_base {
             return $field_name;
         } else {
             $field_pos = 0;
-            foreach ($this->db_table->get_db_table_config() as $field => $config) {
-                if ($field == $field_name) {
-                    if ($config['alias']) {
-                        return $config['alias'];
+            if (key_exists($field_name, $this->db_table->get_db_table_config())) {
+                foreach ($this->db_table->get_db_table_config() as $field => $config) {
+                    if ($field == $field_name) {
+                        if ($config['alias']) {
+                            return $config['alias'];
+                        }
+                        break;
                     }
-                    break;
+                    $field_pos++;
                 }
-                $field_pos++;
-            }
 //            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos);
-            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos + $rnd);
-            return $new_field_name;
+                $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos + $rnd);
+                return $new_field_name;
+            } else {
+                return $field_name;
+            }
         }
     }
 
