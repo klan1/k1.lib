@@ -24,8 +24,12 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
     }
     if (DOM::is_started()) {
         $pre = new \k1lib\html\pre($msg);
-        k1lib\notifications\on_DOM::queue_title('Message from K1.lib', 'warning');
-        k1lib\notifications\on_DOM::queue_mesasage($pre, 'warning');
+        if (!empty(DOM::html()->body()->get_element_by_id("k1lib-output"))) {
+            k1lib\notifications\on_DOM::queue_title('Message from K1.lib', 'warning');
+            k1lib\notifications\on_DOM::queue_mesasage($pre, 'warning');
+        } else {
+            echo $pre->generate();
+        }
     } else {
         echo $msg;
     }
