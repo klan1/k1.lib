@@ -48,7 +48,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
      *
      * @var array 
      */
-    static public $rows_per_page_options = [5, 10, 25, 50, 100, "all"];
+    static public $rows_per_page_options = [5, 10, 25, 50, 100, 'all'];
 
     /**
      * @var int
@@ -90,6 +90,11 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
      */
     protected $page_last = false;
 
+    /**
+     * @var boolean
+     */
+    protected $do_orderby_headers = TRUE;
+
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
 
@@ -107,6 +112,12 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
         $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content scroll-x");
         if ($this->db_table_data) {
+            if ($this->do_orderby_headers) {
+                $this->do_orderby_headers();
+            }
+            /**
+             * Create the HTML table from DATA lodaed 
+             */
             $this->html_table = new \k1lib\html\foundation\table_from_data("k1lib-crudlexs-list {$table_alias}");
             $this->html_table->append_to($this->div_container);
             $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
@@ -123,6 +134,54 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
      */
     public function get_html_table() {
         return $this->html_table;
+    }
+
+    public function apply_orderby_headers() {
+        $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
+
+        $sort_by_name = $table_alias . '-sort-by';
+        $sort_mode_name = $table_alias . '-sort-mode';
+
+        if (isset($_GET[$sort_by_name]) && (!empty($_GET[$sort_by_name]))) {
+            if (isset($_GET[$sort_mode_name]) && ($_GET[$sort_mode_name] == 'ASC')) {
+                $sort_mode = 'ASC';
+            } else {
+                $sort_mode = 'DESC';
+            }
+            $field = $this->decrypt_field_name($_GET[$sort_by_name]);
+            if (!empty($field)) {
+                $this->db_table->set_order_by($field, $sort_mode);
+            }
+        }
+    }
+
+    public function do_orderby_headers() {
+        $this->set_do_table_field_name_encrypt();
+
+        $headers = &$this->db_table_data_filtered[0];
+        foreach ($headers as $field => $label) {
+            $field_encrypted = $this->encrypt_field_name($field);
+            $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
+
+            $sort_by_name = $table_alias . '-sort-by';
+            $sort_mode_name = $table_alias . '-sort-mode';
+
+            $sort_mode = 'ASC';
+            $class_sort_mode = 'DESC';
+            $class_active = '';
+
+            if (isset($_GET[$sort_by_name]) && ($_GET[$sort_by_name] == $field_encrypted)) {
+                $class_active = ' ordering';
+                if (isset($_GET[$sort_mode_name]) && ($_GET[$sort_mode_name] == 'ASC')) {
+                    $sort_mode = 'DESC';
+                    $class_sort_mode = 'ASC';
+                }
+            }
+
+            $sort_url = url::do_url($_SERVER['REQUEST_URI'], [$sort_by_name => $field_encrypted, $sort_mode_name => $sort_mode]);
+            $a = new \k1lib\html\a($sort_url, $label, NULL, $class_sort_mode . $class_active);
+            $headers[$field] = $a;
+        }
     }
 
     /**
@@ -307,7 +366,11 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             $offset = ($this->actual_page - 1) * self::$rows_per_page;
             $this->db_table->set_query_limit($offset, self::$rows_per_page);
         }
-        // SQL Query
+        if ($this->do_orderby_headers) {
+            $this->apply_orderby_headers();
+        }
+
+        // GET DATA with a SQL Query
         if (parent::load_db_table_data($show_rule)) {
             $this->total_rows_filter = $this->db_table->get_total_data_rows();
             $this->first_row_number = $this->db_table->get_query_offset() + 1;
