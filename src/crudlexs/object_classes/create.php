@@ -536,4 +536,16 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         return $this->post_incoming_array;
     }
 
+    public function get_post_validation_errors() {
+        return $this->post_validation_errors;
+    }
+
+    public function set_post_validation_errors(Array $errors_array, $append_array = TRUE) {
+        if ($append_array) {
+            $this->post_validation_errors = array_merge($this->post_validation_errors, $errors_array);
+        } else {
+            $this->post_validation_errors = $errors_array;
+        }
+    }
+
 }
