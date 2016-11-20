@@ -76,9 +76,18 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         }
     }
 
+    /**
+     * 
+     * @param string $field
+     * @param string $value
+     * @return boolean
+     */
     public function set_post_incomming_value($field, $value) {
-        if ($this->post_data_catched) {
+        if ($this->post_data_catched && key_exists($field, $this->post_incoming_array)) {
             $this->post_incoming_array[$field] = $value;
+            return TRUE;
+        } else {
+            return FALSE;
         }
     }
 

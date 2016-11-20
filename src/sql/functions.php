@@ -221,6 +221,7 @@ AND table_name = '{$table}'";
             $size_unit = substr($field_config['file-max-size'], -1);
             $size_number = substr($field_config['file-max-size'], 0, -1);
             if (!is_numeric($size_unit)) {
+                $file_size = NULL;
                 if ($size_unit == 'k') {
                     $file_size = $size_number * 1024;
                 }
@@ -589,7 +590,6 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
             $glue = ", ";
         }
         $data_string = implode($glue, $pairs);
-
     } else {
         trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
         exit();
