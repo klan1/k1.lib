@@ -69,6 +69,11 @@ class common_code {
         }
     }
 
+    static public function clean_queue() {
+        unset($_SESSION['k1lib_notifications']);
+        unset($_SESSION['k1lib_notifications_titles']);
+    }
+
 }
 
 class on_DOM extends common_code {
