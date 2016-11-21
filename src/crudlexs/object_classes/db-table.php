@@ -389,6 +389,9 @@ class class_db_table {
 
     public function get_sql_limit_code() {
         $sql_code = '';
+        // WFT
+        // TODO: seems to be un unsed this var
+        $sql_code_total_rows = '';
         if (($this->query_offset === 0) && ($this->query_row_count_limit > 0)) {
             $sql_code .= "LIMIT {$this->query_row_count_limit} ";
             $sql_code_total_rows .= "LIMIT {$this->query_row_count_limit} ";
@@ -431,7 +434,16 @@ class class_db_table {
 
     public function get_field_operation($field, $operation = 'SUM') {
         if ($this->generate_sql_query()) {
-            $sql_last_part = strstr($this->query_sql, "FROM", FALSE);
+            // take from FROM part
+            $sql_last_part_full = strstr($this->query_sql, "FROM", FALSE);
+            // remove since ORDER part
+            $sql_last_part = strstr($sql_last_part_full, "ORDER BY", TRUE);
+            if ($sql_last_part === FALSE) {
+                // remove since ORDER part
+                $sql_last_part = strstr($sql_last_part_full, "LIMIT", TRUE);
+                d($sql_last_part);
+            }
+
             $operation_sql = "SELECT {$operation}(`$field`) AS `$field`  {$sql_last_part}";
             $query_result = \k1lib\sql\sql_query($this->db, $operation_sql, FALSE);
 

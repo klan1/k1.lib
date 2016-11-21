@@ -167,19 +167,21 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             $sort_mode_name = $table_alias . '-sort-mode';
 
             $sort_mode = 'ASC';
-            $class_sort_mode = 'DESC';
-            $class_active = '';
+            $class_sort_mode = '';
+            $class_active = ' non-ordering';
 
             if (isset($_GET[$sort_by_name]) && ($_GET[$sort_by_name] == $field_encrypted)) {
                 $class_active = ' ordering';
                 if (isset($_GET[$sort_mode_name]) && ($_GET[$sort_mode_name] == 'ASC')) {
                     $sort_mode = 'DESC';
-                    $class_sort_mode = 'ASC';
+                    $class_sort_mode = 'fi-arrow-down';
+                } else {
+                    $class_sort_mode = 'fi-arrow-up';
                 }
             }
 
             $sort_url = url::do_url($_SERVER['REQUEST_URI'], [$sort_by_name => $field_encrypted, $sort_mode_name => $sort_mode]);
-            $a = new \k1lib\html\a($sort_url, $label, NULL, $class_sort_mode . $class_active);
+            $a = new \k1lib\html\a($sort_url, " $label", NULL, $class_sort_mode . $class_active);
             $headers[$field] = $a;
         }
     }
@@ -397,6 +399,14 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
 
     function get_page_last() {
         return $this->page_last;
+    }
+
+    public function get_do_orderby_headers() {
+        return $this->do_orderby_headers;
+    }
+
+    public function set_do_orderby_headers($do_orderby_headers) {
+        $this->do_orderby_headers = $do_orderby_headers;
     }
 
 }
