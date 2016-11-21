@@ -439,9 +439,8 @@ class class_db_table {
             // remove since ORDER part
             $sql_last_part = strstr($sql_last_part_full, "ORDER BY", TRUE);
             if ($sql_last_part === FALSE) {
-                // remove since ORDER part
+                // remove since LIMIT part
                 $sql_last_part = strstr($sql_last_part_full, "LIMIT", TRUE);
-                d($sql_last_part);
             }
 
             $operation_sql = "SELECT {$operation}(`$field`) AS `$field`  {$sql_last_part}";
