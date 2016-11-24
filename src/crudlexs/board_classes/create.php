@@ -58,10 +58,8 @@ class board_create extends board_base implements board_interface {
         }
 
         if ($this->data_loaded) {
-            d($this->create_object->get_post_data());
 
             if ($this->create_object->get_post_data_catched()) {
-                d($this->create_object->get_post_data_catched());
                 $this->create_object->put_post_data_on_table_data();
                 if (!$this->skip_form_action) {
                     if ($this->create_object->do_post_data_validation()) {
