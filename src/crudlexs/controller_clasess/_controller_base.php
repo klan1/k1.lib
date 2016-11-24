@@ -558,32 +558,28 @@ class controller_base {
         }
     }
 
-    public function finish_board($specific_board_to_finish = NULL) {
+    public function finish_board($do_redirect = TRUE, $custom_redirect = FALSE) {
         $this->board_finished = TRUE;
 
         if ($this->board_started) {
-            if (empty($specific_board_to_finish)) {
-                $specific_board_to_finish = $this->controller_board_url_value;
-            }
-
-            switch ($specific_board_to_finish) {
+            switch ($this->controller_board_url_value) {
                 case $this->board_create_url_name:
-                    return $this->board_create_object->finish_board();
+                    return $this->board_create_object->finish_board($do_redirect, $custom_redirect);
 
                 case $this->board_read_url_name:
-                    return $this->board_read_object->finish_board();
+                    return $this->board_read_object->finish_board($do_redirect, $custom_redirect);
 
                 case $this->board_update_url_name:
-                    return $this->board_update_object->finish_board();
+                    return $this->board_update_object->finish_board($do_redirect, $custom_redirect);
 
                 case $this->board_delete_url_name:
-                    return $this->board_delete_object->finish_board();
+                    return $this->board_delete_object->finish_board($do_redirect, $custom_redirect);
 
                 case $this->board_list_url_name:
-                    return $this->board_list_object->finish_board();
+                    return $this->board_list_object->finish_board($do_redirect, $custom_redirect);
 
                 case $this->board_search_url_name:
-                    return $this->board_search_object->finish_board();
+                    return $this->board_search_object->finish_board($do_redirect, $custom_redirect);
 
                 default:
                     $this->board_finished = FALSE;
