@@ -204,7 +204,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                     unset($new_post_data);
                 }
                 $this->post_incoming_array = \k1lib\common\clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
-                d($this->post_incoming_array);
 
                 // PUT BACK the password data
 //                $this->post_incoming_array = array_merge($this->post_incoming_array, $password_array);
@@ -437,7 +436,6 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     public function do_insert() {
         $error_data = NULL;
         $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
-        d($this->post_incoming_array);
         $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array, $error_data);
         if ($this->inserted_result !== FALSE) {
             DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
