@@ -5,6 +5,7 @@ namespace k1lib\crudlexs;
 use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url as url;
 use k1lib\notifications\on_DOM as DOM_notification;
+use k1lib\html\DOM as DOM;
 
 class board_search extends board_base implements board_interface {
 
@@ -30,10 +31,16 @@ class board_search extends board_base implements board_interface {
         if (!parent::start_board()) {
             return FALSE;
         }
+        /**
+         * IFRAME for KF tool
+         */
+        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
+        DOM::html()->body()->content()->append_child_tail($fk_iframe);
+        
         if ($this->search_object->get_state()) {
             $close_search_buttom = new \k1lib\html\a(NULL, " " . \k1lib\common_strings::$button_cancel, "_parent");
             $close_search_buttom->set_id("close-search-button");
-            $close_search_buttom->set_attrib("class", "button alert fi-page-close");
+            $close_search_buttom->set_attrib("class", "button warning fi-page-close");
             $close_search_buttom->set_attrib("onClick", "parent.close_search();");
             $close_search_buttom->append_to($this->button_div_tag);
 

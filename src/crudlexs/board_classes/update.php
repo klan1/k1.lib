@@ -32,7 +32,12 @@ class board_update extends board_base implements board_interface {
         if (!parent::start_board()) {
             return FALSE;
         }
-
+        /**
+         * IFRAME for KF tool
+         */
+        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
+        DOM::html()->body()->content()->append_child_tail($fk_iframe);
+        
         if (!empty($this->row_keys_text)) {
 
             if ($this->update_object->get_state()) {

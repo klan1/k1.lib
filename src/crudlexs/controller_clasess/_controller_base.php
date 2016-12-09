@@ -196,6 +196,20 @@ class controller_base {
         $this->board_read_name = controller_base_strings::$board_read_name;
         $this->board_update_name = controller_base_strings::$board_update_name;
         $this->board_delete_name = controller_base_strings::$board_delete_name;
+
+        if (DOM::html()->body()) {
+            $js_file = dirname(__DIR__) . '/js/crudlexs.js';
+            if (file_exists($js_file)) {
+                $js_content = file_get_contents($js_file);
+
+                $js_script = new \k1lib\html\script();
+                $js_script->set_value($js_content);
+
+                DOM::html()->body()->append_child_tail($js_script);
+            } else {
+                d($js_file);
+            }
+        }
     }
 
     public function set_config_from_class($class_name = NULL) {

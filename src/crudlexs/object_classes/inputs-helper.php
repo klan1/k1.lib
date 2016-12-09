@@ -159,7 +159,7 @@ class input_helper {
             $static_values = $crudlex_obj->db_table->get_constant_fields();
             $static_values_enconded = $crudlex_obj->encrypt_field_names($static_values);
 
-            $search_button = new \k1lib\html\input("button", "search", "&#xf18d;", "button fi-page-search");
+            $search_button = new \k1lib\html\input("button", "search", "&#xf18d;", "button fi-page-search fk-button");
             $search_button->set_attrib("style", "font-family:foundation-icons");
 
             $url_params = [
