@@ -79,7 +79,7 @@ class board_list extends board_base implements board_interface {
 
                 $search_iframe = new \k1lib\html\iframe(url::do_url(
                                 $this->controller_object->get_controller_root_dir() . "search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI']))
-                        , NULL, "search-iframe"
+                        , 'utility-iframe', "search-iframe"
                 );
 //                $this->board_content_div->append_child_tail($search_iframe);
                 DOM::html()->body()->append_child_tail($search_iframe);
