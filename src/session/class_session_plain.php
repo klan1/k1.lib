@@ -13,6 +13,12 @@ class session_plain {
     static private $enabled = FALSE;
 
     /**
+     * If TRUE on IP change the session will be invalidated
+     * @var boolean
+     */
+    static public $use_ip_in_userhash = TRUE;
+
+    /**
      * Logged state
      * @var Boolean
      */
@@ -210,7 +216,23 @@ class session_plain {
         if (empty($user_login)) {
             $user_login = self::$user_login;
         }
-        return md5($user_login . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\K1MAGIC::get_value());
+        if (self::$use_ip_in_userhash) {
+            return md5($user_login . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\K1MAGIC::get_value());
+        } else {
+            return md5($user_login . $_SERVER['HTTP_USER_AGENT'] . \k1lib\K1MAGIC::get_value());
+        }
+    }
+
+    public static function get_use_ip_in_userhash() {
+        return self::$use_ip_in_userhash;
+    }
+
+    public static function set_use_ip_in_userhash($use_ip_in_userhash) {
+        if ($use_ip_in_userhash) {
+            self::$use_ip_in_userhash = TRUE;
+        } else {
+            self::$use_ip_in_userhash = FALSE;
+        }
     }
 
     static function get_user_login() {
