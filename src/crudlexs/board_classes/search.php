@@ -2,10 +2,8 @@
 
 namespace k1lib\crudlexs;
 
-use k1lib\templates\temply as temply;
-use k1lib\urlrewrite\url as url;
-use k1lib\notifications\on_DOM as DOM_notification;
 use k1lib\html\DOM as DOM;
+use k1lib\notifications\on_DOM as DOM_notification;
 
 class board_search extends board_base implements board_interface {
 
