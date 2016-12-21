@@ -163,6 +163,9 @@ class controller_base {
         /**
          * URL Management
          */
+        if ($app_base_dir == '//') {
+            $app_base_dir = '/';
+        }
         d($app_base_dir, TRUE);
         $this->controller_root_dir = $app_base_dir . url::make_url_from_rewrite('this');
         d($this->controller_root_dir, TRUE);
