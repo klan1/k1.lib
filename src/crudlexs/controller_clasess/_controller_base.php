@@ -163,6 +163,7 @@ class controller_base {
         /**
          * URL Management
          */
+        d($app_base_dir);
         $this->controller_root_dir = $app_base_dir . url::make_url_from_rewrite('this');
         $this->controller_url_value = url::get_url_level_value('this');
         $this->controller_board_url_value = $this->set_and_get_next_url_value();
