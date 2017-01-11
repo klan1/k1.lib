@@ -34,14 +34,18 @@ class handler extends \PDO {
      * @param integer $db_port
      * @param string $db_type
      */
-    static public function enable($db_name, $db_user, $db_password, $db_host = "localhost", $db_port = 3306, $db_type = "mysql") {
+    static public function enable($db_name, $db_user, $db_password, $db_host = "localhost", $db_port = 3306, $db_type = "mysql", $pdo_string_altern = FALSE) {
         self::$enabled = TRUE;
         self::$db_name = $db_name;
         self::$db_user = $db_user;
         self::$db_password = $db_password;
         self::$db_host = $db_host;
         self::$db_port = $db_port;
-        self::$db_dsn = "{$db_type}:dbname={$db_name};host={$db_host}:{$db_port}";
+        if ($pdo_string_altern) {
+            self::$db_dsn = "{$db_type}:dbname={$db_name};host={$db_host}:{$db_port}";
+        } else {
+            self::$db_dsn = "{$db_type}:dbname={$db_name};host={$db_host};port={$db_port}";
+        }
     }
 
     /**
