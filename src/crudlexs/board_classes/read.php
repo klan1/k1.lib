@@ -226,11 +226,12 @@ class board_read extends board_base implements board_interface {
             $related_title = $detail_div->append_h4($title, "{$table_alias}");
             $detail_div->append_div("related-messaje");
 
+            $get_vars = [
+                "auth-code" => $current_row_keys_text_auth_code,
+                "back-url" => $_SERVER['REQUEST_URI'],
+            ];
+
             if ($data_loaded) {
-                $get_vars = [
-                    "auth-code" => $current_row_keys_text_auth_code,
-                    "back-url" => $_SERVER['REQUEST_URI'],
-                ];
                 $all_data_url = url::do_url(APP_URL . $board_root . "/" . $board_list . "/{$current_row_keys_text}/", $get_vars, FALSE);
                 $this->related_html_object_show_all_data = \k1lib\html\get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
                 if ($this->related_show_all_data) {
@@ -239,15 +240,10 @@ class board_read extends board_base implements board_interface {
             }
 
             if ($use_back_url) {
-                $get_vars = [
-                    "auth-code" => $current_row_keys_text_auth_code,
-                    "back-url" => $_SERVER['REQUEST_URI'],
-                ];
                 $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE);
             } else {
                 $get_vars = [
                     "auth-code" => $current_row_keys_text_auth_code,
-//                        "back-url" => $_SERVER['REQUEST_URI'],
                 ];
                 $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE, ['back-url'], FALSE);
             }
