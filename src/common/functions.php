@@ -22,7 +22,6 @@ function check_on_k1lib() {
     d(__FUNCTION__ . " do not use me more!");
 }
 
-
 /**
  * This will make an Array with $data_array[keys] as values as $return_array[0] = value0 .. $return_array[N] = $valueN. Is recursive.
  * @param Array $data_array
@@ -320,4 +319,15 @@ function explode_with_2_delimiters($delimiter1, $delimiter2, $string, $offset = 
         }
     }
     return $second_explode_array;
+}
+
+function get_http_protocol() {
+    $isSecure = false;
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+        $isSecure = true;
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
+        $isSecure = true;
+    }
+    $REQUEST_PROTOCOL = $isSecure ? 'https' : 'http';
+    return $REQUEST_PROTOCOL;
 }
