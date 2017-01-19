@@ -3,6 +3,7 @@
 namespace k1lib\urlrewrite;
 
 function get_back_url($get_only = FALSE) {
+    // TODO: This is kind of dangerous :( take care!
     if (isset($_GET['back-url'])) {
         $back_url = urldecode($_GET['back-url']);
 //        $back_url = \k1lib\forms\check_single_incomming_var($_GET['back-url']);
