@@ -125,6 +125,43 @@ class input_helper {
         }
     }
 
+    static function boolean_type(creating $crudlex_obj, $field) {
+        /*
+          <div class="switch tiny">
+          <input class="switch-input" id="tinySwitch" type="checkbox" name="exampleSwitch">
+          <label class="switch-paddle" for="tinySwitch">
+          <span class="show-for-sr">Tiny Sandwiches Enabled</span>
+          </label>
+          </div>
+         */
+        // Row to apply is constant coz this is CREATE or EDIT and there is allways just 1 set of data to manipulate.
+        $field_encrypted = $crudlex_obj->encrypt_field_name($field);
+
+
+        $input_div = new \k1lib\html\div();
+        $input_div->link_value_obj(new \k1lib\html\span('hidden'));
+
+        $input_yes = new \k1lib\html\input("radio", $field_encrypted, '1');
+        $label_yes = new \k1lib\html\label("yes", $field_encrypted);
+        $input_yes->post_code($label_yes->generate());
+        $input_yes->append_to($input_div);
+
+        if ($crudlex_obj->db_table_data[1][$field] == '1') {
+            $input_yes->set_attrib('checked', TRUE);
+        }
+
+        $input_no = new \k1lib\html\input("radio", $field_encrypted, '0');
+        $label_no = new \k1lib\html\label("no", $field_encrypted);
+        $input_no->post_code($label_no->generate());
+        $input_no->append_to($input_div);
+
+        if ($crudlex_obj->db_table_data[1][$field] == '0') {
+            $input_no->set_attrib('checked', TRUE);
+        }
+
+        return $input_div;
+    }
+
     static function default_type(creating $crudlex_obj, $field) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
         if ((!empty($crudlex_obj->db_table->get_field_config($field, 'refereced_table_name')) && self::$do_fk_search_tool) && (array_search($field, self::$fk_fields_to_skip) === FALSE)) {

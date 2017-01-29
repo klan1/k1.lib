@@ -63,6 +63,11 @@ class updating extends \k1lib\crudlexs\creating {
 
             $this->updated = FALSE;
             DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
+            if (!empty($error_data)) {
+                DOM_notification::queue_mesasage(print_r($error_data, TRUE), 'alert', $this->notifications_div_id);
+            } else {
+//                DOM_notification::queue_mesasage(print_r($this->post_incoming_array, TRUE), 'alert', $this->notifications_div_id);
+            }
             return FALSE;
         }
     }

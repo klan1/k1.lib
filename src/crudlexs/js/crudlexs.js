@@ -10,9 +10,6 @@ $(function () {
     $('#search-button').click(function () {
         $('#search-iframe').toggle();
     });
-
-    $('li.active').parent().foundation('toggle', $('ul'));
-
 });
 
 function use_select_row_keys(form_obj, url_to_submit) {
