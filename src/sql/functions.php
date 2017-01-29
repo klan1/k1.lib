@@ -153,8 +153,9 @@ AND table_name = '{$table}'";
             'mediumint' => 'numbers',
             'int' => 'numbers',
             'bigint' => 'numbers',
+            'decimal' => 'decimals',
             'float' => 'decimals',
-            'double' => 'numbers',
+            'double' => 'decimals',
             'enum' => 'options',
             'set' => 'options',
         );

@@ -218,6 +218,9 @@ class controller_base {
 
     public function set_config_from_class($class_name = NULL) {
 //        $class_name::CONTROLLER_ALLOWED_LEVELS;
+        if (!class_exists($class_name)) {
+            d("Warning: $class_name do not exist");
+        }
 
         /**
          * ENABLED

@@ -250,6 +250,9 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                      * Switch on K1lib DB Table Config VALIDATION TYPES
                      */
                     switch ($this->db_table->get_field_config($field, 'validation')) {
+                        case "boolean":
+                            $input_tag = input_helper::boolean_type($this, $field);
+                            break;
                         case "file-upload":
                             $input_tag = input_helper::file_upload($this, $field);
                             break;
@@ -446,6 +449,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 $this->post_validation_errors = array_merge($this->post_validation_errors, $error_data);
             }
             DOM_notification::queue_mesasage(creating_strings::$data_not_inserted, "warning", $this->notifications_div_id);
+            DOM_notification::queue_mesasage(print_r($error_data, TRUE), 'alert', $this->notifications_div_id);
             $this->inserted = FALSE;
             return FALSE;
         }
