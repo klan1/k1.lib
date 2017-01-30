@@ -243,25 +243,25 @@ function check_value_type($value, $type) {
                 $error_type = " deber ser solo letras de la a-z y A-Z y symbolos: $preg_symbols";
             }
             break;
-        case 'decimals':
+        case 'decimals-unsigned':
             $regex = "/^[0-9.]*$/";
             if (!(preg_match($regex, $value) && is_numeric($value))) {
                 $error_type .= " deber ser solo numeros y decimales positivos";
             }
             break;
-        case 'decimals-unsigned':
+        case 'decimals':
             $regex = "/^[\-0-9.]*$/";
             if (!(preg_match($regex, $value) && is_numeric($value))) {
                 $error_type = " debe contener solo numeros y decimales";
             }
             break;
-        case 'numbers':
+        case 'numbers-unsigned':
             $regex = "/^[0-9]*$/";
             if (!(preg_match($regex, $value) && is_numeric($value))) {
                 $error_type .= " deber ser solo numeros positivos";
             }
             break;
-        case 'numbers-unsigned':
+        case 'numbers':
             $regex = "/^[\-0-9]*$/";
             if (!(preg_match($regex, $value) && is_numeric($value))) {
                 $error_type = " debe contener solo numeros";

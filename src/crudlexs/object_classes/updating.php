@@ -32,9 +32,13 @@ class updating extends \k1lib\crudlexs\creating {
         $url_action_on_field = $this->decrypt_field_name($url_action_on_encoded_field);
 
         if ($url_action == "unlink-uploaded-file") {
-            \k1lib\forms\file_uploads::unlink_uploaded_file($this->db_table_data[1][$url_action_on_field]);
             $this->db_table_data[1][$url_action_on_field] = NULL;
-            $this->db_table->update_data($this->db_table_data[1], $this->db_table_data_keys[1]);
+            if ($this->db_table->update_data($this->db_table_data[1], $this->db_table_data_keys[1])) {
+                \k1lib\forms\file_uploads::unlink_uploaded_file($this->db_table_data[1][$url_action_on_field]);
+                DOM_notification::queue_mesasage("File deleted!", 'success');
+            } else {
+                DOM_notification::queue_mesasage("File could not be deleted, please upload another to replace.", 'alert');
+            }
             \k1lib\html\html_header_go(\k1lib\urlrewrite\get_back_url());
         }
 
