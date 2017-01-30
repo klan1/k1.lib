@@ -114,8 +114,7 @@ class input_helper {
         if (isset($crudlex_obj->db_table_data[1][$field]['name']) || empty($crudlex_obj->db_table_data[1][$field])) {
             return $input_tag;
         } else {
-            $delete_file_link = new \k1lib\html\a("./unlink-uploaded-file/" . $field_encrypted . "/?auth-code=--authcode--", input_helper_strings::$button_remove);
-
+            $delete_file_link = new \k1lib\html\a("./unlink-uploaded-file/" . $field_encrypted . "/?auth-code=--authcode--&back-url=" . urlencode(\k1lib\urlrewrite\get_back_url()), input_helper_strings::$button_remove);
             $div_container = new \k1lib\html\div(null, "img-delete-link");
             $div_container->append_child($input_tag);
             $div_container->append_child($delete_file_link);
