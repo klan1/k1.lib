@@ -9,6 +9,7 @@ use \k1lib\notifications\on_DOM as DOM_notification;
 class updating extends \k1lib\crudlexs\creating {
 
     protected $update_perfomed = FALSE;
+    protected $do_redirect = FALSE;
     protected $updated = NULL;
 
     public function __construct(\k1lib\crudlexs\class_db_table $db_table, $row_keys_text) {
@@ -54,18 +55,23 @@ class updating extends \k1lib\crudlexs\creating {
         $update_result = $this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1], $error_data);
         if ($update_result !== FALSE) {
             $this->update_perfomed = TRUE;
+            $this->do_redirect = TRUE;
             $this->updated = TRUE;
             DOM_notification::queue_mesasage(updating_strings::$data_updated, "success", $this->notifications_div_id);
             return TRUE;
         } else {
             $this->update_perfomed = FALSE;
+            $this->updated = FALSE;
             if (is_array($error_data) && !empty($error_data)) {
                 $this->post_validation_errors = array_merge($this->post_validation_errors, $error_data);
             } elseif (is_string($error_data)) {
                 DOM_notification::queue_mesasage($error_data, "alert", $this->notifications_div_id);
             }
-
-            $this->updated = FALSE;
+            if (empty($this->post_validation_errors)) {
+                $this->do_redirect = TRUE;
+            } else {
+                $this->do_redirect = FALSE;
+            }
             DOM_notification::queue_mesasage(updating_strings::$data_not_updated, "warning", $this->notifications_div_id);
             if (!empty($error_data)) {
                 DOM_notification::queue_mesasage(print_r($error_data, TRUE), 'alert', $this->notifications_div_id);
@@ -77,7 +83,7 @@ class updating extends \k1lib\crudlexs\creating {
     }
 
     public function post_update_redirect($url_to_go = "../../", $do_redirect = TRUE) {
-        if (!empty($this->update_perfomed)) {
+        if ($this->update_perfomed || $this->do_redirect) {
             /**
              * Merge the ROW KEYS with all the possible keys on the POST array
              */
@@ -97,7 +103,6 @@ class updating extends \k1lib\crudlexs\creating {
             }
             if ($do_redirect) {
                 \k1lib\html\html_header_go($url_to_go);
-                exit;
                 return TRUE;
             } else {
                 return $url_to_go;
