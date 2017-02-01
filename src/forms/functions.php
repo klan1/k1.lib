@@ -297,6 +297,8 @@ function check_value_type($value, $type) {
                 $error_type = " solo pude contener letras y los siguientes simbolos: $preg_symbols";
             }
             break;
+        case 'not-verified':
+            break;
         default:
             $error_type = "Not defined VALIDATION on Type '{$type}' from field '{$label}' ";
             break;
