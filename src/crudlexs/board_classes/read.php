@@ -216,7 +216,7 @@ class board_read extends board_base implements board_interface {
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new \k1lib\html\div();
 
-        $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read);
+        $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url);
 
         if (!empty($this->related_list)) {
             $current_row_keys_text = $this->read_object->get_row_keys_text();
@@ -238,7 +238,6 @@ class board_read extends board_base implements board_interface {
                     $related_title->set_value($this->related_html_object_show_all_data, TRUE);
                 }
             }
-
             if ($use_back_url) {
                 $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE);
             } else {
@@ -275,7 +274,7 @@ class board_read extends board_base implements board_interface {
      * @param boolean $clear_url
      * @return \k1lib\crudlexs\listing|boolean
      */
-    public function do_related_list(class_db_table $db_table, $field_links_array, $board_root, $board_read, $clear_url = FALSE) {
+    public function do_related_list(class_db_table $db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url = FALSE) {
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
 
@@ -301,7 +300,7 @@ class board_read extends board_base implements board_interface {
                 if ($data_loaded) {
                     if ($this->related_apply_filters) {
                         $this->related_apply_filters();
-                        $this->related_apply_link_read_field($field_links_array, $board_root, $board_read, $clear_url);
+                        $this->related_apply_link_read_field($field_links_array, $board_root, $board_read, $use_back_url, $clear_url);
                     }
                 }
                 return $this->related_list;
@@ -314,15 +313,18 @@ class board_read extends board_base implements board_interface {
         }
     }
 
-    public function related_apply_link_read_field($field_links_array, $board_root, $board_read, $clear_url = FALSE) {
+    public function related_apply_link_read_field($field_links_array, $board_root, $board_read, $use_back_url, $clear_url = FALSE) {
         if ($this->related_list->get_db_table_data()) {
             if ($clear_url) {
                 $get_vars = [];
             } else {
+
                 $get_vars = [
                     "auth-code" => "--authcode--",
-                    "back-url" => $_SERVER['REQUEST_URI'],
                 ];
+                if ($use_back_url) {
+                    $get_vars["back-url"] = $_SERVER['REQUEST_URI'];
+                }
             }
             $link_row_url = url::do_url(APP_URL . $board_root . "/" . $board_read . "/--rowkeys--/", $get_vars);
             $this->related_list->apply_link_on_field_filter($link_row_url, $field_links_array);
