@@ -254,10 +254,6 @@ class board_read extends board_base implements board_interface {
                 $related_title->set_value($this->related_html_object_show_new, TRUE);
             }
 
-            if (!empty($this->related_custom_field_labels)) {
-                $this->related_list->set_custom_field_labels($this->related_custom_field_labels);
-            }
-
             $this->related_list->do_html_object()->append_to($detail_div);
             $this->related_html_table_object = $this->related_list->get_html_table();
             if ($db_table->get_total_rows() > $this->related_rows_to_show) {
@@ -301,6 +297,11 @@ class board_read extends board_base implements board_interface {
                  * all data button.
                  */
                 $this->related_list = new \k1lib\crudlexs\listing($db_table, FALSE);
+
+                if (!empty($this->related_custom_field_labels)) {
+                    $this->related_list->set_custom_field_labels($this->related_custom_field_labels);
+                }
+
                 $this->related_list->set_rows_per_page($this->related_rows_to_show);
                 $data_loaded = $this->related_list->load_db_table_data($this->related_use_show_rule);
                 if ($data_loaded) {
