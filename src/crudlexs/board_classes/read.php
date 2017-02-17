@@ -218,10 +218,7 @@ class board_read extends board_base implements board_interface {
         $detail_div = new \k1lib\html\div();
 
         $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url);
-        
-        if (!empty($this->related_custom_field_labels)) {
-            $this->related_list->set_custom_field_labels($this->related_custom_field_labels);
-        }
+
 
         if (!empty($this->related_list)) {
             $current_row_keys_text = $this->read_object->get_row_keys_text();
@@ -255,6 +252,10 @@ class board_read extends board_base implements board_interface {
 
             if ($this->related_show_new) {
                 $related_title->set_value($this->related_html_object_show_new, TRUE);
+            }
+
+            if (!empty($this->related_custom_field_labels)) {
+                $this->related_list->set_custom_field_labels($this->related_custom_field_labels);
             }
 
             $this->related_list->do_html_object()->append_to($detail_div);
@@ -402,11 +403,12 @@ class board_read extends board_base implements board_interface {
     function set_update_enable($update_enable) {
         $this->update_enable = $update_enable;
     }
+
     public function set_related_custom_field_labels($related_custom_field_labels) {
         $this->related_custom_field_labels = $related_custom_field_labels;
     }
 
-        function set_delete_enable($delete_enable) {
+    function set_delete_enable($delete_enable) {
         $this->delete_enable = $delete_enable;
     }
 
