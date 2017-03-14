@@ -404,6 +404,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                 foreach ($table_config_array as $field => $options) {
                     if ($options['validation'] == 'file-upload') {
                         $file_upload_fields[$field] = $options['file-type'];
+                        $file_upload_table[$field] = $options['table'];
                     }
                 }
                 if (!empty($file_upload_fields)) {
@@ -412,7 +413,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                             case "image":
 //                                $div_container = new \k1lib\html\div();
 
-                                $img_tag = new \k1lib\html\img(file_uploads::get_uploads_url() . "--fieldvalue--");
+                                $img_tag = new \k1lib\html\img(file_uploads::get_uploads_url($options['table']) . "--fieldvalue--");
                                 $img_tag->set_attrib("class", "k1lib-data-img", TRUE);
 
 //                                $delete_file_link = new \k1lib\html\a("./unlink-uploaded-file/", "remove this file");
@@ -422,7 +423,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                                 return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
 
                             default:
-                                $link_tag = new \k1lib\html\a(url::do_url(file_uploads::get_uploads_url() . "--fieldvalue--"), "--fieldvalue--", "_blank");
+                                $link_tag = new \k1lib\html\a(url::do_url(file_uploads::get_uploads_url() . "{$file_upload_table[$field]}/--fieldvalue--"), "--fieldvalue--", "_blank");
                                 $link_tag->set_attrib("class", "k1lib-data-link", TRUE);
                                 return $this->apply_html_tag_on_field_filter($link_tag, array_keys($file_upload_fields));
                         }
