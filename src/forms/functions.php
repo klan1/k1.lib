@@ -306,7 +306,7 @@ function check_value_type($value, $type) {
     return $error_type;
 }
 
-function form_file_upload_handle($file_data, $field_config) {
+function form_file_upload_handle($file_data, $field_config, $table_name = null) {
     /**
      * File validations with DB Table Config directives
      */
@@ -321,7 +321,7 @@ function form_file_upload_handle($file_data, $field_config) {
     /**
      * ALL ok? then place the file and let it go... let it goooo! (my daughter Allison fault! <3 )
      */
-    if (file_uploads::place_upload_file($file_data['tmp_name'], $file_data['name'])) {
+    if (file_uploads::place_upload_file($file_data['tmp_name'], $file_data['name'], $table_name)) {
         return TRUE;
     } else {
         return file_uploads::get_last_error();
@@ -382,7 +382,8 @@ function form_check_values(&$form_array, $table_array_config, $db = NULL) {
             }
         }
         if ($do_upload_file && empty($error_msg) && empty($error_type)) {
-            $file_result = form_file_upload_handle($file_data, $table_array_config[$key]);
+//            d($table_array_config[$key]);
+            $file_result = form_file_upload_handle($file_data, $table_array_config[$key],$table_array_config[$key]['table']);
             if ($file_result !== TRUE) {
                 $error_array[$key] = $file_result;
             }
