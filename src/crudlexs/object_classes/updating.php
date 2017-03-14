@@ -35,7 +35,7 @@ class updating extends \k1lib\crudlexs\creating {
         if ($url_action == "unlink-uploaded-file") {
             $this->db_table_data[1][$url_action_on_field] = NULL;
             if ($this->db_table->update_data($this->db_table_data[1], $this->db_table_data_keys[1])) {
-                \k1lib\forms\file_uploads::unlink_uploaded_file($this->db_table_data[1][$url_action_on_field]);
+                \k1lib\forms\file_uploads::unlink_uploaded_file($this->db_table_data[1][$url_action_on_field], $this->db_table->get_db_table_name());
                 DOM_notification::queue_mesasage("File deleted!", 'success');
             } else {
                 DOM_notification::queue_mesasage("File could not be deleted, please upload another to replace.", 'alert');

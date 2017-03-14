@@ -71,7 +71,7 @@ class file_uploads {
 //        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         if (!empty($directory)) {
             if (!file_exists(self::$path_to_uploads . $directory)) {
-                mkdir(self::$path_to_uploads . $dirxwectory);
+                mkdir(self::$path_to_uploads . $directory);
             }
             $file_name_to_save = self::$path_to_uploads . $directory . '/' . $file_name;
         } else {
@@ -99,15 +99,18 @@ class file_uploads {
     }
 
     static function get_uploaded_file_path($file_name, $directory = NULL) {
-//        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         if (!empty($directory)) {
-            $file_name_to_get = self::$path_to_uploads . $directory . '/' . $file_name;
+//        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+            $file_name_to_get_directory = self::$path_to_uploads . $directory . '/' . $file_name;
         } else {
-            $file_name_to_get = self::$path_to_uploads . $file_name;
+            $file_name_to_get_directory = NULL;
         }
+        $file_name_to_get = self::$path_to_uploads . $file_name;
 //        $file_name_to_get = self::$path_to_uploads . md5($file_name) . ".{$file_extension}";
         if (file_exists($file_name_to_get)) {
             return $file_name_to_get;
+        } elseif (!empty($file_name_to_get_directory) || file_exists($file_name_to_get_directory)) {
+            return $file_name_to_get_directory;
         } else {
             return FALSE;
         }
@@ -143,8 +146,12 @@ class file_uploads {
         }
     }
 
-    static function get_uploads_url() {
-        return self::$uploads_url;
+    static function get_uploads_url($directory = NULL) {
+        if (!empty($directory)) {
+            return self::$uploads_url . $directory . '/';
+        } else {
+            return self::$uploads_url;
+        }
     }
 
     static function get_overwrite_existent() {
