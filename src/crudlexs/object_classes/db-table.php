@@ -116,7 +116,7 @@ class class_db_table {
 
     public function get_db_table_config($reload = FALSE) {
         if ($reload && !empty($this->db_table_config)) {
-            $this->db_table_config = $this->_get_db_table_config($this->db_table_name, TRUE, FALSE);
+            $this->db_table_config = $this->_get_db_table_config($this->db_table_name, TRUE, $reload);
         }
         return $this->db_table_config;
     }
