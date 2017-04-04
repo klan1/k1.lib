@@ -100,11 +100,11 @@ class session_plain {
     static public function set_session_name($session_name) {
         self::is_enabled(true);
         self::$session_name = $session_name;
-        \session_name($session_name);
     }
 
     static public function start_session() {
         self::is_enabled(true);
+        \session_name(self::$session_name);
         \session_start();
         self::$has_started = TRUE;
         /**
@@ -389,12 +389,12 @@ class session_db extends session_plain {
         $this->user_remember_me_input = $remember_me_input;
     }
 
-    public function catch_post() {
+    public function catch_post($skip_magic = FALSE) {
         if (isset($_POST['magic_value'])) {
             $magic_test = \k1lib\common\check_magic_value("login_form", $_POST['magic_value']);
-            if ($magic_test == TRUE) {
+            if (($magic_test == TRUE) || ($skip_magic)) {
                 unset($_POST['magic_value']);
-                // the form was correct, so lets try to login
+// the form was correct, so lets try to login
 
                 /**
                  * Check the _GET incomming vars
@@ -469,7 +469,7 @@ class session_db extends session_plain {
         if ($this->user_remember_me_value) {
             $coockie_time = time() + (15 * 60 * 60 * 24);
         } else {
-            $coockie_time = time() + (10);
+            $coockie_time = 0;
         }
         $this->coockie_data = $data_encoded;
         $coockie = setcookie($this->save_cookie_name, $data_encoded, $coockie_time, $path);
@@ -512,6 +512,7 @@ class session_db extends session_plain {
     }
 
     public function unset_coockie($path = "/") {
+        $this->save_cookie_name = session_plain::get_session_name() . "-store";
         if (isset($_COOKIE[$this->save_cookie_name])) {
             unset($_COOKIE[$this->save_cookie_name]);
         }
@@ -519,10 +520,27 @@ class session_db extends session_plain {
     }
 
     public function load_logged_session_db($redirect = FALSE, $where_redirect_to = "") {
+        $this->save_cookie_name = session_plain::get_session_name() . "-store";
+
         if (!parent::load_logged_session($redirect, $where_redirect_to)) {
             $cookie_data = $this->load_data_from_coockie();
             return $cookie_data;
         } else {
+            if (isset($_COOKIE[$this->save_cookie_name])) {
+                $data = \k1lib\crypt::decrypt($_COOKIE[$this->save_cookie_name]);
+                if ($data['user_hash'] === self::get_user_hash($data['user_login_input_value'])) {
+                    $this->set_config($data['db_table_name'], $data['user_login_field'], $data['user_password_field'], $data['user_level_field']);
+                    $this->set_inputs($data['user_login_input_name'], $data['user_password_input_name'], $data['user_remember_me_input']);
+                    $this->user_login_input_value = $data['user_login_input_value'];
+                    $this->user_password_input_value = $data['user_password_input_value'];
+                    $this->user_remember_me_value = $data['user_remember_me_value'];
+                    $user_data = $this->check_login();
+                    if ($user_data) {
+                        $_SESSION['k1lib_session']['user_data'] = $user_data;
+                        $this->user_data = $user_data;
+                    }
+                }
+            }
             return TRUE;
         }
     }
@@ -589,6 +607,16 @@ class session_db extends session_plain {
 
     public function set_user_remember_me_input($user_remember_me_input) {
         $this->user_remember_me_input = $user_remember_me_input;
+    }
+
+    public static function end_session($path = '/') {
+//        $this->save_cookie_name = session_plain::get_session_name() . "-store";
+        $save_cookie_name = session_plain::get_session_name() . "-store";
+        if (isset($save_cookie_name)) {
+            unset($save_cookie_name);
+        }
+        setcookie($save_cookie_name, '', time() - (60 * 60 * 24), $path);
+        parent::end_session();
     }
 
 }

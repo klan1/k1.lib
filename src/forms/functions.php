@@ -35,6 +35,8 @@ function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE)
             return 0;
         } elseif (($value === '0')) {
             return '0';
+        } else {
+//            $value = htmlspecialchars($value);
         }
         if ($url_decode) {
             $value = urldecode($value);
@@ -43,7 +45,7 @@ function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE)
 //            $search = ['\\', "\0", "\n", "\r", "'", '"', "\x1a"];
 //            $replace = ['\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'];
 //            $value = str_replace($search, $replace, $value);
-//            $value = mysql_escape_string($value);
+//            $value = @mysql_real_escape_string($value);
         }
         return $value;
     } else {
@@ -383,7 +385,7 @@ function form_check_values(&$form_array, $table_array_config, $db = NULL) {
         }
         if ($do_upload_file && empty($error_msg) && empty($error_type)) {
 //            d($table_array_config[$key]);
-            $file_result = form_file_upload_handle($file_data, $table_array_config[$key],$table_array_config[$key]['table']);
+            $file_result = form_file_upload_handle($file_data, $table_array_config[$key], $table_array_config[$key]['table']);
             if ($file_result !== TRUE) {
                 $error_array[$key] = $file_result;
             }
