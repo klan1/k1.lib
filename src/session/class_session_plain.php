@@ -447,7 +447,7 @@ class session_db extends session_plain {
             $this->user_login_field => $this->user_login_input_value,
             $this->user_password_field => $this->user_password_input_value,
         ];
-        $this->db_table->set_query_filter($fielter_array, TRUE);
+        $this->db_table->set_query_filter($fielter_array, TRUE, FALSE);
         $this->user_data = $this->db_table->get_data(FALSE);
         return $this->user_data;
     }
