@@ -211,7 +211,7 @@ function check_value_type($value, $type) {
                 if (checkdate($matches['month'], $matches['day'], $matches['year'])) {
                     $actual_date_number = juliantojd($month, $day, $year);
                     $value_date_number = juliantojd($matches['month'], $matches['day'], $matches['year']);
-                    if ($value_date_number < $actual_date_number) {
+                    if ($value_date_number <= $actual_date_number) {
                         $error_type = " de fecha debe ser mayor al dia de hoy: {$date}";
                     }
                 } else {
