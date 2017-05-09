@@ -551,4 +551,8 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
         }
     }
 
+    public function set_show_cancel_button($show_cancel_button) {
+        $this->show_cancel_button = $show_cancel_button;
+    }
+
 }
