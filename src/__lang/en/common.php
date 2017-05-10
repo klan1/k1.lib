@@ -12,5 +12,8 @@ class common_strings {
     //
     static $button_submit = "Insert";
     static $button_cancel = "Cancel";
+    //
+    static $yes = "Yes";
+    static $no = "No";
 
 }

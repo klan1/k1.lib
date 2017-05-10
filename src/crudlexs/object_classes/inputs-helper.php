@@ -141,7 +141,7 @@ class input_helper {
         $input_div->link_value_obj(new \k1lib\html\span('hidden'));
 
         $input_yes = new \k1lib\html\input("radio", $field_encrypted, '1');
-        $label_yes = new \k1lib\html\label("yes", $field_encrypted);
+        $label_yes = new \k1lib\html\label(\k1lib\common_strings::$yes, $field_encrypted);
         $input_yes->post_code($label_yes->generate());
         $input_yes->append_to($input_div);
 
@@ -150,7 +150,7 @@ class input_helper {
         }
 
         $input_no = new \k1lib\html\input("radio", $field_encrypted, '0');
-        $label_no = new \k1lib\html\label("no", $field_encrypted);
+        $label_no = new \k1lib\html\label(\k1lib\common_strings::$no, $field_encrypted);
         $input_no->post_code($label_no->generate());
         $input_no->append_to($input_div);
 
