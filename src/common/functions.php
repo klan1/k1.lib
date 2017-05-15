@@ -322,7 +322,7 @@ function explode_with_2_delimiters($delimiter1, $delimiter2, $string, $offset = 
 }
 
 function get_http_protocol() {
-    $isSecure = false; 
+    $isSecure = false;
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
         $isSecure = true;
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
@@ -330,4 +330,47 @@ function get_http_protocol() {
     }
     $REQUEST_PROTOCOL = $isSecure ? 'https' : 'http';
     return $REQUEST_PROTOCOL;
+}
+
+/**
+ * @return array
+ */
+function get_last_week_date_range() {
+    $previous_week = strtotime("-1 week +1 day");
+
+    $start_week = strtotime("last sunday midnight", $previous_week);
+    $end_week = strtotime("next saturday", $start_week);
+
+    $date_range[] = date("Y-m-d", $start_week);
+    $date_range[] = date("Y-m-d", $end_week);
+
+    return $date_range;
+}
+
+/**
+ * @return array
+ */
+function get_current_week_date_range() {
+    $d = strtotime("today");
+    $start_week = strtotime("last sunday midnight", $d);
+    $end_week = strtotime("next saturday", $d);
+
+    $date_range[] = date("Y-m-d", $start_week);
+    $date_range[] = date("Y-m-d", $end_week);
+
+    return $date_range;
+}
+
+/**
+ * @return array
+ */
+function get_next_week_date_range() {
+    $d = strtotime("+1 week -1 day");
+    $start_week = strtotime("last sunday midnight", $d);
+    $end_week = strtotime("next saturday", $d);
+
+    $date_range[] = date("Y-m-d", $start_week);
+    $date_range[] = date("Y-m-d", $end_week);
+
+    return $date_range;
 }

@@ -165,7 +165,31 @@ class class_db_table {
         } else {
             $query_where_pairs = "";
             if ($exact_filter) {
-                $query_where_pairs = \k1lib\sql\array_to_sql_set($this->db, $clean_filter_array, TRUE, TRUE);
+                $normal_filter = [];
+                $between_filter = [];
+                foreach ($clean_filter_array as $field => $value) {
+                    if (is_array($value)) {
+                        if (count($value) == 2) {
+                            if ($value[0] !== NULL AND $value[1] !== NULL) {
+                                $between_filter[] = "$field BETWEEN '" . implode("' AND '", $value) . "'";
+                            }
+                        } else {
+                            trigger_error(E_USER_WARNING, "$field is not a valid array for BETWEEN :" . print_r($value, TRUE));
+                        }
+                    } else {
+                        $normal_filter[$field] = $value;
+                    }
+                }
+                if (!empty($normal_filter)) {
+                    $query_where_pairs = \k1lib\sql\array_to_sql_set($this->db, $normal_filter, TRUE, TRUE);
+                }
+                if (!empty($between_filter)) {
+                    if (!empty($query_where_pairs)) {
+                        $query_where_pairs = $query_where_pairs . " AND " . implode(" AND ", $between_filter);
+                    } else {
+                        $query_where_pairs = implode(" AND ", $between_filter);
+                    }
+                }
             } else {
                 $doFilter = FALSE;
                 foreach ($clean_filter_array as $search_value) {
@@ -177,10 +201,13 @@ class class_db_table {
                 if ($doFilter) {
                     // and make the conditions, all with LIKE
                     foreach ($clean_filter_array as $field => $search_value) {
-                        if (isset($this->db_table_config[$field]) && (!empty($search_value))) {
-                            $query_where_pairs .= ($i >= 1) ? " AND " : "";
-                            $query_where_pairs .= " $field LIKE '{$search_value}'";
-                            $i++;
+                        if (!is_array($search_value)) {
+                            // aparently I am trying to re-check the field existence but it was done with $do_clean_array
+                            if (isset($this->db_table_config[$field]) && (!empty($search_value))) {
+                                $query_where_pairs .= ($i >= 1) ? " AND " : "";
+                                $query_where_pairs .= " $field LIKE '{$search_value}'";
+                                $i++;
+                            }
                         }
                     }
                 }
@@ -391,13 +418,13 @@ class class_db_table {
         $sql_code = '';
         // WFT
         // TODO: seems to be un unsed this var
-        $sql_code_total_rows = '';
+//        $sql_code_total_rows = '';
         if (($this->query_offset === 0) && ($this->query_row_count_limit > 0)) {
             $sql_code .= "LIMIT {$this->query_row_count_limit} ";
-            $sql_code_total_rows .= "LIMIT {$this->query_row_count_limit} ";
+//            $sql_code_total_rows .= "LIMIT {$this->query_row_count_limit} ";
         } elseif (($this->query_offset > 0) && ($this->query_row_count_limit > 0)) {
             $sql_code .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
-            $sql_code_total_rows .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
+//            $sql_code_total_rows .= "LIMIT {$this->query_offset},{$this->query_row_count_limit} ";
         }
         return $sql_code;
     }
@@ -568,6 +595,34 @@ class class_db_table {
 
     public function set_group_by(array $query_group_by_fields_array) {
         $this->query_group_by_fields_array = $query_group_by_fields_array;
+    }
+
+    public function export_to_xl($use_limit = TRUE) {
+        $file_name = $this->db_table_name;
+        if (!$use_limit) {
+            $this->set_query_limit(0, 0);
+            $file_description = '-all-data';
+        } else {
+            $file_description = '-partial';
+        }
+        $file_name .= $file_description;
+
+        $data = $this->get_data(TRUE, TRUE);
+        if (!empty($data)) {
+            ob_end_clean();
+            header("Content-Disposition: attachment; filename=\"{$file_name}.csv\"");
+            header("Content-Type: text/csv;");
+            header("Pragma: no-cache");
+            header("Expires: 0");
+            $out = fopen("php://output", 'w');
+            foreach ($data as $data) {
+                fputcsv($out, $data, ",");
+            }
+            fclose($out);
+            exit;
+        } else {
+            return FALSE;
+        }
     }
 
 }

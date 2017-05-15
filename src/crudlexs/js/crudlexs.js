@@ -1,12 +1,5 @@
 
 $(function () {
-    $(".datepicker").datepicker({
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: "yy-mm-dd",
-        showButtonPanel: true,
-    });
-
     $('#search-button').click(function () {
         $('#search-iframe').toggle();
     });
