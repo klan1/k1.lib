@@ -5,29 +5,29 @@ namespace k1lib\crudlexs;
 class board_base_strings {
 
     static $alert_board = "Alerta";
-    static $error_board = "Error message";
-    static $error_board_disabled = "This board is disabled or you are not allowed to use it";
-    static $error_mysql = "DB error";
-    static $error_mysql_table_not_opened = "Can not open the table.";
-    static $error_mysql_table_no_data = "Empty query";
-    static $error_url_keys_no_auth = "Keys are not valid, so, you can't continue";
-    static $error_url_keys_no_keys_text = "You can't use this board without the right url key text";
+    static $error_board = "Mensaje de error";
+    static $error_board_disabled = "Este tablero esta deshabilitado o no estas habilitado para usarlo";
+    static $error_mysql = "Error de Base de Datos";
+    static $error_mysql_table_not_opened = "No se puede habrir la tabla";
+    static $error_mysql_table_no_data = "Consulta vacia";
+    static $error_url_keys_no_auth = "Las key no pueden estar vacias, no puedes continuar";
+    static $error_url_keys_no_keys_text = "No puedes usar este tabler sin el correspondiente texto de keys";
 
 }
 
 class board_create_strings {
 
-    static $error_no_inserted = "Data hasn't been inserted.";
-    static $error_form = "Please correct the marked errors.";
-    static $error_no_blank_data = "The blank data couldn't be created.";
+    static $error_no_inserted = "Los datos no han sido insertados";
+    static $error_form = "Por favor corrija los siguientes errores:";
+    static $error_no_blank_data = "Los datos en blanco no pudieron ser creados";
 
 }
 
 class board_delete_strings {
 
-    static $data_deleted = "Data deleted";
-    static $error_no_data_deleted = "The record to delete can't be deleted";
-    static $error_no_data_deleted_hacker = "Too genius of you trying to delete something with a normal auth-code ;)";
+    static $data_deleted = "Dato eliminado";
+    static $error_no_data_deleted = "El registro solicitado no puede ser borrado";
+    static $error_no_data_deleted_hacker = "Interesante que intentes borrar un registro con el auth-code de lectura ;)";
 
 }
 
@@ -57,8 +57,8 @@ class board_read_strings {
 class board_update_strings {
 
     static $button_submit = "Actualizar";
-    static $error_no_inserted = "Data hasn't benn updated. Did you leave all unchaged ?";
-    static $error_form = "Please correct the marked errors.";
-    static $error_no_blank_data = "Please correct the marked errors.";
+    static $error_no_inserted = "Daton sin modificar, los has dejado igual?";
+    static $error_form = "Por favor corrija los siguientes errores:";
+    static $error_no_blank_data = "Por favor corrija los siguientes errores:";
 
 }

@@ -171,7 +171,7 @@ function check_value_type($value, $type) {
         case 'email':
             $regex = "/[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,3})$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " Email invalido";
+                $error_type = " debe ser un Email valido.";
             }
             break;
         case 'boolean':
@@ -185,10 +185,10 @@ function check_value_type($value, $type) {
         case 'date':
             if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
                 if (!checkdate($matches['month'], $matches['day'], $matches['year'])) {
-                    $error_type = " valores de fecha in validos";
+                    $error_type = " contiene un formato de fecha invalida, debe ser AAAA-MM-DD.";
                 }
             } else {
-                $error_type = " formato de fecha invalida";
+                $error_type = " contiene un formato de fecha invalida, debe ser AAAA-MM-DD.";
             }
             break;
         case 'date-past':
@@ -200,10 +200,10 @@ function check_value_type($value, $type) {
                         $error_type = " de fecha no puede ser mayor al dia de hoy: {$date}";
                     }
                 } else {
-                    $error_type = " valores de fecha in validos";
+                    $error_type = " contiene un formato de fecha invalida, debe ser AAAA-MM-DD.";
                 }
             } else {
-                $error_type = " formato de fecha invalida";
+                $error_type = " contiene un formato de fecha invalida, debe ser AAAA-MM-DD.";
             }
             break;
         case 'date-future':
@@ -215,10 +215,10 @@ function check_value_type($value, $type) {
                         $error_type = " de fecha debe ser mayor al dia de hoy: {$date}";
                     }
                 } else {
-                    $error_type = " valores de fecha in validos";
+                    $error_type = " contiene un formato de fecha invalida, debe ser AAAA-MM-DD.";
                 }
             } else {
-                $error_type = " formato de fecha invalida";
+                $error_type = " contiene un formato de fecha invalida, debe ser AAAA-MM-DD.";
             }
             break;
         case 'datetime':
@@ -230,67 +230,67 @@ function check_value_type($value, $type) {
         case 'letters':
             $regex = "/^[a-zA-Z\s]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z sin symbolos";
+                $error_type = " deber ser solo letras de la a-z y A-Z sin símbolos";
             }
             break;
         case 'letters-symbols':
             $regex = "/^[a-zA-Z0-9\s{$preg_symbols}]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z y symbolos: $preg_symbols";
+                $error_type = " deber ser solo letras de la a-z y A-Z y símbolos: $preg_symbols";
             }
             break;
         case 'password':
             $regex = "/^[a-zA-Z0-9\s{$preg_symbols}]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z y symbolos: $preg_symbols";
+                $error_type = " deber ser solo letras de la a-z y A-Z y símbolos: $preg_symbols";
             }
             break;
         case 'decimals-unsigned':
             $regex = "/^[0-9.]*$/";
             if (!(preg_match($regex, $value) && is_numeric($value))) {
-                $error_type .= " deber ser solo numeros y decimales positivos";
+                $error_type .= " deber ser solo números y decimales positivos";
             }
             break;
         case 'decimals':
             $regex = "/^[\-0-9.]*$/";
             if (!(preg_match($regex, $value) && is_numeric($value))) {
-                $error_type = " debe contener solo numeros y decimales";
+                $error_type = " debe contener solo números y decimales";
             }
             break;
         case 'numbers-unsigned':
             $regex = "/^[0-9]*$/";
             if (!(preg_match($regex, $value) && is_numeric($value))) {
-                $error_type .= " deber ser solo numeros positivos";
+                $error_type .= " deber ser solo números positivos";
             }
             break;
         case 'numbers':
             $regex = "/^[\-0-9]*$/";
             if (!(preg_match($regex, $value) && is_numeric($value))) {
-                $error_type = " debe contener solo numeros";
+                $error_type = " debe contener solo números";
             }
             break;
         case 'numbers-symbols':
             $regex = "/^[\-0-9\s{$preg_symbols}]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " debe contener solo numeros y symbolos: $preg_symbols";
+                $error_type = " debe contener solo números y símbolos: $preg_symbols";
             }
             break;
         case 'mixed':
             $regex = "/^[\-a-zA-Z0-9\s]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z y numeros";
+                $error_type = " deber ser solo letras de la a-z y A-Z y números";
             }
             break;
         case 'mixed-symbols':
             $regex = "/^[a-zA-Z0-9\s{$preg_symbols}]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z, numeros y symbolos: $preg_symbols";
+                $error_type = " deber ser solo letras de la a-z y A-Z, números y símbolos: $preg_symbols";
             }
             break;
         case 'html':
             $regex = "/^[a-zA-Z0-9\s{$preg_symbols_html}]*$/";
             if (!preg_match($regex, $value)) {
-                $error_type = " deber ser solo letras de la a-z y A-Z, numeros y symbolos: $preg_symbols_html";
+                $error_type = " deber ser solo letras de la a-z y A-Z, números y símbolos: $preg_symbols_html";
             }
             break;
         case 'file-upload':
@@ -365,7 +365,7 @@ function form_check_values(&$form_array, $table_array_config, $db = NULL) {
         $max = $table_array_config[$key]['max'];
 
 
-        // email | letters (solo letras) | numbers (solo numeros) | mixed (alfanumerico) | letters-symbols (con symbolos ej. !#()[],.) | numbers-symbols | mixed-symbols - los symbols no lo implementare aun
+        // email | letters (solo letras) | numbers (solo números) | mixed (alfanumerico) | letters-symbols (con símbolos ej. !#()[],.) | numbers-symbols | mixed-symbols - los symbols no lo implementare aun
         // the basic error, if is required on the table definition
         if (($value !== 0) && ($value !== '0') && empty($value)) {
             if ($table_array_config[$key]['required'] === TRUE) {

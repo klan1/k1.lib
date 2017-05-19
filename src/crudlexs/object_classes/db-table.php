@@ -615,6 +615,7 @@ class class_db_table {
             header("Pragma: no-cache");
             header("Expires: 0");
             $out = fopen("php://output", 'w');
+            fwrite($out, pack("CCC",0xef,0xbb,0xbf));
             foreach ($data as $data) {
                 fputcsv($out, $data, ",");
             }
