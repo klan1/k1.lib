@@ -18,7 +18,7 @@ class board_base_strings {
 class board_create_strings {
 
     static $error_no_inserted = "Data hasn't been inserted.";
-    static $error_form = "Please correct the marked errors.";
+    static $error_form = "Please correct the marked errors:";
     static $error_no_blank_data = "The blank data couldn't be created.";
 
 }
@@ -58,7 +58,7 @@ class board_update_strings {
 
     static $button_submit = "Update";
     static $error_no_inserted = "Data hasn't benn updated. Did you leave all unchaged ?";
-    static $error_form = "Please correct the marked errors.";
-    static $error_no_blank_data = "Please correct the marked errors.";
+    static $error_form = "Please correct the marked errors:";
+    static $error_no_blank_data = "Please correct the marked errors:";
 
 }
