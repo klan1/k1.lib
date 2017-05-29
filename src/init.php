@@ -33,8 +33,8 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
  */
 define("K1LIB_BASE_PATH", dirname(__FILE__));
 
-header("PHP Framework: K1.lib V" . VERSION);
-header("Developed by: Klan1 Network | http://www.klan1.com");
+header("PHP-Framework: K1.lib V" . VERSION);
+header("Developed-by: Klan1 Network | http://www.klan1.com");
 
 /**
  * This MUST to be reflected on the .htaccess, IF NOT rewriting WONT work!
