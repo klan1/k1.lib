@@ -472,108 +472,109 @@ class crudlexs_base_with_data extends crudlexs_base {
                     }
                 }
                 $table_constant_fields = $this->db_table->get_constant_fields();
-                foreach ($fields_to_change as $field_to_change) {
-                    foreach ($this->db_table_data_filtered as $index => $row_data) {
-                        if ($index === 0) {
-                            continue;
-                        }
-                        if (!array_key_exists($field_to_change, $row_data)) {
-                            trigger_error(__METHOD__ . "The field to change ($field_to_change) do no exist ", E_USER_NOTICE);
-                            continue;
-                        } else {
-                            // Let's clone the $tag_object to reuse it properly
-                            $tag_object_original = clone $tag_object;
-
-                            $custom_field_value_original = $custom_field_value;
-
-                            if ($this->skip_blanks_on_filters && empty($row_data[$field_to_change])) {
+                if (!empty($fields_to_change)) {
+                    foreach ($fields_to_change as $field_to_change) {
+                        foreach ($this->db_table_data_filtered as $index => $row_data) {
+                            if ($index === 0) {
                                 continue;
                             }
-
-                            $tag_object->set_value($row_data[$field_to_change]);
-
-                            if (is_object($tag_object)) {
-                                $a_tags = [];
-                                $tag_value = null;
-                                if (get_class($tag_object) == "k1lib\html\a") {
-                                    $tag_href = $tag_object->get_attribute("href");
-                                    $tag_value = $tag_object->get_value();
-                                } elseif (get_class($tag_object) == "k1lib\html\img") {
-                                    $tag_href = $tag_object->get_attribute("src");
-                                    $tag_value = $tag_object->get_attribute("alt");
-                                } else {
-                                    // Let's try to get an A object from this object searching for it
-                                    $a_tags = $tag_object->get_elements_by_tag("a");
-                                    if (count($a_tags) === 1) {
-                                        $tag_href = $a_tags[0]->get_attribute("href");
-                                        $tag_value = $a_tags[0]->get_value();
-                                    } else {
-                                        // TODO: CHECK THIS! - WTF line
-//                                    $tag_href = $tag_object->get_value();
-                                        $tag_href = NULL;
-                                    }
-                                }
-                                if (!empty($this->db_table_data_keys) && !empty($tag_href)) {
-                                    if (is_array($custom_field_value)) {
-                                        foreach ($custom_field_value as $key => $field_value) {
-                                            if (isset($row_data[$field_value])) {
-                                                $custom_field_value[$key] = $this->db_table_data[$index][$field_value];
-                                            }
-                                            if (isset($table_constant_fields[$field_value])) {
-                                                $custom_field_value[$key] = $table_constant_fields[$field_value];
-                                            }
-                                        }
-                                        $custom_field_value = implode("--", $custom_field_value);
-                                    }
-
-                                    $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
-                                    $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
-
-                                    /**
-                                     * HREF STR_REPLACE
-                                     */
-                                    $tag_href = str_replace("--rowkeys--", $key_array_text, $tag_href);
-                                    $tag_href = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_href);
-                                    // TODO: Why did I needed this ? WFT Line
-                                    $actual_custom_field_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $custom_field_value);
-                                    $tag_href = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_href);
-                                    $tag_href = str_replace("--authcode--", $auth_code, $tag_href);
-                                    $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
-                                    /**
-                                     * VALUE STR_REPLACE
-                                     */
-                                    $tag_value = str_replace("--rowkeys--", $key_array_text, $tag_value);
-                                    $tag_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_value);
-                                    $tag_value = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_value);
-                                    $tag_value = str_replace("--authcode--", $auth_code, $tag_value);
-                                    $tag_value = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_value);
-
-                                    if (get_class($tag_object) == "k1lib\html\a") {
-                                        $tag_object->set_attrib("href", $tag_href);
-                                        $tag_object->set_value($tag_value);
-                                    }
-                                    if (get_class($tag_object) == "k1lib\html\img") {
-                                        $tag_object->set_attrib("src", $tag_href);
-                                    }
-                                    // get-elements-by-tags fix
-                                    foreach ($a_tags as $a_tag) {
-                                        $a_tag->set_attrib("href", $tag_href);
-                                        $a_tag->set_value($tag_value);
-                                    }
-                                }
+                            if (!array_key_exists($field_to_change, $row_data)) {
+                                trigger_error(__METHOD__ . "The field to change ($field_to_change) do no exist ", E_USER_NOTICE);
+                                continue;
                             } else {
-                                trigger_error("Not a HTML_TAG Object", E_USER_WARNING);
+                                // Let's clone the $tag_object to reuse it properly
+                                $tag_object_original = clone $tag_object;
+
+                                $custom_field_value_original = $custom_field_value;
+
+                                if ($this->skip_blanks_on_filters && empty($row_data[$field_to_change])) {
+                                    continue;
+                                }
+
+                                $tag_object->set_value($row_data[$field_to_change]);
+
+                                if (is_object($tag_object)) {
+                                    $a_tags = [];
+                                    $tag_value = null;
+                                    if (get_class($tag_object) == "k1lib\html\a") {
+                                        $tag_href = $tag_object->get_attribute("href");
+                                        $tag_value = $tag_object->get_value();
+                                    } elseif (get_class($tag_object) == "k1lib\html\img") {
+                                        $tag_href = $tag_object->get_attribute("src");
+                                        $tag_value = $tag_object->get_attribute("alt");
+                                    } else {
+                                        // Let's try to get an A object from this object searching for it
+                                        $a_tags = $tag_object->get_elements_by_tag("a");
+                                        if (count($a_tags) === 1) {
+                                            $tag_href = $a_tags[0]->get_attribute("href");
+                                            $tag_value = $a_tags[0]->get_value();
+                                        } else {
+                                            // TODO: CHECK THIS! - WTF line
+//                                    $tag_href = $tag_object->get_value();
+                                            $tag_href = NULL;
+                                        }
+                                    }
+                                    if (!empty($this->db_table_data_keys) && !empty($tag_href)) {
+                                        if (is_array($custom_field_value)) {
+                                            foreach ($custom_field_value as $key => $field_value) {
+                                                if (isset($row_data[$field_value])) {
+                                                    $custom_field_value[$key] = $this->db_table_data[$index][$field_value];
+                                                }
+                                                if (isset($table_constant_fields[$field_value])) {
+                                                    $custom_field_value[$key] = $table_constant_fields[$field_value];
+                                                }
+                                            }
+                                            $custom_field_value = implode("--", $custom_field_value);
+                                        }
+
+                                        $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
+                                        $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
+
+                                        /**
+                                         * HREF STR_REPLACE
+                                         */
+                                        $tag_href = str_replace("--rowkeys--", $key_array_text, $tag_href);
+                                        $tag_href = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_href);
+                                        // TODO: Why did I needed this ? WFT Line
+                                        $actual_custom_field_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $custom_field_value);
+                                        $tag_href = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_href);
+                                        $tag_href = str_replace("--authcode--", $auth_code, $tag_href);
+                                        $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
+                                        /**
+                                         * VALUE STR_REPLACE
+                                         */
+                                        $tag_value = str_replace("--rowkeys--", $key_array_text, $tag_value);
+                                        $tag_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_value);
+                                        $tag_value = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_value);
+                                        $tag_value = str_replace("--authcode--", $auth_code, $tag_value);
+                                        $tag_value = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_value);
+
+                                        if (get_class($tag_object) == "k1lib\html\a") {
+                                            $tag_object->set_attrib("href", $tag_href);
+                                            $tag_object->set_value($tag_value);
+                                        }
+                                        if (get_class($tag_object) == "k1lib\html\img") {
+                                            $tag_object->set_attrib("src", $tag_href);
+                                        }
+                                        // get-elements-by-tags fix
+                                        foreach ($a_tags as $a_tag) {
+                                            $a_tag->set_attrib("href", $tag_href);
+                                            $a_tag->set_value($tag_value);
+                                        }
+                                    }
+                                } else {
+                                    trigger_error("Not a HTML_TAG Object", E_USER_WARNING);
+                                }
+                                $this->db_table_data_filtered[$index][$field_to_change] = $tag_object;
+                                // Clean it... $tag_object 
+                                unset($tag_object);
+                                // Let's clone the original to re use it
+                                $tag_object = clone $tag_object_original;
+                                $custom_field_value = $custom_field_value_original;
                             }
-                            $this->db_table_data_filtered[$index][$field_to_change] = $tag_object;
-                            // Clean it... $tag_object 
-                            unset($tag_object);
-                            // Let's clone the original to re use it
-                            $tag_object = clone $tag_object_original;
-                            $custom_field_value = $custom_field_value_original;
                         }
                     }
                 }
-
                 return TRUE;
             }
         } else {

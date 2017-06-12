@@ -33,6 +33,7 @@ class board_read extends board_base implements board_interface {
     protected $related_edit_url = NULL;
     protected $related_apply_filters = TRUE;
     protected $related_custom_field_labels = [];
+    protected $related_do_pagination = TRUE;
     //RELATED HTML OBJECTS
     /**
      * @var  \k1lib\html\a
@@ -256,7 +257,7 @@ class board_read extends board_base implements board_interface {
 
             $this->related_list->do_html_object()->append_to($detail_div);
             $this->related_html_table_object = $this->related_list->get_html_table();
-            if ($db_table->get_total_rows() > $this->related_rows_to_show) {
+            if ($db_table->get_total_rows() > $this->related_rows_to_show && $this->related_do_pagination) {
                 $this->related_list->do_pagination()->append_to($detail_div);
                 $this->related_list->do_row_stats()->append_to($detail_div);
             }
@@ -419,6 +420,10 @@ class board_read extends board_base implements board_interface {
 
     public function set_related_show_all_data($related_show_all_data) {
         $this->related_show_all_data = $related_show_all_data;
+    }
+
+    public function set_related_do_pagination($related_do_pagination) {
+        $this->related_do_pagination = $related_do_pagination;
     }
 
     /**
