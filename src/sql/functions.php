@@ -449,7 +449,7 @@ function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
                 $data_string = array_to_sql_values($data);
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
-            d($insert_sql);
+//            d($insert_sql);
             $insert = $db->exec($insert_sql);
 
             if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {

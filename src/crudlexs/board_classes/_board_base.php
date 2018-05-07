@@ -101,10 +101,13 @@ class board_base {
          * Search util hack
          */
         $post_data_to_use = \k1lib\common\unserialize_var("post-data-to-use");
+//        $post_data_table_config = \k1lib\common\unserialize_var("post-data-table-config");
+
         if (!empty($post_data_to_use)) {
-            $_POST = $post_data_to_use;
+//            $_POST = $post_data_to_use;
             $this->skip_form_action = TRUE;
-            \k1lib\common\unset_serialize_var("post-data-to-use");
+//            \k1lib\common\unset_serialize_var("post-data-to-use");
+//            \k1lib\common\unset_serialize_var("post-data-table-config");
         }
     }
 
