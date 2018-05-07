@@ -187,6 +187,36 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
     function catch_post_data() {
         $this->do_file_uploads_validation();
         $this->do_password_fields_validation();
+        /**
+         * Search util hack
+         */
+        $post_data_to_use = \k1lib\common\unserialize_var("post-data-to-use");
+        $post_data_table_config = \k1lib\common\unserialize_var("post-data-table-config");
+        /**
+         * lets fix the non-same key name
+         */
+        $fk_found_array = [];
+        $found_fk_key = false;
+
+        foreach ($post_data_table_config as $field => $field_config) {
+            if (!empty($field_config['refereced_column_config'])) {
+                $fk_field_name = $field_config['refereced_column_config']['field'];
+                foreach ($post_data_to_use as $field_current => $value) {
+                    if (($field_current == $fk_field_name) && ($field != $field_current)) {
+                        $fk_found_array[$field] = $value;
+                        $found_fk_key = true;
+                    }
+                }
+            }
+        }
+        ///
+        if (!empty($post_data_to_use)) {
+            $_POST = $post_data_to_use;
+            \k1lib\common\unset_serialize_var("post-data-to-use");
+            \k1lib\common\unset_serialize_var("post-data-table-config");
+        }
+
+
         $_POST = \k1lib\forms\check_all_incomming_vars($_POST);
 
         $this->post_incoming_array = array_merge($this->post_incoming_array, $_POST);
@@ -198,7 +228,11 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 if ($this->do_table_field_name_encrypt) {
                     $new_post_data = [];
                     foreach ($this->post_incoming_array as $field => $value) {
-                        $new_post_data[$this->decrypt_field_name($field)] = $value;
+                        $decrypt_field_name = $this->decrypt_field_name($field);
+                        if (array_key_exists($decrypt_field_name, $fk_found_array)) {
+                            $value = $fk_found_array[$decrypt_field_name];
+                        }
+                        $new_post_data[$decrypt_field_name] = $value;
                     }
                     $this->post_incoming_array = $new_post_data;
                     unset($new_post_data);
