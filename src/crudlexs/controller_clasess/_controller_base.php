@@ -434,6 +434,23 @@ class controller_base {
                 $related_table = $db_table_name;
                 $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
                 $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                /**
+                 * lets fix the non-same key name
+                 */
+                $db_table_config = $this->db_table->get_db_table_config();
+                foreach ($db_table_config as $field => $field_config) {
+                    if (!empty($field_config['refereced_column_config'])) {
+                        $fk_field_name = $field_config['refereced_column_config']['field'];
+                        foreach ($related_url_keys_array as $field_current => $value) {
+                            if (($field_current == $fk_field_name) && ($field != $field_current)) {
+                                $related_url_keys_array[$field] = $value;
+                                unset($related_url_keys_array[$field_current]);
+                            }
+                        }
+                    }
+                }
+                $related_url_keys_array = \k1lib\common\clean_array_with_guide($related_url_keys_array, $db_table_config);
+                /////
                 $keys_array_to_return = $related_url_keys_array;
                 $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
@@ -473,6 +490,23 @@ class controller_base {
                 $related_table = $db_table_name;
                 $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
                 $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                /**
+                 * lets fix the non-same key name
+                 */
+                $db_table_config = $this->db_table->get_db_table_config();
+                foreach ($db_table_config as $field => $field_config) {
+                    if (!empty($field_config['refereced_column_config'])) {
+                        $fk_field_name = $field_config['refereced_column_config']['field'];
+                        foreach ($related_url_keys_array as $field_current => $value) {
+                            if (($field_current == $fk_field_name) && ($field != $field_current)) {
+                                $related_url_keys_array[$field] = $value;
+                                unset($related_url_keys_array[$field_current]);
+                            }
+                        }
+                    }
+                }
+                $related_url_keys_array = \k1lib\common\clean_array_with_guide($related_url_keys_array, $db_table_config);
+                /////
                 $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
                     $this->db_table->set_query_filter($related_url_keys_array, TRUE);
