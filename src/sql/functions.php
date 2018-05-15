@@ -783,17 +783,34 @@ function get_db_table_label_fields_from_row($row_data, $db_table_config) {
     }
 }
 
-function get_fk_field_label(\PDO $db, $table_name, array $url_key_array = Array()) {
-    if (!is_string($table_name)) {
-        trigger_error("\$table_name must to be a String", E_USER_ERROR);
+function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [], $source_table_config = []) {
+
+    /**
+     * lets fix the non-same key name
+     */
+//    $source_table_config = $this->db_table->get_db_table_config();
+    foreach ($source_table_config as $field => $field_config) {
+        if (!empty($field_config['refereced_column_config'])) {
+            $fk_field_name = $field_config['refereced_column_config']['field'];
+            foreach ($url_key_array as $field_current => $value) {
+                if (($field_current == $field) && ($fk_field_name != $field_current)) {
+                    unset($url_key_array[$field_current]);
+                    $url_key_array[$fk_field_name] = $value;
+                }
+            }
+        }
     }
-    $fk_table_config = get_db_table_config($db, $table_name);
+
+    if (!is_string($fk_table_name)) {
+        trigger_error("\$fk_table_name must to be a String", E_USER_ERROR);
+    }
+    $fk_table_config = get_db_table_config($db, $fk_table_name);
     $fk_table_label_fields = get_db_table_label_fields($fk_table_config);
 
     if (!empty($fk_table_label_fields)) {
         $fk_table_label_fields_text = implode(",", $fk_table_label_fields);
         $fk_where_condition = table_keys_to_where_condition($url_key_array, $fk_table_config);
-        $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM $table_name WHERE $fk_where_condition";
+        $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM $fk_table_name WHERE $fk_where_condition";
         $sql_result = sql_query($db, $fk_sql_query, FALSE);
         return implode(" ", $sql_result);
     } else {
