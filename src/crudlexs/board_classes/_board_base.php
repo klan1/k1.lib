@@ -237,4 +237,8 @@ class board_base {
         $this->notifications_div_id = $notifications_div_id;
     }
 
+    function set_skip_form_action($skip_form_action) {
+        $this->skip_form_action = $skip_form_action;
+    }
+
 }

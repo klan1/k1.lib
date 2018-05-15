@@ -434,6 +434,9 @@ class class_db_table {
     }
 
     function get_query_sql() {
+        if (empty($this->query_sql)) {
+            $this->generate_sql_query();
+        }
         return $this->query_sql;
     }
 
@@ -513,7 +516,7 @@ class class_db_table {
         if ($this->generate_sql_query()) {
             $this->total_rows_result = \k1lib\sql\sql_query($this->db, $this->query_sql_total_rows, FALSE, FALSE);
             if ($this->total_rows_result) {
-                return $this->total_rows_result['num_rows'];
+                return (int) $this->total_rows_result['num_rows'];
             } else {
                 return NULL;
             }
@@ -615,7 +618,7 @@ class class_db_table {
             header("Pragma: no-cache");
             header("Expires: 0");
             $out = fopen("php://output", 'w');
-            fwrite($out, pack("CCC",0xef,0xbb,0xbf));
+            fwrite($out, pack("CCC", 0xef, 0xbb, 0xbf));
             foreach ($data as $data) {
                 fputcsv($out, $data, ",");
             }

@@ -113,6 +113,23 @@ function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = 
 }
 
 /**
+ * This function will avoid the assignation and post unset of the index to rename
+ * @param array $array
+ * @param string $key_to_rename
+ * @param string $new_key_name
+ * @return boolean TRUE on success or FALSE on non exist key on the array
+ */
+function array_rename_key(&$array, $key_to_rename, $new_key_name) {
+    if (array_key_exists($key_to_rename, $array)) {
+        $array[$new_key_name] = $array[$key_to_rename];
+        unset($array[$key_to_rename]);
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+/**
  * Converts Booleans vars to text
  * @param Boolean $bolean
  * @param String $true_value Text to convert on TRUE

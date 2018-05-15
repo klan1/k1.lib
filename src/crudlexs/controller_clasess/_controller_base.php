@@ -462,8 +462,8 @@ class controller_base {
                     return FALSE;
                 }
             } else {
-                $this->board_create_object->set_is_enabled(FALSE);
-                DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
+//                $this->board_create_object->set_is_enabled(FALSE);
+//                DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
                 return FALSE;
             }
         }
