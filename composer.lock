@@ -4,8 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09251df06361177d85c3c9eac4f0643f",
+    "content-hash": "81f5905dbfb24f58e2ffcaa9aab98f1d",
     "packages": [
+        {
+            "name": "endyjasmi/cuid",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/endyjasmi/cuid.git",
+                "reference": "1cedc6f248c9c5cc67148fe3d0f95a6ba53d636d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/endyjasmi/cuid/zipball/1cedc6f248c9c5cc67148fe3d0f95a6ba53d636d",
+                "reference": "1cedc6f248c9c5cc67148fe3d0f95a6ba53d636d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "satooshi/php-coveralls": "0.*",
+                "squizlabs/php_codesniffer": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EndyJasmi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Endy Jasmi",
+                    "email": "endyjasmi@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Cuid php port",
+            "keywords": [
+                "UID",
+                "cuid",
+                "guid",
+                "id",
+                "uuid"
+            ],
+            "time": "2017-07-03T02:12:29+00:00"
+        },
         {
             "name": "klan1/k1.lib-dom",
             "version": "dev-master",
@@ -95,7 +144,7 @@
         },
         {
             "name": "ralouphie/getallheaders",
-            "version": "dev-master",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ralouphie/getallheaders.git",
@@ -197,9 +246,9 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "whichbrowser/parser": 20,
-        "ralouphie/getallheaders": 20,
-        "klan1/k1.lib-dom": 20
+        "klan1/k1.lib-dom": 20,
+        "endyjasmi/cuid": 20,
+        "whichbrowser/parser": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
