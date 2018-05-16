@@ -284,6 +284,56 @@ class session_plain {
         }
     }
 
+    /**
+     * Terminal info and unique finger_print
+     */
+
+    /**
+     * Get a unique ID as CUID
+     * @return string
+     */
+    public static function get_cuid() {
+        return \EndyJasmi\Cuid::make();
+    }
+
+    /**
+     * Get an array with browser parsed info
+     * @param string $user_agent
+     * @return array
+     */
+    public static function get_terminal_info_array($user_agent = NULL) {
+        if (empty($user_agent)) {
+            $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        }
+        $result = new \WhichBrowser\Parser($user_agent);
+
+        $terminar_array = [
+            'broser_name' => $result->browser->getName(),
+            'broser_version' => $result->browser->getVersion(),
+            'os_name' => $result->os->getName(),
+            'os_version' => $result->os->getName(),
+            'device_type' => $result->device->type,
+            'device_manufacturer' => $result->device->getManufacturer(),
+            'device_model' => $result->device->getModel(),
+        ];
+
+        return $terminar_array;
+    }
+
+    /**
+     * Get a browser fingerprint
+     * @return string
+     */
+    public static function get_terminal_fp($return_array = FALSE, $return_all = FALSE) {
+        d($headers = getallheaders());
+        unset($headers['Cookie']);
+        unset($headers['Cache-Control']);
+
+        $fp = md5(implode('-', $headers)) . \k1lib\MAGIC_VALUE;
+
+        return $fp;
+    }
+
 }
 
 class session_db extends session_plain {
