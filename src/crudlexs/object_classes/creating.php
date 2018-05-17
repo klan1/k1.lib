@@ -197,14 +197,15 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
          */
         $fk_found_array = [];
         $found_fk_key = false;
-
-        foreach ($post_data_table_config as $field => $field_config) {
-            if (!empty($field_config['refereced_column_config'])) {
-                $fk_field_name = $field_config['refereced_column_config']['field'];
-                foreach ($post_data_to_use as $field_current => $value) {
-                    if (($field_current == $fk_field_name) && ($field != $field_current)) {
-                        $fk_found_array[$field] = $value;
-                        $found_fk_key = true;
+        if (!empty($post_data_table_config)) {
+            foreach ($post_data_table_config as $field => $field_config) {
+                if (!empty($field_config['refereced_column_config'])) {
+                    $fk_field_name = $field_config['refereced_column_config']['field'];
+                    foreach ($post_data_to_use as $field_current => $value) {
+                        if (($field_current == $fk_field_name) && ($field != $field_current)) {
+                            $fk_found_array[$field] = $value;
+                            $found_fk_key = true;
+                        }
                     }
                 }
             }

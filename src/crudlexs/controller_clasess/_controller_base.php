@@ -437,6 +437,7 @@ class controller_base {
                 /**
                  * lets fix the non-same key name
                  */
+//                \k1lib\sql\resolve_fk_real_fields_names($related_url_keys_array, $this->db_table->get_db_table_config());
                 $db_table_config = $this->db_table->get_db_table_config();
                 foreach ($db_table_config as $field => $field_config) {
                     if (!empty($field_config['refereced_column_config'])) {

@@ -74,26 +74,6 @@ AND table_name = '{$table}'";
 //then delete the original pair of data
             unset($field_config[$key_original]);
         } // $field_config
-// FOREIGN KEYS
-        if (!empty($INFORMATION_SCHEMA_result)) {
-            foreach ($INFORMATION_SCHEMA_result as $info_row) {
-                if (!empty($info_row['POSITION_IN_UNIQUE_CONSTRAINT']) && ($info_row['COLUMN_NAME'] == $field_name)) {
-                    $field_config['refereced_table_name'] = $info_row['REFERENCED_TABLE_NAME'];
-                    $field_config['refereced_column_name'] = $info_row['REFERENCED_COLUMN_NAME'];
-                    if ($recursion) {
-                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion);
-                        $field_config['refereced_column_config'] = $referenced_table_config[$info_row['REFERENCED_COLUMN_NAME']];
-                    } else {
-                        $field_config['refereced_column_config'] = FALSE;
-                    }
-                    break;
-                } else {
-                    $field_config['refereced_table_name'] = FALSE;
-                    $field_config['refereced_column_name'] = FALSE;
-                    $field_config['refereced_column_config'] = FALSE;
-                }
-            }
-        }
         /*
          * DEFAULTS TAKE CARE !!
          */
@@ -265,6 +245,26 @@ AND table_name = '{$table}'";
         $field_config['table'] = $table;
 // SQL for selects
         $field_config['sql'] = "";
+// FOREIGN KEYS
+        if (!empty($INFORMATION_SCHEMA_result)) {
+            foreach ($INFORMATION_SCHEMA_result as $info_row) {
+                if (!empty($info_row['POSITION_IN_UNIQUE_CONSTRAINT']) && ($info_row['COLUMN_NAME'] == $field_name)) {
+                    $field_config['refereced_table_name'] = $info_row['REFERENCED_TABLE_NAME'];
+                    $field_config['refereced_column_name'] = $info_row['REFERENCED_COLUMN_NAME'];
+                    if ($recursion) {
+                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion);
+                        $field_config['refereced_column_config'] = $referenced_table_config[$info_row['REFERENCED_COLUMN_NAME']];
+                    } else {
+                        $field_config['refereced_column_config'] = FALSE;
+                    }
+                    break;
+                } else {
+                    $field_config['refereced_table_name'] = FALSE;
+                    $field_config['refereced_column_name'] = FALSE;
+                    $field_config['refereced_column_config'] = FALSE;
+                }
+            }
+        }
 
 // use the actual cycle data
         $config_array[$field_name] = $field_config;
@@ -783,23 +783,35 @@ function get_db_table_label_fields_from_row($row_data, $db_table_config) {
     }
 }
 
-function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [], $source_table_config = []) {
-
-    /**
-     * lets fix the non-same key name
-     */
-//    $source_table_config = $this->db_table->get_db_table_config();
-    foreach ($source_table_config as $field => $field_config) {
-        if (!empty($field_config['refereced_column_config'])) {
-            $fk_field_name = $field_config['refereced_column_config']['field'];
-            foreach ($url_key_array as $field_current => $value) {
-                if (($field_current == $field) && ($fk_field_name != $field_current)) {
-                    unset($url_key_array[$field_current]);
-                    $url_key_array[$fk_field_name] = $value;
-                }
+function resolve_fk_real_field_name(&$data_array_to_modify, $field_to_resolve, $table_config_array) {
+    if (!empty($table_config_array[$field_to_resolve]['refereced_column_config'])) {
+        $refereced_column_config = $table_config_array[$field_to_resolve]['refereced_column_config'];
+        while (!empty($refereced_column_config['refereced_column_config'])) {
+            $refereced_column_config = $refereced_column_config['refereced_column_config'];
+        }
+        $new_data_array_to_modify = [];
+        foreach ($data_array_to_modify as $key => $value) {
+            if ($key == $field_to_resolve) {
+                $new_data_array_to_modify[$refereced_column_config['field']] = $value;
+            } else {
+                $new_data_array_to_modify[$key] = $value;
             }
         }
+        $data_array_to_modify = $new_data_array_to_modify;
     }
+}
+
+function resolve_fk_real_fields_names(&$data_array_to_modify, $table_config_array) {
+    foreach ($data_array_to_modify as $field => $value) {
+        resolve_fk_real_field_name($data_array_to_modify, $field, $table_config_array);
+    }
+}
+
+function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [], $source_table_config = []) {
+    foreach ($url_key_array as $url_key_index => $url_key_value) {
+        
+    }
+    resolve_fk_real_field_name($url_key_array, $url_key_index, $source_table_config);
 
     if (!is_string($fk_table_name)) {
         trigger_error("\$fk_table_name must to be a String", E_USER_ERROR);
