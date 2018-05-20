@@ -3,6 +3,7 @@
 namespace k1lib\session;
 
 use k1lib\notifications\on_DOM as DOM_notifications;
+use \k1lib\crudlexs\class_db_table as class_db_table;
 
 class session_plain {
 
@@ -325,7 +326,7 @@ class session_plain {
      * @return string
      */
     public static function get_terminal_fp($return_array = FALSE, $return_all = FALSE) {
-        d($headers = getallheaders());
+        $headers = getallheaders();
         unset($headers['Cookie']);
         unset($headers['Cache-Control']);
 
@@ -667,6 +668,138 @@ class session_db extends session_plain {
         }
         setcookie($save_cookie_name, '', time() - (60 * 60 * 24), $path);
         parent::end_session();
+    }
+
+}
+
+class session_terminal_fp extends session_db {
+
+    /**
+     * @var string
+     */
+    private static $terminals_table_name = '';
+
+    /**
+     * @var string
+     */
+    private static $mobile_numbers_table_name = '';
+
+    /**
+     * @var string
+     */
+    private static $terminals_unique_table_name = '';
+
+    /**
+     * @var \k1lib\crudlexs\class_db_table
+     */
+    public $terminals_table;
+
+    /**
+     * @var \k1lib\crudlexs\class_db_table
+     */
+    public $mobile_nombers_table;
+
+    /**
+     * @var \k1lib\crudlexs\class_db_table
+     */
+    public $terminals_unique_table;
+
+    /**
+     * @var string
+     */
+    private static $current_terminal_fp = NULL;
+
+    /**
+     *
+     * @var Array
+     */
+    private static $current_terminal_fp_data = [];
+
+    /**
+     * 
+     * @param string $terminals_table_name
+     * @param string $mobile_numbers_table_name
+     * @param string $terminals_unique_table_name
+     */
+    public static function config($terminals_table_name, $mobile_numbers_table_name, $terminals_unique_table_name) {
+        self::$terminals_unique_table_name = $terminals_unique_table_name;
+        self::$terminals_table_name = $terminals_table_name;
+        self::$mobile_numbers_table_name = $mobile_numbers_table_name;
+    }
+
+    function __construct(\PDO $db) {
+        // Parent assigns the db object to $db_object
+        parent::__construct($db);
+
+        /**
+         * OPEN FP SYSTEM TABLES
+         */
+        if (!empty(self::$terminals_table_name)) {
+            $this->terminals_table = new class_db_table($db, self::$terminals_table_name);
+            if (!$this->terminals_table->get_state()) {
+                trigger_error('Terminals Table "' . self::$terminals_table_name . '" not found', E_USER_ERROR);
+            } else {
+//                d($this->terminals_table->get_db_table_config());
+            }
+        } else {
+            trigger_error('Terminals Table "' . self::$terminals_table_name . '" not found', E_USER_ERROR);
+        }
+
+        if (!empty(self::$mobile_numbers_table_name)) {
+            $this->mobile_nombers_table = new class_db_table($db, self::$mobile_numbers_table_name);
+            if (!$this->mobile_nombers_table->get_state()) {
+                trigger_error('Mobile numbers Table "' . self::$mobile_numbers_table_name . '" not found', E_USER_ERROR);
+            } else {
+//                d($this->mobile_nombers_table->get_db_table_config());
+            }
+        } else {
+            trigger_error('Mobile numbers Table "' . self::$mobile_numbers_table_name . '" not found', E_USER_ERROR);
+        }
+        if (!empty(self::$terminals_unique_table_name)) {
+            $this->terminals_unique_table = new class_db_table($db, self::$terminals_unique_table_name);
+            if (!$this->terminals_unique_table->get_state()) {
+                trigger_error('Unique Terminal-Numbers Table "' . self::$terminals_unique_table_name . '" not found', E_USER_ERROR);
+            } else {
+//                d($this->terminals_unique_table->get_db_table_config());
+            }
+        } else {
+            trigger_error('Unique Terminal-Numbers Table "' . self::$terminals_unique_table_name . '" not found', E_USER_ERROR);
+        }
+    }
+
+    public static function start_session() {
+
+        parent::start_session($bad_cookie_redirection_url = './');
+        /**
+         * INIT DATA ON TABLES
+         */
+        $session_terminal_coockie_name = self::get_session_name() . '-broweser-fp';
+        // FP Coockie SET or READ
+        if (empty($_COOKIE[$session_terminal_coockie_name])) {
+            $cookie_value = self::$current_terminal_fp . ',' . self::get_cuid();
+            setcookie($session_terminal_coockie_name, $cookie_value, strtotime('+365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
+            d('coockie seted: ' . $cookie_value);
+        } else {
+            $cookie_value = $_COOKIE[$session_terminal_coockie_name];
+            if (strstr($cookie_value, ',') === FALSE) {
+                setcookie($session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
+                \k1lib\html\html_header_go($bad_cookie_redirection_url);
+            } else {
+                $cookie_data = explode(',', $cookie_value);
+                self::$current_terminal_fp = $cookie_data[1];
+                self::$current_terminal_fp = $cookie_data[1];
+                d('coockie readed: ' . self::$current_terminal_fp);
+            }
+        }
+        // 
+
+        self::$current_terminal_fp_data = self::get_terminal_info_array();
+        d(self::$current_terminal_fp_data);
+
+        // check the actual 
+//        d(session_fp::get_cuid());
+//        d(session_fp::get_terminal_info_array());
+//        d(session_fp::get_terminal_fp());
     }
 
 }

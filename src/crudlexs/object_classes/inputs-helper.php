@@ -10,6 +10,8 @@ class input_helper {
     static $url_to_search_fk_data = APP_URL . "general-utils/select-row-keys/";
     static $main_css = "";
     static private $fk_fields_to_skip = [];
+    static public $boolean_true = NULL;
+    static public $boolean_false = NULL;
 
     static function password_type(creating $crudlex_obj, $field, $case = "create") {
         // First we have the CLEAR the password data, we do not need it!
@@ -134,6 +136,17 @@ class input_helper {
           </div>
          */
         // Row to apply is constant coz this is CREATE or EDIT and there is allways just 1 set of data to manipulate.
+//        d(self::$boolean_true, true);
+        if (self::$boolean_true === NULL) {
+//            d('yes');
+            self::$boolean_true = \k1lib\common_strings::$yes;
+        }
+//        d(self::$boolean_false, true);
+        if (self::$boolean_false === NULL) {
+//            d('no');
+            self::$boolean_false = \k1lib\common_strings::$no;
+        }
+
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
 
 
@@ -141,7 +154,7 @@ class input_helper {
         $input_div->link_value_obj(new \k1lib\html\span('hidden'));
 
         $input_yes = new \k1lib\html\input("radio", $field_encrypted, '1');
-        $label_yes = new \k1lib\html\label(\k1lib\common_strings::$yes, $field_encrypted);
+        $label_yes = new \k1lib\html\label(self::$boolean_true, $field_encrypted);
         $input_yes->post_code($label_yes->generate());
         $input_yes->append_to($input_div);
 
@@ -150,7 +163,7 @@ class input_helper {
         }
 
         $input_no = new \k1lib\html\input("radio", $field_encrypted, '0');
-        $label_no = new \k1lib\html\label(\k1lib\common_strings::$no, $field_encrypted);
+        $label_no = new \k1lib\html\label(self::$boolean_false, $field_encrypted);
         $input_no->post_code($label_no->generate());
         $input_no->append_to($input_div);
 

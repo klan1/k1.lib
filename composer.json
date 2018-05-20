@@ -20,7 +20,8 @@
         "klan1/k1.lib-dom": "dev-master",
         "endyjasmi/cuid": "dev-master",
         "ralouphie/getallheaders": "2.0.5",
-        "whichbrowser/parser": "dev-master"
+        "whichbrowser/parser": "dev-master",
+        "ramsey/uuid": "3.7.3"
     },
     "autoload": {
         "files": ["src/init.php"]
