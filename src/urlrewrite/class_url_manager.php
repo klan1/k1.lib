@@ -71,7 +71,7 @@ class url {
             }
             // the name var has to have a value
             if ($name == "") {
-                k1lib_common\show_error("The level name must have a value", __FUNCTION__, TRUE);
+                trigger_error("The level name must have a value : " . __FUNCTION__, E_USER_ERROR);
             }
             //convert the URL string into an array separated by "/" character
             $exploded_url = explode("/", $_GET[\k1lib\URL_REWRITE_VAR_NAME]);
