@@ -4,6 +4,8 @@ namespace k1lib\session;
 
 use k1lib\notifications\on_DOM as DOM_notifications;
 use \k1lib\crudlexs\class_db_table as class_db_table;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
 class session_plain {
 
@@ -309,8 +311,8 @@ class session_plain {
         $result = new \WhichBrowser\Parser($user_agent);
 
         $terminar_array = [
-            'broser_name' => $result->browser->getName(),
-            'broser_version' => $result->browser->getVersion(),
+            'browser_name' => $result->browser->getName(),
+            'browser_version' => $result->browser->getVersion(),
             'os_name' => $result->os->getName(),
             'os_version' => $result->os->getName(),
             'device_type' => $result->device->type,
@@ -325,14 +327,18 @@ class session_plain {
      * Get a browser fingerprint
      * @return string
      */
-    public static function get_terminal_fp($return_array = FALSE, $return_all = FALSE) {
+    public static function get_browser_fp($return_array = FALSE, $return_all = FALSE) {
         $headers = getallheaders();
         unset($headers['Cookie']);
         unset($headers['Cache-Control']);
+        ksort($headers);
 
-        $fp = md5(implode('-', $headers)) . \k1lib\MAGIC_VALUE;
-
-        return $fp;
+        if ($return_array) {
+            return $headers;
+        } else {
+            $fp = md5(implode('-', $headers)) . \k1lib\MAGIC_VALUE;
+            return $fp;
+        }
     }
 
 }
@@ -672,7 +678,7 @@ class session_db extends session_plain {
 
 }
 
-class session_terminal_fp extends session_db {
+class session_browser_fp extends session_db {
 
     /**
      * @var string
@@ -690,30 +696,40 @@ class session_terminal_fp extends session_db {
     private static $terminals_unique_table_name = '';
 
     /**
-     * @var \k1lib\crudlexs\class_db_table
+     * @var string 
      */
-    public $terminals_table;
+    private static $session_terminal_coockie_name;
 
     /**
      * @var \k1lib\crudlexs\class_db_table
      */
-    public $mobile_nombers_table;
+    private static $terminals_table;
 
     /**
      * @var \k1lib\crudlexs\class_db_table
      */
-    public $terminals_unique_table;
+    private static $mobile_nombers_table;
+
+    /**
+     * @var \k1lib\crudlexs\class_db_table
+     */
+    private static $terminals_unique_table;
 
     /**
      * @var string
      */
-    private static $current_terminal_fp = NULL;
+    private static $current_terminal_uuid = NULL;
+
+    /**
+     * @var string
+     */
+    private static $current_browser_fp = NULL;
 
     /**
      *
      * @var Array
      */
-    private static $current_terminal_fp_data = [];
+    private static $current_browser_fp_data = [];
 
     /**
      * 
@@ -735,32 +751,32 @@ class session_terminal_fp extends session_db {
          * OPEN FP SYSTEM TABLES
          */
         if (!empty(self::$terminals_table_name)) {
-            $this->terminals_table = new class_db_table($db, self::$terminals_table_name);
-            if (!$this->terminals_table->get_state()) {
+            self::$terminals_table = new class_db_table($db, self::$terminals_table_name);
+            if (!self::$terminals_table->get_state()) {
                 trigger_error('Terminals Table "' . self::$terminals_table_name . '" not found', E_USER_ERROR);
             } else {
-//                d($this->terminals_table->get_db_table_config());
+//                d(self::$terminals_table->get_db_table_config());
             }
         } else {
             trigger_error('Terminals Table "' . self::$terminals_table_name . '" not found', E_USER_ERROR);
         }
 
         if (!empty(self::$mobile_numbers_table_name)) {
-            $this->mobile_nombers_table = new class_db_table($db, self::$mobile_numbers_table_name);
-            if (!$this->mobile_nombers_table->get_state()) {
+            self::$mobile_nombers_table = new class_db_table($db, self::$mobile_numbers_table_name);
+            if (!self::$mobile_nombers_table->get_state()) {
                 trigger_error('Mobile numbers Table "' . self::$mobile_numbers_table_name . '" not found', E_USER_ERROR);
             } else {
-//                d($this->mobile_nombers_table->get_db_table_config());
+//                d(self::$mobile_nombers_table->get_db_table_config());
             }
         } else {
             trigger_error('Mobile numbers Table "' . self::$mobile_numbers_table_name . '" not found', E_USER_ERROR);
         }
         if (!empty(self::$terminals_unique_table_name)) {
-            $this->terminals_unique_table = new class_db_table($db, self::$terminals_unique_table_name);
-            if (!$this->terminals_unique_table->get_state()) {
+            self::$terminals_unique_table = new class_db_table($db, self::$terminals_unique_table_name);
+            if (!self::$terminals_unique_table->get_state()) {
                 trigger_error('Unique Terminal-Numbers Table "' . self::$terminals_unique_table_name . '" not found', E_USER_ERROR);
             } else {
-//                d($this->terminals_unique_table->get_db_table_config());
+//                d(self::$terminals_unique_table->get_db_table_config());
             }
         } else {
             trigger_error('Unique Terminal-Numbers Table "' . self::$terminals_unique_table_name . '" not found', E_USER_ERROR);
@@ -768,38 +784,87 @@ class session_terminal_fp extends session_db {
     }
 
     public static function start_session() {
-
-        parent::start_session($bad_cookie_redirection_url = './');
+        parent::start_session();
+        $terminal_data = FALSE;
+        self::$session_terminal_coockie_name = self::get_session_name() . '-bfp-' . md5(self::get_browser_fp());
         /**
          * INIT DATA ON TABLES
          */
-        $session_terminal_coockie_name = self::get_session_name() . '-broweser-fp';
-        // FP Coockie SET or READ
-        if (empty($_COOKIE[$session_terminal_coockie_name])) {
-            $cookie_value = self::$current_terminal_fp . ',' . self::get_cuid();
-            setcookie($session_terminal_coockie_name, $cookie_value, strtotime('+365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
-            d('coockie seted: ' . $cookie_value);
-        } else {
-            $cookie_value = $_COOKIE[$session_terminal_coockie_name];
-            if (strstr($cookie_value, ',') === FALSE) {
-                setcookie($session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
-                \k1lib\html\html_header_go($bad_cookie_redirection_url);
+        $actual_url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        /**
+         * FP Cookie SET or READ
+         */
+        // SET COOKIE
+        if (!isset($_GET['bfp'])) {
+            if (empty($_COOKIE[self::$session_terminal_coockie_name])) {
+                // GET UUID
+                $uuid4 = Uuid::uuid4();
+                // COOKIE will have value as: uuid,browser_fp
+                $cookie_to_set_value = \k1lib\crypt::encrypt($uuid4->toString() . ',' . self::get_browser_fp());
+
+                // Set the COOKIE 1 year from now
+                setcookie(self::$session_terminal_coockie_name, $cookie_to_set_value, strtotime('+365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
+                // Redirects the browser to the ACTUAL URL with $_GET['bfp']=md5(browser_fp) to test the cookie is really set.
+                \k1lib\html\html_header_go(\k1lib\urlrewrite\url::do_url($actual_url, ['bfp' => md5(self::get_browser_fp()), 'last_url' => $actual_url]));
             } else {
-                $cookie_data = explode(',', $cookie_value);
-                self::$current_terminal_fp = $cookie_data[1];
-                self::$current_terminal_fp = $cookie_data[1];
-                d('coockie readed: ' . self::$current_terminal_fp);
+                $cookie_value = \k1lib\crypt::decrypt($_COOKIE[self::$session_terminal_coockie_name]);
+                if (strstr($cookie_value, ',') !== FALSE) {
+                    // Retrive COOKIE data as : $current_terminal_uuid,$current_browser_fp
+                    $cookie_data = explode(',', $cookie_value);
+                    self::$current_terminal_uuid = $cookie_data[0];
+                    self::$current_browser_fp = $cookie_data[1];
+                    //check Browser FP integrity
+                    if (self::$current_browser_fp == self::get_browser_fp()) {
+                        // Let's check if the current UUID exist as terminal on table
+                        self::$terminals_table->set_query_filter(['terminal_uuid' => self::$current_terminal_uuid], TRUE);
+                        $db_terminal_data = self::$terminals_table->get_data();
+                        if ($db_terminal_data) {
+                            $terminal_data = TRUE;
+                        } else {
+                            $terminad_data_array = array_merge(
+                                    ['terminal_uuid' => self::$current_terminal_uuid, 'browser_fp' => self::$current_browser_fp]
+                                    , self::get_terminal_info_array());
+                            $errors = [];
+                            if (self::$terminals_table->insert_data($terminad_data_array, $errors)) {
+//                            d($errors, true);
+                                $terminal_data = TRUE;
+                                DOM_notifications::queue_mesasage('Terminal has been created. UUID: ' . self::$current_terminal_uuid, "success");
+                            } else {
+                                DOM_notifications::queue_mesasage('Terminal data couldn\'t be saved.', "alert");
+                            }
+                        }
+                    } else {
+                        trigger_error('Data from COOKIE seems to be from another browser/terminal. Good try.', E_USER_ERROR);
+                        exit;
+                    }
+                } else {
+                    setcookie(self::$session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
+                    trigger_error('Your session cookie is rotten and we had to delete it, please, don\'t try to hack us, we make our best to do not let you.', E_USER_ERROR);
+                    exit;
+                }
+            }
+        } else {
+            /**
+             * When $_GET['bfp'] isset means that we need to run a COOKIE test
+             */
+            if ($_GET['bfp'] != md5(self::get_browser_fp())) {
+                trigger_error('Very bad BFP value, so, I dont want to keep going.', E_USER_ERROR);
+                exit;
+            } else {
+                if (empty($_COOKIE[self::$session_terminal_coockie_name])) {
+                    trigger_error('Browser do not accept cookies and is not possible to keep going. Please enable them.', E_USER_ERROR);
+                    exit;
+                } else {
+                    $get_vars = \k1lib\forms\check_all_incomming_vars($_GET);
+                    \k1lib\html\html_header_go($get_vars['last_url']);
+                }
             }
         }
-        // 
+    }
 
-        self::$current_terminal_fp_data = self::get_terminal_info_array();
-        d(self::$current_terminal_fp_data);
-
-        // check the actual 
-//        d(session_fp::get_cuid());
-//        d(session_fp::get_terminal_info_array());
-//        d(session_fp::get_terminal_fp());
+    public static function end_session($path = '/') {
+        setcookie(self::$session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
+        parent::end_session($path);
     }
 
 }
