@@ -10,7 +10,7 @@ class class_db_table {
      */
     public $db;
     private $db_table_name = FALSE;
-    private $db_table_config = FALSE;
+    public $db_table_config = FALSE;
     private $db_table_label_field = FALSE;
     private $db_table_show_rule = NULL;
 
