@@ -93,7 +93,7 @@ AND table_name = '{$table}'";
                 $max_legth = substr($max_legth, 0, -1);
                 if (strstr($max_legth, ",") !== FALSE) {
                     list($number, $decimal) = explode(",", $max_legth);
-                    $max_legth = $number + $decimal;
+                    $max_legth = (int) $number + (int) $decimal;
                 }
             }
         } else {
