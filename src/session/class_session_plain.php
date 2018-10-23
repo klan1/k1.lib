@@ -537,7 +537,6 @@ class session_db extends session_plain {
             $_COOKIE[$this->save_cookie_name] = $this->coockie_data;
         }
         if (isset($_COOKIE[$this->save_cookie_name])) {
-
             $data = \k1lib\crypt::decrypt($_COOKIE[$this->save_cookie_name]);
 
             if ($return_coockie_data) {
@@ -669,10 +668,10 @@ class session_db extends session_plain {
     public static function end_session($path = '/') {
 //        $this->save_cookie_name = session_plain::get_session_name() . "-store";
         $save_cookie_name = session_plain::get_session_name() . "-store";
-        if (isset($save_cookie_name)) {
-            unset($save_cookie_name);
-        }
         setcookie($save_cookie_name, '', time() - (60 * 60 * 24), $path);
+//        if (isset($save_cookie_name)) {
+//            unset($save_cookie_name);
+//        }
         parent::end_session();
     }
 
