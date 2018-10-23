@@ -9,45 +9,36 @@ class crypt {
      * @var string 64 character key, set as your own always !!
      */
     static protected $key = "bdb07f99c3de1895cdc8795b5091cf9b9aad67692564d88b87f50c91eba233da";
+    static private $cipher = "aes-128-gcm";
+    static private $iv_send_lenght = 24;
+    static private $tag_send_lenght = 32;
 
     static function encrypt($value) {
         if (is_array($value)) {
             $value = json_encode($value);
         }
+        $ivlen = openssl_cipher_iv_length(static::$cipher);
+        $iv = openssl_random_pseudo_bytes($ivlen);
+        $iv_64 = bin2hex($iv);
+        $ciphertext = openssl_encrypt($value, static::$cipher, static::$key, $options = 0, $iv, $tag);
+        $tag_64 = bin2hex($tag);
 
-        $key = pack('H*', self::$key);
-
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-
-        $ciphertext = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $value, MCRYPT_MODE_CBC, $iv);
-
-        $ciphertext = $iv . $ciphertext;
-
-        $ciphertext_base64 = base64_encode($ciphertext);
-        return $ciphertext_base64;
+        $return_value = ($iv_64 . $tag_64 . $ciphertext);
+        return $return_value;
     }
 
     static function decrypt($value) {
+        $value = ($value);
+        $iv_64 = substr($value, 0, static::$iv_send_lenght);
+        $tag_64 = substr($value, static::$iv_send_lenght, static::$tag_send_lenght);
+        $iv = hex2bin($iv_64);
+        $tag = hex2bin($tag_64);
+        $ciphertext = substr($value, static::$iv_send_lenght + static::$tag_send_lenght);
+        $original_plaintext = openssl_decrypt($ciphertext, static::$cipher, static::$key, $options = 0, $iv, $tag);
 
-        $key = pack('H*', self::$key);
-
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-
-        $ciphertext_dec = base64_decode($value);
-
-        $iv_dec = substr($ciphertext_dec, 0, $iv_size);
-
-        $ciphertext_dec = substr($ciphertext_dec, $iv_size);
-
-        $plaintext_dec = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
-
-        $plaintext_dec = trim($plaintext_dec);
         if (($json_test = json_decode($plaintext_dec, TRUE)) !== NULL) {
             $plaintext_dec = $json_test;
         }
-
         return $plaintext_dec;
     }
 
