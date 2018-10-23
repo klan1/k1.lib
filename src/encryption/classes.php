@@ -36,10 +36,10 @@ class crypt {
         $ciphertext = substr($value, static::$iv_send_lenght + static::$tag_send_lenght);
         $original_plaintext = openssl_decrypt($ciphertext, static::$cipher, static::$key, $options = 0, $iv, $tag);
 
-        if (($json_test = json_decode($plaintext_dec, TRUE)) !== NULL) {
-            $plaintext_dec = $json_test;
+        if (($json_test = json_decode($original_plaintext, TRUE)) !== NULL) {
+            $original_plaintext = $json_test;
         }
-        return $plaintext_dec;
+        return $original_plaintext;
     }
 
 }
