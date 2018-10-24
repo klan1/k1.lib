@@ -801,7 +801,7 @@ class session_browser_fp extends session_db {
                 // COOKIE will have value as: uuid,browser_fp
                 $cookie_to_set_value = \k1lib\crypt::encrypt($uuid4->toString() . ',' . self::get_browser_fp());
                 // Set the COOKIE 1 year from now
-                setcookie(self::$session_terminal_coockie_name, $cookie_to_set_value, strtotime('+365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
+                setcookie(self::$session_terminal_coockie_name, $cookie_to_set_value, strtotime('+365 days'), '/');
                 // Redirects the browser to the ACTUAL URL with $_GET['bfp']=md5(browser_fp) to test the cookie is really set.
                 \k1lib\html\html_header_go(\k1lib\urlrewrite\url::do_url($actual_url, ['bfp' => md5(self::get_browser_fp()), 'last_url' => $actual_url]));
             } else {
@@ -836,7 +836,7 @@ class session_browser_fp extends session_db {
                         exit;
                     }
                 } else {
-                    setcookie(self::$session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
+                    setcookie(self::$session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/');
                     trigger_error('Your session cookie is rotten and we had to delete it, please, don\'t try to hack us, we make our best to do not let you.', E_USER_ERROR);
                     exit;
                 }
@@ -861,7 +861,7 @@ class session_browser_fp extends session_db {
     }
 
     public static function end_session($path = '/') {
-        setcookie(self::$session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
+        setcookie(self::$session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/');
         parent::end_session($path);
     }
 
