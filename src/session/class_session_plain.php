@@ -800,7 +800,8 @@ class session_browser_fp extends session_db {
                 $uuid4 = Uuid::uuid4();
                 // COOKIE will have value as: uuid,browser_fp
                 $cookie_to_set_value = \k1lib\crypt::encrypt($uuid4->toString() . ',' . self::get_browser_fp());
-
+                d($cookie_to_set_value);
+                exit;
                 // Set the COOKIE 1 year from now
                 setcookie(self::$session_terminal_coockie_name, $cookie_to_set_value, strtotime('+365 days'), '/', $_SERVER['HTTP_HOST'], TRUE, TRUE);
                 // Redirects the browser to the ACTUAL URL with $_GET['bfp']=md5(browser_fp) to test the cookie is really set.
