@@ -5,14 +5,14 @@
 /**
  * K1 Lib loader
  *
- * PHP version 5.6
+ * PHP version 7.1
  *
  * LICENSE:  
  *
  * @author          Alejandro Trujillo J. <alejo@klan1.com>
- * @copyright       2015 Klan1 Network
+ * @copyright       2015-2019 Klan1 Network SAS
  * @license         Apache 2.0
- * @version         0.7
+ * @version         1.0.0-ALPHA
  * @since           File available since Release 0.1
  */
 /*
@@ -22,7 +22,7 @@
 namespace k1lib;
 
 const IN_K1LIB = TRUE;
-const VERSION = "0.9";
+const VERSION = "1.0-ALPHA";
 
 // Peace for user, info for the developer with ZendZerver and Z-Ray Live!
 error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);

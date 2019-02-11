@@ -440,7 +440,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
 }
 
 function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
-    if (\k1lib\db\handler::is_enabled()) {
+    if ($db->is_enabled()) {
         if (is_array($data)) {
             if (!@is_array($data[0])) {
                 $data_string = array_to_sql_set($db, $data);
