@@ -252,7 +252,8 @@ AND table_name = '{$table}'";
                     $field_config['refereced_table_name'] = $info_row['REFERENCED_TABLE_NAME'];
                     $field_config['refereced_column_name'] = $info_row['REFERENCED_COLUMN_NAME'];
                     if ($recursion) {
-                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion);
+                        // RECURSION FIX 
+                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], ($info_row['REFERENCED_TABLE_NAME'] != $table ? $recursion : FALSE));
                         $field_config['refereced_column_config'] = $referenced_table_config[$info_row['REFERENCED_COLUMN_NAME']];
                     } else {
                         $field_config['refereced_column_config'] = FALSE;
@@ -386,7 +387,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
 
-    if (\k1lib\db\handler::is_enabled()) {
+    if ($db->is_enabled()) {
         if (is_array($data)) {
             if (!is_array(@$data[0])) {
                 if (empty($db_table_config)) {
