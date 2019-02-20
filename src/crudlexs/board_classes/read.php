@@ -292,25 +292,24 @@ class board_read extends board_base implements board_interface {
                 if ($this->related_use_rows_key_text) {
                     if (count($custom_key_array) < 1) {
                         $current_row_keys_array = $this->read_object->get_row_keys_array();
-                    } else {
-                        $current_row_keys_array = $custom_key_array;
-                    }
-                    /**
-                     * lets fix the non-same key name
-                     */
-                    $db_table_config = $db_table->get_db_table_config();
-                    foreach ($db_table_config as $field => $field_config) {
-                        if (!empty($field_config['refereced_column_config'])) {
-                            $fk_field_name = $field_config['refereced_column_config']['field'];
-                            foreach ($current_row_keys_array as $field_current => $value) {
-                                if ($field_current == $field) {
-                                    unset($current_row_keys_array[$field_current]);
-                                    $current_row_keys_array[$fk_field_name] = $value;
+                        /**
+                         * lets fix the non-same key name
+                         */
+                        $db_table_config = $db_table->get_db_table_config();
+                        foreach ($db_table_config as $field => $field_config) {
+                            if (!empty($field_config['refereced_column_config'])) {
+                                $fk_field_name = $field_config['refereced_column_config']['field'];
+                                foreach ($current_row_keys_array as $field_current => $value) {
+                                    if ($field_current == $field) {
+                                        unset($current_row_keys_array[$field_current]);
+                                        $current_row_keys_array[$fk_field_name] = $value;
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        $current_row_keys_array = $custom_key_array;
                     }
-                    ///
                     $db_table->set_field_constants($current_row_keys_array);
                     $db_table->set_query_filter($current_row_keys_array, TRUE, $this->related_do_clean_array_on_query_filter);
                 }

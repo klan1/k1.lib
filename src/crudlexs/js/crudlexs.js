@@ -3,12 +3,15 @@ $(function () {
     $('#search-button').click(function () {
         $('#search-iframe').toggle();
     });
+//    $('.fi-page-search').click(function () {
+//        $('#fk-iframe').toggle();
+//    });
 });
 
 function use_select_row_keys(form_obj, url_to_submit) {
-    $('#fk-iframe').toggle();
+//    $('#fk-iframe').toggle();
     form_obj.action = url_to_submit;
-    form_obj.target = "fk-iframe";
+//    form_obj.target = "_self";
     form_obj.submit();
 }
 

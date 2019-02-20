@@ -151,6 +151,7 @@ class crudlexs_base_with_data extends crudlexs_base {
      */
     protected $db_table_data_keys = FALSE;
     // FILTERS
+
     /**
      *
      * @var Array 
