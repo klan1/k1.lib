@@ -440,7 +440,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
     }
 }
 
-function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
+function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = null) {
     if ($db->is_enabled()) {
         if (is_array($data)) {
             if (!@is_array($data[0])) {
@@ -450,7 +450,8 @@ function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
                 $data_string = array_to_sql_values($data);
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
-//            d($insert_sql);
+//            ($insert_sql);
+            $sql_query = $insert_sql;
             $insert = $db->exec($insert_sql);
 
             if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {
@@ -466,7 +467,7 @@ function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
                         }
                     }
                 } else {
-                    $error_data = "Error on Insert stament : " . $db->errorInfo()[2];
+                    $error_data = "Error on Insert stament : " . $db->errorInfo()[2] . "($insert_sql)";
                 }
             }
             if ($insert) {

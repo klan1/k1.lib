@@ -546,13 +546,13 @@ class class_db_table {
         }
     }
 
-    public function insert_data(array $data_to_insert, &$error_data = NULL) {
+    public function insert_data(array $data_to_insert, &$error_data = NULL, &$sql_query = NULL) {
         if (empty($data_to_insert)) {
             trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_insert, E_USER_WARNING);
             return FALSE;
         }
         $data_to_insert = array_merge($data_to_insert, $this->constant_fields);
-        return \k1lib\sql\sql_insert($this->db, $this->db_table_name, $data_to_insert, $error_data);
+        return \k1lib\sql\sql_insert($this->db, $this->db_table_name, $data_to_insert, $error_data, $sql_query);
     }
 
     /**
