@@ -20,6 +20,9 @@ const K1LIB_API_USE_TOKEN = TRUE;
 const K1LIB_API_DISABLE_TOKEN = FALSE;
 
 class api {
+
+    protected $allow_methods = 'POST,GET,PUT,DELETE';
+
     // DB conection object
 
     /**
@@ -64,6 +67,10 @@ class api {
          */
         ob_start();
 
+        header('Access-Control-Allow-Methods: ' . $this->allow_methods);
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: X-K1app-Api-Token,X-K1app-Magic-header,X-K1app-Api-Request-mode");
+
         /**
          * API config
          */
@@ -95,7 +102,7 @@ class api {
         if ($this->use_token) {
             $this->api_token = $http_headers['X-K1app-Api-Token'];
             if (empty($this->api_token)) {
-                $this->send_response(401, [], ['message' => 'Invalid token']);
+                $this->send_response(401, [$http_headers], ['message' => 'Invalid token']);
                 return FALSE;
             }
         }
@@ -103,9 +110,9 @@ class api {
          * TODO: implements the magic header
          */
         if ($this->use_magic_header) {
-            $this->magic_header = $http_headers['X-K1app-Magic-Value'];
+            $this->magic_header = $http_headers['X-K1app-Magic-Header'];
             if (empty($this->magic_header)) {
-                $this->send_response(401, [], ['message' => 'x-magic-value is not fount with the correct magic value']);
+                $this->send_response(401, [$http_headers], ['message' => 'x-magic-value is not fount with the correct magic value']);
                 return FALSE;
             }
         }
@@ -144,8 +151,6 @@ class api {
         /**
          * TODO: make selectable the allow methods
          */
-        header('Access-Control-Allow-Methods: POST,GET');
-        header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json; charset=utf-8");
         header("Expires: Tue, 03 Jul 2001 06:00:00 GMT");
         header("Last-Modified: {now} GMT");

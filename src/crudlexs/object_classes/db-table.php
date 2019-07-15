@@ -551,8 +551,8 @@ class class_db_table {
             trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_insert, E_USER_WARNING);
             return FALSE;
         }
-        $data_to_insert = array_merge($data_to_insert, $this->constant_fields);
-        return \k1lib\sql\sql_insert($this->db, $this->db_table_name, $data_to_insert, $error_data, $sql_query);
+        $data_to_insert_merged = array_merge($data_to_insert, $this->constant_fields);
+        return \k1lib\sql\sql_insert($this->db, $this->db_table_name, $data_to_insert_merged, $error_data, $sql_query);
     }
 
     /**
@@ -561,7 +561,7 @@ class class_db_table {
      * @param array $key_to_update
      * @return boolean
      */
-    public function update_data(array $data_to_update, array $key_to_update, &$error_data = NULL) {
+    public function update_data(array $data_to_update, array $key_to_update, &$error_data = NULL, &$sql_query = NULL) {
         if (empty($data_to_update)) {
             trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_update, E_USER_WARNING);
             return FALSE;
@@ -570,8 +570,8 @@ class class_db_table {
             trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_update_key, E_USER_WARNING);
             return FALSE;
         }
-        $data_to_update = array_merge($data_to_update, $this->constant_fields);
-        return \k1lib\sql\sql_update($this->db, $this->db_table_name, $data_to_update, $key_to_update, [], $error_data);
+        $data_to_update_merged = array_merge($data_to_update, $this->constant_fields);
+        return \k1lib\sql\sql_update($this->db, $this->db_table_name, $data_to_update_merged, $key_to_update, [], $error_data, $sql_query);
     }
 
     public function delete_data(Array $key_to_delete) {

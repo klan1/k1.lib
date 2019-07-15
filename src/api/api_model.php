@@ -86,18 +86,33 @@ class api_model {
         return $result;
     }
 
+    function update_data($keyfields) {
+        $data_to_update = $this->get_data_from_params();
+        echo "data to update " . print_r($data_to_update, TRUE);
+        $sql_query = null;
+        $result = $this->db_table->update_data($data_to_update, $keyfields, $this->errors, $sql_query);
+        echo "errors: {$this->errors}\n";
+        echo "sql: $sql_query\n";
+        if ($this->errors) {
+            print_r($data_to_update);
+            var_dump($this->errors);
+            echo "SQL: $sql_query";
+        }
+        return $result;
+    }
+
     function get_data_from_params() {
 //        print_r($this->db_table->get_db_table_name());
         $table_config = $this->db_table->get_db_table_config();
         $real_data = [];
         foreach ($table_config as $field => $config) {
             if (property_exists($this, $field)) {
-//                echo "$field - existe - ";
+                echo " | $field - existe - ";
                 if (!empty($this->{$field})) {
                     $real_data[$field] = $this->{$field};
                 }
             } else {
-//                echo "$field - NO existe - ";
+                echo " | $field - NO existe - ";
             }
         }
         return $real_data;

@@ -371,7 +371,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
  * @param array $db_table_config
  * @return boolean
  */
-function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array(), &$error_data = null) {
+function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array(), &$error_data = null, &$sql_query = null) {
     global $controller_errors;
 
     if (!is_string($table) || empty($table)) {
@@ -406,6 +406,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
 //            d($update_sql);
+            $sql_query = $update_sql;
             $update = $db->exec($update_sql);
 
             if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {

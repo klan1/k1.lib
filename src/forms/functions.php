@@ -182,6 +182,14 @@ function check_value_type($value, $type) {
                 $error_msg = "";
             }
             break;
+        case 'boolean-unsigned':
+            $regex = "/^[01]$/";
+            if (!preg_match($regex, $value)) {
+                $error_type = "$error_header_msg solo puede valer 0 o 1";
+            } else {
+                $error_msg = "";
+            }
+            break;
         case 'date':
             if (preg_match("/(?P<year>[0-9]{4})[\/-](?P<month>[0-9]{2})[\/-](?P<day>[0-9]{2})/", $value, $matches)) {
                 if (!checkdate($matches['month'], $matches['day'], $matches['year'])) {
@@ -352,8 +360,11 @@ function form_check_values(&$form_array, $table_array_config, $db = NULL) {
         $do_upload_file = FALSE;
         if (is_array($value)) {
             $do_upload_file = TRUE;
+            // Uniques on name name fix
+            $value['name'] = time() . '-' . $value['name'];
             $file_data = $value;
             $value = $value['name'];
+//            $form_array[$key]['name'] = $value;
             $form_array[$key] = $value;
         }
         /**
