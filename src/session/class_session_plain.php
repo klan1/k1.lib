@@ -846,7 +846,7 @@ class session_browser_fp extends session_db {
              * When $_GET['bfp'] isset means that we need to run a COOKIE test
              */
             if ($_GET['bfp'] != md5(self::get_browser_fp())) {
-                trigger_error('Very bad BFP value, so, I dont want to keep going.', E_USER_ERROR);
+                trigger_error('Very bad BFP value, so, I dont want to keep going. ' . self::get_browser_fp(), E_USER_ERROR);
                 exit;
             } else {
                 if (empty($_COOKIE[self::$session_terminal_coockie_name])) {

@@ -445,12 +445,14 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             /**
              * BUTTONS
              */
+            $submit_button = new \k1lib\html\input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
             if ($this->show_cancel_button) {
                 $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
+                $buttons_div = new \k1lib\html\foundation\label_value_row(NULL, "{$cancel_button} {$submit_button}");
+            } else {
+                $buttons_div = new \k1lib\html\foundation\label_value_row(NULL, "{$submit_button}");
             }
-            $submit_button = new \k1lib\html\input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
 
-            $buttons_div = new \k1lib\html\foundation\label_value_row(NULL, "{$cancel_button} {$submit_button}");
             $buttons_div->append_to($form_buttons);
             $buttons_div->col(1)->remove_childs();
             $buttons_div->col(2)->set_class("text-center", TRUE);

@@ -10,6 +10,7 @@ class template {
      */
     static private $enabled = FALSE;
     static private $template_path = NULL;
+    static private $templates_loaded = [];
 
 //    static private $js_path = NULL;
 //    static private $css_path = NULL;
@@ -59,17 +60,22 @@ class template {
     }
 
     static public function load_template($template_name) {
-        $template_name = str_replace('/', DIRECTORY_SEPARATOR, $template_name);
-        self::is_enabled(true);
-        if (is_string($template_name)) {
-            $template_to_load = self::template_exist($template_name);
-            if ($template_to_load) {
-                include $template_to_load;
+//        d($template_name);
+        if (!array_key_exists($template_name, self::$templates_loaded)) {
+            self::$templates_loaded[$template_name] = TRUE;
+//            d(self::$templates_loaded);
+            $template_name = str_replace('/', DIRECTORY_SEPARATOR, $template_name);
+            self::is_enabled(true);
+            if (is_string($template_name)) {
+                $template_to_load = self::template_exist($template_name);
+                if ($template_to_load) {
+                    include $template_to_load;
+                } else {
+                    trigger_error("Template ($template_name) do not exist", E_USER_ERROR);
+                }
             } else {
-                trigger_error("Template ($template_name) do not exist", E_USER_ERROR);
+                trigger_error("The template names value only can be string", E_USER_ERROR);
             }
-        } else {
-            trigger_error("The template names value only can be string", E_USER_ERROR);
         }
     }
 
