@@ -252,7 +252,8 @@ AND table_name = '{$table}'";
                     $field_config['refereced_table_name'] = $info_row['REFERENCED_TABLE_NAME'];
                     $field_config['refereced_column_name'] = $info_row['REFERENCED_COLUMN_NAME'];
                     if ($recursion) {
-                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], $recursion);
+                        // RECURSION FIX 
+                        $referenced_table_config = get_db_table_config($db, $info_row['REFERENCED_TABLE_NAME'], ($info_row['REFERENCED_TABLE_NAME'] != $table ? $recursion : FALSE));
                         $field_config['refereced_column_config'] = $referenced_table_config[$info_row['REFERENCED_COLUMN_NAME']];
                     } else {
                         $field_config['refereced_column_config'] = FALSE;
@@ -370,7 +371,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
  * @param array $db_table_config
  * @return boolean
  */
-function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array(), &$error_data = null) {
+function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array(), &$error_data = null, &$sql_query = null) {
     global $controller_errors;
 
     if (!is_string($table) || empty($table)) {
@@ -386,7 +387,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
 
-    if (\k1lib\db\handler::is_enabled()) {
+    if ($db->is_enabled()) {
         if (is_array($data)) {
             if (!is_array(@$data[0])) {
                 if (empty($db_table_config)) {
@@ -405,6 +406,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
                 die(__FUNCTION__ . ": only can work with a 1 dimension array");
             }
 //            d($update_sql);
+            $sql_query = $update_sql;
             $update = $db->exec($update_sql);
 
             if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {
@@ -439,8 +441,8 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
     }
 }
 
-function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
-    if (\k1lib\db\handler::is_enabled()) {
+function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = null) {
+    if ($db->is_enabled()) {
         if (is_array($data)) {
             if (!@is_array($data[0])) {
                 $data_string = array_to_sql_set($db, $data);
@@ -449,7 +451,8 @@ function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
                 $data_string = array_to_sql_values($data);
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
-//            d($insert_sql);
+//            ($insert_sql);
+            $sql_query = $insert_sql;
             $insert = $db->exec($insert_sql);
 
             if (isset($db->errorInfo()[2]) && !empty($db->errorInfo()[2])) {
@@ -465,7 +468,7 @@ function sql_insert(\PDO $db, $table, $data, &$error_data = null) {
                         }
                     }
                 } else {
-                    $error_data = "Error on Insert stament : " . $db->errorInfo()[2];
+                    $error_data = "Error on Insert stament : " . $db->errorInfo()[2] . "($insert_sql)";
                 }
             }
             if ($insert) {
@@ -822,9 +825,13 @@ function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [],
     if (!empty($fk_table_label_fields)) {
         $fk_table_label_fields_text = implode(",", $fk_table_label_fields);
         $fk_where_condition = table_keys_to_where_condition($url_key_array, $fk_table_config);
-        $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM $fk_table_name WHERE $fk_where_condition";
-        $sql_result = sql_query($db, $fk_sql_query, FALSE);
-        return implode(" ", $sql_result);
+        if (!empty($fk_where_condition)) {
+            $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM $fk_table_name WHERE $fk_where_condition";
+            $sql_result = sql_query($db, $fk_sql_query, FALSE);
+            return implode(" ", $sql_result);
+        } else {
+            return NULL;
+        }
     } else {
         return NULL;
     }

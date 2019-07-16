@@ -23,6 +23,7 @@ class board_read extends board_base implements board_interface {
     protected $related_use_rows_key_text = TRUE;
     protected $related_use_show_rule = "show-related";
     //RELATED CONFIG
+
     /**
      * @var listing
      */
@@ -35,6 +36,7 @@ class board_read extends board_base implements board_interface {
     protected $related_custom_field_labels = [];
     protected $related_do_pagination = TRUE;
     //RELATED HTML OBJECTS
+
     /**
      * @var  \k1lib\html\a
      */
@@ -213,12 +215,12 @@ class board_read extends board_base implements board_interface {
      * @param boolean $show_create
      * @return \k1lib\html\div|boolean
      */
-    public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE) {
+    public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new \k1lib\html\div();
 
-        $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url);
+        $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url, $custom_key_array);
 
 
         if (!empty($this->related_list)) {
@@ -234,7 +236,7 @@ class board_read extends board_base implements board_interface {
                 "back-url" => $_SERVER['REQUEST_URI'],
             ];
 
-            if ($data_loaded) {
+            if (isset($data_loaded) && $data_loaded) {
                 $all_data_url = url::do_url(APP_URL . $board_root . "/" . $board_list . "/{$current_row_keys_text}/", $get_vars, FALSE);
                 $this->related_html_object_show_all_data = \k1lib\html\get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
                 if ($this->related_show_all_data) {
@@ -262,7 +264,7 @@ class board_read extends board_base implements board_interface {
                 $this->related_list->do_row_stats()->append_to($detail_div);
             }
 
-            listing::$rows_per_page = $actual_rows_per_page;
+//            listing::$rows_per_page = $actual_rows_per_page;
         }
 // TODO: NONSENSE line !
 //        $this->set_related_show_new(TRUE);
@@ -277,7 +279,7 @@ class board_read extends board_base implements board_interface {
      * @param boolean $clear_url
      * @return \k1lib\crudlexs\listing|boolean
      */
-    public function do_related_list(class_db_table $db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url = FALSE) {
+    public function do_related_list(class_db_table $db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url = FALSE, $custom_key_array = []) {
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
 
@@ -288,23 +290,26 @@ class board_read extends board_base implements board_interface {
              */
             if ($db_table->get_state()) {
                 if ($this->related_use_rows_key_text) {
-                    $current_row_keys_array = $this->read_object->get_row_keys_array();
-                    /**
-                     * lets fix the non-same key name
-                     */
-                    $db_table_config = $db_table->get_db_table_config();
-                    foreach ($db_table_config as $field => $field_config) {
-                        if (!empty($field_config['refereced_column_config'])) {
-                            $fk_field_name = $field_config['refereced_column_config']['field'];
-                            foreach ($current_row_keys_array as $field_current => $value) {
-                                if ($field_current == $fk_field_name) {
-                                    $current_row_keys_array[$field] = $value;
-                                    unset($current_row_keys_array[$field_current]);
+                    if (count($custom_key_array) < 1) {
+                        $current_row_keys_array = $this->read_object->get_row_keys_array();
+                        /**
+                         * lets fix the non-same key name
+                         */
+                        $db_table_config = $db_table->get_db_table_config();
+                        foreach ($db_table_config as $field => $field_config) {
+                            if (!empty($field_config['refereced_column_config'])) {
+                                $fk_field_name = $field_config['refereced_column_config']['field'];
+                                foreach ($current_row_keys_array as $field_current => $value) {
+                                    if ($field_current == $field) {
+                                        unset($current_row_keys_array[$field_current]);
+                                        $current_row_keys_array[$fk_field_name] = $value;
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        $current_row_keys_array = $custom_key_array;
                     }
-                    ///
                     $db_table->set_field_constants($current_row_keys_array);
                     $db_table->set_query_filter($current_row_keys_array, TRUE, $this->related_do_clean_array_on_query_filter);
                 }

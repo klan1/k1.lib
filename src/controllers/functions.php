@@ -20,7 +20,7 @@ use k1lib\html\DOM as DOM;
  * @return string correct path to include the file name recived on $controller_name
  */
 //function load_controller($controller_name, $query_auto_load = TRUE) {
-function load_controller($controller_name, $controllers_path) {
+function load_controller($controller_name, $controllers_path, $return_error = FALSE, $api_mode = FALSE) {
 //    d($controllers_path);
 //    $controller_query_file = FALSE;
     if (is_string($controller_name)) {
@@ -37,7 +37,16 @@ function load_controller($controller_name, $controllers_path) {
                 // QUERY Auto load
                 return $controller_to_load;
             } else {
-                error_404($controller_name);
+                if (!$return_error) {
+                    if ($api_mode) {
+                        $error = new \k1lib\api\api();
+                        $error->send_response(400, ['message' => 'Not found: ' . $controller_name]);
+                    } else {
+                        error_404($controller_name);
+                    }
+                } else {
+                    return NULL;
+                }
 //                \trigger_error("The controller '{$controller_name}' could not be found on '{$controllers_path}'", E_USER_ERROR);
 //                return false;
             }
@@ -49,7 +58,8 @@ function load_controller($controller_name, $controllers_path) {
 }
 
 function error_404($non_found_name) {
-    header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found", true, 404);
+    http_response_code(404);
+    header("Access-Control-Allow-Origin: *");
     DOM::start();
     DOM::html()->body()->append_h1('404 Not found');
     DOM::html()->body()->append_p('The controller file \'' . $non_found_name . '\' is not on path.');

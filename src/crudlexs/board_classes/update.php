@@ -35,8 +35,8 @@ class board_update extends board_base implements board_interface {
         /**
          * IFRAME for KF tool
          */
-        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
-        DOM::html()->body()->content()->append_child_tail($fk_iframe);
+//        $fk_iframe = new \k1lib\html\iframe('./', 'utility-iframe', "fk-iframe");
+//        DOM::html()->body()->content()->append_child_tail($fk_iframe);
         
         if (!empty($this->row_keys_text)) {
 

@@ -33,8 +33,8 @@ class board_create extends board_base implements board_interface {
         /**
          * IFRAME for KF tool
          */
-        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
-        DOM::html()->body()->content()->append_child_tail($fk_iframe);
+//        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
+//        DOM::html()->body()->content()->append_child_tail($fk_iframe);
 
         $this->create_object->enable_foundation_form_check();
 

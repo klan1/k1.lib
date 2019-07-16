@@ -2,7 +2,8 @@
 
 namespace k1lib\urlrewrite;
 
-use k1lib_common as k1lib_common;
+use \k1lib_common;
+use \k1lib\api\api;
 
 class url {
 
@@ -27,6 +28,16 @@ class url {
     /**
      * Enable the engenie
      */
+    static private $api_mode = FALSE;
+
+    static function set_api_mode() {
+        self::$api_mode = TRUE;
+    }
+
+    static function get_api_mode() {
+        return self::$api_mode;
+    }
+
     static public function enable() {
         self::$enabled = TRUE;
         self::$levels_count = null;
@@ -92,7 +103,12 @@ class url {
                     return $url_data_level_value;
                 } else {
                     if ($required) {
-                        die("The URL value in the level {$level} is empty, the actual URL is bad formed " . __FUNCTION__);
+                        if (self::$api_mode === TRUE) {
+                            $error = new \k1lib\api\api();
+                            $error->send_response(500, ['message' => "The URL value in the level {$level} is empty, the actual URL is bad formed " . __FUNCTION__]);
+                        } else {
+                            die("The URL value in the level {$level} is empty, the actual URL is bad formed " . __FUNCTION__);
+                        }
                     } else {
                         return FALSE;
                     }
@@ -102,7 +118,12 @@ class url {
                     $GLOBALS[$name] = NULL;
                     return FALSE;
                 } else {
-                    trigger_error("The URL level {$level} requested do not exist and is required", E_USER_ERROR);
+                    if (self::$api_mode === TRUE) {
+                        $error = new \k1lib\api\api();
+                        $error->send_response(500, ['message' => "The URL level {$level} requested do not exist and is required"]);
+                    } else {
+                        trigger_error("The URL level {$level} requested do not exist and is required", E_USER_ERROR);
+                    }
                 }
             }
         } else {
@@ -111,7 +132,6 @@ class url {
     }
 
     static public function get_url_level_count() {
-
         return count(self::$url_data);
     }
 
@@ -359,15 +379,23 @@ class url {
         return self::do_url($url, [], FALSE);
     }
 
-    static function set_next_url_level($controller_path, $required_level = FALSE, $level_name = 'default') {
+    static function set_next_url_level($controller_path, $required_level = FALSE, $level_name = 'default', $return_non_existent_level = FALSE) {
         $next_url_level = self::get_url_level_count();
         // get the base URL to load the next one
         $actual_url = self::get_this_url();
         // get from the URL the next level value :   /$actual_url/next_level_value
         $next_directory_name = self::set_url_rewrite_var($next_url_level, $level_name, $required_level);
         if (!empty($next_directory_name)) {
-            $file_to_include = \k1lib\controllers\load_controller($next_directory_name, $controller_path . $actual_url);
-            return $file_to_include;
+            $file_to_include = \k1lib\controllers\load_controller($next_directory_name, $controller_path . $actual_url, $return_non_existent_level, self::$api_mode);
+            if (!empty($file_to_include)) {
+                return $file_to_include;
+            } else {
+                if ($return_non_existent_level) {
+                    return [$level_name => $next_directory_name];
+                } else {
+                    return FALSE;
+                }
+            }
         } else {
             return FALSE;
         }
