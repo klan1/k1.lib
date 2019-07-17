@@ -1,4 +1,5 @@
 <?php
+
 /**
  * New DB class to make easier multiple DB connections
  */
@@ -133,6 +134,30 @@ class PDO_k1 extends \PDO {
         }
 
         return $result;
+    }
+
+    function get_db_dsn() {
+        return $this->db_dsn;
+    }
+
+    function get_db_name() {
+        return $this->db_name;
+    }
+
+    function get_db_user() {
+        return $this->db_user;
+    }
+
+    function get_db_password() {
+        return $this->db_password;
+    }
+
+    function get_db_host() {
+        return $this->db_host;
+    }
+
+    function get_db_port() {
+        return $this->db_port;
     }
 
 }
