@@ -1,5 +1,4 @@
 <?php
-
 /**
  * New DB class to make easier multiple DB connections
  */
@@ -159,5 +158,4 @@ class PDO_k1 extends \PDO {
     function get_db_port() {
         return $this->db_port;
     }
-
 }
