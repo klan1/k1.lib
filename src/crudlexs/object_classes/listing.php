@@ -118,7 +118,7 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             /**
              * Create the HTML table from DATA lodaed 
              */
-            $this->html_table = new \k1lib\html\foundation\table_from_data("k1lib-crudlexs-list {$table_alias}");
+            $this->html_table = new \k1lib\html\foundation\table_from_data("k1lib-crudlexs-list responsive-card-table unstriped {$table_alias}");
             $this->html_table->append_to($this->div_container);
             $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
             $this->html_table->set_data($this->db_table_data_filtered);
