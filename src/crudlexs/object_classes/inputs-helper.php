@@ -227,7 +227,7 @@ class input_helper {
         } elseif (strstr("date,date-past,date-future", $crudlex_obj->db_table->get_field_config($field, 'validation')) !== FALSE) {
             $div_input_group = new \k1lib\html\div("input-group");
 
-            $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field datepicker");
+            $input_tag = new \k1lib\html\input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field");
             $input_tag->set_attrib("placeholder", input_helper_strings::$input_date_placeholder);
             $input_tag->set_attrib("k1lib-data-datepickup", TRUE);
             $input_tag->append_to($div_input_group);
