@@ -22,7 +22,7 @@
 namespace k1lib;
 
 const IN_K1LIB = TRUE;
-const VERSION = "1.4-ALPHA";
+const VERSION = "1.5-ALPHA";
 
 // Peace for user, info for the developer with ZendZerver and Z-Ray Live!
 error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
