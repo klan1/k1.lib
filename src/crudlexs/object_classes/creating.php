@@ -323,8 +323,8 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             if (isset($this->post_validation_errors[$field])) {
                 $div_error = new \k1lib\html\foundation\grid_row(2);
 
-                $div_input = $div_error->col(1)->large(12);
-                $div_message = $div_error->col(2)->large(12)->end();
+                $div_input = $div_error->cell(1)->large(12);
+                $div_message = $div_error->cell(2)->large(12)->end();
 
                 $span_error = $div_message->append_span("clearfix form-error is-visible");
                 $span_error->set_value($this->post_validation_errors[$field]);
@@ -420,11 +420,15 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
                 $html_form->set_attrib("data-abide", TRUE);
             }
 
-            $form_header = $html_form->append_div("k1lib-form-header row");
-            $form_body = $html_form->append_div("k1lib-form-body row");
-            $form_footer = $html_form->append_div("k1lib-form-footer row");
+            $form_header = $html_form->append_div("k1lib-form-header");
+            $form_body = $html_form->append_div("k1lib-form-body");
+            $form_grid = new \k1lib\html\foundation\grid(1, 1, $form_body);
+            $form_grid->row(1)->align_center();
+            $form_grid->row(1)->cell(1)->large(8)->medium(10)->small(12);
+            
+            $form_footer = $html_form->append_div("k1lib-form-footer");
             $form_footer->set_attrib("style", "margin-top:0.9em;");
-            $form_buttons = $html_form->append_div("k1lib-form-buttons row");
+            $form_buttons = $html_form->append_div("k1lib-form-buttons");
 
             /**
              * Hidden input
@@ -438,7 +442,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
                 $row_number++;
                 $row = new \k1lib\html\foundation\label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
-                $row->append_to($form_body);
+                $row->append_to($form_grid->row(1)->cell(1));
             }
 
 
@@ -454,8 +458,8 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             }
 
             $buttons_div->append_to($form_buttons);
-            $buttons_div->col(1)->remove_childs();
-            $buttons_div->col(2)->set_class("text-center", TRUE);
+            $buttons_div->cell(1)->remove_childs();
+            $buttons_div->cell(2)->set_class("text-center", TRUE);
 
 
             /**

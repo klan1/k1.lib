@@ -2,7 +2,7 @@
 
 namespace k1lib\xml;
 
-function do_xml($data_array) {
+function do_xml($data_array, $do_download = false, $file_name = null) {
     $headersCode = "";
     $rowsCode = "";
     $xmlTemplate = <<<HTML
@@ -16,7 +16,7 @@ function do_xml($data_array) {
     <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
         <Author>Alejandro Trujillo J.</Author>
         <LastAuthor>Alejandro Trujillo J.</LastAuthor>
-        <Created>2014-06-18T20:05:04Z</Created>
+        <Created>2014-06-18T20  :05:04Z</Created>
         <Company>Klan1 Network</Company>
         <Version>14.0</Version>
     </DocumentProperties>
@@ -102,5 +102,18 @@ HTML;
     $xmlTemplate = str_replace("%DataRows%", $rowsCode, $xmlTemplate);
     $xmlTemplate = str_replace("%NumRows%", $numRows, $xmlTemplate);
 
-    return $xmlTemplate;
+    if ($do_download) {
+        ob_clean();
+        header('Content-Description: XML document download');
+        header('Cache-Control: public');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
+//        header("Content-type: text/plain; charset=utf-8\r\n");
+//        header("Content-Transfer-Encoding: 8bit");
+        header('Content-Disposition: attachment; filename=' . (empty($file_name) ? 'xml_report.xml' : $file_name));
+        header('Content-Length: ' . mb_strlen($xmlTemplate, '8bit'));
+        flush();
+        echo $xmlTemplate;
+    } else {
+        return $xmlTemplate;
+    }
 }
