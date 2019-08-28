@@ -1,4 +1,6 @@
 <?php
+namespace k1lib;
+
 $mem_usage['init'] = memory_get_usage() / 1024;
 $start = microtime(TRUE);
 

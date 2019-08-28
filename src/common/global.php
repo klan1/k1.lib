@@ -14,6 +14,8 @@
  * @param mixed $var
  * @param boolean $var_dump
  */
+namespace k1lib;
+
 function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
 //    trigger_error(__FILE__, E_USER_ERROR);
     $msg = ( ($var_dump) ? var_export($var, TRUE) : print_r($var, TRUE) );

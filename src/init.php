@@ -5,14 +5,14 @@
 /**
  * K1 Lib loader
  *
- * PHP version 7.1
+ * PHP version 7.1 - 7.2
  *
  * LICENSE:  
  *
  * @author          Alejandro Trujillo J. <alejo@klan1.com>
  * @copyright       2015-2019 Klan1 Network SAS
  * @license         Apache 2.0
- * @version         1.5.0-ALPHA
+ * @version         1.6.0-BETA
  * @since           File available since Release 0.1
  */
 /*
@@ -22,7 +22,7 @@
 namespace k1lib;
 
 const IN_K1LIB = TRUE;
-const VERSION = "1.5-ALPHA";
+const VERSION = "1.6.0-BETA";
 
 // Peace for user, info for the developer with ZendZerver and Z-Ray Live!
 error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
@@ -52,7 +52,8 @@ const MAGIC_VALUE = "9d5042fd5925dfc995b7958a84a24ead";
 if (!defined("K1LIB_LANG")) {
     define("K1LIB_LANG", "en");
 }
-k1lib_include_files(K1LIB_BASE_PATH);
+require_once dirname(K1LIB_BASE_PATH) . '/dist/inc.all.php';
+//k1lib_include_files(K1LIB_BASE_PATH);
 
 k1lib_include_files(K1LIB_BASE_PATH . "/__lang/" . K1LIB_LANG);
 
@@ -70,6 +71,7 @@ function k1lib_include_files($path_to_explore, array $prefix_to_exclude = ['.', 
             continue;
         }
         $file_path = $path_to_explore . "/" . $file;
+
         if (is_file($file_path) && (substr($file_path, -4) == ".php")) {
             require_once $file_path;
         } elseif (is_dir($file_path)) {
