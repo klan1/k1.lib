@@ -2794,7 +2794,7 @@ class controller_base {
         $this->board_delete_name = controller_base_strings::$board_delete_name;
 
         if (DOM::html()->body()) {
-            $js_file = dirname(__DIR__) . '/js/crudlexs.js';
+            $js_file = K1LIB_BASE_PATH . '/crudlexs/js/crudlexs.js';
             if (file_exists($js_file)) {
                 $js_content = file_get_contents($js_file);
 
