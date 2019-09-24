@@ -110,7 +110,7 @@ HTML;
 //        header("Content-type: text/plain; charset=utf-8\r\n");
 //        header("Content-Transfer-Encoding: 8bit");
         header('Content-Disposition: attachment; filename=' . (empty($file_name) ? 'xml_report.xml' : $file_name));
-        header('Content-Length: ' . mb_strlen($xmlTemplate, '8bit'));
+//        header('Content-Length: ' . mb_strlen($xmlTemplate, '8bit'));
         flush();
         echo $xmlTemplate;
     } else {
