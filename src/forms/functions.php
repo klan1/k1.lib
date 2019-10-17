@@ -159,7 +159,7 @@ function check_value_type($value, $type) {
     $year = date("Y");
     //funcitons vars
     $error_type = "";
-    $preg_symbols = "-_@.,!:;#$%&'*\\/+=?^`{\|}()~ÁÉÍÓÚáéíóuñÑ";
+    $preg_symbols = "\-_@.,!:;#$%&'*\\/+=?^`{\|}()~ÁÉÍÓÚáéíóuñÑ";
     $preg_symbols_html = $preg_symbols . "<>\\\\\"'";
     $preg_file_symbols = "-_.()";
 
