@@ -436,7 +436,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $hidden_input = new \k1lib\html\input("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
             // FORM LAYOUT
-            // <div class="row">
+            // <div class="grid-x">
 
             $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {

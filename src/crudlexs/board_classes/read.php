@@ -155,7 +155,7 @@ class board_read extends board_base implements board_interface {
                     $this->read_object->apply_file_uploads_filter();
                 }
 
-//                $this->board_content_div->set_attrib("class", "row", TRUE);
+//                $this->board_content_div->set_attrib("class", "grid-x", TRUE);
 
                 $span_tag = new \k1lib\html\span("key-field");
                 $this->read_object->apply_html_tag_on_field_filter($span_tag, \k1lib\crudlexs\crudlexs_base::USE_KEY_FIELDS);
