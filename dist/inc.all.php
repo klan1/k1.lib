@@ -28,12 +28,12 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
     if ($trigger_notice) {
         trigger_error($msg, E_USER_NOTICE);
     }
-    if (class_exists('k1lib\html\DOM')) {
-        if (k1lib\html\DOM::is_started()) {
+    if (class_exists('\k1lib\html\DOM')) {
+        if (\k1lib\html\DOM::is_started()) {
             $pre = new \k1lib\html\pre($msg);
-            if (!empty(k1lib\html\DOM::html()->body()->get_element_by_id("k1lib-output"))) {
-                k1lib\notifications\on_DOM::queue_title('Message from K1.lib', 'warning');
-                k1lib\notifications\on_DOM::queue_mesasage($pre->generate(), 'warning');
+            if (!empty(\k1lib\html\DOM::html()->body()->get_element_by_id("k1lib-output"))) {
+                \k1lib\notifications\on_DOM::queue_title('Message from K1.lib', 'warning');
+                \k1lib\notifications\on_DOM::queue_mesasage($pre->generate(), 'warning');
             } else {
                 echo $pre->generate();
             }
@@ -2035,7 +2035,7 @@ class board_read extends board_base implements board_interface {
                     $this->read_object->apply_file_uploads_filter();
                 }
 
-//                $this->board_content_div->set_attrib("class", "row", TRUE);
+//                $this->board_content_div->set_attrib("class", "grid-x", TRUE);
 
                 $span_tag = new \k1lib\html\span("key-field");
                 $this->read_object->apply_html_tag_on_field_filter($span_tag, \k1lib\crudlexs\crudlexs_base::USE_KEY_FIELDS);
@@ -4845,7 +4845,7 @@ class creating extends crudlexs_base_with_data implements crudlexs_base_interfac
             $hidden_input = new \k1lib\html\input("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
             // FORM LAYOUT
-            // <div class="row">
+            // <div class="grid-x">
 
             $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
@@ -6363,7 +6363,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $data_group->set_id("{$table_alias}-fields");
 
             $data_group->append_to($this->div_container);
-            $text_fields_div = new \k1lib\html\div("row");
+            $text_fields_div = new \k1lib\html\div("grid-x");
 
             $data_label = $this->get_labels_from_data(1);
             if (!empty($data_label)) {
@@ -6372,7 +6372,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             }
             $labels = $this->db_table_data_filtered[0];
             $values = $this->db_table_data_filtered[1];
-            $row = $data_group->append_div("row");
+            $row = $data_group->append_div("grid-x");
 
             foreach ($values as $field => $value) {
                 if (array_search($field, $this->fields_to_hide) !== FALSE) {
@@ -7338,7 +7338,7 @@ function check_value_type($value, $type) {
     $year = date("Y");
     //funcitons vars
     $error_type = "";
-    $preg_symbols = "-_@.,!:;#$%&'*\\/+=?^`{\|}()~ÁÉÍÓÚáéíóuñÑ";
+    $preg_symbols = "\-_@.,!:;#$%&'*\\/+=?^`{\|}()~ÁÉÍÓÚáéíóuñÑ";
     $preg_symbols_html = $preg_symbols . "<>\\\\\"'";
     $preg_file_symbols = "-_.()";
 

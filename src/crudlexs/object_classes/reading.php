@@ -37,7 +37,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             $data_group->set_id("{$table_alias}-fields");
 
             $data_group->append_to($this->div_container);
-            $text_fields_div = new \k1lib\html\div("row");
+            $text_fields_div = new \k1lib\html\div("grid-x");
 
             $data_label = $this->get_labels_from_data(1);
             if (!empty($data_label)) {
@@ -46,7 +46,7 @@ class reading extends crudlexs_base_with_data implements crudlexs_base_interface
             }
             $labels = $this->db_table_data_filtered[0];
             $values = $this->db_table_data_filtered[1];
-            $row = $data_group->append_div("row");
+            $row = $data_group->append_div("grid-x");
 
             foreach ($values as $field => $value) {
                 if (array_search($field, $this->fields_to_hide) !== FALSE) {
