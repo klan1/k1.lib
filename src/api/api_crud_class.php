@@ -81,7 +81,9 @@ class api_crud extends api {
         if (count($this->data_keys_array) === count($this->db_table_keys_fields)) {
             if (!empty($this->data_keys_array)) {
                 foreach ($this->data_keys_array as $key => $value) {
-                    $this->keyfield_data_array[$this->db_table_keys_fields[$key]] = $value;
+                    if (!empty($value)) {
+                        $this->keyfield_data_array[$this->db_table_keys_fields[$key]] = $value;
+                    }
                 }
             }
         } else {
