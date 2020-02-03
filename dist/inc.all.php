@@ -854,7 +854,9 @@ class api_crud extends api {
         if (count($this->data_keys_array) === count($this->db_table_keys_fields)) {
             if (!empty($this->data_keys_array)) {
                 foreach ($this->data_keys_array as $key => $value) {
-                    $this->keyfield_data_array[$this->db_table_keys_fields[$key]] = $value;
+                    if (!empty($value)) {
+                        $this->keyfield_data_array[$this->db_table_keys_fields[$key]] = $value;
+                    }
                 }
             }
         } else {
@@ -893,6 +895,11 @@ class api_crud extends api {
                     'pagination_data' => ['previos_page' => $previuos_page_num, 'next_page' => $next_page_num, 'page_size' => $this->get_list_page_size],
                     $this->keyfield_data_array
                 ];
+                $extra_data[] = $this->db_table->generate_sql_query();
+                $extra_data[] = "query: " . print_r($query_filter, true);
+                $extra_data[] = "keyfield_data_array: " . print_r($this->keyfield_data_array, true);
+                $extra_data[] = "get_query_filter: " . print_r($this->get_query_filter, true);
+
                 if ($this->do_send_response) {
                     $this->send_response(200, $table_data, $extra_data);
                 } else {
@@ -972,7 +979,7 @@ class api_model {
     /**
      * @var \k1lib\crudlexs\class_db_table
      */
-    private $db_table;
+    public $db_table;
     private $errors = FALSE;
 
     function __construct(class_db_table $db_table = NULL, $data = NULL) {
