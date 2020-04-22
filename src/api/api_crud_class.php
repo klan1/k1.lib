@@ -135,7 +135,9 @@ class api_crud extends api {
 
     function set_db_table_keys_fields($db_table_keys_fields) {
         if (!empty($db_table_keys_fields)) {
-            $this->db_table_keys_fields = $db_table_keys_fields;
+            if (!array_key_exists('keys-fields', $_GET)) {
+                $this->db_table_keys_fields = $db_table_keys_fields;
+            }
         }
     }
 
