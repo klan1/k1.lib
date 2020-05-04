@@ -169,11 +169,13 @@ class api_crud extends api {
         $this->table_model->assing_data_to_properties($this->input_data, TRUE);
         var_dump($this->input_data);
 
-        $update_result = $this->table_model->update_data($this->keyfield_data_array);
-        if ($update_result) {
-            $this->send_response(200, ['operation' => 'update'], $this->table_model->get_data());
+        $insert_result = $this->table_model->insert_data($this->keyfield_data_array);
+        $inserted_id = $this->db->lastInsertId();
+
+        if ($insert_result) {
+            $this->send_response(200, ['operation' => 'insert', 'id' => $inserted_id]);
         } else {
-            $this->send_response(500, $this->input_data, ['message' => 'Sin implementar aun', 'mode' => 'post', 'token' => $this->token, 'magic_header' => $this->magic_header]);
+            $this->send_response(500, $this->input_data, ['message' => 'Insert error', 'mode' => 'put', 'error' => $this->table_model->get_errors(), 'token' => $this->token, 'magic_header' => $this->magic_header]);
         }
     }
 
