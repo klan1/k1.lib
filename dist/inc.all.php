@@ -943,10 +943,10 @@ class api_crud extends api {
         var_dump($this->input_data);
 
         $insert_result = $this->table_model->insert_data($this->keyfield_data_array);
-        $inserted_id = $this->db->lastInsertId();
+//        $inserted_id = $this->db->lastInsertId();
 
         if ($insert_result) {
-            $this->send_response(200, ['operation' => 'insert', 'id' => $inserted_id]);
+            $this->send_response(200, ['operation' => 'insert', 'id' => $insert_result]);
         } else {
             $this->send_response(500, $this->input_data, ['message' => 'Insert error', 'mode' => 'put', 'error' => $this->table_model->get_errors(), 'token' => $this->token, 'magic_header' => $this->magic_header]);
         }
