@@ -52,14 +52,19 @@ const MAGIC_VALUE = "9d5042fd5925dfc995b7958a84a24ead";
 if (!defined("K1LIB_LANG")) {
     define("K1LIB_LANG", "en");
 }
-if (!defined("K1LIB_INC_MODE")) {
-    define("K1LIB_INC_MODE", "all");
-}
-require_once dirname(K1LIB_BASE_PATH) . '/dist/inc.all.php';
-require_once dirname(K1LIB_BASE_PATH) . '/src-globals/globals.php';
-//k1lib_include_files(K1LIB_BASE_PATH);
-
 k1lib_include_files(K1LIB_BASE_PATH . "/__lang/" . K1LIB_LANG);
+require_once dirname(K1LIB_BASE_PATH) . '/src-globals/globals.php';
+
+if (!defined("K1LIB_INC_MODE")) {
+    define("K1LIB_INC_MODE", 1);
+}
+if (K1LIB_INC_MODE == 1) {
+    require_once dirname(K1LIB_BASE_PATH) . '/dist/inc.all.php';
+} else {
+    k1lib_include_files(K1LIB_BASE_PATH);
+}
+
+//k1lib_include_files(K1LIB_BASE_PATH);
 
 /**
  * Use this function to inlude ONLY CLASSES and functions, if there are normal 
