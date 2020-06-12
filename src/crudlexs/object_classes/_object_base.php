@@ -531,14 +531,14 @@ class crudlexs_base_with_data extends crudlexs_base {
                                         $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                                         $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
 
-                                        /**
+                                         /**
                                          * HREF STR_REPLACE
                                          */
                                         $tag_href = str_replace("--rowkeys--", $key_array_text, $tag_href);
-                                        $tag_href = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_href);
+                                        $tag_href = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $tag_href);
                                         // TODO: Why did I needed this ? WFT Line
-                                        $actual_custom_field_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $custom_field_value);
-                                        $tag_href = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_href);
+                                        $actual_custom_field_value = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $custom_field_value);
+                                        $tag_href = str_replace("--customfieldvalue--", urlencode($actual_custom_field_value), $tag_href);
                                         $tag_href = str_replace("--authcode--", $auth_code, $tag_href);
                                         $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
                                         /**
