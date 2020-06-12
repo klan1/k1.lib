@@ -60,10 +60,10 @@ class board_list extends board_base implements board_interface {
             $related_url_keys_text = url::get_url_level_value_by_name("related_url_keys_text");
             if (empty($related_url_keys_text)) {
                 $related_url_keys_text = "";
-                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
+                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
             } else {
                 $related_url_keys_text .= "/";
-                $new_link = \k1lib\html\get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
+                $new_link = \k1lib\html\get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
             }
             if ($this->create_enable) {
 //                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
