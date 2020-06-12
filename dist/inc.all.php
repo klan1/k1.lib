@@ -1707,10 +1707,10 @@ class board_list extends board_base implements board_interface {
             $related_url_keys_text = url::get_url_level_value_by_name("related_url_keys_text");
             if (empty($related_url_keys_text)) {
                 $related_url_keys_text = "";
-                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
+                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
             } else {
                 $related_url_keys_text .= "/";
-                $new_link = \k1lib\html\get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
+                $new_link = \k1lib\html\get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
             }
             if ($this->create_enable) {
 //                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
@@ -1981,7 +1981,7 @@ class board_read extends board_base implements board_interface {
                  * EDIT BUTTON
                  */
                 if ($this->update_enable) {
-                    $edit_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_update_url_name()}/{$this->row_keys_text}/";
+                    $edit_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_update_url_name()}/" . urlencode($this->row_keys_text) . '/';
                     $get_vars = [
                         "auth-code" => $this->read_object->get_auth_code(),
 //                        "back-url" => $_SERVER['REQUEST_URI'],
@@ -1993,7 +1993,7 @@ class board_read extends board_base implements board_interface {
                  * DELETE BUTTON
                  */
                 if ($this->delete_enable) {
-                    $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/{$this->row_keys_text}/";
+                    $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/" . urlencode($this->row_keys_text) . '/';
                     if (\k1lib\urlrewrite\get_back_url(TRUE)) {
                         $get_vars = [
                             "auth-code" => $this->read_object->get_auth_code_personal(),
@@ -2123,19 +2123,19 @@ class board_read extends board_base implements board_interface {
             ];
 
             if (isset($data_loaded) && $data_loaded) {
-                $all_data_url = url::do_url(APP_URL . $board_root . "/" . $board_list . "/{$current_row_keys_text}/", $get_vars, FALSE);
+                $all_data_url = url::do_url(APP_URL . $board_root . "/" . $board_list . "/" . urlencode($current_row_keys_text) . "/", $get_vars, FALSE);
                 $this->related_html_object_show_all_data = \k1lib\html\get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
                 if ($this->related_show_all_data) {
                     $related_title->set_value($this->related_html_object_show_all_data, TRUE);
                 }
             }
             if ($use_back_url) {
-                $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE);
+                $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/" . urlencode($current_row_keys_text) . "/", $get_vars, TRUE);
             } else {
                 $get_vars = [
                     "auth-code" => $current_row_keys_text_auth_code,
                 ];
-                $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/{$current_row_keys_text}/", $get_vars, TRUE, ['back-url'], FALSE);
+                $create_url = url::do_url(APP_URL . $board_root . "/" . $board_create . "/" . urlencode($current_row_keys_text) . "/", $get_vars, TRUE, ['back-url'], FALSE);
             }
             $this->related_html_object_show_new = \k1lib\html\get_link_button($create_url, board_list_strings::$button_new, "tiny");
 
@@ -2545,7 +2545,7 @@ class board_update extends board_base implements board_interface {
                  * DELETE BUTTON
                  */
                 if ($this->controller_object->get_board_delete_enabled() && $this->controller_object->get_board_delete_allowed_for_current_user()) {
-                    $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/{$this->row_keys_text}/";
+                    $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/" . urlencode($this->row_keys_text) . '/';
                     if (\k1lib\urlrewrite\get_back_url(TRUE)) {
                         $get_vars = [
                             "auth-code" => md5(session_plain::get_user_hash() . $this->row_keys_text),
