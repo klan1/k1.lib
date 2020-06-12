@@ -90,7 +90,7 @@ class board_update extends board_base implements board_interface {
                  * DELETE BUTTON
                  */
                 if ($this->controller_object->get_board_delete_enabled() && $this->controller_object->get_board_delete_allowed_for_current_user()) {
-                    $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/{$this->row_keys_text}/";
+                    $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/" . urlencode($this->row_keys_text) . '/';
                     if (\k1lib\urlrewrite\get_back_url(TRUE)) {
                         $get_vars = [
                             "auth-code" => md5(session_plain::get_user_hash() . $this->row_keys_text),
