@@ -314,10 +314,11 @@ class url {
         /**
          * Catch all _GET vars
          */
-        foreach ($_GET as $key => $value) {
-            $_GET[$key] = urldecode($value);
+        $myGET = $_GET;
+        foreach ($myGET as $key => $value) {
+            $myGET[$key] = urldecode($value);
         }
-        $actual_get_vars = \k1lib\forms\check_all_incomming_vars($_GET);
+        $actual_get_vars = \k1lib\forms\check_all_incomming_vars($myGET);
         unset($actual_get_vars[\k1lib\URL_REWRITE_VAR_NAME]);
 
         /**

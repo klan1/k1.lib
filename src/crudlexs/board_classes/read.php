@@ -233,7 +233,7 @@ class board_read extends board_base implements board_interface {
 
             $get_vars = [
                 "auth-code" => $current_row_keys_text_auth_code,
-                "back-url" => $_SERVER['REQUEST_URI'],
+                "back-url" => urlencode($_SERVER['REQUEST_URI'])
             ];
 
             if (isset($data_loaded) && $data_loaded) {
@@ -352,7 +352,7 @@ class board_read extends board_base implements board_interface {
                     "auth-code" => "--authcode--",
                 ];
                 if ($use_back_url) {
-                    $get_vars["back-url"] = $_SERVER['REQUEST_URI'];
+                    $get_vars["back-url"] = urlencode($_SERVER['REQUEST_URI']);
                 }
             }
             $link_row_url = url::do_url(APP_URL . $board_root . "/" . $board_read . "/--rowkeys--/", $get_vars);
