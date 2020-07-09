@@ -151,7 +151,7 @@ class board_list extends board_base implements board_interface {
             if (!$this->list_object->get_link_on_field_filter_applied()) {
                 $get_vars = [
                     "auth-code" => "--authcode--",
-                    "back-url" => $_SERVER['REQUEST_URI'],
+                    "back-url" => urlencode($_SERVER['REQUEST_URI'])
                 ];
                 $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), crudlexs_base::USE_KEY_FIELDS);
             }
