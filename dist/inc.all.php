@@ -1798,7 +1798,7 @@ class board_list extends board_base implements board_interface {
             if (!$this->list_object->get_link_on_field_filter_applied()) {
                 $get_vars = [
                     "auth-code" => "--authcode--",
-                    "back-url" => $_SERVER['REQUEST_URI'],
+                    "back-url" => urlencode($_SERVER['REQUEST_URI'])
                 ];
                 $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), crudlexs_base::USE_KEY_FIELDS);
             }
@@ -2119,7 +2119,7 @@ class board_read extends board_base implements board_interface {
 
             $get_vars = [
                 "auth-code" => $current_row_keys_text_auth_code,
-                "back-url" => $_SERVER['REQUEST_URI'],
+                "back-url" => urlencode($_SERVER['REQUEST_URI'])
             ];
 
             if (isset($data_loaded) && $data_loaded) {
@@ -2238,7 +2238,7 @@ class board_read extends board_base implements board_interface {
                     "auth-code" => "--authcode--",
                 ];
                 if ($use_back_url) {
-                    $get_vars["back-url"] = $_SERVER['REQUEST_URI'];
+                    $get_vars["back-url"] = urlencode($_SERVER['REQUEST_URI']);
                 }
             }
             $link_row_url = url::do_url(APP_URL . $board_root . "/" . $board_read . "/--rowkeys--/", $get_vars);
@@ -4202,7 +4202,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                                          /**
                                          * HREF STR_REPLACE
                                          */
-                                        $tag_href = str_replace("--rowkeys--", $key_array_text, $tag_href);
+                                        $tag_href = str_replace("--rowkeys--", urlencode($key_array_text), $tag_href);
                                         $tag_href = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $tag_href);
                                         // TODO: Why did I needed this ? WFT Line
                                         $actual_custom_field_value = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $custom_field_value);
@@ -7974,7 +7974,7 @@ class session_plain {
 
     static public function start_session() {
         self::is_enabled(true);
-        \session_name(self::$session_name);
+        \session_id(self::$session_name);
         \session_start();
         self::$has_started = TRUE;
         /**
@@ -10728,10 +10728,11 @@ class url {
         /**
          * Catch all _GET vars
          */
-        foreach ($_GET as $key => $value) {
-            $_GET[$key] = urldecode($value);
+        $myGET = $_GET;
+        foreach ($myGET as $key => $value) {
+            $myGET[$key] = urldecode($value);
         }
-        $actual_get_vars = \k1lib\forms\check_all_incomming_vars($_GET);
+        $actual_get_vars = \k1lib\forms\check_all_incomming_vars($myGET);
         unset($actual_get_vars[\k1lib\URL_REWRITE_VAR_NAME]);
 
         /**
