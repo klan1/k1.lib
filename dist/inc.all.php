@@ -7974,7 +7974,7 @@ class session_plain {
 
     static public function start_session() {
         self::is_enabled(true);
-        \session_id(self::$session_name);
+        \session_name(self::$session_name);
         \session_start();
         self::$has_started = TRUE;
         /**
