@@ -163,7 +163,7 @@ class session_plain {
             if (isset($_SESSION['k1lib_session']['user_data'])) {
                 return $_SESSION['k1lib_session']['user_data'];
             } else {
-                return FALSE;
+                return [];
             }
         }
     }
