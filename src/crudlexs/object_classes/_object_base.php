@@ -415,11 +415,8 @@ class crudlexs_base_with_data extends crudlexs_base {
 //                                $div_container = new \k1lib\html\div();
 
                                 $img_tag = new \k1lib\html\img(file_uploads::get_uploads_url($options['table']) . "--fieldvalue--");
+                                $img_tag->set_attrib("onClick", "window.open(this.getAttribute('src'),'imgWindow', 'height=1024,width=768,toolbar=0,location=0,menubar=0');", TRUE);
                                 $img_tag->set_attrib("class", "k1lib-data-img", TRUE);
-
-//                                $delete_file_link = new \k1lib\html\a("./unlink-uploaded-file/", "remove this file");
-//                                $div_container->append_child($img_tag);
-//                                $div_container->append_child($delete_file_link);
 
                                 return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
 
