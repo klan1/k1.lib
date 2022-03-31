@@ -28,6 +28,7 @@ class api_crud extends api {
     private $get_list_page = 1;
     private $get_list_page_size = 20;
     private $get_query_filter = [];
+    private $orderby = [];
 
     /**
      * @var array
@@ -51,6 +52,9 @@ class api_crud extends api {
         }
         if (array_key_exists('keys-fields', $_GET)) {
             $this->db_table_keys_fields = explode(',', \k1lib\forms\check_single_incomming_var($_GET['keys-fields']));
+        }
+        if (array_key_exists('order-by', $_GET)) {
+            $this->orderby = \k1lib\forms\check_single_incomming_var($_GET['order-by']);
         }
         /**
          * CRUD URL MANAGMENT
@@ -87,7 +91,7 @@ class api_crud extends api {
                 }
             }
         } else {
-            $this->send_response(500, $this->input_data, ['message' => 'Keys-Values mismatch', 'mode' => 'post', 'token' => $this->token, 'magic_header' => $this->magic_header]);
+            $this->send_response(500, $this->input_data, ['message' => 'Keys-Values mismatch', 'mode' => 'get', 'token' => $this->token, 'magic_header' => $this->magic_header]);
         }
     }
 
@@ -115,12 +119,13 @@ class api_crud extends api {
                 $next_page_num = $this->get_list_page + 1;
                 $next_page = url::do_url(url::get_this_url(), ['page' => $next_page_num, 'page_size' => $this->get_list_page_size]);
                 $query_filter = array_merge($this->keyfield_data_array, $this->get_query_filter);
-                $table_data = $this->table_model->get_all_data($this->get_list_page, $this->get_list_page_size, $query_filter);
+                $table_data = $this->table_model->get_all_data($this->get_list_page, $this->get_list_page_size, $query_filter, $this->orderby);
                 $extra_data = [
                     'data-type' => 'multiple',
                     'pagination_url' => ['previos' => $previuos_page, 'next' => $next_page],
                     'pagination_data' => ['previos_page' => $previuos_page_num, 'next_page' => $next_page_num, 'page_size' => $this->get_list_page_size],
-                    $this->keyfield_data_array
+                    'keyfield_data_array' => $this->keyfield_data_array,
+                    'order-by' => $this->orderby,
                 ];
                 if ($this->do_send_response) {
                     $this->send_response(200, $table_data, $extra_data);

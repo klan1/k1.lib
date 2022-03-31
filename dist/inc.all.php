@@ -860,7 +860,7 @@ class api_crud extends api {
                 }
             }
         } else {
-            $this->send_response(500, $this->input_data, ['message' => 'Keys-Values mismatch', 'mode' => 'post', 'token' => $this->token, 'magic_header' => $this->magic_header]);
+            $this->send_response(500, $this->input_data, ['message' => 'Keys-Values mismatch', 'mode' => 'get', 'token' => $this->token, 'magic_header' => $this->magic_header]);
         }
     }
 
@@ -893,7 +893,7 @@ class api_crud extends api {
                     'data-type' => 'multiple',
                     'pagination_url' => ['previos' => $previuos_page, 'next' => $next_page],
                     'pagination_data' => ['previos_page' => $previuos_page_num, 'next_page' => $next_page_num, 'page_size' => $this->get_list_page_size],
-                    $this->keyfield_data_array
+                    'keyfield_data_array' => $this->keyfield_data_array
                 ];
                 if ($this->do_send_response) {
                     $this->send_response(200, $table_data, $extra_data);
@@ -4083,11 +4083,8 @@ class crudlexs_base_with_data extends crudlexs_base {
 //                                $div_container = new \k1lib\html\div();
 
                                 $img_tag = new \k1lib\html\img(file_uploads::get_uploads_url($options['table']) . "--fieldvalue--");
+                                $img_tag->set_attrib("onClick", "window.open(this.getAttribute('src'),'imgWindow', 'height=1024,width=768,toolbar=0,location=0,menubar=0');", TRUE);
                                 $img_tag->set_attrib("class", "k1lib-data-img", TRUE);
-
-//                                $delete_file_link = new \k1lib\html\a("./unlink-uploaded-file/", "remove this file");
-//                                $div_container->append_child($img_tag);
-//                                $div_container->append_child($delete_file_link);
 
                                 return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
 
@@ -8030,7 +8027,7 @@ class session_plain {
             if (isset($_SESSION['k1lib_session']['user_data'])) {
                 return $_SESSION['k1lib_session']['user_data'];
             } else {
-                return FALSE;
+                return [];
             }
         }
     }
