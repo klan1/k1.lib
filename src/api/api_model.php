@@ -1,5 +1,24 @@
 <?php
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
+/**
+ * K1 API model - fast api for all
+ *
+ * PHP version 7.1 - 7.2
+ *
+ * LICENSE:  
+ *
+ * @author          Alejandro Trujillo J. <alejo@klan1.com>
+ * @copyright       2015-2019 Klan1 Network SAS
+ * @license         Apache 2.0
+ * @version         1.0
+ * @since           File available since Release 0.8
+ */
+/*
+ * App run time vars
+ */
+
 namespace k1lib\api;
 
 use \k1lib\crudlexs\class_db_table;
@@ -61,13 +80,23 @@ class api_model {
         return $data;
     }
 
-    function get_all_data($page = 1, $page_size = 20, $query_filter = []) {
+    function get_all_data($page = 1, $page_size = 20, $query_filter = [], $orderby = []) {
 
         $offset = ($page - 1) * $page_size;
         $this->db_table->set_query_limit($offset, $page_size);
 
         if (!empty($query_filter)) {
             $this->db_table->set_query_filter($query_filter, TRUE, FALSE);
+        }
+
+        if (!empty($orderby)) {
+            if (is_array($orderby)) {
+                foreach ($orderby as $field => $sort) {
+                    $this->db_table->set_order_by($field, $sort);
+                }
+            } else {
+                $this->db_table->set_order_by($orderby);
+            }
         }
         $data = $this->db_table->get_data(TRUE, FALSE);
         $this->assing_data_to_properties($data);
