@@ -137,9 +137,9 @@ class api_model {
         foreach ($table_config as $field => $config) {
             if (property_exists($this, $field)) {
                 echo " | $field - existe - ";
-                if (!empty($this->{$field})) {
+//                if (!empty($this->{$field})) {
                     $real_data[$field] = $this->{$field};
-                }
+//                }
             } else {
                 echo " | $field - NO existe - ";
             }
