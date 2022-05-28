@@ -213,6 +213,12 @@ class local_cache extends common_code {
         self::$use_memcached = true;
         self::connect_memcached();
     }
+    
+    static public function use_localcache() {
+        self::$use_memcached = false;
+//        self::connect_memcached();
+    }
+    
 
     static public function set_mode($mode): void {
         self::$mode = $mode;
