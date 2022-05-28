@@ -307,22 +307,24 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
         $sql_profile_id = profiler::add($sql);
         profiler::start_time_count($sql_profile_id);
     }
-    if (($use_cache) && (local_cache::is_enabled()) && (local_cache::is_cached($sql))) {
+    if (($use_cache) && (local_cache::is_enabled())) {
         $queryReturn = local_cache::get_result($sql);
-        profiler::set_is_cached($sql_profile_id, TRUE);
-    } else {
-        profiler::set_is_cached($sql_profile_id, FALSE);
-        $query_result = $db->query($sql);
     }
-    if (profiler::is_enabled()) {
-        profiler::stop_time_count($sql_profile_id);
-    }
-
-    if (!empty($queryReturn)) {
+    if ($queryReturn) {
+        if (profiler::is_enabled()) {
+            profiler::set_is_cached($sql_profile_id, TRUE);
+            profiler::stop_time_count($sql_profile_id);
+        }
         return $queryReturn;
+    } else {
+        if (profiler::is_enabled()) {
+            profiler::set_is_cached($sql_profile_id, FALSE);
+        }
+        $query_result = $db->query($sql);
     }
     $fields = array();
     $i = 1;
+    $return = null;
     if ($query_result !== FALSE) {
         if ($query_result->rowCount() > 0) {
             while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
@@ -340,25 +342,27 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
                 if ($return_all) {
                     if (\k1app\APP_MODE == "web") {
                         local_cache::add($sql, $queryReturn);
-//                        $k1_sql_cache[$sql_md5] = $queryReturn;
                     }
-                    return $queryReturn;
+                    $return = $queryReturn;
                 } else {
                     if (\k1app\APP_MODE == "web") {
                         local_cache::add($sql, $queryReturn[1]);
-//                        $k1_sql_cache[$sql_md5] = $queryReturn[1];
                     }
-                    return $queryReturn[1];
+                    $return = $queryReturn[1];
                 }
             } else {
 //                d($sql);
             }
         } else {
-            return NULL;
+            $return = NULL;
         }
     } else {
-        return FALSE;
+        $return = FALSE;
     }
+    if (profiler::is_enabled()) {
+        profiler::stop_time_count($sql_profile_id);
+    }
+    return $return;
 }
 
 /**

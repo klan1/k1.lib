@@ -65,7 +65,11 @@ class api {
         /**
          * OUT PUT BUFFER START
          */
-        ob_start();
+        if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+            ob_start('ob_gzhandler');
+        } else {
+            ob_start();
+        }
 
         header('Access-Control-Allow-Methods: ' . $this->allow_methods);
         header("Access-Control-Allow-Origin: *");
@@ -184,7 +188,6 @@ class api {
          * FINAL API OUTPUT
          */
         $response_array = array_merge($local_response_data, $this->reponse_data);
-
 
         if ($this->do_send_response) {
             $response = json_encode($response_array, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
