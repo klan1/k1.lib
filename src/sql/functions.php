@@ -448,11 +448,25 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
 function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = null) {
     if ($db->is_enabled()) {
         if (is_array($data)) {
-            if (!@is_array($data[0])) {
+            if (!is_array($data[0])) {
                 $data_string = array_to_sql_set($db, $data);
+                if ($data_string === false) {
+                    \trigger_error("\$data array is invalid", E_USER_WARNING);
+                    if (defined('K1APP_VERBOSE') && K1APP_VERBOSE > 0) {
+                        d($data, TRUE);
+                    }
+                    return FALSE;
+                }
                 $insert_sql = "INSERT INTO $table SET $data_string;";
             } else {
                 $data_string = array_to_sql_values($data);
+                if ($data_string === false) {
+                    \trigger_error("\$data array is invalid", E_USER_WARNING);
+                    if (defined('K1APP_VERBOSE') && K1APP_VERBOSE > 0) {
+                        d($data, TRUE);
+                    }
+                    return FALSE;
+                }
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
 //            ($insert_sql);
@@ -491,7 +505,7 @@ function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = 
             exit();
         }
     } else {
-        \trigger_error("This App do not support databases", E_USER_ERROR);
+        \trigger_error("This App do not support databases", E_USER_WARNING);
         return FALSE;
     }
 }
@@ -515,7 +529,8 @@ function array_to_sql_values($array) {
             }
             $data_string .= ") VALUES ";
         } else {
-            \trigger_error("wrong format in array", E_USER_ERROR);
+            \trigger_error("wrong format in array", E_USER_WARNING);
+            return false;
         }
 // remove the headers to only work with the values - lazzy code :P
         unset($array[0]);
@@ -550,15 +565,15 @@ function array_to_sql_values($array) {
                 }
                 $data_string .= ") ";
             } else {
-                \trigger_error("wrong values count of array" . print_r($array, true), E_USER_ERROR);
-                exit();
+                \trigger_error("wrong values count of array" . print_r($array, true), E_USER_WARNING);
+                return false;
             }
         }
 // join to return
         return $data_string;
     } else {
-        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
-        exit();
+        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_WARNING);
+        return false;
     }
 }
 
@@ -601,8 +616,8 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
         }
         $data_string = implode($glue, $pairs);
     } else {
-        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
-        exit();
+        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_WARNING);
+        return false;
     }
     return $data_string;
 }

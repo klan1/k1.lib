@@ -8,7 +8,6 @@
  * @version 1.0
  * @package global
  */
-
 /**
  * Function for debug on screen any kind of data
  * @param mixed $var
@@ -33,9 +32,10 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
                 echo $pre->generate();
             }
         } else {
-            echo $msg;
+            echo $msg . "\n";
         }
     } else {
-        echo $msg;
+        echo $msg . "\n";
+        ;
     }
 }

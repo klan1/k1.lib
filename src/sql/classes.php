@@ -133,7 +133,7 @@ class local_cache extends common_code {
     static protected string $memcached_server = '127.0.0.1';
     static protected int $memcached_port = 11211;
     static protected int $memcached_ttl = 300;
-    static protected array $exclude_sql_terms = ['INFORMATION_SCHEMA', 'SHOW'];
+    static protected array $exclude_sql_terms = ['INFORMATION_SCHEMA', 'SHOW FULL COLUMNS', 'UPDATE', 'INSERT', 'DELETE'];
 
     static protected function connect_memcached() {
         self::$memcached = new \Memcached();
@@ -194,7 +194,7 @@ class local_cache extends common_code {
 
     static protected function check_exlusion($sql_query) {
         foreach (self::$exclude_sql_terms as $term_to_exclude) {
-            if (strstr($sql_query, $term_to_exclude) !== FALSE) {
+            if (strstr(strtolower($sql_query), strtolower($term_to_exclude)) !== FALSE) {
                 return true;
             }
         }
@@ -213,12 +213,11 @@ class local_cache extends common_code {
         self::$use_memcached = true;
         self::connect_memcached();
     }
-    
+
     static public function use_localcache() {
         self::$use_memcached = false;
 //        self::connect_memcached();
     }
-    
 
     static public function set_mode($mode): void {
         self::$mode = $mode;
