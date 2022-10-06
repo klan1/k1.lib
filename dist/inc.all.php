@@ -13,7 +13,6 @@
  * @version 1.0
  * @package global
  */
-
 /**
  * Function for debug on screen any kind of data
  * @param mixed $var
@@ -38,10 +37,11 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
                 echo $pre->generate();
             }
         } else {
-            echo $msg;
+            echo $msg . "\n";
         }
     } else {
-        echo $msg;
+        echo $msg . "\n";
+        ;
     }
 }
 
@@ -583,7 +583,11 @@ class api {
         /**
          * OUT PUT BUFFER START
          */
-        ob_start();
+        if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+            ob_start('ob_gzhandler');
+        } else {
+            ob_start();
+        }
 
         header('Access-Control-Allow-Methods: ' . $this->allow_methods);
         header("Access-Control-Allow-Origin: *");
@@ -703,7 +707,6 @@ class api {
          */
         $response_array = array_merge($local_response_data, $this->reponse_data);
 
-
         if ($this->do_send_response) {
             $response = json_encode($response_array, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
             if ($this->do_debug) {
@@ -801,6 +804,7 @@ class api_crud extends api {
     private $get_list_page = 1;
     private $get_list_page_size = 20;
     private $get_query_filter = [];
+    private $orderby = [];
 
     /**
      * @var array
@@ -824,6 +828,9 @@ class api_crud extends api {
         }
         if (array_key_exists('keys-fields', $_GET)) {
             $this->db_table_keys_fields = explode(',', \k1lib\forms\check_single_incomming_var($_GET['keys-fields']));
+        }
+        if (array_key_exists('order-by', $_GET)) {
+            $this->orderby = \k1lib\forms\check_single_incomming_var($_GET['order-by']);
         }
         /**
          * CRUD URL MANAGMENT
@@ -888,12 +895,13 @@ class api_crud extends api {
                 $next_page_num = $this->get_list_page + 1;
                 $next_page = url::do_url(url::get_this_url(), ['page' => $next_page_num, 'page_size' => $this->get_list_page_size]);
                 $query_filter = array_merge($this->keyfield_data_array, $this->get_query_filter);
-                $table_data = $this->table_model->get_all_data($this->get_list_page, $this->get_list_page_size, $query_filter);
+                $table_data = $this->table_model->get_all_data($this->get_list_page, $this->get_list_page_size, $query_filter, $this->orderby);
                 $extra_data = [
                     'data-type' => 'multiple',
                     'pagination_url' => ['previos' => $previuos_page, 'next' => $next_page],
                     'pagination_data' => ['previos_page' => $previuos_page_num, 'next_page' => $next_page_num, 'page_size' => $this->get_list_page_size],
-                    'keyfield_data_array' => $this->keyfield_data_array
+                    'keyfield_data_array' => $this->keyfield_data_array,
+                    'order-by' => $this->orderby,
                 ];
                 if ($this->do_send_response) {
                     $this->send_response(200, $table_data, $extra_data);
@@ -969,6 +977,25 @@ class api_crud extends api {
 // ./src/api/api_model.php
 
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
+/**
+ * K1 API model - fast api for all
+ *
+ * PHP version 7.1 - 7.2
+ *
+ * LICENSE:  
+ *
+ * @author          Alejandro Trujillo J. <alejo@klan1.com>
+ * @copyright       2015-2019 Klan1 Network SAS
+ * @license         Apache 2.0
+ * @version         1.0
+ * @since           File available since Release 0.8
+ */
+/*
+ * App run time vars
+ */
+
 namespace k1lib\api;
 
 use \k1lib\crudlexs\class_db_table;
@@ -1030,13 +1057,23 @@ class api_model {
         return $data;
     }
 
-    function get_all_data($page = 1, $page_size = 20, $query_filter = []) {
+    function get_all_data($page = 1, $page_size = 20, $query_filter = [], $orderby = []) {
 
         $offset = ($page - 1) * $page_size;
         $this->db_table->set_query_limit($offset, $page_size);
 
         if (!empty($query_filter)) {
             $this->db_table->set_query_filter($query_filter, TRUE, FALSE);
+        }
+
+        if (!empty($orderby)) {
+            if (is_array($orderby)) {
+                foreach ($orderby as $field => $sort) {
+                    $this->db_table->set_order_by($field, $sort);
+                }
+            } else {
+                $this->db_table->set_order_by($orderby);
+            }
         }
         $data = $this->db_table->get_data(TRUE, FALSE);
         $this->assing_data_to_properties($data);
@@ -1077,9 +1114,9 @@ class api_model {
         foreach ($table_config as $field => $config) {
             if (property_exists($this, $field)) {
                 echo " | $field - existe - ";
-                if (!empty($this->{$field})) {
+//                if (!empty($this->{$field})) {
                     $real_data[$field] = $this->{$field};
-                }
+//                }
             } else {
                 echo " | $field - NO existe - ";
             }
@@ -8762,6 +8799,7 @@ class common_code {
     static public function enable() {
         self::$enabled = TRUE;
     }
+
     /**
      * Disable the engenie
      */
@@ -8783,6 +8821,10 @@ class common_code {
     static public function get_data() {
         self::is_enabled(true);
         return self::$data;
+    }
+
+    public static function get_data_count(): int {
+        return self::$data_count;
     }
 
 }
@@ -8851,10 +8893,39 @@ class profiler extends common_code {
         return $data_filtered;
     }
 
+    /**
+     * Return the total execution time
+     * @return float
+     */
+    static public function get_total_time() {
+        $total_time = 0;
+        foreach (self::$data as $profile_data) {
+            $total_time += $profile_data['total_time'];
+        }
+        return $total_time;
+    }
+
 }
 
 class local_cache extends common_code {
+
 //    use common_code;
+    static protected bool $use_memcached = false;
+
+    /**
+     * 
+     * @var \Memcached
+     */
+    static object $memcached;
+    static protected string $memcached_server = '127.0.0.1';
+    static protected int $memcached_port = 11211;
+    static protected int $memcached_ttl = 300;
+    static protected array $exclude_sql_terms = ['INFORMATION_SCHEMA', 'SHOW FULL COLUMNS', 'UPDATE', 'INSERT', 'DELETE'];
+
+    static protected function connect_memcached() {
+        self::$memcached = new \Memcached();
+        self::$memcached->addServer(self::$memcached_server, self::$memcached_port);
+    }
 
     /**
      * Put a SQL_RESULT on the LOCAL CACHE
@@ -8862,10 +8933,17 @@ class local_cache extends common_code {
      * @param type $sql_result
      */
     static public function add($sql_query, $sql_result) {
-        self::is_enabled(true);
-        $sql_md5 = md5($sql_query);
+        if (self::$use_memcached) {
+            if (!self::check_exlusion($sql_query)) {
+                return self::$memcached->set(md5($sql_query), $sql_result, self::$memcached_ttl);
+            } else {
+                return FALSE;
+            }
+        } else {
+            self::is_enabled(true);
+            self::$data[md5($sql_query)] = $sql_result;
+        }
         self::$data_count++;
-        self::$data[$sql_md5] = $sql_result;
     }
 
     /**
@@ -8885,11 +8963,75 @@ class local_cache extends common_code {
      */
     static public function get_result($sql_query) {
         self::is_enabled(true);
-        if (isset(self::$data[md5($sql_query)])) {
-            return (self::$data[md5($sql_query)]);
+        if (self::$use_memcached) {
+            if (!self::check_exlusion($sql_query)) {
+                $return = self::$memcached->get(md5($sql_query));
+                return $return;
+            } else {
+                return FALSE;
+            }
         } else {
-            return FALSE;
+            if (isset(self::$data[md5($sql_query)])) {
+                return (self::$data[md5($sql_query)]);
+            } else {
+                return FALSE;
+            }
         }
+    }
+
+    static protected function check_exlusion($sql_query) {
+        foreach (self::$exclude_sql_terms as $term_to_exclude) {
+            if (strstr(strtolower($sql_query), strtolower($term_to_exclude)) !== FALSE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static public function get_exclude_sql_terms(): string {
+        return self::$exclude_sql_terms;
+    }
+
+    static public function set_exclude_sql_terms(string $exclude_sql_terms): void {
+        self::$exclude_sql_terms = $exclude_sql_terms;
+    }
+
+    static public function use_memcached() {
+        self::$use_memcached = true;
+        self::connect_memcached();
+    }
+
+    static public function use_localcache() {
+        self::$use_memcached = false;
+//        self::connect_memcached();
+    }
+
+    static public function set_mode($mode): void {
+        self::$mode = $mode;
+    }
+
+    static public function get_memcached_server() {
+        return self::$memcached_server;
+    }
+
+    static public function get_memcached_port() {
+        return self::$memcached_port;
+    }
+
+    static public function get_memcached_ttl() {
+        return self::$memcached_ttl;
+    }
+
+    static public function set_memcached_server($memcached_server): void {
+        self::$memcached_server = $memcached_server;
+    }
+
+    static public function set_memcached_port($memcached_port): void {
+        self::$memcached_port = $memcached_port;
+    }
+
+    static public function set_memcached_ttl($memcached_ttl): void {
+        self::$memcached_ttl = $memcached_ttl;
     }
 
 }
@@ -9204,22 +9346,24 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
         $sql_profile_id = profiler::add($sql);
         profiler::start_time_count($sql_profile_id);
     }
-    if (($use_cache) && (local_cache::is_enabled()) && (local_cache::is_cached($sql))) {
+    if (($use_cache) && (local_cache::is_enabled())) {
         $queryReturn = local_cache::get_result($sql);
-        profiler::set_is_cached($sql_profile_id, TRUE);
-    } else {
-        profiler::set_is_cached($sql_profile_id, FALSE);
-        $query_result = $db->query($sql);
     }
-    if (profiler::is_enabled()) {
-        profiler::stop_time_count($sql_profile_id);
-    }
-
-    if (!empty($queryReturn)) {
+    if ($queryReturn) {
+        if (profiler::is_enabled()) {
+            profiler::set_is_cached($sql_profile_id, TRUE);
+            profiler::stop_time_count($sql_profile_id);
+        }
         return $queryReturn;
+    } else {
+        if (profiler::is_enabled()) {
+            profiler::set_is_cached($sql_profile_id, FALSE);
+        }
+        $query_result = $db->query($sql);
     }
     $fields = array();
     $i = 1;
+    $return = null;
     if ($query_result !== FALSE) {
         if ($query_result->rowCount() > 0) {
             while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
@@ -9237,25 +9381,27 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
                 if ($return_all) {
                     if (\k1app\APP_MODE == "web") {
                         local_cache::add($sql, $queryReturn);
-//                        $k1_sql_cache[$sql_md5] = $queryReturn;
                     }
-                    return $queryReturn;
+                    $return = $queryReturn;
                 } else {
                     if (\k1app\APP_MODE == "web") {
                         local_cache::add($sql, $queryReturn[1]);
-//                        $k1_sql_cache[$sql_md5] = $queryReturn[1];
                     }
-                    return $queryReturn[1];
+                    $return = $queryReturn[1];
                 }
             } else {
 //                d($sql);
             }
         } else {
-            return NULL;
+            $return = NULL;
         }
     } else {
-        return FALSE;
+        $return = FALSE;
     }
+    if (profiler::is_enabled()) {
+        profiler::stop_time_count($sql_profile_id);
+    }
+    return $return;
 }
 
 /**
@@ -9341,11 +9487,25 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
 function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = null) {
     if ($db->is_enabled()) {
         if (is_array($data)) {
-            if (!@is_array($data[0])) {
+            if (!is_array($data[0])) {
                 $data_string = array_to_sql_set($db, $data);
+                if ($data_string === false) {
+                    \trigger_error("\$data array is invalid", E_USER_WARNING);
+                    if (defined('K1APP_VERBOSE') && K1APP_VERBOSE > 0) {
+                        d($data, TRUE);
+                    }
+                    return FALSE;
+                }
                 $insert_sql = "INSERT INTO $table SET $data_string;";
             } else {
                 $data_string = array_to_sql_values($data);
+                if ($data_string === false) {
+                    \trigger_error("\$data array is invalid", E_USER_WARNING);
+                    if (defined('K1APP_VERBOSE') && K1APP_VERBOSE > 0) {
+                        d($data, TRUE);
+                    }
+                    return FALSE;
+                }
                 $insert_sql = "INSERT INTO $table $data_string;";
             }
 //            ($insert_sql);
@@ -9384,7 +9544,7 @@ function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = 
             exit();
         }
     } else {
-        \trigger_error("This App do not support databases", E_USER_ERROR);
+        \trigger_error("This App do not support databases", E_USER_WARNING);
         return FALSE;
     }
 }
@@ -9408,7 +9568,8 @@ function array_to_sql_values($array) {
             }
             $data_string .= ") VALUES ";
         } else {
-            \trigger_error("wrong format in array", E_USER_ERROR);
+            \trigger_error("wrong format in array", E_USER_WARNING);
+            return false;
         }
 // remove the headers to only work with the values - lazzy code :P
         unset($array[0]);
@@ -9443,15 +9604,15 @@ function array_to_sql_values($array) {
                 }
                 $data_string .= ") ";
             } else {
-                \trigger_error("wrong values count of array" . print_r($array, true), E_USER_ERROR);
-                exit();
+                \trigger_error("wrong values count of array" . print_r($array, true), E_USER_WARNING);
+                return false;
             }
         }
 // join to return
         return $data_string;
     } else {
-        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
-        exit();
+        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_WARNING);
+        return false;
     }
 }
 
@@ -9494,8 +9655,8 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
         }
         $data_string = implode($glue, $pairs);
     } else {
-        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_ERROR);
-        exit();
+        trigger_error("Bad formated array in " . __FUNCTION__, E_USER_WARNING);
+        return false;
     }
     return $data_string;
 }
