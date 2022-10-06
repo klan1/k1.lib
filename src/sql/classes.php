@@ -52,6 +52,10 @@ class common_code {
         return self::$data;
     }
 
+    public static function get_data_count(): int {
+        return self::$data_count;
+    }
+
 }
 
 class profiler extends common_code {
@@ -116,6 +120,18 @@ class profiler extends common_code {
             }
         }
         return $data_filtered;
+    }
+
+    /**
+     * Return the total execution time
+     * @return float
+     */
+    static public function get_total_time() {
+        $total_time = 0;
+        foreach (self::$data as $profile_data) {
+            $total_time += $profile_data['total_time'];
+        }
+        return $total_time;
     }
 
 }
