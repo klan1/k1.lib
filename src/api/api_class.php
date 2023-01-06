@@ -22,6 +22,9 @@ const K1LIB_API_DISABLE_TOKEN = FALSE;
 class api {
 
     protected $allow_methods = 'POST,GET,PUT,DELETE';
+    //execution time measurement
+    protected float $start_time;
+    protected float $end_time;
 
     // DB conection object
 
@@ -62,6 +65,9 @@ class api {
     protected $reponse_data = [];
 
     public function __construct($use_token = FALSE, $use_magic_header = FALSE) {
+        // Start clock time in seconds
+        $this->start_time = microtime(true);
+
         /**
          * OUT PUT BUFFER START
          */
@@ -187,6 +193,9 @@ class api {
         /**
          * FINAL API OUTPUT
          */
+        // Calculate script execution time
+        $local_response_data['system'] = ['runtime' => round((microtime(true) - $this->start_time), 4)];
+
         $response_array = array_merge($local_response_data, $this->reponse_data);
 
         if ($this->do_send_response) {
