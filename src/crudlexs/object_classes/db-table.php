@@ -574,7 +574,7 @@ class class_db_table {
         return \k1lib\sql\sql_update($this->db, $this->db_table_name, $data_to_update_merged, $key_to_update, [], $error_data, $sql_query);
     }
 
-    public function delete_data(Array $key_to_delete) {
+    public function delete_data(array $key_to_delete) {
 
         if (empty($key_to_delete)) {
             trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_delete_key, E_USER_WARNING);

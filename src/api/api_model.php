@@ -130,6 +130,16 @@ class api_model {
         return $result;
     }
 
+    function delete_data($keyfields) {
+        echo "Data to delete :" . print_r($keyfields, TRUE);
+        $sql_query = null;
+        $result = $this->db_table->delete_data($keyfields);
+        if ($result === false) {
+            print_r($keyfields);
+        }
+        return $result;
+    }
+
     function get_data_from_params() {
 //        print_r($this->db_table->get_db_table_name());
         $table_config = $this->db_table->get_db_table_config();

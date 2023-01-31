@@ -974,8 +974,11 @@ function table_keys_to_where_condition(&$row_data, $db_table_config, $use_table_
 function sql_del_row(\PDO $db, $table, $key_array) {
     $key_sql_set = array_to_sql_set($db, $key_array, TRUE, TRUE);
     $sql = "DELETE FROM `$table` WHERE $key_sql_set";
-    if ($db->exec($sql) !== FALSE) {
-        return TRUE;
+//    echo $sql;
+    $exec = $db->exec($sql);
+//    d($exec);
+    if ($exec > 0 && $exec !== FALSE) {
+        return $exec;
     } else {
         return FALSE;
     }

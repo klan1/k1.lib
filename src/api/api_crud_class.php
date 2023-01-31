@@ -184,6 +184,22 @@ class api_crud extends api {
         }
     }
 
+    function delete() {
+        parent::delete();
+        $this->assing_keyfields_data();
+        $this->table_model->assing_data_to_properties($this->input_data, TRUE);
+        var_dump($this->input_data);
+
+        $delete_result = $this->table_model->delete_data($this->keyfield_data_array);
+//        $inserted_id = $this->db->lastInsertId();
+
+        if ($delete_result >= 0 && $delete_result !== false) {
+            $this->send_response(200, ['operation' => 'delete', 'id' => $this->keyfield_data_array, 'records' => $delete_result]);
+        } else {
+            $this->send_response(500, $this->input_data, ['message' => 'Delete error', 'mode' => 'delete', '$this->keyfield_data_array' => $this->keyfield_data_array, '$delete_result' => $delete_result, 'error' => $this->table_model->get_errors(), 'token' => $this->token, 'magic_header' => $this->magic_header]);
+        }
+    }
+
     function set_db_table_name($db_table_name) {
         $this->db_table_name = $db_table_name;
         $this->db_table = new class_db_table($this->db, $this->db_table_name);
