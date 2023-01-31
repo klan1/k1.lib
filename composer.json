@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^5.6 | ^7.0",
+        "php": "^7.4",
         "klan1/k1.lib-dom": "dev-master",
         "endyjasmi/cuid": "dev-master",
         "ralouphie/getallheaders": "2.0.5",

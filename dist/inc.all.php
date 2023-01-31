@@ -540,6 +540,9 @@ const K1LIB_API_DISABLE_TOKEN = FALSE;
 class api {
 
     protected $allow_methods = 'POST,GET,PUT,DELETE';
+    //execution time measurement
+    protected float $start_time;
+    protected float $end_time;
 
     // DB conection object
 
@@ -580,6 +583,9 @@ class api {
     protected $reponse_data = [];
 
     public function __construct($use_token = FALSE, $use_magic_header = FALSE) {
+        // Start clock time in seconds
+        $this->start_time = microtime(true);
+
         /**
          * OUT PUT BUFFER START
          */
@@ -705,6 +711,9 @@ class api {
         /**
          * FINAL API OUTPUT
          */
+        // Calculate script execution time
+        $local_response_data['system'] = ['runtime' => round((microtime(true) - $this->start_time), 4)];
+
         $response_array = array_merge($local_response_data, $this->reponse_data);
 
         if ($this->do_send_response) {
@@ -960,6 +969,22 @@ class api_crud extends api {
         }
     }
 
+    function delete() {
+        parent::delete();
+        $this->assing_keyfields_data();
+        $this->table_model->assing_data_to_properties($this->input_data, TRUE);
+        var_dump($this->input_data);
+
+        $delete_result = $this->table_model->delete_data($this->keyfield_data_array);
+//        $inserted_id = $this->db->lastInsertId();
+
+        if ($delete_result >= 0 && $delete_result !== false) {
+            $this->send_response(200, ['operation' => 'delete', 'id' => $this->keyfield_data_array, 'records' => $delete_result]);
+        } else {
+            $this->send_response(500, $this->input_data, ['message' => 'Delete error', 'mode' => 'delete', '$this->keyfield_data_array' => $this->keyfield_data_array, '$delete_result' => $delete_result, 'error' => $this->table_model->get_errors(), 'token' => $this->token, 'magic_header' => $this->magic_header]);
+        }
+    }
+
     function set_db_table_name($db_table_name) {
         $this->db_table_name = $db_table_name;
         $this->db_table = new class_db_table($this->db, $this->db_table_name);
@@ -1103,6 +1128,16 @@ class api_model {
             print_r($data_to_update);
             var_dump($this->errors);
             echo "SQL: $sql_query";
+        }
+        return $result;
+    }
+
+    function delete_data($keyfields) {
+        echo "Data to delete :" . print_r($keyfields, TRUE);
+        $sql_query = null;
+        $result = $this->db_table->delete_data($keyfields);
+        if ($result === false) {
+            print_r($keyfields);
         }
         return $result;
     }
@@ -5624,7 +5659,7 @@ class class_db_table {
         return \k1lib\sql\sql_update($this->db, $this->db_table_name, $data_to_update_merged, $key_to_update, [], $error_data, $sql_query);
     }
 
-    public function delete_data(Array $key_to_delete) {
+    public function delete_data(array $key_to_delete) {
 
         if (empty($key_to_delete)) {
             trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_delete_key, E_USER_WARNING);
@@ -10013,8 +10048,11 @@ function table_keys_to_where_condition(&$row_data, $db_table_config, $use_table_
 function sql_del_row(\PDO $db, $table, $key_array) {
     $key_sql_set = array_to_sql_set($db, $key_array, TRUE, TRUE);
     $sql = "DELETE FROM `$table` WHERE $key_sql_set";
-    if ($db->exec($sql) !== FALSE) {
-        return TRUE;
+//    echo $sql;
+    $exec = $db->exec($sql);
+//    d($exec);
+    if ($exec > 0 && $exec !== FALSE) {
+        return $exec;
     } else {
         return FALSE;
     }
