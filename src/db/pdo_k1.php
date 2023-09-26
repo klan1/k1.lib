@@ -89,7 +89,7 @@ class PDO_k1 extends \PDO {
                     trigger_error("SQL query error", E_USER_NOTICE);
                     break;
                 case 1:
-                    d($statement);
+//                    d($statement);
                     trigger_error($exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 2:
