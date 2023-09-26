@@ -2,7 +2,7 @@
 
 /** DIST ALL IN ONE CODE **/
                 
-// creation date: 2023-09-26 17:24:16
+// creation date: 2023-09-26 17:41:06
 
 // ./src/_common/_global.php
 
@@ -6955,7 +6955,7 @@ class PDO_k1 extends \PDO {
                     trigger_error("SQL query error", E_USER_NOTICE);
                     break;
                 case 1:
-                    d($statement);
+//                    d($statement);
                     trigger_error($exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 2:
