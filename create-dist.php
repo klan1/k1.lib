@@ -30,11 +30,15 @@ function create_dist_file($path_to_explore, &$called = 0) {
     $output_file_path = __DIR__ . '/dist/inc.all.php';
 
     if ($called === 1) {
+        date_default_timezone_set('America/Bogota');
+        $date = date('Y-m-d H:i:s');
 
         $output_file_content = <<<CODE
 <?php
 
 /** DIST ALL IN ONE CODE **/
+                
+// creation date: {$date}
 
 CODE;
 
