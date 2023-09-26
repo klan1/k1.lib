@@ -1,6 +1,8 @@
 <?php
 
 /** DIST ALL IN ONE CODE **/
+                
+// creation date: 2023-09-26 17:24:16
 
 // ./src/_common/_global.php
 
