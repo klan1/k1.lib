@@ -47,7 +47,7 @@ class board_list_strings {
 
 class board_read_strings {
 
-    static $button_all_data = "Todos";
+    static $button_all_data = "Ver listado";
     static $button_back = "Volver";
     static $button_edit = "Editar";
     static $button_delete = "Borrar";
