@@ -25,7 +25,9 @@ function decimal_to_n36($number_to_convert) {
 function decimal_to_n62($number_to_convert) {
     $num_numbers = strlen((string) $number_to_convert);
     $number_to_convert = (float) $number_to_convert;
-    $hexChars = '0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $hexChars = '0123456789'
+            . 'abcdefghijklmnopqrstuvwxyz'
+            . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $base = strlen($hexChars);
     $dig = array();
     $i = 0;
