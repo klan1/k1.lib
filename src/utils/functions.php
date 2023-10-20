@@ -81,7 +81,7 @@ function n36_to_decimal($number_to_convert) {
 // recibe 1Z y retorna 69
 function n62_to_decimal($number_to_convert) {
 
-    $number_to_convert = strtoupper($number_to_convert);
+    $number_to_convert = $number_to_convert;
 
     $dig = array(
         '0' => 0,
