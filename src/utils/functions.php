@@ -152,7 +152,7 @@ function n62_to_decimal($number_to_convert) {
     for ($i = 0; $i <= (strlen($number_to_convert) - 1); $i++) {
         $digit_to_convert = substr($number_to_convert, $i, 1);
         $digit_value = $dig[$digit_to_convert];
-        $decimal_number = $decimal_number + (($digit_value * (pow(36, (strlen($number_to_convert) - 1) - $i))));
+        $decimal_number = $decimal_number + (($digit_value * (pow(62, (strlen($number_to_convert) - 1) - $i))));
 //        \d('$digit_to_convert : (($digit_value * (pow(35, (strlen($number_to_convert) - 1)-$i)))) = ' . (($digit_value * (pow(36, (strlen($number_to_convert) - 1)-$i)))));
     }
 
