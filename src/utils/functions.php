@@ -22,6 +22,25 @@ function decimal_to_n36($number_to_convert) {
     }
     return strrev($result);
 }
+function decimal_to_n62($number_to_convert) {
+    $num_numbers = strlen((string) $number_to_convert);
+    $number_to_convert = (float) $number_to_convert;
+    $hexChars = '0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $base = strlen($hexChars);
+    $dig = array();
+    $i = 0;
+    do {
+        $dig[$i] = $number_to_convert % $base;
+        $number_to_convert = ($number_to_convert - $dig[$i]) / $base;
+        $i++;
+    } while ($number_to_convert != 0);
+
+    $result = '';
+    foreach ($dig as $value) {
+        $result .= substr($hexChars, $value, 1);
+    }
+    return strrev($result);
+}
 
 // recibe 1Z y retorna 69
 function n36_to_decimal($number_to_convert) {
