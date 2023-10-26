@@ -22,13 +22,14 @@ function decimal_to_n36($number_to_convert) {
     }
     return strrev($result);
 }
-function decimal_to_n64($number_to_convert) {
+
+function decimal_to_n63($number_to_convert) {
     $num_numbers = strlen((string) $number_to_convert);
     $number_to_convert = (float) $number_to_convert;
     $hexChars = '0123456789'
             . 'abcdefghijklmnopqrstuvwxyz'
             . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            . '-_';
+            . '-';
     $base = strlen($hexChars);
     $dig = array();
     $i = 0;
@@ -101,7 +102,7 @@ function n36_to_decimal($number_to_convert) {
 }
 
 // recibe 1Z y retorna 69
-function n64_to_decimal($number_to_convert) {
+function n63_to_decimal($number_to_convert) {
 
     $number_to_convert = $number_to_convert;
 
@@ -169,13 +170,13 @@ function n64_to_decimal($number_to_convert) {
         'Y' => 60,
         'Z' => 61,
         '-' => 62,
-        '_' => 63,    );
+    );
 
     $decimal_number = 0;
     for ($i = 0; $i <= (strlen($number_to_convert) - 1); $i++) {
         $digit_to_convert = substr($number_to_convert, $i, 1);
         $digit_value = $dig[$digit_to_convert];
-        $decimal_number = $decimal_number + (($digit_value * (pow(64, (strlen($number_to_convert) - 1) - $i))));
+        $decimal_number = $decimal_number + (($digit_value * (pow(63, (strlen($number_to_convert) - 1) - $i))));
 //        \d('$digit_to_convert : (($digit_value * (pow(35, (strlen($number_to_convert) - 1)-$i)))) = ' . (($digit_value * (pow(36, (strlen($number_to_convert) - 1)-$i)))));
     }
 
