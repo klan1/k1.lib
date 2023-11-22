@@ -302,10 +302,13 @@ function check_value_type($value, $type) {
             }
             break;
         case 'file-upload':
-            $regex = "/^[a-zA-Z0-9\s{$preg_file_symbols}]*$/";
-            if (!preg_match($regex, $value)) {
-                $error_type = " solo pude contener letras y los siguientes simbolos: $preg_symbols";
-            }
+            /**
+             * TODO: fix this
+             */
+//            $regex = "/^[a-zA-Z0-9\s{$preg_file_symbols}]*$/";
+//            if (!preg_match($regex, $value)) {
+//                $error_type = " solo pude contener letras y los siguientes simbolos: $preg_symbols";
+//            }
             break;
         case 'not-verified':
             break;
