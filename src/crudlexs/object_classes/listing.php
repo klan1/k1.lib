@@ -346,7 +346,12 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             }
         }
         // now we can know the total pages 
-        $this->total_pages = ceil($this->total_rows / self::$rows_per_page);
+        if (!is_numeric(self::$rows_per_page)) {
+            self::$rows_per_page = 0;
+            $this->total_pages = 1;
+        } else {
+            $this->total_pages = ceil($this->total_rows / self::$rows_per_page);
+        }
 
         // The rows per page have to have a value, if is not set then we have to set it as the total rows
         if (self::$rows_per_page == 0) {
@@ -378,7 +383,6 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             $this->first_row_number = $this->db_table->get_query_offset() + 1;
             $this->last_row_number = $this->db_table->get_query_offset() + $this->db_table->get_total_data_rows();
 
-
             return TRUE;
         } else {
             return FALSE;
@@ -408,5 +412,4 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     public function set_do_orderby_headers($do_orderby_headers) {
         $this->do_orderby_headers = $do_orderby_headers;
     }
-
 }
