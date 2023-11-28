@@ -834,6 +834,15 @@ function resolve_fk_real_fields_names(&$data_array_to_modify, $table_config_arra
     }
 }
 
+function make_name_fields_sql_safe(array &$array = []) {
+    if (!empty($array)) {
+        foreach ($array as $key => $value) {
+            $array[$key] = "`$value`";
+        }
+    }
+    return $array;
+}
+
 function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [], $source_table_config = []) {
     foreach ($url_key_array as $url_key_index => $url_key_value) {
         
@@ -847,7 +856,7 @@ function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [],
     $fk_table_label_fields = get_db_table_label_fields($fk_table_config);
 
     if (!empty($fk_table_label_fields)) {
-        $fk_table_label_fields_text = implode(",", "`$fk_table_label_fields`");
+        $fk_table_label_fields_text = implode(",", make_name_fields_sql_safe($fk_table_label_fields));
         $fk_where_condition = table_keys_to_where_condition($url_key_array, $fk_table_config);
         if (!empty($fk_where_condition)) {
             $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM `$fk_table_name` WHERE $fk_where_condition";
