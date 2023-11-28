@@ -134,7 +134,6 @@ class crudlexs_base {
     public function set_notifications_div_id($notifications_div_id) {
         $this->notifications_div_id = $notifications_div_id;
     }
-
 }
 
 class crudlexs_base_with_data extends crudlexs_base {
@@ -453,11 +452,11 @@ class crudlexs_base_with_data extends crudlexs_base {
 //                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_NOTICE);
                 return FALSE;
             } else {
-                if ($fields_to_change == crudlexs_base::USE_KEY_FIELDS) {
+                if ($fields_to_change === crudlexs_base::USE_KEY_FIELDS) {
                     $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
-                } elseif ($fields_to_change == crudlexs_base::USE_ALL_FIELDS) {
+                } elseif ($fields_to_change === crudlexs_base::USE_ALL_FIELDS) {
                     $fields_to_change = $this->db_table_data[0];
-                } elseif ($fields_to_change == crudlexs_base::USE_LABEL_FIELDS) {
+                } elseif ($fields_to_change === crudlexs_base::USE_LABEL_FIELDS) {
                     $fields_to_change = \k1lib\sql\get_db_table_label_fields($this->db_table->get_db_table_config());
                     if (empty($fields_to_change)) {
                         $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
@@ -490,6 +489,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                                 }
 
                                 $tag_object->set_value($row_data[$field_to_change]);
+                                d($field_to_change);
 
                                 if (is_object($tag_object)) {
                                     $a_tags = [];
@@ -528,7 +528,7 @@ class crudlexs_base_with_data extends crudlexs_base {
                                         $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                                         $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
 
-                                         /**
+                                        /**
                                          * HREF STR_REPLACE
                                          */
                                         $tag_href = str_replace("--rowkeys--", urlencode($key_array_text), $tag_href);
@@ -563,7 +563,9 @@ class crudlexs_base_with_data extends crudlexs_base {
                                 } else {
                                     trigger_error("Not a HTML_TAG Object", E_USER_WARNING);
                                 }
+                                d($field_to_change);
                                 $this->db_table_data_filtered[$index][$field_to_change] = $tag_object;
+//                                d($this->db_table_data_filtered);
                                 // Clean it... $tag_object 
                                 unset($tag_object);
                                 // Let's clone the original to re use it
@@ -738,5 +740,4 @@ class crudlexs_base_with_data extends crudlexs_base {
     public function set_fields_to_hide(array $fields_to_hide) {
         $this->fields_to_hide = $fields_to_hide;
     }
-
 }
