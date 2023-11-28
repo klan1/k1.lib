@@ -563,7 +563,6 @@ class crudlexs_base_with_data extends crudlexs_base {
                                 } else {
                                     trigger_error("Not a HTML_TAG Object", E_USER_WARNING);
                                 }
-                                d($field_to_change);
                                 $this->db_table_data_filtered[$index][$field_to_change] = $tag_object;
 //                                d($this->db_table_data_filtered);
                                 // Clean it... $tag_object 
