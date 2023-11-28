@@ -216,12 +216,12 @@ class board_read extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
+//        $data_loaded = $this->related_list->load_db_table_data($this->related_use_show_rule);
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new \k1lib\html\div();
 
         $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url, $custom_key_array);
-
 
         if (!empty($this->related_list)) {
             $current_row_keys_text = $this->read_object->get_row_keys_text();
@@ -290,7 +290,7 @@ class board_read extends board_base implements board_interface {
              */
             if ($db_table->get_state()) {
                 if ($this->related_use_rows_key_text) {
-                    if (count($custom_key_array) < 1) {
+                    if (empty($custom_key_array)) {
                         $current_row_keys_array = $this->read_object->get_row_keys_array();
                         /**
                          * lets fix the non-same key name
@@ -464,5 +464,4 @@ class board_read extends board_base implements board_interface {
     public function get_related_list() {
         return $this->related_list;
     }
-
 }

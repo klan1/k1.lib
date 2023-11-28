@@ -487,10 +487,13 @@ class controller_base {
              * URL key text management
              */
             $related_url_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "related_url_keys_text", FALSE);
+            d($db_table_name);
+            d($related_url_keys_text);
             if (!empty($related_url_keys_text)) {
                 $related_table = $db_table_name;
                 $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
                 $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                d($related_url_keys_array);
                 /**
                  * lets fix the non-same key name
                  */
@@ -507,6 +510,7 @@ class controller_base {
                     }
                 }
                 $related_url_keys_array = \k1lib\common\clean_array_with_guide($related_url_keys_array, $db_table_config);
+                d($related_url_keys_array);
                 /////
                 $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
