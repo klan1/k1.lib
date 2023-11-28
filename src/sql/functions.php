@@ -22,7 +22,7 @@ use k1lib\sql\local_cache;
 function get_db_table_config(\PDO $db, $table, $recursion = TRUE, $use_cache = TRUE) {
 
 // SQL to get info about a table
-    $columns_info_query = "SHOW FULL COLUMNS FROM {$table}";
+    $columns_info_query = "SHOW FULL COLUMNS FROM `{$table}`";
     $columns_info_result = sql_query($db, $columns_info_query, TRUE, FALSE, $use_cache);
     if (empty($columns_info_result)) {
         trigger_error("The table '$table' do not exist", E_USER_NOTICE);
@@ -287,6 +287,7 @@ function get_field_label_default($table, $field_name) {
     // Remove the possible singular name table from field name
     $field_name = str_replace("{$possible_singular_table_name}_", '', $field_name);
     // Better look without the _ character
+    $field_name = str_replace('-', ' ', strtoupper(substr($field_name, 0, 1)) . (substr($field_name, 1)));
     $field_name = str_replace('_', ' ', strtoupper(substr($field_name, 0, 1)) . (substr($field_name, 1)));
     return $field_name;
 }
@@ -407,7 +408,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
                     $keys_where_condition = array_to_sql_set($db, $table_keys, TRUE, TRUE);
                 }
                 $data_string = array_to_sql_set($db, $data);
-                $update_sql = "UPDATE $table SET $data_string WHERE $keys_where_condition;";
+                $update_sql = "UPDATE `$table` SET $data_string WHERE $keys_where_condition;";
 //                $controller_errors[] = $update_sql;
 //                $controller_errors[] = print_r($data, TRUE);
             } else {
@@ -529,7 +530,7 @@ function array_to_sql_values($array) {
                 } else {
                     $first = FALSE;
                 }
-                $data_string .= trim($field_name);
+                $data_string .= '`' . trim($field_name) . '`';
             }
             $data_string .= ") VALUES ";
         } else {
@@ -846,10 +847,10 @@ function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [],
     $fk_table_label_fields = get_db_table_label_fields($fk_table_config);
 
     if (!empty($fk_table_label_fields)) {
-        $fk_table_label_fields_text = implode(",", $fk_table_label_fields);
+        $fk_table_label_fields_text = implode(",", "`$fk_table_label_fields`");
         $fk_where_condition = table_keys_to_where_condition($url_key_array, $fk_table_config);
         if (!empty($fk_where_condition)) {
-            $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM $fk_table_name WHERE $fk_where_condition";
+            $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM `$fk_table_name` WHERE $fk_where_condition";
             $sql_result = sql_query($db, $fk_sql_query, FALSE);
             return implode(" ", $sql_result);
         } else {
@@ -966,9 +967,9 @@ function table_keys_to_where_condition(&$row_data, $db_table_config, $use_table_
             $where_condition .= " AND ";
         }
         if ($use_table_name) {
-            $where_condition .= "{$db_table_config[$key]['table']}.$key = '$value'";
+            $where_condition .= "`{$db_table_config[$key]['table']}`.`$key` = '$value'";
         } else {
-            $where_condition .= "$key = '$value'";
+            $where_condition .= "`$key` = '$value'";
         }
         $first_value = FALSE;
     }
@@ -1081,7 +1082,7 @@ function table_traduce_enum_to_index(\PDO $db, &$query_result, $db_table_config)
 }
 
 function get_table_definition_as_array(\PDO $db, $table_name) {
-    $definition = \k1lib\sql\sql_query($db, "SHOW CREATE TABLE {$table_name}", FALSE);
+    $definition = \k1lib\sql\sql_query($db, "SHOW CREATE TABLE `{$table_name}`", FALSE);
     $definition_array = explode("\n", $definition['Create Table']);
     // REMOVE THE 'CREATE TABLE PART'
     unset($definition_array[0]);
