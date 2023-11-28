@@ -294,7 +294,7 @@ class class_db_table {
                 continue;
             }
             if (isset($config[$rule]) && $config[$rule]) {
-                $fields_array[] = $field;
+                $fields_array[] = "`$field`";
             }
         }
 //        if (!empty($this->custom_query_table_config)) {
@@ -323,7 +323,7 @@ class class_db_table {
                     $fields = $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
                     break;
                 case 'keys':
-                    $db_table_key_fields = \k1lib\sql\get_db_table_keys_array($this->db_table_config);
+                    $db_table_key_fields = \k1lib\sql\make_name_fields_sql_safe(\k1lib\sql\get_db_table_keys_array($this->db_table_config));
                     if (!empty($db_table_key_fields)) {
                         $fields = implode(",", $db_table_key_fields);
                     } else {
