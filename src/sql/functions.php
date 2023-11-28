@@ -328,13 +328,17 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
     if ($query_result !== FALSE) {
         if ($query_result->rowCount() > 0) {
             while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
-                if ($do_fields && $return_all) {
-                    foreach ($row as $key => $value) {
-                        $fields[$key] = $key;
+                foreach ($row as $key => $value) {
+                    // RESULTS WITH STRING NUMBERS WILL BE CONVERTED TO NUMBERS
+                    if (is_numeric($value)) {
+                        $row[$key] = $value + 0;
                     }
-                    $do_fields = FALSE;
-                    $queryReturn[0] = $fields;
+                    if ($do_fields && $return_all) {
+                        $fields[$key] = $key;
+                        $queryReturn[0] = $fields;
+                    }
                 }
+                $do_fields = FALSE;
                 $queryReturn[$i] = $row;
                 $i++;
             }
