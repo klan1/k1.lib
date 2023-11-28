@@ -489,7 +489,6 @@ class crudlexs_base_with_data extends crudlexs_base {
                                 }
 
                                 $tag_object->set_value($row_data[$field_to_change]);
-                                d($field_to_change);
 
                                 if (is_object($tag_object)) {
                                     $a_tags = [];
