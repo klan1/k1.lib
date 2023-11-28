@@ -484,7 +484,8 @@ class crudlexs_base_with_data extends crudlexs_base {
 
                                 $custom_field_value_original = $custom_field_value;
 
-                                if ($this->skip_blanks_on_filters && empty($row_data[$field_to_change])) {
+                                 // EMPTY fields fix: 0 will be take in count
+                                if ($this->skip_blanks_on_filters && ($row_data[$field_to_change] === NULL || $row_data[$field_to_change] === '')) {
                                     continue;
                                 }
 
