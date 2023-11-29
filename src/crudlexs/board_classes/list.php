@@ -75,10 +75,19 @@ class board_list extends board_base implements board_interface {
              * Search
              */
             if ($this->search_enable) {
+                $controller_id = url::get_this_controller_id();
 
+                if (isset($_GET['clear-search']) && $_GET['clear-search'] == 1) {
+                    \k1lib\common\unset_serialize_var($controller_id);
+                    unset($_GET['clear-search']);
+                    $next_url = url::do_url(APP_URL . url::get_this_url(), [], TRUE, array_keys($_GET));
+                    d($next_url);
+                    \k1lib\html\html_header_go($next_url);
+                    exit;
+                }
 
                 $search_iframe = new \k1lib\html\iframe(url::do_url(
-                                $this->controller_object->get_controller_root_dir() . "search/?just-controller=1&caller-url=" . urlencode($_SERVER['REQUEST_URI']))
+                                $this->controller_object->get_controller_root_dir() . "search/?just-controller=1&caller-id=" . $controller_id)
                         , 'utility-iframe', "search-iframe"
                 );
 //                $this->board_content_div->append_child_tail($search_iframe);
@@ -90,7 +99,15 @@ class board_list extends board_base implements board_interface {
                 $search_buttom->set_attrib("class", "button fi-page-search");
                 $search_buttom->append_to($this->button_div_tag);
 
-                if (isset($_POST) && isset($_POST['from-search']) && (urldecode($_POST['from-search']) == $_SERVER['REQUEST_URI'])) {
+                /**
+                 * LOAD SEARCH DATA FROM SESSION
+                 */
+                $search_session_data = \k1lib\common\unserialize_var($controller_id);
+                if (!empty($search_session_data) && empty($_POST)) {
+                    $_POST = $search_session_data;
+                }
+
+                if (isset($_POST) && isset($_POST['from-search']) && (urldecode($_POST['from-search']) == $controller_id)) {
 //                    if ($this->)
                     /**
                      * decrypt post field names
@@ -102,16 +119,16 @@ class board_list extends board_base implements board_interface {
                         $search_data = $incomming_search_data;
                     }
                     $this->controller_object->db_table->set_query_filter($search_data);
-                    $search_post = \k1lib\common\serialize_var($_POST, urlencode($_SERVER['REQUEST_URI']));
+                    $search_post = \k1lib\common\serialize_var($_POST, $controller_id);
                     /**
                      * Clear search
                      */
-                    $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI']), board_list_strings::$button_search_cancel, "_self");
+                    $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI'], ['clear-search' => 1]), board_list_strings::$button_search_cancel, "_self");
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->set_attrib("class", "button warning");
                     $clear_search_buttom->append_to($this->button_div_tag);
                 } else {
-                    $search_post = \k1lib\common\unset_serialize_var(urlencode($_SERVER['REQUEST_URI']));
+                    $search_post = \k1lib\common\unserialize_var($controller_id);
                 }
             }
 
@@ -233,5 +250,4 @@ class board_list extends board_base implements board_interface {
     public function set_back_enable($back_enable) {
         $this->back_enable = $back_enable;
     }
-
 }

@@ -216,7 +216,6 @@ class board_read extends board_base implements board_interface {
      * @return \k1lib\html\div|boolean
      */
     public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
-//        $data_loaded = $this->related_list->load_db_table_data($this->related_use_show_rule);
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new \k1lib\html\div();
@@ -236,7 +235,7 @@ class board_read extends board_base implements board_interface {
                 "back-url" => urlencode($_SERVER['REQUEST_URI'])
             ];
 
-            if (isset($data_loaded) && $data_loaded) {
+            if ($this->related_list->data_loaded) {
                 $all_data_url = url::do_url(APP_URL . $board_root . "/" . $board_list . "/" . urlencode($current_row_keys_text) . "/", $get_vars, FALSE);
                 $this->related_html_object_show_all_data = \k1lib\html\get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
                 if ($this->related_show_all_data) {
@@ -325,8 +324,8 @@ class board_read extends board_base implements board_interface {
                 }
 
                 $this->related_list->set_rows_per_page($this->related_rows_to_show);
-                $data_loaded = $this->related_list->load_db_table_data($this->related_use_show_rule);
-                if ($data_loaded) {
+                $this->related_list->load_db_table_data($this->related_use_show_rule);
+                if ($this->related_list->data_loaded) {
                     if ($this->related_apply_filters) {
                         $this->related_apply_filters();
                         $this->related_apply_link_read_field($field_links_array, $board_root, $board_read, $use_back_url, $clear_url);
