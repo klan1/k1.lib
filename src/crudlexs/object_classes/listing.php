@@ -15,6 +15,11 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
     public $html_table;
 
     /**
+     * @var boolean
+     */
+    public $data_loaded = false;
+
+    /**
      * @var int
      */
     protected $total_rows = 0;
@@ -382,9 +387,10 @@ class listing extends crudlexs_base_with_data implements crudlexs_base_interface
             $this->total_rows_filter = $this->db_table->get_total_data_rows();
             $this->first_row_number = $this->db_table->get_query_offset() + 1;
             $this->last_row_number = $this->db_table->get_query_offset() + $this->db_table->get_total_data_rows();
-
+            $this->data_loaded = true;
             return TRUE;
         } else {
+            $this->data_loaded = false;
             return FALSE;
         }
     }

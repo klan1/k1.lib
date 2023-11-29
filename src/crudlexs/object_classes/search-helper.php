@@ -52,7 +52,7 @@ class search_helper extends creating {
         $this->insert_inputs_on_data_row();
 
         $search_html = parent::do_html_object();
-        $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $this->caller_url);
+        $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $_SERVER['HTTP_REFERER']);
         $search_html->get_elements_by_tag("form")[0]->set_attrib("target", "_parent");
         $search_html->get_elements_by_tag("form")[0]->append_child(new \k1lib\html\input("hidden", "from-search", urlencode($this->caller_url)));
         return $search_html;
