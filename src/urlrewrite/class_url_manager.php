@@ -99,7 +99,6 @@ class url {
                     $this_url = self::get_this_url();
                     self::set_last_url($this_url);
 
-
                     return $url_data_level_value;
                 } else {
                     if ($required) {
@@ -224,8 +223,7 @@ class url {
 
     static public function get_this_controller_id() {
         $controller_url = self::make_url_from_rewrite();
-        $controller_id = str_replace("/", "-", $controller_url);
-        $controller_id = substr($controller_id, 1);
+        $controller_id = str_replace("/", "-", rtrim($controller_url, '/'));
         return $controller_id;
     }
 
@@ -401,5 +399,4 @@ class url {
             return FALSE;
         }
     }
-
 }
