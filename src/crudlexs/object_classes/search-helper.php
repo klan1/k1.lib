@@ -26,10 +26,10 @@ class search_helper extends creating {
 // FILTERS
     public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
         parent::__construct($db_table, FALSE);
-        if (isset($_GET['caller-url'])) {
-            $this->caller_url = urldecode($_GET['caller-url']);
+        if (isset($_GET['caller-id'])) {
+            $this->caller_url = urldecode($_GET['caller-id']);
         } else {
-            d("No caller url");
+            d("No caller ID");
         }
         creating_strings::$button_submit = search_helper_strings::$button_submit;
         creating_strings::$button_cancel = search_helper_strings::$button_cancel;
