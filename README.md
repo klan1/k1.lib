@@ -5,7 +5,7 @@ This is the first public version, almost final!
 ## Requirements
 - Apache with rewrite enabled.
 - Optional: MySQL Database.
-- PHP 5.6 with at least 2MB in memory allowed + Your code requirements. Maybe with 8MB in most cases is enough.
+- PHP 7.4 with at least 2MB in memory allowed + Your code requirements. Maybe with 8MB in most cases is enough.
 
 ## Installation
 

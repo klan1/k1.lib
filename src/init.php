@@ -12,7 +12,7 @@
  * @author          Alejandro Trujillo J. <alejo@klan1.com>
  * @copyright       2015-2023 Klan1 Network SAS
  * @license         Apache 2.0
- * @version         1.9
+ * @version         1.9.2
  * @since           File available since Release 0.1
  */
 /*
@@ -22,7 +22,7 @@
 namespace k1lib;
 
 const IN_K1LIB = TRUE;
-const VERSION = "1.9";
+const VERSION = "1.9.2";
 
 // Peace for user, info for the developer with ZendZerver and Z-Ray Live!
 error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
@@ -56,7 +56,7 @@ k1lib_include_files(K1LIB_BASE_PATH . "/__lang/" . K1LIB_LANG);
 require_once dirname(K1LIB_BASE_PATH) . '/src-globals/globals.php';
 
 if (!defined("K1LIB_INC_MODE")) {
-    define("K1LIB_INC_MODE", 1);
+    define("K1LIB_INC_MODE", 0);
 }
 if (K1LIB_INC_MODE == 1) {
     require_once dirname(K1LIB_BASE_PATH) . '/dist/inc.all.php';
