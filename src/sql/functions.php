@@ -345,12 +345,12 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
             }
             if (isset($queryReturn)) {
                 if ($return_all) {
-                    if (\k1app\APP_MODE == "web") {
+                    if (\k1app\K1APP_MODE == "web") {
                         local_cache::add($sql, $queryReturn);
                     }
                     $return = $queryReturn;
                 } else {
-                    if (\k1app\APP_MODE == "web") {
+                    if (\k1app\K1APP_MODE == "web") {
                         local_cache::add($sql, $queryReturn[1]);
                     }
                     $return = $queryReturn[1];
