@@ -25,7 +25,7 @@ function load_controller($controller_name, $controllers_path, $return_error = FA
 //    $controller_query_file = FALSE;
     if (is_string($controller_name)) {
         // Try with subfolder scheme
-        $controller_subfix = $controllers_path . "/{$controller_name}";
+        $controller_subfix = $controllers_path . "{$controller_name}";
 
         $controller_to_load = $controller_subfix . ".php";
         if (file_exists($controller_to_load)) {
