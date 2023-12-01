@@ -30,6 +30,12 @@ class url {
      */
     static private $api_mode = FALSE;
 
+    /**
+     * 
+     * @var string
+     */
+    static private $url_rewrite_data = NULL;
+
     static function set_api_mode() {
         self::$api_mode = TRUE;
     }
@@ -42,6 +48,8 @@ class url {
         self::$enabled = TRUE;
         self::$levels_count = null;
         self::$url_data = array();
+        self::$url_rewrite_data = \k1lib\forms\check_single_incomming_var($_GET[\k1lib\URL_REWRITE_VAR_NAME]);
+        unset($_GET[\k1lib\URL_REWRITE_VAR_NAME]);
     }
 
     /**
@@ -72,7 +80,7 @@ class url {
      */
     static public function set_url_rewrite_var($level, $name, $required = TRUE) {
         self::is_enabled(true);
-        if (!empty($_GET[\k1lib\URL_REWRITE_VAR_NAME])) {
+        if (!empty(self::$url_rewrite_data)) {
 
             // checks if the level variable is INT
             if (!is_int($level) || ($level < 0)) {
@@ -85,8 +93,7 @@ class url {
                 trigger_error("The level name must have a value : " . __FUNCTION__, E_USER_ERROR);
             }
             //convert the URL string into an array separated by "/" character
-            $exploded_url = explode("/", $_GET[\k1lib\URL_REWRITE_VAR_NAME]);
-//            unset($_GET[\k1lib\URL_REWRITE_VAR_NAME]);
+            $exploded_url = explode("/", self::$url_rewrite_data);
             //the level requested can't be lower than the count of the items returned from the explode
             if ($level < count($exploded_url)) {
                 $url_data_level_value = $exploded_url[$level];
@@ -403,5 +410,9 @@ class url {
     static public function is_https() {
         return
                 (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
+    }
+
+    public static function get_url_rewrite_data(): string {
+        return self::$url_rewrite_data;
     }
 }
