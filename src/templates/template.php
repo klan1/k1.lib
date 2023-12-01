@@ -24,6 +24,8 @@ class template {
         self::$enabled = TRUE;
         if (file_exists($template_path)) {
             self::$template_path = $template_path;
+            self::load_template('scripts/definition');
+
 //            if (file_exists($template_path . $css_path)) {
 //                self::$css_path = $template_path . $css_path;
 //            }
