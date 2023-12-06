@@ -2,7 +2,7 @@
 
 namespace k1lib\api;
 
-use \k1lib\api\api;
+use \k1lib\api\base;
 use \k1lib\urlrewrite\url;
 use \k1lib\crudlexs\class_db_table;
 use \k1lib\api\model;
