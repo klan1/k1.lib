@@ -22,6 +22,12 @@
         "ramsey/uuid": "3.7.3"
     },
     "autoload": {
-        "files": ["src/init.php"]
+        "files": [
+            "src/init.php",
+            "src/functions/*.php"
+        ],
+        "psr-4": {
+            "k1lib\\" : "src/classes/k1lib/"
+        }
     }
 }

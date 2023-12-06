@@ -1,13 +1,12 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\controller;
 
-use k1lib\templates\temply as temply;
 use k1lib\urlrewrite\url as url;
 use k1lib\html\DOM as DOM;
 use k1lib\notifications\on_DOM as DOM_notification;
 
-class controller_base {
+class base {
 
     protected $security_no_rules_enable = FALSE;
 

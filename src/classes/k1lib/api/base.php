@@ -19,7 +19,7 @@ const K1LIB_API_DISABLE_MAGIC_HEADER = FALSE;
 const K1LIB_API_USE_TOKEN = TRUE;
 const K1LIB_API_DISABLE_TOKEN = FALSE;
 
-class api {
+class base {
 
     protected $allow_methods = 'POST,GET,PUT,DELETE';
     //execution time measurement

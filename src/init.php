@@ -27,7 +27,6 @@ const VERSION = "1.9.2";
 // Peace for user, info for the developer with ZendZerver and Z-Ray Live!
 error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
 
-
 /*
  * PATH AUTO CONFIG
  */
@@ -57,11 +56,6 @@ require_once dirname(K1LIB_BASE_PATH) . '/src-globals/globals.php';
 
 if (!defined("K1LIB_INC_MODE")) {
     define("K1LIB_INC_MODE", 0);
-}
-if (K1LIB_INC_MODE == 1) {
-    require_once dirname(K1LIB_BASE_PATH) . '/dist/inc.all.php';
-} else {
-    k1lib_include_files(K1LIB_BASE_PATH);
 }
 
 //k1lib_include_files(K1LIB_BASE_PATH);

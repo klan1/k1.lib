@@ -1,16 +1,16 @@
 <?php
 
-namespace k1app\api\auth;
+namespace k1lib\api;
 
 use \k1lib\api\api;
 use \k1lib\urlrewrite\url;
 use \k1lib\crudlexs\class_db_table;
-use \k1lib\api\api_model;
+use \k1lib\api\model;
 
-class api_crud extends api {
+class crud extends api {
 
     /**
-     * @var \k1lib\api\api_model
+     * @var \k1lib\api\model
      */
     private $table_model;
 
@@ -204,8 +204,8 @@ class api_crud extends api {
         $this->db_table_name = $db_table_name;
         $this->db_table = new class_db_table($this->db, $this->db_table_name);
 //        echo " | set_db_table_name: " . print_r($this->input_data, TRUE) . " | ";
-//        $this->table_model = new api_model($this->db_table, $this->input_data);
-        $this->table_model = new api_model($this->db_table);
+//        $this->table_model = new model($this->db_table, $this->input_data);
+        $this->table_model = new model($this->db_table);
     }
 
     function exec($send_response = TRUE) {

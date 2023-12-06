@@ -14,7 +14,7 @@ class board_create extends board_base implements board_interface {
      */
     public $create_object;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-create";

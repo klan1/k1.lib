@@ -1,8 +1,7 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\board;
 
-use k1lib\templates\temply as temply;
 use k1lib\html\DOM as DOM;
 use k1lib\notifications\on_DOM as DOM_notification;
 
@@ -19,7 +18,7 @@ class board_base {
 
     /**
      * DB table main object
-     * @var \k1lib\crudlexs\controller_base 
+     * @var \k1lib\crudlexs\controller\base 
      */
     protected $controller_object;
 
@@ -83,7 +82,7 @@ class board_base {
      */
     protected $button_div_tag;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         $this->controller_object = $controller_object;
         $this->board_content_div = new \k1lib\html\div("board-content");
 
