@@ -2,8 +2,7 @@
 
 namespace k1lib\urlrewrite;
 
-use \k1lib_common;
-use \k1lib\api\api;
+use \k1lib\api\base as api_base;
 
 class url {
 
@@ -110,7 +109,7 @@ class url {
                 } else {
                     if ($required) {
                         if (self::$api_mode === TRUE) {
-                            $error = new \k1lib\api\api();
+                            $error = new api_base();
                             $error->send_response(500, ['message' => "The URL value in the level {$level} is empty, the actual URL is bad formed " . __FUNCTION__]);
                         } else {
                             die("The URL value in the level {$level} is empty, the actual URL is bad formed " . __FUNCTION__);
@@ -125,7 +124,7 @@ class url {
                     return FALSE;
                 } else {
                     if (self::$api_mode === TRUE) {
-                        $error = new \k1lib\api\api();
+                        $error = new api_base();
                         $error->send_response(500, ['message' => "The URL level {$level} requested do not exist and is required"]);
                     } else {
                         trigger_error("The URL level {$level} requested do not exist and is required", E_USER_ERROR);

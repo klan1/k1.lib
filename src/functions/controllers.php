@@ -39,7 +39,7 @@ function load_controller($controller_name, $controllers_path, $return_error = FA
             } else {
                 if (!$return_error) {
                     if ($api_mode) {
-                        $error = new \k1lib\api\api();
+                        $error = new \k1lib\api\base();
                         $error->send_response(400, ['message' => 'Not found: ' . $controller_name]);
                     } else {
                         error_404($controller_name);
