@@ -14,7 +14,7 @@ class board_delete extends board_base implements board_interface {
     private $row_keys_text_array;
     private $read_object;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         $this->redirect_url = (isset($_GET['back-url'])) ? \k1lib\urlrewrite\get_back_url() : "{$controller_object->get_controller_root_dir()}{$this->controller_object->get_board_list_url_name()}/";
         if ($this->is_enabled) {

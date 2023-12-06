@@ -14,7 +14,7 @@ class board_search extends board_base implements board_interface {
     public $search_object;
     protected $search_catch_post_enable = TRUE;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->search_object = new \k1lib\crudlexs\search_helper($this->controller_object->db_table);

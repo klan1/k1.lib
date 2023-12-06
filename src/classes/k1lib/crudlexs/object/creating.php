@@ -1,13 +1,13 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\object;
 
 use k1lib\notifications\on_DOM as DOM_notification;
 
 /**
  * 
  */
-class creating extends crudlexs_base_with_data implements crudlexs_base_interface {
+class creating extends base_with_data implements base_interface {
 
     /**
      * @var Array

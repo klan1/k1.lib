@@ -10,7 +10,7 @@
  * LICENSE:  
  *
  * @author          Alejandro Trujillo J. <alejo@klan1.com>
- * @copyright       2015-2019 Klan1 Network SAS
+ * @copyright       2015-2023 Klan1 Network SAS
  * @license         Apache 2.0
  * @version         1.0
  * @since           File available since Release 0.8
@@ -23,7 +23,7 @@ namespace k1lib\api;
 
 use \k1lib\crudlexs\class_db_table;
 
-class api_model {
+class model {
 
     /**
      * @var \k1lib\crudlexs\class_db_table

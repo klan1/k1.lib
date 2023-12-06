@@ -1,13 +1,13 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\object;
 
 use k1lib\urlrewrite\url as url;
 
 /**
  * 
  */
-class listing extends crudlexs_base_with_data implements crudlexs_base_interface {
+class listing extends base_with_data implements base_interface {
 
     /**
      * @var \k1lib\html\foundation\table_from_data

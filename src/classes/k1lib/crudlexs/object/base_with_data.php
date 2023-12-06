@@ -1,142 +1,14 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\object;
 
 use \k1lib\common_strings as common_strings;
 use \k1lib\urlrewrite\url as url;
-use \k1lib\db\security\db_table_aliases as db_table_aliases;
 use \k1lib\session\session_plain as session_plain;
 use \k1lib\forms\file_uploads as file_uploads;
-use k1lib\html\DOM as DOM;
 use \k1lib\notifications\on_DOM as DOM_notification;
 
-interface crudlexs_base_interface {
-
-    public function do_html_object();
-}
-
-class crudlexs_base {
-
-    const USE_KEY_FIELDS = 1;
-    const USE_ALL_FIELDS = 2;
-    const USE_LABEL_FIELDS = 3;
-
-    static protected $k1magic_value = null;
-
-    /**
-     *
-     * @var \k1lib\crudlexs\class_db_table 
-     */
-    public $db_table;
-
-    /**
-     *
-     * @var \k1lib\html\div
-     */
-    protected $div_container;
-
-    /**
-     * Unique ID for each object
-     * @var string
-     */
-    protected $object_id = null;
-
-    /**
-     * General CSS class
-     * @var string
-     */
-    protected $css_class = null;
-
-    /**
-     * If some goes BAD to do not keep going for others methods, you have to put this on FALSE;
-     * @var boolean
-     */
-    private $is_valid = FALSE;
-
-    /**
-     * @var string
-     */
-    protected $notifications_div_id = "k1lib-output";
-
-    static function get_k1magic_value() {
-        return self::$k1magic_value;
-    }
-
-    static function set_k1magic_value($k1magic_value) {
-        self::$k1magic_value = $k1magic_value;
-    }
-
-    public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
-        $this->db_table = $db_table;
-        $this->div_container = new \k1lib\html\div();
-        $this->is_valid = TRUE;
-    }
-
-    function is_valid() {
-        return $this->is_valid;
-    }
-
-    function make_invalid() {
-        $this->is_valid = FALSE;
-    }
-
-    /**
-     * Always to create the object you must have a valid DB Table object already 
-     * @param \k1lib\crudlexs\class_db_table $db_table DB Table object
-     */
-    public function __toString() {
-        if ($this->get_state()) {
-            return "1";
-        } else {
-            return "0";
-        }
-    }
-
-    public function get_state() {
-        if (empty($this->db_table) || !$this->is_valid()) {
-            return FALSE;
-        } else {
-            if ($this->db_table->get_state() || !$this->is_valid()) {
-                return TRUE;
-            } else {
-                return FALSE;
-            }
-        }
-    }
-
-    function get_object_id() {
-        return $this->object_id;
-    }
-
-    function set_object_id($class_name) {
-        if (isset($this->db_table) && key_exists($this->db_table->get_db_table_name(), db_table_aliases::$aliases)) {
-            $table_name = db_table_aliases::$aliases[$this->db_table->get_db_table_name()];
-        } else if (isset($this->db_table)) {
-            $table_name = $this->db_table->get_db_table_name();
-        } else {
-            $table_name = "no-table";
-        }
-        return $this->object_id = $table_name . "-" . basename(str_replace("\\", "/", $class_name));
-    }
-
-    function get_css_class() {
-        return $this->css_class;
-    }
-
-    function set_css_class($class_name) {
-        $this->css_class = basename(str_replace("\\", "/", $class_name));
-    }
-
-    public function get_notifications_div_id() {
-        return $this->notifications_div_id;
-    }
-
-    public function set_notifications_div_id($notifications_div_id) {
-        $this->notifications_div_id = $notifications_div_id;
-    }
-}
-
-class crudlexs_base_with_data extends crudlexs_base {
+class base_with_data extends base {
 
     /**
      *
@@ -438,7 +310,7 @@ class crudlexs_base_with_data extends crudlexs_base {
             $a_tag = new \k1lib\html\a(url::do_url($link_to_apply), "", $href_target);
             $a_tag->set_attrib("class", "k1lib-link-filter", TRUE);
             if (empty($fields_to_change)) {
-                $fields_to_change = crudlexs_base::USE_KEY_FIELDS;
+                $fields_to_change = base::USE_KEY_FIELDS;
             }
             return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change, $custom_field_value);
         } else {
@@ -446,17 +318,17 @@ class crudlexs_base_with_data extends crudlexs_base {
         }
     }
 
-    public function apply_html_tag_on_field_filter(\k1lib\html\tag $tag_object, $fields_to_change = crudlexs_base::USE_KEY_FIELDS, $custom_field_value = null) {
+    public function apply_html_tag_on_field_filter(\k1lib\html\tag $tag_object, $fields_to_change = base::USE_KEY_FIELDS, $custom_field_value = null) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
 //                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_NOTICE);
                 return FALSE;
             } else {
-                if ($fields_to_change === crudlexs_base::USE_KEY_FIELDS) {
+                if ($fields_to_change === base::USE_KEY_FIELDS) {
                     $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
-                } elseif ($fields_to_change === crudlexs_base::USE_ALL_FIELDS) {
+                } elseif ($fields_to_change === base::USE_ALL_FIELDS) {
                     $fields_to_change = $this->db_table_data[0];
-                } elseif ($fields_to_change === crudlexs_base::USE_LABEL_FIELDS) {
+                } elseif ($fields_to_change === base::USE_LABEL_FIELDS) {
                     $fields_to_change = \k1lib\sql\get_db_table_label_fields($this->db_table->get_db_table_config());
                     if (empty($fields_to_change)) {
                         $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
@@ -484,7 +356,7 @@ class crudlexs_base_with_data extends crudlexs_base {
 
                                 $custom_field_value_original = $custom_field_value;
 
-                                 // EMPTY fields fix: 0 will be take in count
+                                // EMPTY fields fix: 0 will be take in count
                                 if ($this->skip_blanks_on_filters && ($row_data[$field_to_change] === NULL || $row_data[$field_to_change] === '')) {
                                     continue;
                                 }

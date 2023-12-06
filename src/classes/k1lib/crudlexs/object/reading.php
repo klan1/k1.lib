@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\object;
 
 use k1lib\templates\temply as temply;
 use k1lib\html\DOM as DOM;
@@ -9,7 +9,7 @@ use k1lib\notifications\on_DOM as DOM_notification;
 /**
  * 
  */
-class reading extends crudlexs_base_with_data implements crudlexs_base_interface {
+class reading extends base_with_data implements base_interface {
 
     private $html_column_classes = "large-4 medium-6 small-12 column";
 

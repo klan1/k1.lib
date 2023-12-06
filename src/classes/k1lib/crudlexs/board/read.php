@@ -52,7 +52,7 @@ class board_read extends board_base implements board_interface {
      */
     protected $related_html_table_object = NULL;
 
-    public function __construct(\k1lib\crudlexs\controller_base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-read";
@@ -158,7 +158,7 @@ class board_read extends board_base implements board_interface {
 //                $this->board_content_div->set_attrib("class", "grid-x", TRUE);
 
                 $span_tag = new \k1lib\html\span("key-field");
-                $this->read_object->apply_html_tag_on_field_filter($span_tag, \k1lib\crudlexs\crudlexs_base::USE_KEY_FIELDS);
+                $this->read_object->apply_html_tag_on_field_filter($span_tag, \k1lib\crudlexs\object\base::USE_KEY_FIELDS);
 
                 $read_content_div = $this->read_object->do_html_object();
                 $read_content_div->append_to($this->board_content_div);
