@@ -11,8 +11,6 @@
 
 namespace k1lib\forms;
 
-use k1lib\html as html;
-
 class file_uploads {
 
     const ERROR_FILE_ALREADY_EXIST = -1;
