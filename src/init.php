@@ -85,3 +85,20 @@ function k1lib_include_files($path_to_explore, array $prefix_to_exclude = ['.', 
         }
     }
 }
+
+namespace k1lib\html;
+
+const IS_SELF_CLOSED = TRUE;
+const IS_NOT_SELF_CLOSED = FALSE;
+const NO_CLASS = NULL;
+const NO_ID = NULL;
+const NO_VALUE = NULL;
+const APPEND_ON_HEAD = 1;
+const APPEND_ON_MAIN = 2;
+const APPEND_ON_TAIL = 3;
+const INSERT_ON_PRE_TAG = -1;
+const INSERT_ON_AFTER_TAG_OPEN = 2;
+const INSERT_ON_VALUE = 0;
+const INSERT_ON_BEFORE_TAG_CLOSE = 3;
+const INSERT_ON_POST_TAG = 1;
+
