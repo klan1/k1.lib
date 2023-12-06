@@ -2,7 +2,7 @@
 
 namespace k1lib\templates;
 
-class temply {
+class _temply {
 
     /**
      * Enable state
