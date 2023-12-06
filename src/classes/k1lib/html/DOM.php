@@ -9,7 +9,7 @@ class DOM {
 //    use append_shotcuts;
 
     /**
-     * @var html
+     * @var html_document
      */
     static protected $html = NULL;
 

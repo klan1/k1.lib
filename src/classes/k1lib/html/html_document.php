@@ -12,7 +12,7 @@ namespace k1lib\html;
  *  </body>
  * </html> 
  */
-class html extends tag {
+class html_document extends tag {
 
     use append_shotcuts;
 

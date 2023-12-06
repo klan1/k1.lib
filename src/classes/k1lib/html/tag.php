@@ -7,7 +7,7 @@ namespace k1lib\html;
  */
 class tag {
 
-    use append_shotcuts;
+    use \k1lib\html\append_shotcuts;
 
     /** @var String */
     protected $tag_id = 0;
