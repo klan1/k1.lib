@@ -51,7 +51,7 @@ const MAGIC_VALUE = "9d5042fd5925dfc995b7958a84a24ead";
 if (!defined("K1LIB_LANG")) {
     define("K1LIB_LANG", "en");
 }
-k1lib_include_files(K1LIB_BASE_PATH . "/__lang/" . K1LIB_LANG);
+k1lib_include_files(K1LIB_BASE_PATH . "/lang/" . K1LIB_LANG);
 require_once dirname(K1LIB_BASE_PATH) . '/src-globals/globals.php';
 
 if (!defined("K1LIB_INC_MODE")) {

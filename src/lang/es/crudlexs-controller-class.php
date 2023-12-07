@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\controller;
 
 class controller_base_strings {
 

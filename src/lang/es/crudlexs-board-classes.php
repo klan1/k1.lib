@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\board;
 
 class board_base_strings {
 

@@ -2,7 +2,7 @@
 
 namespace k1lib\session;
 
-use k1lib\notifications\on_DOM as DOM_notifications;
+use k1lib\html\notifications\on_DOM as DOM_notifications;
 
 class session_db extends session_plain {
 

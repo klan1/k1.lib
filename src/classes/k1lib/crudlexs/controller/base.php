@@ -4,7 +4,7 @@ namespace k1lib\crudlexs\controller;
 
 use k1lib\urlrewrite\url as url;
 use k1lib\html\DOM as DOM;
-use k1lib\notifications\on_DOM as DOM_notification;
+use k1lib\html\notifications\on_DOM as DOM_notification;
 
 class base {
 
