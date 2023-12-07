@@ -6,7 +6,7 @@ use \k1lib\urlrewrite\url as url;
 use k1lib\html\DOM as DOM;
 use \k1lib\html\notifications\on_DOM as DOM_notification;
 
-class updating extends \k1lib\crudlexs\creating {
+class updating extends \k1lib\crudlexs\object\creating {
 
     protected $update_perfomed = FALSE;
     protected $do_redirect = FALSE;

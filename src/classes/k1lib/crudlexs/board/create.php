@@ -6,7 +6,7 @@ use k1lib\urlrewrite\url as url;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 
-class board_create extends board_base implements board_interface {
+class create extends board_base implements board_interface {
 
     /**
      *
@@ -18,7 +18,7 @@ class board_create extends board_base implements board_interface {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-create";
-            $this->create_object = new \k1lib\crudlexs\creating($this->controller_object->db_table, FALSE);
+            $this->create_object = new \k1lib\crudlexs\object\creating($this->controller_object->db_table, FALSE);
         }
     }
 

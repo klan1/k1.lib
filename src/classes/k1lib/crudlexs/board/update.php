@@ -7,7 +7,7 @@ use k1lib\session\session_plain as session_plain;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 
-class board_update extends board_base implements board_interface {
+class update extends board_base implements board_interface {
 
     /**
      *
@@ -21,7 +21,7 @@ class board_update extends board_base implements board_interface {
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-update";
             $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
-            $this->update_object = new \k1lib\crudlexs\updating($this->controller_object->db_table, $this->row_keys_text);
+            $this->update_object = new \k1lib\crudlexs\object\updating($this->controller_object->db_table, $this->row_keys_text);
         }
     }
 

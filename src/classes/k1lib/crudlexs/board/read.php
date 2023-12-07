@@ -4,8 +4,9 @@ namespace k1lib\crudlexs\board;
 
 use \k1lib\urlrewrite\url as url;
 use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\crudlexs\db_table;
 
-class board_read extends board_base implements board_interface {
+class read extends board_base implements board_interface {
 
     /**
      *
@@ -57,7 +58,7 @@ class board_read extends board_base implements board_interface {
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-read";
             $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
-            $this->read_object = new \k1lib\crudlexs\reading($this->controller_object->db_table, $this->row_keys_text);
+            $this->read_object = new \k1lib\crudlexs\object\reading($this->controller_object->db_table, $this->row_keys_text);
         }
     }
 
@@ -317,7 +318,7 @@ class board_read extends board_base implements board_interface {
                  * LIST OBJECT must be created here to know if ther is data or not to show
                  * all data button.
                  */
-                $this->related_list = new \k1lib\crudlexs\listing($db_table, FALSE);
+                $this->related_list = new \k1lib\crudlexs\object\listing($db_table, FALSE);
 
                 if (!empty($this->related_custom_field_labels)) {
                     $this->related_list->set_custom_field_labels($this->related_custom_field_labels);

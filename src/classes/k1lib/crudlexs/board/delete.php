@@ -7,7 +7,7 @@ use k1lib\urlrewrite\url as url;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 
-class board_delete extends board_base implements board_interface {
+class delete extends board_base implements board_interface {
 
     protected $redirect_url = null;
     private $row_keys_text;
@@ -19,7 +19,7 @@ class board_delete extends board_base implements board_interface {
         $this->redirect_url = (isset($_GET['back-url'])) ? \k1lib\urlrewrite\get_back_url() : "{$controller_object->get_controller_root_dir()}{$this->controller_object->get_board_list_url_name()}/";
         if ($this->is_enabled) {
             $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
-            $this->read_object = new \k1lib\crudlexs\reading($this->controller_object->db_table, $this->row_keys_text);
+            $this->read_object = new \k1lib\crudlexs\object\reading($this->controller_object->db_table, $this->row_keys_text);
         }
     }
 
