@@ -92,14 +92,14 @@ class tag {
 //            $this->set_attrib("class", "k1lib-{$tag_name}-object");
 // GET the global tag ID and catalog the object
         $this->tag_id = tag_catalog::increase($this);
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} was created");
         }
     }
 
     function __clone() {
         $this->tag_id = tag_catalog::increase($this);
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} was cloned");
         }
     }
@@ -111,7 +111,7 @@ class tag {
     function decatalog() {
 // Itself from Catalog
         tag_catalog::decatalog($this->tag_id);
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} was decataloged");
         }
 // His childs
@@ -164,7 +164,7 @@ class tag {
      * @param \k1lib\html\tag $parent
      */
     function set_parent(tag $parent) {
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is child of [{$parent->get_tag_name()}] ID:{$parent->tag_id} ");
         }
         $this->parent = $parent;
@@ -178,7 +178,7 @@ class tag {
      */
     public function __toString() {
         if ($this->get_tag_id()) {
-            if (html::get_use_log()) {
+            if (html_document::get_use_log()) {
                 tag_log::log("[{$this->get_tag_name()}] is returned for inline use");
             }
             return "{{ID:" . $this->get_tag_id() . "}}";
@@ -230,7 +230,7 @@ class tag {
             }
         }
         $this->has_child = TRUE;
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} appends [{$child_object->get_tag_name()}] ID:{$child_object->tag_id} ");
         }
         return $child_object;
@@ -404,7 +404,7 @@ class tag {
         } else {
             $this->this_link->set_value((($append === TRUE) && (!empty($this->this_link->get_value())) ) ? ($this->this_link->get_value() . " " . $value) : ("$value"));
         }
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} set value to: {$value}");
         }
         return $this;
@@ -416,7 +416,7 @@ class tag {
      */
     public function link_value_obj(tag $obj_to_link) {
         $this->this_link = $obj_to_link;
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is linked to [{$obj_to_link->get_tag_name()}]");
         }
     }
@@ -485,7 +485,7 @@ class tag {
         } else {
             trigger_error("HTML ATTRIBUTE has to be string", E_USER_WARNING);
         }
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} new attrib: {$attribute}={$value}");
         }
         return $this;
@@ -717,7 +717,7 @@ class tag {
         }
         // TODO: Fix this!! please no more pre_code and post_code
         $this->tag_code = $this->pre_code . $html_code . $this->post_code;
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] is generated");
         }
 
@@ -739,7 +739,7 @@ class tag {
             $tabs = '';
         }
         $html_code = "{$tabs}</{$this->tag_name}>";
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] close tag generated");
         }
 
@@ -760,12 +760,12 @@ class tag {
      * @return tag|NULL
      */
     public function get_element_by_id($id) {
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by ID='$id'");
         }
         if ($this->get_tag_id()) {
             if ($this->get_attribute("id") == $id) {
-                if (html::get_use_log()) {
+                if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} has the ID='$id' and is returned");
                 }
                 return $this;
@@ -774,12 +774,12 @@ class tag {
                 $all_childs = $this->get_all_childs();
                 $all_childs = array_merge($inline_tags, $all_childs);
                 foreach ($all_childs as $child) {
-                    if (html::get_use_log()) {
+                    if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by ID='$id' on child [{$child->get_tag_name()}] ID:{$child->tag_id}");
                     }
                     $child_search_result = $child->get_element_by_id($id);
                     if (!empty($child_search_result)) {
-                        if (html::get_use_log()) {
+                        if (html_document::get_use_log()) {
                             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} has child [{$child->get_tag_name()}] ID:{$child->tag_id} with the ID='$id' and is returned");
                         }
                         return $child_search_result;
@@ -797,13 +797,13 @@ class tag {
      * @return tag[]
      */
     public function get_elements_by_tag($tag_name) {
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by TAG='$tag_name'");
         }
         $tags = [];
         if ($this->get_tag_id()) {
             if ($this->get_tag_name() == $tag_name) {
-                if (html::get_use_log()) {
+                if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned");
                 }
                 $tags[] = $this;
@@ -815,20 +815,20 @@ class tag {
             $all_childs = $this->get_all_childs();
             $all_childs = array_merge($inline_tags, $all_childs);
             foreach ($all_childs as $child) {
-                if (html::get_use_log()) {
+                if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} looking on child [{$child->get_tag_name()}] ID:{$child->tag_id}");
                 }
                 $child_search_result = $child->get_elements_by_tag($tag_name);
                 if (!empty($child_search_result)) {
 //                        print_r($child_search_result);
-                    if (html::get_use_log()) {
+                    if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return child [{$child->get_tag_name()}] ID:{$child->tag_id} results");
                     }
                     $tags = array_merge($tags, $child_search_result);
                 }
             }
         }
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return " . count($tags) . " '$tag_name' tags");
         }
         return $tags;
@@ -841,20 +841,20 @@ class tag {
      * @return tag[]
      */
     public function get_elements_by_attrib($attribute_name, $partial_text_search = FALSE) {
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by ATTRIB='$attribute_name'");
         }
         $tags = [];
         if ($this->get_tag_id()) {
             if (array_key_exists($attribute_name, $this->attributes) && !$partial_text_search) {
-                if (html::get_use_log()) {
+                if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned by exact match");
                 }
                 $tags[] = $this;
             } elseif ($partial_text_search) {
                 foreach ($this->attributes as $attribute => $value) {
                     if (strstr($attribute, $attribute_name) !== FALSE) {
-                        if (html::get_use_log()) {
+                        if (html_document::get_use_log()) {
                             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned by partial match");
                         }
                         $tags[] = $this;
@@ -868,20 +868,20 @@ class tag {
             $all_childs = $this->get_all_childs();
             $all_childs = array_merge($inline_tags, $all_childs);
             foreach ($all_childs as $child) {
-                if (html::get_use_log()) {
+                if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} looking on child [{$child->get_tag_name()}] ID:{$child->tag_id}");
                 }
                 $child_search_result = $child->get_elements_by_attrib($attribute_name);
                 if (!empty($child_search_result)) {
 //                        print_r($child_search_result);
-                    if (html::get_use_log()) {
+                    if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return child [{$child->get_tag_name()}] ID:{$child->tag_id} results");
                     }
                     $tags = array_merge($tags, $child_search_result);
                 }
             }
         }
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return " . count($tags) . " '$attribute_name' attribute");
         }
         return $tags;
@@ -894,7 +894,7 @@ class tag {
      * @return tag[]
      */
     public function get_elements_by_attrib_value($attribute_name, $attribute_value, $partial_attribute_text_search = FALSE, $partial_value_text_search = FALSE) {
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by ATTRIB='$attribute_name' and VALUE='$attribute_value'");
         }
         $tags = [];
@@ -906,12 +906,12 @@ class tag {
                     foreach ($tag_attributes as $attribute => $value) {
                         if (strstr($attribute, $attribute_name) !== FALSE) {
                             if ($partial_value_text_search && strstr($value, $attribute_value)) {
-                                if (html::get_use_log()) {
+                                if (html_document::get_use_log()) {
                                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned by partial text and partial attrib match");
                                 }
                                 $tags[] = $tag_to_look;
                             } elseif ($attribute_value == $value) {
-                                if (html::get_use_log()) {
+                                if (html_document::get_use_log()) {
                                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned by exact text and partial attrib match");
                                 }
                                 $tags[] = $tag_to_look;
@@ -923,12 +923,12 @@ class tag {
                 foreach ($tag_has_attribute as $tag_to_look) {
                     $tag_attribute_value = $tag_to_look->get_attribute($attribute_name);
                     if ($partial_value_text_search && (strstr($tag_attribute_value, $attribute_value) !== FALSE)) {
-                        if (html::get_use_log()) {
+                        if (html_document::get_use_log()) {
                             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned by partial text and exact attrib match");
                         }
                         $tags[] = $tag_to_look;
                     } elseif ($tag_attribute_value == $attribute_value) {
-                        if (html::get_use_log()) {
+                        if (html_document::get_use_log()) {
                             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned by exact text and exact attrib match");
                         }
                         $tags[] = $tag_to_look;
@@ -943,21 +943,21 @@ class tag {
             $all_childs = $this->get_all_childs();
             $all_childs = array_merge($inline_tags, $all_childs);
             foreach ($all_childs as $child) {
-                if (html::get_use_log()) {
+                if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} looking on child [{$child->get_tag_name()}] ID:{$child->tag_id}");
                 }
                 $child_search_result = [];
                 $child_search_result = $child->get_elements_by_attrib_value($attribute_name, $attribute_value, $partial_attribute_text_search, $partial_value_text_search);
                 if (!empty($child_search_result)) {
 //                        print_r($child_search_result);
-                    if (html::get_use_log()) {
+                    if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return child [{$child->get_tag_name()}] ID:{$child->tag_id} results");
                     }
                     $tags = array_merge($tags, $child_search_result);
                 }
             }
         }
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return " . count($tags) . " '$attribute_name' attribute");
         }
         return $tags;
@@ -970,14 +970,14 @@ class tag {
      * @return tag[]
      */
     public function get_elements_by_class($class_name) {
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by CLASS='$class_name'");
         }
         $classes = [];
         if ($this->get_tag_id()) {
 //            if ($this->get_attribute("class") == $class_name) {
             if (strstr($this->get_attribute("class"), $class_name) !== FALSE) {
-                if (html::get_use_log()) {
+                if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned");
                 }
                 $classes[] = $this;
@@ -989,20 +989,20 @@ class tag {
             $all_childs = $this->get_all_childs();
             $all_childs = array_merge($inline_tags, $all_childs);
             foreach ($all_childs as $child) {
-                if (html::get_use_log()) {
+                if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} looking on child [{$child->get_tag_name()}] ID:{$child->tag_id}");
                 }
                 $child_search_result = $child->get_elements_by_class($class_name);
                 if (!empty($child_search_result)) {
 //                        print_r($child_search_result);
-                    if (html::get_use_log()) {
+                    if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return child [{$child->get_tag_name()}] ID:{$child->tag_id} results");
                     }
                     $classes = array_merge($classes, $child_search_result);
                 }
             }
         }
-        if (html::get_use_log()) {
+        if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return " . count($classes) . " tags with CLASS='$class_name'");
         }
         return $classes;
