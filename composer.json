@@ -31,7 +31,7 @@
             "src/functions/controllers.php",
             "src/functions/forms.php",
             "src/functions/sql.php",
-            "src/functions/urlrewrite.php", 
+            "src/functions/urlrewrite.php",
             "src/functions/utils.php",
             "src/functions/xml.php",
             "src/functions/html-common.php",
