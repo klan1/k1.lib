@@ -5,7 +5,7 @@ namespace k1lib\crudlexs\board;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 
-class board_search extends board_base implements board_interface {
+class search extends board_base implements board_interface {
 
     /**
      *
@@ -17,7 +17,7 @@ class board_search extends board_base implements board_interface {
     public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
-            $this->search_object = new \k1lib\crudlexs\search_helper($this->controller_object->db_table);
+            $this->search_object = new \k1lib\crudlexs\object\search_helper($this->controller_object->db_table);
             $this->data_loaded = $this->search_object->load_db_table_data(TRUE);
         }
     }

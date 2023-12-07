@@ -31,7 +31,7 @@ class board_list extends board_base implements board_interface {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-list";
-            $this->list_object = new \k1lib\crudlexs\listing($this->controller_object->db_table, FALSE);
+            $this->list_object = new \k1lib\crudlexs\object\listing($this->controller_object->db_table, FALSE);
             $this->list_object->set_do_table_field_name_encrypt(TRUE);
         }
     }
@@ -170,7 +170,7 @@ class board_list extends board_base implements board_interface {
                     "auth-code" => "--authcode--",
                     "back-url" => urlencode($_SERVER['REQUEST_URI'])
                 ];
-                $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), base::USE_KEY_FIELDS);
+                $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), \k1lib\crudlexs\object\base::USE_KEY_FIELDS);
             }
             // Show stats BEFORE
             if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_BEFORE_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {

@@ -201,7 +201,7 @@ class base {
         $this->board_delete_name = controller_base_strings::$board_delete_name;
 
         if (DOM::html()->body()) {
-            $js_file = K1LIB_BASE_PATH . '/crudlexs/js/crudlexs.js';
+            $js_file = K1LIB_BASE_PATH . '/../dist/crudlexs/main.js';
             if (file_exists($js_file)) {
                 $js_content = file_get_contents($js_file);
 
@@ -320,7 +320,7 @@ class base {
         }
         switch ($specific_board_to_init) {
             case $this->board_create_url_name:
-                $this->board_create_object = new board_create($this, $this->board_create_allowed_levels);
+                $this->board_create_object = new \k1lib\crudlexs\board\create($this, $this->board_create_allowed_levels);
                 $this->board_create_object->set_is_enabled($this->board_create_enabled);
                 $this->board_create_object->set_board_name($this->board_create_name);
                 $this->board_div_content = $this->board_create_object->board_content_div;
@@ -328,7 +328,7 @@ class base {
                 break;
 
             case $this->board_read_url_name:
-                $this->board_read_object = new board_read($this, $this->board_read_allowed_levels);
+                $this->board_read_object = new \k1lib\crudlexs\board\read($this, $this->board_read_allowed_levels);
                 $this->board_read_object->set_is_enabled($this->board_read_enabled);
                 $this->board_read_object->set_board_name($this->board_read_name);
                 $this->board_div_content = $this->board_read_object->board_content_div;
@@ -344,7 +344,7 @@ class base {
                 break;
 
             case $this->board_update_url_name:
-                $this->board_update_object = new board_update($this, $this->board_update_allowed_levels);
+                $this->board_update_object = new \k1lib\crudlexs\board\update($this, $this->board_update_allowed_levels);
                 $this->board_update_object->set_is_enabled($this->board_update_enabled);
                 $this->board_update_object->set_board_name($this->board_update_name);
                 $this->board_div_content = $this->board_update_object->board_content_div;
@@ -352,14 +352,14 @@ class base {
                 break;
 
             case $this->board_delete_url_name:
-                $this->board_delete_object = new board_delete($this, $this->board_delete_allowed_levels);
+                $this->board_delete_object = new \k1lib\crudlexs\board\delete($this, $this->board_delete_allowed_levels);
                 $this->board_delete_object->set_is_enabled($this->board_delete_enabled);
                 $this->board_delete_object->set_board_name($this->board_delete_name);
                 $this->board_div_content = $this->board_delete_object->board_content_div;
                 break;
 
             case $this->board_list_url_name:
-                $this->board_list_object = new board_list($this, $this->board_list_allowed_levels);
+                $this->board_list_object = new \k1lib\crudlexs\board\board_list($this, $this->board_list_allowed_levels);
                 $this->board_list_object->set_is_enabled($this->board_list_enabled);
                 $this->board_list_object->set_board_name($this->board_list_name);
                 $this->board_div_content = $this->board_list_object->board_content_div;
@@ -368,7 +368,7 @@ class base {
                 }
                 break;
             case $this->board_search_url_name:
-                $this->board_search_object = new board_search($this, $this->board_list_allowed_levels);
+                $this->board_search_object = new \k1lib\crudlexs\board\search($this, $this->board_list_allowed_levels);
                 $this->board_search_object->set_is_enabled($this->board_list_enabled);
                 $this->board_search_object->set_board_name($this->board_search_url_name);
                 $this->board_div_content = $this->board_search_object->board_content_div;
