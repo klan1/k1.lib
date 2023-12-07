@@ -12,7 +12,7 @@ class updating extends \k1lib\crudlexs\creating {
     protected $do_redirect = FALSE;
     protected $updated = NULL;
 
-    public function __construct(\k1lib\crudlexs\class_db_table $db_table, $row_keys_text) {
+    public function __construct(\k1lib\crudlexs\db_table $db_table, $row_keys_text) {
         if (!empty($row_keys_text)) {
             parent::__construct($db_table, $row_keys_text);
         } else {

@@ -44,7 +44,7 @@ class input_helper {
 
     /**
      * *
-     * @param \k1lib\crudlexs\class_db_table $db_table
+     * @param \k1lib\crudlexs\db_table $db_table
      * @param array $db_table_row_data
      * @return \k1lib\html\select
      */

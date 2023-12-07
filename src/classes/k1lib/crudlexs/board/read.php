@@ -206,7 +206,7 @@ class board_read extends board_base implements board_interface {
 
     /**
      * 
-     * @param \k1lib\crudlexs\class_db_table $db_table
+     * @param \k1lib\crudlexs\db_table $db_table
      * @param array $field_links_array
      * @param string $title
      * @param string $board_root
@@ -215,7 +215,7 @@ class board_read extends board_base implements board_interface {
      * @param boolean $show_create
      * @return \k1lib\html\div|boolean
      */
-    public function create_related_list(class_db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
+    public function create_related_list(db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new \k1lib\html\div();
@@ -271,14 +271,14 @@ class board_read extends board_base implements board_interface {
     }
 
     /**
-     * @param \k1lib\crudlexs\class_db_table $db_table
+     * @param \k1lib\crudlexs\db_table $db_table
      * @param array $field_links_array
      * @param string $board_root
      * @param string $board_read
      * @param boolean $clear_url
      * @return \k1lib\crudlexs\listing|boolean
      */
-    public function do_related_list(class_db_table $db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url = FALSE, $custom_key_array = []) {
+    public function do_related_list(db_table $db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url = FALSE, $custom_key_array = []) {
 
         $table_alias = \k1lib\db\security\db_table_aliases::encode($db_table->get_db_table_name());
 

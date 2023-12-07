@@ -21,17 +21,17 @@
 
 namespace k1lib\api;
 
-use \k1lib\crudlexs\class_db_table;
+use \k1lib\crudlexs\db_table;
 
 class model {
 
     /**
-     * @var \k1lib\crudlexs\class_db_table
+     * @var \k1lib\crudlexs\db_table
      */
     private $db_table;
     private $errors = FALSE;
 
-    function __construct(class_db_table $db_table = NULL, $data = NULL) {
+    function __construct(db_table $db_table = NULL, $data = NULL) {
         if (!is_null($db_table)) {
             $this->db_table = $db_table;
         }

@@ -68,9 +68,9 @@ class base_with_data extends base {
 
     /**
      * Always to create the object you must have a valid DB Table object already 
-     * @param \k1lib\crudlexs\class_db_table $db_table DB Table object
+     * @param \k1lib\crudlexs\db_table $db_table DB Table object
      */
-    public function __construct(\k1lib\crudlexs\class_db_table $db_table, $row_keys_text = null, $custom_auth_code = null) {
+    public function __construct(\k1lib\crudlexs\db_table $db_table, $row_keys_text = null, $custom_auth_code = null) {
         $this->back_url = \k1lib\urlrewrite\get_back_url();
 
         if (!empty($row_keys_text)) {
@@ -242,7 +242,7 @@ class base_with_data extends base {
                             }
                             $fk_table = $refereced_column_config['table'];
 //                            $fk_table_field = $refereced_column_config['field'];
-//                            $fk_db_table = new class_db_table($this->db_table->db, $fk_table);
+//                            $fk_db_table = new db_table($this->db_table->db, $fk_table);
 //                            $fk_label_field = $fk_db_table->get_db_table_label_fields();
                             $fk_label_field = \k1lib\sql\get_fk_field_label($this->db_table->db, $fk_table, [$field => $value], $table_config_array);
 //                            $this->db_table_data_filtered[$index][$field] = $fk_label_field;

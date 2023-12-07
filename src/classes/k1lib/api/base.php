@@ -12,7 +12,7 @@
 namespace k1lib\api;
 
 use \k1lib\urlrewrite\url;
-use \k1lib\crudlexs\class_db_table;
+use \k1lib\crudlexs\db_table;
 
 const K1LIB_API_USE_MAGIC_HEADER = TRUE;
 const K1LIB_API_DISABLE_MAGIC_HEADER = FALSE;
@@ -36,7 +36,7 @@ class base {
 
     /**
      *
-     * @var \k1lib\crudlexs\class_db_table
+     * @var \k1lib\crudlexs\db_table
      */
     protected $debug_table = FALSE;
     // MAGIC HEADER
@@ -254,7 +254,7 @@ class base {
     public function do_debug($table_name = 'debug_log') {
         if ($this->db) {
             $this->do_debug = true;
-            $this->debug_table = new class_db_table($this->db, $table_name);
+            $this->debug_table = new db_table($this->db, $table_name);
         }
     }
 

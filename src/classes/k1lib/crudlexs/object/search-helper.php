@@ -24,7 +24,7 @@ class search_helper extends creating {
     protected $caller_url = null;
 
 // FILTERS
-    public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
+    public function __construct(\k1lib\crudlexs\db_table $db_table) {
         parent::__construct($db_table, FALSE);
         if (isset($_GET['caller-id'])) {
             $this->caller_url = urldecode($_GET['caller-id']);

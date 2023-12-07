@@ -12,7 +12,7 @@ class base {
 
     /**
      * DB table main object
-     * @var \k1lib\crudlexs\class_db_table 
+     * @var \k1lib\crudlexs\db_table 
      */
     public $db_table;
 
@@ -172,7 +172,7 @@ class base {
         /**
          * DB Table 
          */
-        $this->db_table = new \k1lib\crudlexs\class_db_table($db, $db_table_name);
+        $this->db_table = new \k1lib\crudlexs\db_table($db, $db_table_name);
 
         /**
          * Controller name for add on <html><title> and controller name tag
@@ -431,7 +431,7 @@ class base {
             $related_url_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "related_url_keys_text", FALSE);
             if (!empty($related_url_keys_text)) {
                 $related_table = $db_table_name;
-                $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
+                $related_db_table = new \k1lib\crudlexs\db_table($this->db_table->db, $related_table);
                 $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
                 /**
                  * lets fix the non-same key name
@@ -488,7 +488,7 @@ class base {
             $related_url_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "related_url_keys_text", FALSE);
             if (!empty($related_url_keys_text)) {
                 $related_table = $db_table_name;
-                $related_db_table = new \k1lib\crudlexs\class_db_table($this->db_table->db, $related_table);
+                $related_db_table = new \k1lib\crudlexs\db_table($this->db_table->db, $related_table);
                 $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
                 /**
                  * lets fix the non-same key name
