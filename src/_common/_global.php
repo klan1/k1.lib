@@ -26,8 +26,8 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
         if (\k1lib\html\DOM::is_started()) {
             $pre = new \k1lib\html\pre($msg);
             if (!empty(\k1lib\html\DOM::html()->body()->get_element_by_id("k1lib-output"))) {
-                \k1lib\notifications\on_DOM::queue_title('Message from K1.lib', 'warning');
-                \k1lib\notifications\on_DOM::queue_mesasage($pre->generate(), 'warning');
+                \k1lib\html\notifications\on_DOM::queue_title('Message from K1.lib', 'warning');
+                \k1lib\html\notifications\on_DOM::queue_mesasage($pre->generate(), 'warning');
             } else {
                 echo $pre->generate();
             }

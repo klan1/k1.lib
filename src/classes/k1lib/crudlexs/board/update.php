@@ -1,11 +1,11 @@
 <?php
 
-namespace k1lib\crudlexs;
+namespace k1lib\crudlexs\board;
 
 use k1lib\urlrewrite\url as url;
 use k1lib\session\session_plain as session_plain;
 use k1lib\html\DOM as DOM;
-use k1lib\notifications\on_DOM as DOM_notification;
+use k1lib\html\notifications\on_DOM as DOM_notification;
 
 class board_update extends board_base implements board_interface {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace k1lib\crudlexs\object;
+namespace k1lib\crudlexs;
 
 use k1lib\urlrewrite\url as url;
 

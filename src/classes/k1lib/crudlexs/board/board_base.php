@@ -3,16 +3,7 @@
 namespace k1lib\crudlexs\board;
 
 use k1lib\html\DOM as DOM;
-use k1lib\notifications\on_DOM as DOM_notification;
-
-interface board_interface {
-
-    public function start_board();
-
-    public function exec_board();
-
-    public function finish_board();
-}
+use k1lib\html\notifications\on_DOM as DOM_notification;
 
 class board_base {
 

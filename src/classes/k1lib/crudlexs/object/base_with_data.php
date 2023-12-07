@@ -6,7 +6,7 @@ use \k1lib\common_strings as common_strings;
 use \k1lib\urlrewrite\url as url;
 use \k1lib\session\session_plain as session_plain;
 use \k1lib\forms\file_uploads as file_uploads;
-use \k1lib\notifications\on_DOM as DOM_notification;
+use \k1lib\html\notifications\on_DOM as DOM_notification;
 
 class base_with_data extends base {
 
