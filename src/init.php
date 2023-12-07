@@ -52,7 +52,7 @@ if (!defined("K1LIB_LANG")) {
     define("K1LIB_LANG", "en");
 }
 k1lib_include_files(K1LIB_BASE_PATH . "/lang/" . K1LIB_LANG);
-require_once dirname(K1LIB_BASE_PATH) . '/src-globals/globals.php';
+//require_once dirname(K1LIB_BASE_PATH) . '/src-globals/globals.php';
 
 if (!defined("K1LIB_INC_MODE")) {
     define("K1LIB_INC_MODE", 0);
