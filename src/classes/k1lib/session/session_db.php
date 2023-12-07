@@ -7,7 +7,7 @@ use k1lib\notifications\on_DOM as DOM_notifications;
 class session_db extends session_plain {
 
     /**
-     * @var \k1lib\crudlexs\class_db_table
+     * @var \k1lib\crudlexs\db_table
      */
     private $db_table;
 
@@ -93,7 +93,7 @@ class session_db extends session_plain {
 
     public function set_config($login_db_table, $user_login_field, $user_password_field, $user_level_field = NULL) {
         $this->user_login_db_table = $login_db_table;
-        $this->db_table = new \k1lib\crudlexs\class_db_table($this->db_object, $this->user_login_db_table);
+        $this->db_table = new \k1lib\crudlexs\db_table($this->db_object, $this->user_login_db_table);
         if ($this->db_table->get_state()) {
             $this->user_login_field = $user_login_field;
             $this->user_password_field = $user_password_field;

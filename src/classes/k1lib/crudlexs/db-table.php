@@ -1,8 +1,8 @@
 <?php
 
-namespace k1lib\crudlexs\object;
+namespace k1lib\crudlexs;
 
-class class_db_table {
+class db_table {
 
     /**
      *

@@ -14,7 +14,7 @@ class base {
 
     /**
      *
-     * @var \k1lib\crudlexs\class_db_table 
+     * @var \k1lib\crudlexs\db_table 
      */
     public $db_table;
 
@@ -55,7 +55,7 @@ class base {
         self::$k1magic_value = $k1magic_value;
     }
 
-    public function __construct(\k1lib\crudlexs\class_db_table $db_table) {
+    public function __construct(\k1lib\crudlexs\db_table $db_table) {
         $this->db_table = $db_table;
         $this->div_container = new \k1lib\html\div();
         $this->is_valid = TRUE;
@@ -71,7 +71,7 @@ class base {
 
     /**
      * Always to create the object you must have a valid DB Table object already 
-     * @param \k1lib\crudlexs\class_db_table $db_table DB Table object
+     * @param \k1lib\crudlexs\db_table $db_table DB Table object
      */
     public function __toString() {
         if ($this->get_state()) {

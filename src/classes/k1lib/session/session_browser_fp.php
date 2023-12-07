@@ -3,7 +3,7 @@
 namespace k1lib\session;
 
 use k1lib\notifications\on_DOM as DOM_notifications;
-use \k1lib\crudlexs\class_db_table as class_db_table;
+use \k1lib\crudlexs\db_table as db_table;
 use Ramsey\Uuid\Uuid;
 
 class session_browser_fp extends session_db {
@@ -29,17 +29,17 @@ class session_browser_fp extends session_db {
     private static $session_terminal_coockie_name;
 
     /**
-     * @var \k1lib\crudlexs\class_db_table
+     * @var \k1lib\crudlexs\db_table
      */
     private static $terminals_table;
 
     /**
-     * @var \k1lib\crudlexs\class_db_table
+     * @var \k1lib\crudlexs\db_table
      */
     private static $mobile_nombers_table;
 
     /**
-     * @var \k1lib\crudlexs\class_db_table
+     * @var \k1lib\crudlexs\db_table
      */
     private static $terminals_unique_table;
 
@@ -79,7 +79,7 @@ class session_browser_fp extends session_db {
          * OPEN FP SYSTEM TABLES
          */
         if (!empty(self::$terminals_table_name)) {
-            self::$terminals_table = new class_db_table($db, self::$terminals_table_name);
+            self::$terminals_table = new db_table($db, self::$terminals_table_name);
             if (!self::$terminals_table->get_state()) {
                 trigger_error('Terminals Table "' . self::$terminals_table_name . '" not found', E_USER_ERROR);
             } else {
@@ -90,7 +90,7 @@ class session_browser_fp extends session_db {
         }
 
         if (!empty(self::$mobile_numbers_table_name)) {
-            self::$mobile_nombers_table = new class_db_table($db, self::$mobile_numbers_table_name);
+            self::$mobile_nombers_table = new db_table($db, self::$mobile_numbers_table_name);
             if (!self::$mobile_nombers_table->get_state()) {
                 trigger_error('Mobile numbers Table "' . self::$mobile_numbers_table_name . '" not found', E_USER_ERROR);
             } else {
@@ -100,7 +100,7 @@ class session_browser_fp extends session_db {
             trigger_error('Mobile numbers Table "' . self::$mobile_numbers_table_name . '" not found', E_USER_ERROR);
         }
         if (!empty(self::$terminals_unique_table_name)) {
-            self::$terminals_unique_table = new class_db_table($db, self::$terminals_unique_table_name);
+            self::$terminals_unique_table = new db_table($db, self::$terminals_unique_table_name);
             if (!self::$terminals_unique_table->get_state()) {
                 trigger_error('Unique Terminal-Numbers Table "' . self::$terminals_unique_table_name . '" not found', E_USER_ERROR);
             } else {
