@@ -26,9 +26,9 @@
             "k1lib\\": "src/classes/k1lib/"
         },
         "files": [
+            "src/functions/common.php",
             "src/init.php",
             "src/lang/init-lang.php",
-            "src/functions/common.php",
             "src/functions/global.php",
             "src/functions/controllers.php",
             "src/functions/forms.php",
@@ -38,7 +38,6 @@
             "src/functions/xml.php",
             "src/functions/html-common.php",
             "src/functions/html-tag-aplications.php"
-
         ]
     }
 }
