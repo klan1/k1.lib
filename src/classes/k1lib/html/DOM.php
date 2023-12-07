@@ -14,7 +14,7 @@ class DOM {
     static protected $html = NULL;
 
     static function start($lang = "en") {
-        self::$html = new html($lang);
+        self::$html = new html_document($lang);
     }
 
     static function is_started() {
