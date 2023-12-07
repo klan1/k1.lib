@@ -22,7 +22,7 @@
 namespace k1lib;
 
 const IN_K1LIB = TRUE;
-const VERSION = "1.9.2";
+const VERSION = "2.0-rc1";
 
 // Peace for user, info for the developer with ZendZerver and Z-Ray Live!
 error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
@@ -45,18 +45,6 @@ define("HTML_TEMPLATES_PATH", K1LIB_BASE_PATH . "/html-templates");
 const HTML_TEMPLATES_PATH = \HTML_TEMPLATES_PATH;
 const MAGIC_VALUE = "9d5042fd5925dfc995b7958a84a24ead";
 
-/**
- * Includes ALL files on a directory.
- */
-if (!defined("K1LIB_LANG")) {
-    define("K1LIB_LANG", "en");
-}
-k1lib_include_files(K1LIB_BASE_PATH . "/lang/" . K1LIB_LANG);
-//require_once dirname(K1LIB_BASE_PATH) . '/src-globals/globals.php';
-
-if (!defined("K1LIB_INC_MODE")) {
-    define("K1LIB_INC_MODE", 0);
-}
 
 //k1lib_include_files(K1LIB_BASE_PATH);
 
