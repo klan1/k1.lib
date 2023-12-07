@@ -1,5 +1,33 @@
 <?php
 
+namespace k1lib;
+
+/**
+ * Use this function to inlude ONLY CLASSES and functions, if there are normal 
+ * variables they will be on the function scope and you NEVER will reach them.
+ * @param string $path_to_explore
+ * @param array $prefix_to_exclude
+ */
+function k1lib_include_files($path_to_explore, array $prefix_to_exclude = ['.', '..', '__']) {
+    $files_list = scandir($path_to_explore);
+
+    foreach ($files_list as $file) {
+        if ((substr($file, 0, 1) == '.') || (substr($file, 0, 2) == '__') || ($file == 'index.php')) {
+            continue;
+        }
+        $file_path = $path_to_explore . "/" . $file;
+
+        if (is_file($file_path) && (substr($file_path, -4) == ".php")) {
+            require_once $file_path;
+        } elseif (is_dir($file_path)) {
+            /**
+             * GOD BLESS function recursion !!
+             */
+            k1lib_include_files($file_path, $prefix_to_exclude);
+        }
+    }
+}
+
 /**
  * General use functions, K1.lib.
  * 
