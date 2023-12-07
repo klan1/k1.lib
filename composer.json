@@ -27,7 +27,9 @@
         },
         "files": [
             "src/init.php",
+            "src/lang/init-lang.php",
             "src/functions/common.php",
+            "src/functions/global.php",
             "src/functions/controllers.php",
             "src/functions/forms.php",
             "src/functions/sql.php",
