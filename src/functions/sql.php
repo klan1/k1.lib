@@ -14,6 +14,89 @@ use k1lib\sql\local_cache;
  */
 
 /**
+ * Run a SQL Query and returns an Array with all the result data
+ * @param \PDO $db
+ * @param String $sql
+ * @param Boolean $return_all
+ * @param Boolean $do_fields
+ * @return Array NULL on empty result and FALSE on failure.
+ * TODO: Fix the NON optional cache isue !!
+ */
+function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE, &$error_data = null) {
+//$query_result = new PDOStatement();
+    $queryReturn = NULL;
+    if (profiler::is_enabled()) {
+        $sql_profile_id = profiler::add($sql);
+        profiler::start_time_count($sql_profile_id);
+    }
+    if (($use_cache) && (local_cache::is_enabled())) {
+        d('did cache');
+        d($sql);
+        $queryReturn = local_cache::get_result($sql);
+    } else {
+        d('did not cache');
+        d($sql);
+    }
+    if ($queryReturn) {
+        if (profiler::is_enabled()) {
+            profiler::set_is_cached($sql_profile_id, TRUE);
+            profiler::stop_time_count($sql_profile_id);
+        }
+        return $queryReturn;
+    } else {
+        if (profiler::is_enabled()) {
+            profiler::set_is_cached($sql_profile_id, FALSE);
+        }
+        $query_result = $db->query($sql);
+    }
+    $fields = array();
+    $i = 1;
+    $return = null;
+    if ($query_result !== FALSE) {
+        if ($query_result->rowCount() > 0) {
+            while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
+                foreach ($row as $key => $value) {
+                    // RESULTS WITH STRING NUMBERS WILL BE CONVERTED TO NUMBERS
+                    if (is_numeric($value)) {
+                        $row[$key] = $value + 0;
+                    }
+                    if ($do_fields && $return_all) {
+                        $fields[$key] = $key;
+                        $queryReturn[0] = $fields;
+                    }
+                }
+                $do_fields = FALSE;
+                $queryReturn[$i] = $row;
+                $i++;
+            }
+            if (isset($queryReturn)) {
+                if ($return_all) {
+                    if (\k1app\K1APP_MODE == "web") {
+                        local_cache::add($sql, $queryReturn);
+                    }
+                    $return = $queryReturn;
+                } else {
+                    if (\k1app\K1APP_MODE == "web") {
+                        local_cache::add($sql, $queryReturn[1]);
+                    }
+                    $return = $queryReturn[1];
+                }
+            } else {
+//                d($sql);
+            }
+        } else {
+            $return = NULL;
+        }
+    } else {
+        $return = FALSE;
+    }
+    if (profiler::is_enabled()) {
+        profiler::stop_time_count($sql_profile_id);
+    }
+    return $return;
+}
+
+/**
  * Get from a DB Table the config matrix for the K1 Function and Objects related
  * @param PDO $db
  * @param array $table
@@ -290,87 +373,6 @@ function get_field_label_default($table, $field_name) {
     $field_name = str_replace('-', ' ', strtoupper(substr($field_name, 0, 1)) . (substr($field_name, 1)));
     $field_name = str_replace('_', ' ', strtoupper(substr($field_name, 0, 1)) . (substr($field_name, 1)));
     return $field_name;
-}
-
-/**
- * Run a SQL Query and returns an Array with all the result data
- * @param \PDO $db
- * @param String $sql
- * @param Boolean $return_all
- * @param Boolean $do_fields
- * @return Array NULL on empty result and FALSE on failure.
- * TODO: Fix the NON optional cache isue !!
- */
-function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE, &$error_data = null) {
-//$query_result = new PDOStatement();
-    $queryReturn = NULL;
-    if (profiler::is_enabled()) {
-        $sql_profile_id = profiler::add($sql);
-        profiler::start_time_count($sql_profile_id);
-    }
-    if (($use_cache) && (local_cache::is_enabled())) {
-        d('did cache');
-        $queryReturn = local_cache::get_result($sql);
-    } else {
-        d('did not cache');
-    }
-    if ($queryReturn) {
-        if (profiler::is_enabled()) {
-            profiler::set_is_cached($sql_profile_id, TRUE);
-            profiler::stop_time_count($sql_profile_id);
-        }
-        return $queryReturn;
-    } else {
-        if (profiler::is_enabled()) {
-            profiler::set_is_cached($sql_profile_id, FALSE);
-        }
-        $query_result = $db->query($sql);
-    }
-    $fields = array();
-    $i = 1;
-    $return = null;
-    if ($query_result !== FALSE) {
-        if ($query_result->rowCount() > 0) {
-            while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
-                foreach ($row as $key => $value) {
-                    // RESULTS WITH STRING NUMBERS WILL BE CONVERTED TO NUMBERS
-                    if (is_numeric($value)) {
-                        $row[$key] = $value + 0;
-                    }
-                    if ($do_fields && $return_all) {
-                        $fields[$key] = $key;
-                        $queryReturn[0] = $fields;
-                    }
-                }
-                $do_fields = FALSE;
-                $queryReturn[$i] = $row;
-                $i++;
-            }
-            if (isset($queryReturn)) {
-                if ($return_all) {
-                    if (\k1app\K1APP_MODE == "web") {
-                        local_cache::add($sql, $queryReturn);
-                    }
-                    $return = $queryReturn;
-                } else {
-                    if (\k1app\K1APP_MODE == "web") {
-                        local_cache::add($sql, $queryReturn[1]);
-                    }
-                    $return = $queryReturn[1];
-                }
-            } else {
-//                d($sql);
-            }
-        } else {
-            $return = NULL;
-        }
-    } else {
-        $return = FALSE;
-    }
-    if (profiler::is_enabled()) {
-        profiler::stop_time_count($sql_profile_id);
-    }
-    return $return;
 }
 
 /**
@@ -715,15 +717,7 @@ function get_sql_query_with_new_fields($sql_query, $fields) {
  * @return string Database name or FALSE on error
  */
 function get_db_database_name(\PDO $db) {
-
-
-    $db_name_sql = "SELECT DATABASE() as DB_NAME;";
-    $result = sql_query($db, $db_name_sql, FALSE);
-    if (isset($result['DB_NAME'])) {
-        return $result['DB_NAME'];
-    } else {
-        return FALSE;
-    }
+    return $db->get_db_name();
 }
 
 /**
