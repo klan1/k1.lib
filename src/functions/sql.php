@@ -309,7 +309,10 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
         profiler::start_time_count($sql_profile_id);
     }
     if (($use_cache) && (local_cache::is_enabled())) {
+        d('did cache');
         $queryReturn = local_cache::get_result($sql);
+    } else {
+        d('did not cache');
     }
     if ($queryReturn) {
         if (profiler::is_enabled()) {
