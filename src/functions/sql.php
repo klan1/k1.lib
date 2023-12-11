@@ -30,12 +30,8 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
         profiler::start_time_count($sql_profile_id);
     }
     if (($use_cache) && (local_cache::is_enabled())) {
-        d('did cache');
-        d($sql);
         $queryReturn = local_cache::get_result($sql);
     } else {
-        d('did not cache');
-        d($sql);
     }
     if ($queryReturn) {
         if (profiler::is_enabled()) {
@@ -102,7 +98,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
  * @param array $table
  * @return array
  */
-function get_db_table_config(\PDO $db, $table, $recursion = TRUE, $use_cache = TRUE) {
+function get_db_table_config(\k1lib\db\PDO_k1 $db, $table, $recursion = TRUE, $use_cache = TRUE) {
 
 // SQL to get info about a table
     $columns_info_query = "SHOW FULL COLUMNS FROM `{$table}`";
@@ -111,10 +107,10 @@ function get_db_table_config(\PDO $db, $table, $recursion = TRUE, $use_cache = T
         trigger_error("The table '$table' do not exist", E_USER_NOTICE);
         return FALSE;
     }
-    $dsn_db = get_db_database_name($db);
+    $dsn_db = $db->get_db_name();
     $INFORMATION_SCHEMA_query = "SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '{$dsn_db}'
 AND table_name = '{$table}'";
-    $INFORMATION_SCHEMA_result = sql_query($db, $INFORMATION_SCHEMA_query, TRUE);
+    $INFORMATION_SCHEMA_result = sql_query($db, $INFORMATION_SCHEMA_query, TRUE, FALSE, $use_cache);
     if (empty($INFORMATION_SCHEMA_result)) {
 //        trigger_error("The table '$table' do not exist", E_USER_WARNING);
 //        return FALSE;

@@ -2,8 +2,7 @@
 
 namespace k1lib\sql;
 
-class common
- {
+class common {
 
     /**
      * Enable state
@@ -43,7 +42,7 @@ class common
      */
     static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {
-            trigger_error("SQL Profile system is not enabled yet", E_USER_WARNING);
+            trigger_error("SQL " . __CLASS__ . " system is not enabled yet", E_USER_WARNING);
         }
         return self::$enabled;
     }
@@ -56,5 +55,4 @@ class common
     public static function get_data_count(): int {
         return self::$data_count;
     }
-
 }
