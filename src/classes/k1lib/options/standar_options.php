@@ -13,7 +13,7 @@ namespace k1lib\options;
  *
  * @author J0hnD03
  */
-class standar_options_class {
+class standar_options {
 
     private $options = array();
     private $option_name;
