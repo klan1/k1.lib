@@ -19,8 +19,7 @@ use k1lib\sql\local_cache;
  * @param array $table
  * @return array
  */
-function get_db_table_config(\PDO $db, $table, $recursion = TRUE, $use_cache = TRUE)
-{
+function get_db_table_config(\PDO $db, $table, $recursion = TRUE, $use_cache = TRUE) {
 
     // SQL to get info about a table
     $columns_info_query = "SHOW FULL COLUMNS FROM `{$table}`";
@@ -274,8 +273,7 @@ AND table_name = '{$table}'";
     return $config_array;
 }
 
-function get_field_label_default($table, $field_name)
-{
+function get_field_label_default($table, $field_name) {
     // Try to remove the table name from the field name. Commonly use on DB design
     if (strtolower(substr($table, -3)) === "ies") {
         $possible_singular_table_name = str_replace("ies", "y", $table);
@@ -303,8 +301,7 @@ function get_field_label_default($table, $field_name)
  * @return Array NULL on empty result and FALSE on failure.
  * TODO: Fix the NON optional cache isue !!
  */
-function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE, &$error_data = null)
-{
+function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE, &$error_data = null) {
     //$query_result = new PDOStatement();
     $queryReturn = NULL;
     if (profiler::is_enabled()) {
@@ -334,8 +331,10 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
             while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
                 foreach ($row as $key => $value) {
                     // RESULTS WITH STRING NUMBERS WILL BE CONVERTED TO NUMBERS
-                    if (is_numeric($value) && !((strlen($value) > 2) && (substr($value, 0, 1) == '0'))) {
-                        $row[$key] = $value + 0;
+                    if (is_numeric($value)) {
+                        if (!(strlen($value) > 1) && (substr($value, 0, 1) == '0')) {
+                            $row[$key] = $value + 0;
+                        }
                     }
                     if ($do_fields && $return_all) {
                         $fields[$key] = $key;
@@ -383,8 +382,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
  * @param array $db_table_config
  * @return boolean
  */
-function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array(), &$error_data = null, &$sql_query = null)
-{
+function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_config = array(), &$error_data = null, &$sql_query = null) {
     global $controller_errors;
 
     if (!is_string($table) || empty($table)) {
@@ -454,8 +452,7 @@ function sql_update(\PDO $db, $table, $data, $table_keys = array(), $db_table_co
     }
 }
 
-function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = null)
-{
+function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = null) {
     if ($db->is_enabled()) {
         if (is_array($data)) {
             if (!is_array($data[0])) {
@@ -520,8 +517,7 @@ function sql_insert(\PDO $db, $table, $data, &$error_data = null, &$sql_query = 
     }
 }
 
-function array_to_sql_values($array)
-{
+function array_to_sql_values($array) {
     if (is_array($array) && (count($array) > 1)) {
         $first = TRUE;
         $data_string = "";
@@ -595,8 +591,7 @@ function array_to_sql_values($array)
  * @param Bolean $for_where_stament If TRUE will join the pairs with AND, if not, will use coma instead
  * @return type
  */
-function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_stament = FALSE, $precise = TRUE)
-{
+function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_stament = FALSE, $precise = TRUE) {
     if (is_array($array) && (count($array) >= 1)) {
 
         /**
@@ -641,8 +636,7 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
  * @param Bolean $for_where_stament If TRUE will join the pairs with AND, if not, will use coma instead
  * @return type
  */
-function array_to_sql_set_exclude(\PDO $db, array $array, $use_nulls = true, $for_where_stament = FALSE, $precise = TRUE)
-{
+function array_to_sql_set_exclude(\PDO $db, array $array, $use_nulls = true, $for_where_stament = FALSE, $precise = TRUE) {
     if (is_array($array) && (count($array) >= 1)) {
 
         /**
@@ -676,8 +670,7 @@ function array_to_sql_set_exclude(\PDO $db, array $array, $use_nulls = true, $fo
     return $data_string;
 }
 
-function get_db_tables_config_from_sql(\PDO $db, $sql_query)
-{
+function get_db_tables_config_from_sql(\PDO $db, $sql_query) {
     $sql_query = "EXPLAIN " . $sql_query;
     $explainResult = sql_query($db, $sql_query, TRUE);
     if ($explainResult) {
@@ -701,16 +694,14 @@ function get_db_tables_config_from_sql(\PDO $db, $sql_query)
     }
 }
 
-function get_sql_count_query_from_sql_code($sql_query)
-{
+function get_sql_count_query_from_sql_code($sql_query) {
     $sql_query_lower = strtolower($sql_query);
     $from_pos = strpos($sql_query_lower, "from");
     $new_sql_with_count = "SELECT count(*) as num_rows " . substr($sql_query, $from_pos);
     return $new_sql_with_count;
 }
 
-function get_sql_query_with_new_fields($sql_query, $fields)
-{
+function get_sql_query_with_new_fields($sql_query, $fields) {
     $sql_query_lower = strtolower($sql_query);
     $from_pos = strpos($sql_query_lower, "from");
     $new_sql_with_new_fields = "SELECT {$fields} " . substr($sql_query, $from_pos);
@@ -722,8 +713,7 @@ function get_sql_query_with_new_fields($sql_query, $fields)
  * @param PDO $db
  * @return string Database name or FALSE on error
  */
-function get_db_database_name(\PDO $db)
-{
+function get_db_database_name(\PDO $db) {
 
 
     $db_name_sql = "SELECT DATABASE() as DB_NAME;";
@@ -740,15 +730,13 @@ function get_db_database_name(\PDO $db)
  * @param PDO $db
  * @param string $caller
  */
-function db_check_object_type(\PDO $db, $caller = "")
-{
+function db_check_object_type(\PDO $db, $caller = "") {
     if (get_class($db) != "PDO") {
         die(__FUNCTION__ . ": \$db is not a PDO object type" . (($caller != "") ? " - called from: $caller" : ""));
     }
 }
 
-function get_db_table_keys($db_table_config)
-{
+function get_db_table_keys($db_table_config) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
@@ -765,8 +753,7 @@ function get_db_table_keys($db_table_config)
     }
 }
 
-function get_db_table_keys_array($db_table_config)
-{
+function get_db_table_keys_array($db_table_config) {
     if (!is_array($db_table_config)) {
         trigger_error(__FUNCTION__ . ": need an array to work on \$db_table_config", E_USER_ERROR);
     }
@@ -789,8 +776,7 @@ function get_db_table_keys_array($db_table_config)
  * @param Integer $position If this is -1 will return the last field found
  * @return String Label field name
  */
-function get_db_table_label_fields($db_table_config)
-{
+function get_db_table_label_fields($db_table_config) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
@@ -808,8 +794,7 @@ function get_db_table_label_fields($db_table_config)
     }
 }
 
-function get_db_table_label_fields_from_row($row_data, $db_table_config)
-{
+function get_db_table_label_fields_from_row($row_data, $db_table_config) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
@@ -827,8 +812,7 @@ function get_db_table_label_fields_from_row($row_data, $db_table_config)
     }
 }
 
-function resolve_fk_real_field_name(&$data_array_to_modify, $field_to_resolve, $table_config_array)
-{
+function resolve_fk_real_field_name(&$data_array_to_modify, $field_to_resolve, $table_config_array) {
     if (!empty($table_config_array[$field_to_resolve]['refereced_column_config'])) {
         $refereced_column_config = $table_config_array[$field_to_resolve]['refereced_column_config'];
         while (!empty($refereced_column_config['refereced_column_config'])) {
@@ -846,15 +830,13 @@ function resolve_fk_real_field_name(&$data_array_to_modify, $field_to_resolve, $
     }
 }
 
-function resolve_fk_real_fields_names(&$data_array_to_modify, $table_config_array)
-{
+function resolve_fk_real_fields_names(&$data_array_to_modify, $table_config_array) {
     foreach ($data_array_to_modify as $field => $value) {
         resolve_fk_real_field_name($data_array_to_modify, $field, $table_config_array);
     }
 }
 
-function make_name_fields_sql_safe(array &$array = [])
-{
+function make_name_fields_sql_safe(array &$array = []) {
     if (!empty($array)) {
         foreach ($array as $key => $value) {
             $array[$key] = "`$value`";
@@ -863,9 +845,9 @@ function make_name_fields_sql_safe(array &$array = [])
     return $array;
 }
 
-function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [], $source_table_config = [])
-{
+function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [], $source_table_config = []) {
     foreach ($url_key_array as $url_key_index => $url_key_value) {
+        
     }
     resolve_fk_real_field_name($url_key_array, $url_key_index, $source_table_config);
 
@@ -890,8 +872,7 @@ function get_fk_field_label(\PDO $db, $fk_table_name, array $url_key_array = [],
     }
 }
 
-function get_db_table_refereces($db_table_config)
-{
+function get_db_table_refereces($db_table_config) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
@@ -916,8 +897,7 @@ function get_db_table_refereces($db_table_config)
  * @param Array $db_table_config
  * @return Array FALSE on error
  */
-function table_keys_to_text($row_data, $db_table_config)
-{
+function table_keys_to_text($row_data, $db_table_config) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
@@ -932,8 +912,7 @@ function table_keys_to_text($row_data, $db_table_config)
     return $table_keys_text;
 }
 
-function get_keys_array_from_row_data($row_data, $db_table_config)
-{
+function get_keys_array_from_row_data($row_data, $db_table_config) {
     $key_fields_array = get_db_table_keys($db_table_config);
     $keys_array = \k1lib\common\clean_array_with_guide($row_data, $key_fields_array);
     if (!empty($keys_array)) {
@@ -943,8 +922,7 @@ function get_keys_array_from_row_data($row_data, $db_table_config)
     }
 }
 
-function table_url_text_to_keys($url_text, $db_table_config)
-{
+function table_url_text_to_keys($url_text, $db_table_config) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
@@ -975,8 +953,7 @@ function table_url_text_to_keys($url_text, $db_table_config)
     return $key_data;
 }
 
-function table_keys_to_where_condition(&$row_data, $db_table_config, $use_table_name = FALSE)
-{
+function table_keys_to_where_condition(&$row_data, $db_table_config, $use_table_name = FALSE) {
     if (!is_array($db_table_config)) {
         die(__FUNCTION__ . ": need an array to work on \$db_table_config");
     }
@@ -1010,8 +987,7 @@ function table_keys_to_where_condition(&$row_data, $db_table_config, $use_table_
     return $where_condition;
 }
 
-function sql_del_row(\PDO $db, $table, $key_array)
-{
+function sql_del_row(\PDO $db, $table, $key_array) {
     $key_sql_set = array_to_sql_set($db, $key_array, TRUE, TRUE);
     $sql = "DELETE FROM `$table` WHERE $key_sql_set";
     //    echo $sql;
@@ -1024,8 +1000,7 @@ function sql_del_row(\PDO $db, $table, $key_array)
     }
 }
 
-function sql_check_id(\PDO $db, $table, $key_name, $key_value, $use_cache = FALSE)
-{
+function sql_check_id(\PDO $db, $table, $key_name, $key_value, $use_cache = FALSE) {
 
     $sql = "SELECT COUNT(*) AS num_keys FROM `$table` WHERE `$key_name` = " . (is_numeric($key_value) ? $key_value : "'$key_value'") . " ";
     if ($use_cache) {
@@ -1040,8 +1015,7 @@ function sql_check_id(\PDO $db, $table, $key_name, $key_value, $use_cache = FALS
     }
 }
 
-function sql_value_increment(\PDO $db, $table, $key_name, $key_value, $field_name, $step = 1)
-{
+function sql_value_increment(\PDO $db, $table, $key_name, $key_value, $field_name, $step = 1) {
 
     $sql = "SELECT `$field_name` FROM `$table` WHERE `$key_name` = " . (is_numeric($key_value) ? $key_value : "'$key_value'") . " ";
     if ($sql_result = sql_query($db, $sql, FALSE)) {
@@ -1060,14 +1034,12 @@ function sql_value_increment(\PDO $db, $table, $key_name, $key_value, $field_nam
     }
 }
 
-function sql_count($data_array)
-{
+function sql_count($data_array) {
     $count = count($data_array) - 1;
     return ($count >= 0) ? $count : 0;
 }
 
-function sql_table_count(\PDO $db, $table, $condition = "", $use_memcache = FALSE, $expire_time = 60)
-{
+function sql_table_count(\PDO $db, $table, $condition = "", $use_memcache = FALSE, $expire_time = 60) {
 
     $sql = "SELECT COUNT(*) AS counted FROM `$table` " . (($condition != "") ? "WHERE $condition" : "");
     if ($use_memcache) {
@@ -1082,8 +1054,7 @@ function sql_table_count(\PDO $db, $table, $condition = "", $use_memcache = FALS
     }
 }
 
-function get_db_table_enum_values(\PDO $db, $table, $field)
-{
+function get_db_table_enum_values(\PDO $db, $table, $field) {
 
     $dsn_db = get_db_database_name($db);
     $enum_sql = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '{$dsn_db}' AND TABLE_NAME = '{$table}' AND COLUMN_NAME = '{$field}'";
@@ -1102,8 +1073,7 @@ function get_db_table_enum_values(\PDO $db, $table, $field)
     return $enum;
 }
 
-function table_traduce_enum_to_index(\PDO $db, &$query_result, $db_table_config)
-{
+function table_traduce_enum_to_index(\PDO $db, &$query_result, $db_table_config) {
     if (!is_array($query_result)) {
         die(__FUNCTION__ . ": need an array to work on \$query_result");
     }
@@ -1122,8 +1092,7 @@ function table_traduce_enum_to_index(\PDO $db, &$query_result, $db_table_config)
     }
 }
 
-function get_table_definition_as_array(\PDO $db, $table_name)
-{
+function get_table_definition_as_array(\PDO $db, $table_name) {
     $definition = \k1lib\sql\sql_query($db, "SHOW CREATE TABLE `{$table_name}`", FALSE);
     $definition_array = explode("\n", $definition['Create Table']);
     // REMOVE THE 'CREATE TABLE PART'
@@ -1144,8 +1113,7 @@ function get_table_definition_as_array(\PDO $db, $table_name)
     return ($definition_array_clean);
 }
 
-function get_table_data_as_key_value_pair(\PDO $db, $table_name)
-{
+function get_table_data_as_key_value_pair(\PDO $db, $table_name) {
     $sql_query = "SELECT * FROM $table_name";
     $sql_result = sql_query($db, $sql_query);
     if ($sql_result) {
