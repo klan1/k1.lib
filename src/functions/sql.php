@@ -32,6 +32,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
     if (($use_cache) && (local_cache::is_enabled())) {
         $queryReturn = local_cache::get_result($sql);
     } else {
+        
     }
     if ($queryReturn) {
         if (profiler::is_enabled()) {
@@ -54,7 +55,9 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
                 foreach ($row as $key => $value) {
                     // RESULTS WITH STRING NUMBERS WILL BE CONVERTED TO NUMBERS
                     if (is_numeric($value)) {
-                        $row[$key] = $value + 0;
+                        if (!(strlen($value) > 1) && (substr($value, 0, 1) == '0')) {
+                            $row[$key] = $value + 0;
+                        }
                     }
                     if ($do_fields && $return_all) {
                         $fields[$key] = $key;
