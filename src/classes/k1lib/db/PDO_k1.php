@@ -1,14 +1,18 @@
 <?php
+
 /**
  * New DB class to make easier multiple DB connections
  */
 
 namespace k1lib\db;
 
+use PDOStatement;
+
 /**
  * 
  */
-class PDO_k1 extends \PDO {
+class PDO_k1 extends \PDO
+{
 
     /**
      * Enable state
@@ -32,7 +36,8 @@ class PDO_k1 extends \PDO {
      * Query the enabled state
      * @return Boolean
      */
-    public function is_enabled($show_error = false) {
+    public function is_enabled($show_error = false)
+    {
         if ($show_error && (!$this->enabled)) {
             trigger_error("DB system is not enabled yet", E_USER_ERROR);
         }
@@ -48,7 +53,8 @@ class PDO_k1 extends \PDO {
      * @param integer $db_port
      * @param string $db_type
      */
-    public function __construct($db_name, $db_user, $db_password, $db_host = "localhost", $db_port = 3306, $db_type = "mysql", $pdo_string_altern = FALSE) {
+    public function __construct($db_name, $db_user, $db_password, $db_host = "localhost", $db_port = 3306, $db_type = "mysql", $pdo_string_altern = FALSE)
+    {
         $this->enabled = TRUE;
         $this->db_name = $db_name;
         $this->db_user = $db_user;
@@ -65,12 +71,14 @@ class PDO_k1 extends \PDO {
         parent::__construct($this->db_dsn, $this->db_user, $this->db_password);
     }
 
-    function get_verbose_level() {
+    function get_verbose_level()
+    {
         $this->is_enabled(true);
         return $this->verbose_level;
     }
 
-    function set_verbose_level($verbose_level) {
+    function set_verbose_level($verbose_level)
+    {
         $this->is_enabled(true);
         $this->verbose_level = $verbose_level;
         if ($this->verbose_level == 0) {
@@ -80,16 +88,17 @@ class PDO_k1 extends \PDO {
         }
     }
 
-    function query($statement) {
+    function query(string $query, ?int $fetchMode = null, ...$fetchModeArgs): PDOStatement|false
+    {
         try {
-            $result = parent::query($statement);
+            $result = parent::query($query, $fetchMode);
         } catch (\PDOException $exc) {
             switch ($this->verbose_level) {
                 case 0:
                     trigger_error("SQL query error", E_USER_NOTICE);
                     break;
                 case 1:
-//                    d($statement);
+                    //                    d($statement);
                     trigger_error($exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 2:
@@ -107,8 +116,16 @@ class PDO_k1 extends \PDO {
 
         return $result;
     }
-
-    function exec($statement) {
+    /**
+     * Execute an SQL statement and return the number of affected rows
+     * PDO::exec() executes an SQL statement in a single function call, returning the number of rows affected by the statement.
+     *
+     * @param string $statement The SQL statement to prepare and execute. Data inside the query should be properly escaped .
+     * @return bool|int PDO::exec() returns the number of rows that were modified or deleted by the SQL statement you issued. If no rows were affected, PDO::exec() returns `0`.
+     *                  The following example incorrectly relies on the return value of PDO::exec(), wherein a statement that affected 0 rows results in a call to die():
+     */
+    function exec($statement): int | false
+    {
         try {
             $result = parent::exec($statement);
         } catch (\PDOException $exc) {
@@ -135,27 +152,33 @@ class PDO_k1 extends \PDO {
         return $result;
     }
 
-    function get_db_dsn() {
+    function get_db_dsn()
+    {
         return $this->db_dsn;
     }
 
-    function get_db_name() {
+    function get_db_name()
+    {
         return $this->db_name;
     }
 
-    function get_db_user() {
+    function get_db_user()
+    {
         return $this->db_user;
     }
 
-    function get_db_password() {
+    function get_db_password()
+    {
         return $this->db_password;
     }
 
-    function get_db_host() {
+    function get_db_host()
+    {
         return $this->db_host;
     }
 
-    function get_db_port() {
+    function get_db_port()
+    {
         return $this->db_port;
     }
 }
