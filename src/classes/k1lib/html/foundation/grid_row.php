@@ -15,7 +15,8 @@ class grid_row extends \k1lib\html\div {
      * @var grid_cell[]
      */
     protected $cols = [];
-
+    protected $num_cols;
+    
     function __construct($num_cols, $grid_row = NULL, $parent = NULL) {
 
         $this->parent = $parent;
