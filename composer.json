@@ -18,7 +18,7 @@
         "endyjasmi/cuid": "dev-master",
         "ralouphie/getallheaders": "2.0.5",
         "whichbrowser/parser": "dev-master",
-        "ramsey/uuid": "3.7.3"
+        "ramsey/uuid": "^4"
     },
     "autoload": {
         "psr-4": {
