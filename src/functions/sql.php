@@ -22,9 +22,9 @@ use k1lib\sql\local_cache;
  * @return Array NULL on empty result and FALSE on failure.
  * TODO: Fix the NON optional cache isue !!
  */
-function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE, &$error_data = null) {
+function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE, &$error_data = null) : bool | array {
 //$query_result = new PDOStatement();
-    $queryReturn = NULL;
+    $queryReturn = [];
     if (profiler::is_enabled()) {
         $sql_profile_id = profiler::add($sql);
         profiler::start_time_count($sql_profile_id);
@@ -34,7 +34,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
     } else {
         
     }
-    if ($queryReturn) {
+    if (!empty($queryReturn)) {
         if (profiler::is_enabled()) {
             profiler::set_is_cached($sql_profile_id, TRUE);
             profiler::stop_time_count($sql_profile_id);
@@ -48,7 +48,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
     }
     $fields = array();
     $i = 1;
-    $return = null;
+    $return = [];
     if ($query_result !== FALSE) {
         if ($query_result->rowCount() > 0) {
             while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
@@ -65,6 +65,11 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
                     }
                 }
                 $do_fields = FALSE;
+                // PHP 8.2 FIX: Automatic conversion of false to array is deprecated
+                if (is_bool($queryReturn)) {
+                    unset($queryReturn);
+                    $queryReturn = [];
+                }
                 $queryReturn[$i] = $row;
                 $i++;
             }
@@ -84,7 +89,7 @@ function sql_query(\PDO $db, $sql, $return_all = TRUE, $do_fields = FALSE, $use_
 //                d($sql);
             }
         } else {
-            $return = NULL;
+            $return = [];
         }
     } else {
         $return = FALSE;
@@ -131,8 +136,8 @@ AND table_name = '{$table}'";
         foreach ($field_config as $key => $value) {
 // LOWER the $key and $value to AVOID problems
             $key_original = $key;
-            $key = strtolower($key);
-            $value = strtolower($value);
+            $key = (!empty($key)) ? strtolower($key) : $key;
+            $value = (!empty($value)) ? strtolower($value) : $value;
 // create a new pair of data but lowered
             $field_config[$key] = $value;
             /*
