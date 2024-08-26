@@ -2,14 +2,16 @@
 
 namespace k1lib\sql;
 
-class profiler extends common {
+class profiler extends common
+{
 
     /**
      * Begin a SQL Profile with a SQL query code 
      * @param String $sql_query
      * @return Int Profile ID
      */
-    static public function add($sql_query) {
+    static public function add(string $sql_query): int
+    {
         self::is_enabled(true);
         $sql_md5 = md5($sql_query);
         self::$data_count++;
@@ -20,21 +22,23 @@ class profiler extends common {
 
     /**
      * Begin the time count
-     * @param Int $sql_md5 Profile ID
+     * @param Int $profile_id Profile ID
      */
-    static public function start_time_count($sql_md5) {
+    static public function start_time_count(int $profile_id): void
+    {
         self::is_enabled(true);
-        self::$data[$sql_md5]['start_time'] = microtime(TRUE);
+        self::$data[$profile_id]['start_time'] = microtime(TRUE);
     }
 
     /**
      * Stop the time count
-     * @param Int $sql_md5 Profile ID
+     * @param int $profile_id Profile ID
      */
-    static public function stop_time_count($sql_md5) {
+    static public function stop_time_count(int $profile_id): void
+    {
         self::is_enabled(true);
-        self::$data[$sql_md5]['stop_time'] = microtime(TRUE);
-        self::$data[$sql_md5]['total_time'] = self::$data[self::$data_count]['stop_time'] - self::$data[self::$data_count]['start_time'];
+        self::$data[$profile_id]['stop_time'] = microtime(TRUE);
+        self::$data[$profile_id]['total_time'] = self::$data[$profile_id]['stop_time'] - self::$data[$profile_id]['start_time'];
     }
 
     /**
@@ -42,10 +46,11 @@ class profiler extends common {
      * @param Int $sql_md5 Profile ID
      * @param Boolean $is_cached 
      */
-    static public function set_is_cached($sql_md5, $is_cached) {
+    static public function set_is_cached(int $profile_id, bool $is_cached): void
+    {
         self::is_enabled(true);
         if (self::is_enabled()) {
-            self::$data[$sql_md5]['cache'] = $is_cached;
+            self::$data[$profile_id]['cache'] = $is_cached;
         }
     }
 
@@ -54,7 +59,8 @@ class profiler extends common {
      * @param String $md5
      * @return Array
      */
-    static public function get_by_md5($md5) {
+    static public function get_by_md5($md5) : array
+    {
         self::is_enabled(true);
         $data_filtered = array();
         foreach (self::$data as $id => $profile_data) {
@@ -69,7 +75,8 @@ class profiler extends common {
      * Return the total execution time
      * @return float
      */
-    static public function get_total_time() {
+    static public function get_total_time()
+    {
         $total_time = 0;
         foreach (self::$data as $profile_data) {
             $total_time += $profile_data['total_time'];

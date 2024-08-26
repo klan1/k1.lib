@@ -6,19 +6,19 @@ class common {
 
     /**
      * Enable state
-     * @var Boolean 
+     * @var bool 
      */
     static protected $enabled = FALSE;
 
     /**
      *
-     * @var Int 
+     * @var int 
      */
     static protected $data_count = 0;
 
     /**
      * Stores the SQL data
-     * @var Array
+     * @var array
      */
     static protected $data = array();
 
@@ -38,7 +38,7 @@ class common {
 
     /**
      * Query the enabled state
-     * @return Boolean
+     * @return bool
      */
     static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {

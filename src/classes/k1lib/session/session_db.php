@@ -180,6 +180,7 @@ class session_db extends session_plain {
             'user_password_input_value' => $this->user_password_input_value,
             'user_password_input_name' => $this->user_password_input_name,
             'user_remember_me_input' => $this->user_remember_me_input,
+            'user_remember_me_value' => $this->user_remember_me_value,
             'user_level_field' => $this->user_level_field,
             'user_hash' => parent::get_user_hash($this->user_login_input_value),
         ];
