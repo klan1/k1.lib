@@ -149,6 +149,8 @@ class base {
     protected $board_update_enabled = TRUE;
     protected $board_delete_enabled = TRUE;
 
+    protected $board_finished = FALSE;
+
     /**
      * One line config for more time to party and less coding :)
      * @param string $app_base_dir Use here \k1app\APP_BASE_URL

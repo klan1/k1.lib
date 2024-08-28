@@ -102,10 +102,10 @@ class PDO_k1 extends \PDO
                     trigger_error($exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 2:
-                    trigger_error($statement . " | " . $exc->getMessage(), E_USER_NOTICE);
+                    trigger_error($query . " | " . $exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 3:
-                    trigger_error($statement . " | " . $exc->getMessage(), E_USER_NOTICE);
+                    trigger_error($query . " | " . $exc->getMessage(), E_USER_NOTICE);
                     d($exc->getTraceAsString());
                     break;
                 default:
