@@ -15,7 +15,7 @@ class base_with_data extends base
      *
      * @var Array 
      */
-    public $db_table_data = FALSE;
+    public $db_table_data = [];
 
     /**
      *

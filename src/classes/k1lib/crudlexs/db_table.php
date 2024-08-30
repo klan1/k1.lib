@@ -44,6 +44,7 @@ class db_table {
      * @var array
      */
     private $query_order_by_order_arry = [];
+    private $query_order_by_fields_array = [];
 
     /**
      * CUSTOM SQL QUERY

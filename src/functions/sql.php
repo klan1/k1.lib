@@ -811,7 +811,7 @@ function get_db_table_label_fields_from_row($row_data, $db_table_config)
     $p = 0;
     $labels = [];
     foreach ($db_table_config as $field => $config) {
-        if (($config['label-field'])) {
+        if (($config['label-field']) && key_exists($field, $row_data)) {
             $labels[] = $row_data[$field];
         }
     }
