@@ -14,7 +14,7 @@ class label_value_row extends grid_row {
 
         $input_name = $this->get_name_attribute($value);
 
-        if (method_exists($label, "generate")) {
+        if (!empty($label) && method_exists($label, "generate")) {
             $small_label = clone $label;
             $this->cell(1)->append_child($label->set_class("k1lib-label-object right inline hide-for-small-only text-right"));
             $this->cell(1)->append_child($small_label->set_class("k1lib-label-object left show-for-small-only"));
