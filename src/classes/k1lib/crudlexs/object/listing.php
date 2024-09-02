@@ -2,6 +2,7 @@
 
 namespace k1lib\crudlexs\object;
 
+use k1lib\crudlexs\board\board_list_strings;
 use k1lib\urlrewrite\url as url;
 
 /**
