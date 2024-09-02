@@ -254,7 +254,7 @@ class table_from_data extends \k1lib\html\table
                  * {{field:NAME}}
                  */
                 $field_tag = "{{field:" . $field . "}}";
-                $value = str_replace($field_tag, rawurlencode($this->data_original[$row][$field]), $value);
+                $value = str_replace($field_tag, rawurlencode($this->data_original[$row][$field] ?? ''), $value);
             }
         }
         foreach ($this->get_raw_fields_on_string($value) as $field) {
