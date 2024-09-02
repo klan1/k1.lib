@@ -279,7 +279,7 @@ class table_from_data extends \k1lib\html\table
                  * {{field:NAME}}
                  */
                 $field_tag = "{{field-raw:" . $field . "}}";
-                $value = str_replace($field_tag, $this->data_original[$row][$field], $value);
+                $value = str_replace($field_tag, $this->data_original[$row][$field] ?? '', $value);
             }
         }
         return $value;
