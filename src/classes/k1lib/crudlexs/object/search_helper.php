@@ -6,13 +6,13 @@ class search_helper extends creating {
 
     /**
      *
-     * @var Array 
+     * @var array 
      */
     public $db_table_data = FALSE;
 
     /**
      *
-     * @var Boolean 
+     * @var bool 
      */
     protected $db_table_data_keys = FALSE;
 

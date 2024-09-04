@@ -6,25 +6,25 @@ class session_plain {
 
     /**
      * Enable state
-     * @var Boolean 
+     * @var bool 
      */
     static private $enabled = FALSE;
 
     /**
      * If TRUE on IP change the session will be invalidated
-     * @var boolean
+     * @var bool
      */
     static public $use_ip_in_userhash = TRUE;
 
     /**
      * Logged state
-     * @var Boolean
+     * @var bool
      */
     static private $has_started;
 
     /**
      * Keeps the logged state
-     * @var Boolean
+     * @var bool
      */
     static private $is_logged;
 
@@ -54,13 +54,13 @@ class session_plain {
 
     /**
      * Session name for the PHP session handler
-     * @var String 
+     * @var string 
      */
     static private $session_name;
 
     /**
      * User session data
-     * @var Array
+     * @var array
      */
     static public $session_data;
 

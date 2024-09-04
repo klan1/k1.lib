@@ -6,7 +6,7 @@ class template {
 
     /**
      * Enable state
-     * @var Boolean 
+     * @var bool 
      */
     static private $enabled = FALSE;
     static private $template_path = NULL;

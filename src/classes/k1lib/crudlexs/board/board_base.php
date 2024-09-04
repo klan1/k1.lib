@@ -19,17 +19,17 @@ class board_base {
     public $board_content_div;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $data_loaded = FALSE;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $is_enabled = FALSE;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $skip_form_action = FALSE;
 
@@ -49,12 +49,12 @@ class board_base {
     protected $show_rule_to_apply = NULL;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $apply_label_filter = TRUE;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $apply_field_label_filter = TRUE;
 

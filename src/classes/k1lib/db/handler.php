@@ -9,7 +9,7 @@ class handler extends \PDO {
 
     /**
      * Enable state
-     * @var Boolean 
+     * @var bool 
      */
     static protected $enabled = FALSE;
     static protected $db_dsn;

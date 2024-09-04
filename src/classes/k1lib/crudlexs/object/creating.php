@@ -11,17 +11,17 @@ class creating extends base_with_data implements base_interface
 {
 
     /**
-     * @var Array
+     * @var array
      */
     protected $post_incoming_array = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $post_data_catched = FALSE;
 
     /**
-     * @var Array
+     * @var array
      */
     protected $post_validation_errors = [];
 
@@ -33,7 +33,7 @@ class creating extends base_with_data implements base_interface
 
     /**
      *
-     * @var Boolean
+     * @var bool
      */
     protected $enable_foundation_form_check = FALSE;
     protected $show_cancel_button = TRUE;

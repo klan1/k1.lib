@@ -57,7 +57,7 @@ class session_db extends session_plain {
     protected $user_password_input_value = NULL;
 
     /**
-     * @var boolean
+     * @var bool
      */
     static $user_password_use_md5 = TRUE;
 

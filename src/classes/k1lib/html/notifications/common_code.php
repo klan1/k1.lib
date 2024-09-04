@@ -14,19 +14,19 @@ class common_code {
 
     /**
      *
-     * @var Int 
+     * @var int 
      */
     static protected $data_count = 0;
 
     /**
      * Stores the SQL data
-     * @var Array
+     * @var array
      */
     static protected $data = array();
 
     /**
      * Stores the SQL data
-     * @var Array
+     * @var array
      */
     static protected $data_titles = array();
 

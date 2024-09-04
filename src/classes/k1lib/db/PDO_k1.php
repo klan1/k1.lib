@@ -16,7 +16,7 @@ class PDO_k1 extends \PDO
 
     /**
      * Enable state
-     * @var Boolean 
+     * @var bool 
      */
     protected $enabled = FALSE;
     protected $db_dsn;
