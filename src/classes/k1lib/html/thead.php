@@ -7,8 +7,8 @@ class thead extends tag {
     use append_shotcuts;
 
     /**
-     * @param String $class
-     * @param String $id
+     * @param string $class
+     * @param string $id
      */
     function __construct($class = NULL, $id = NULL) {
         parent::__construct("thead", FALSE);
@@ -18,8 +18,8 @@ class thead extends tag {
 
     /**
      * Chains a new <TR> HTML TAG
-     * @param String $class
-     * @param String $id
+     * @param string $class
+     * @param string $id
      * @return tr
      */
     function append_tr($class = NULL, $id = NULL) {

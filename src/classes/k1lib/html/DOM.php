@@ -30,7 +30,7 @@ class DOM {
     }
 
     /**
-     * @return html
+     * @return html_document
      */
     static function html() {
         return self::$html;
@@ -45,7 +45,7 @@ class DOM {
         }
     }
 
-    static function link_html(html $html_to_link) {
+    static function link_html(html_document $html_to_link) {
         self::$html = $html_to_link;
     }
 }
