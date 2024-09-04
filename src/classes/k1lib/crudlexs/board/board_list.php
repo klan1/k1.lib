@@ -91,7 +91,7 @@ class board_list extends board_base implements board_interface {
                         , 'utility-iframe', "search-iframe"
                 );
 //                $this->board_content_div->append_child_tail($search_iframe);
-                DOM::html()->body()->append_child_tail($search_iframe);
+                DOM::html_document()->body()->append_child_tail($search_iframe);
 //                $search_iframe->append_to($this->board_content_div);
 
                 $search_buttom = new \k1lib\html\a(NULL, " " . board_list_strings::$button_search, "_self");

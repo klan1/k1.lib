@@ -40,15 +40,15 @@ class on_DOM extends common_code {
             if ($order == 'asc') {
                 self::$data[self::$section_name] = array_reverse(self::$data[self::$section_name]);
             }
-            $tag_object = DOM::html()->body()->get_element_by_id("k1lib-output");
+            $tag_object = DOM::html_document()->body()->get_element_by_id("k1lib-output");
             foreach (self::$data[self::$section_name] as $tag_id => $types_messages) {
                 if ($tag_object->get_attribute("id") != $tag_id) {
-                    $tag_object = DOM::html()->body()->get_element_by_id($tag_id);
+                    $tag_object = DOM::html_document()->body()->get_element_by_id($tag_id);
                     if (empty($tag_object)) {
-                        if (DOM::html()->body()->header()) {
-                            $tag_object = DOM::html()->body()->header()->append_div(NULL, $tag_id);
+                        if (DOM::html_document()->body()->header()) {
+                            $tag_object = DOM::html_document()->body()->header()->append_div(NULL, $tag_id);
                         } else {
-                            $tag_object = DOM::html()->body()->append_child_head(new \k1lib\html\div(NULL, $tag_id));
+                            $tag_object = DOM::html_document()->body()->append_child_head(new \k1lib\html\div(NULL, $tag_id));
                         }
                     } // else no needed
                 } // else no needed
