@@ -8,19 +8,19 @@ class url {
 
     /**
      * Enable state
-     * @var Boolean 
+     * @var bool 
      */
     static private $enabled = FALSE;
 
     /**
      * Actual URL level 
-     * @var Int
+     * @var int
      */
     static private $levels_count;
 
     /**
      * URL data array
-     * @var Array
+     * @var array
      */
     static private $url_data;
 

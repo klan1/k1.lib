@@ -9,64 +9,64 @@ class tag {
 
     use \k1lib\html\append_shotcuts;
 
-    /** @var String */
+    /** @var string */
     protected $tag_id = 0;
 
-    /** @var String */
+    /** @var string */
     protected $tag_name = NULL;
 
-    /** @var Boolean */
+    /** @var bool */
     protected $is_self_closed = FALSE;
 
-    /** @var Boolean */
+    /** @var bool */
     protected $is_inline = FALSE;
 
-    /** @var Boolean */
+    /** @var bool */
     protected $inside_inline = FALSE;
 
-    /** @var Array */
+    /** @var array */
     protected $attributes = array();
 
-    /** @var String */
+    /** @var string */
     protected $attributes_code = "";
 
-    /** @var String */
+    /** @var string */
     protected $tag_code = "";
 
-    /** @var String */
+    /** @var string */
     protected $pre_code = "";
 
-    /** @var String */
+    /** @var string */
     protected $post_code = "";
 
-    /** @var String */
+    /** @var string */
     protected $value = "";
 
-    /** @var String */
+    /** @var string */
     protected $post_value = "";
 
-    /** @var String */
+    /** @var string */
     protected $pre_value = "";
 
-    /** @var Boolean */
+    /** @var bool */
     protected $has_child = FALSE;
 
-    /** @var Array */
+    /** @var array */
     protected $childs_head = array();
 
     /** @var tag[] */
     protected $childs = array();
 
-    /** @var Array */
+    /** @var array */
     protected $childs_tail = array();
 
-    /** @var Integer */
+    /** @var int */
     protected $child_level = 0;
 
     /** @var tag */
     protected $parent = NULL;
 
-    /** @var boolean */
+    /** @var bool */
     static protected $use_log = FALSE;
 
     /** @var tag; */

@@ -35,7 +35,7 @@ class table_from_data extends \k1lib\html\table
     protected $fields_for_key_array_text = [];
 
     /**
-     * @var boolean 
+     * @var bool 
      */
     protected $has_header = TRUE;
 

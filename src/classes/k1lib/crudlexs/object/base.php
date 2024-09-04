@@ -38,7 +38,7 @@ class base {
 
     /**
      * If some goes BAD to do not keep going for others methods, you have to put this on FALSE;
-     * @var boolean
+     * @var bool
      */
     private $is_valid = FALSE;
 

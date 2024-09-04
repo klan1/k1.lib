@@ -18,7 +18,7 @@ class file_uploads {
 
     /**
      * Enable state
-     * @var Boolean 
+     * @var bool 
      */
     static private $enabled = FALSE;
     static private $overwrite_existent = TRUE;

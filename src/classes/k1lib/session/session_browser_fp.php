@@ -55,7 +55,7 @@ class session_browser_fp extends session_db {
 
     /**
      *
-     * @var Array
+     * @var array
      */
     private static $current_browser_fp_data = [];
 

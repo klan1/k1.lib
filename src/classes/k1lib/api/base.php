@@ -51,12 +51,12 @@ class base {
     // OUTPUT
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $do_send_response = TRUE;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $read_input_return_array = TRUE;
     /*

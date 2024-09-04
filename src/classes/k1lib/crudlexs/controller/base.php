@@ -43,7 +43,7 @@ class base {
 
     /**
      *
-     * @var boolean
+     * @var bool
      */
     protected $board_inited = FALSE;
     protected $board_started = FALSE;

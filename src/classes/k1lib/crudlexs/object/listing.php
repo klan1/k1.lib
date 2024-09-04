@@ -16,7 +16,7 @@ class listing extends base_with_data implements base_interface {
     public $html_table;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $data_loaded = false;
 
@@ -97,7 +97,7 @@ class listing extends base_with_data implements base_interface {
     protected $page_last = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $do_orderby_headers = TRUE;
 

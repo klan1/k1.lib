@@ -13,26 +13,26 @@ class base_with_data extends base
 
     /**
      *
-     * @var Array 
+     * @var array 
      */
     public $db_table_data = [];
 
     /**
      *
-     * @var Boolean 
+     * @var bool 
      */
     protected $db_table_data_keys = FALSE;
     // FILTERS
 
     /**
      *
-     * @var Array 
+     * @var array 
      */
     public $db_table_data_filtered = FALSE;
 
     /**
      *
-     * @var String
+     * @var string
      */
     protected $auth_code = null;
     protected $auth_code_personal = null;
@@ -43,25 +43,25 @@ class base_with_data extends base
 
     /**
      *
-     * @var boolean 
+     * @var bool 
      */
     protected $skip_auto_code_verification = FALSE;
 
     /**
      *
-     * @var boolean 
+     * @var bool 
      */
     protected $skip_blanks_on_filters = FALSE;
 
     /**
      *
-     * @var Boolean
+     * @var bool
      */
     protected $do_table_field_name_encrypt = FALSE;
 
     /**
      * If TRUE all file uploads will be represented as links, if OFF images will be images. PDF and others by now allways will be links.
-     * @var boolean
+     * @var bool
      */
     protected $force_file_uploads_as_links = TRUE;
     protected $custom_field_labels = [];
