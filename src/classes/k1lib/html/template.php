@@ -43,8 +43,8 @@ class template {
     static public function error_500($error_message) {
         header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error", true, 500);
         DOM::start();
-        DOM::html()->body()->append_h1('500 Internal error');
-        DOM::html()->body()->append_p($error_message);
+        DOM::html_document()->body()->append_h1('500 Internal error');
+        DOM::html_document()->body()->append_p($error_message);
         echo DOM::generate();
         trigger_error('App error fired', E_USER_NOTICE);
         exit;

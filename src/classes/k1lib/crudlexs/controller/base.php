@@ -180,13 +180,13 @@ class base {
          * Controller name for add on <html><title> and controller name tag
          */
         $this->controller_name = $controller_name;
-        $this->html_title_tags = DOM::html()->body()->get_elements_by_class($title_tag_class);
+        $this->html_title_tags = DOM::html_document()->body()->get_elements_by_class($title_tag_class);
         if (!empty($this->html_title_tags)) {
             $span = (new \k1lib\html\span("subheader"))->set_value($controller_name);
             foreach ($this->html_title_tags as $tag) {
                 $tag->set_value($span);
             }
-            DOM::html()->head()->set_title(DOM::html()->head()->get_title() . " | $controller_name");
+            DOM::html_document()->head()->set_title(DOM::html_document()->head()->get_title() . " | $controller_name");
         }
 
 
@@ -202,7 +202,7 @@ class base {
         $this->board_update_name = controller_base_strings::$board_update_name;
         $this->board_delete_name = controller_base_strings::$board_delete_name;
 
-        if (DOM::html()->body()) {
+        if (DOM::html_document()->body()) {
             $js_file = K1LIB_BASE_PATH . '/../dist/crudlexs/main.js';
             if (file_exists($js_file)) {
                 $js_content = file_get_contents($js_file);
@@ -210,7 +210,7 @@ class base {
                 $js_script = new \k1lib\html\script();
                 $js_script->set_value($js_content);
 
-                DOM::html()->body()->append_child_tail($js_script);
+                DOM::html_document()->body()->append_child_tail($js_script);
             } else {
                 d($js_file);
             }
