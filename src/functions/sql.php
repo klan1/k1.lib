@@ -16,9 +16,9 @@ use k1lib\sql\local_cache;
 /**
  * Run a SQL Query and returns an Array with all the result data
  * @param \PDO $db
- * @param String $sql
- * @param Boolean $return_all
- * @param Boolean $do_fields
+ * @param string $sql
+ * @param bool $return_all
+ * @param bool $do_fields
  * @return Array NULL on empty result and FALSE on failure.
  * TODO: Fix the NON optional cache isue !!
  */
@@ -593,7 +593,7 @@ function array_to_sql_values($array)
 
 /**
  * Convert an ARRAY to SQL SET pairs
- * @param Array $array Array to convert
+ * @param array $array Array to convert
  * @param Bolean $use_nulls If should keep the null data, otherwise those will be skiped
  * @param Bolean $for_where_stament If TRUE will join the pairs with AND, if not, will use coma instead
  * @return type
@@ -639,7 +639,7 @@ function array_to_sql_set(\PDO $db, array $array, $use_nulls = true, $for_where_
 
 /**
  * Convert an ARRAY to SQL SET pairs with deferent <> or NOT LIKE
- * @param Array $array Array to convert
+ * @param array $array Array to convert
  * @param Bolean $use_nulls If should keep the null data, otherwise those will be skiped
  * @param Bolean $for_where_stament If TRUE will join the pairs with AND, if not, will use coma instead
  * @return type
@@ -780,8 +780,8 @@ function get_db_table_keys_array($db_table_config)
 
 /**
  * Get the FIELD with label-field:yes comment on $position order
- * @param Array $db_table_config
- * @param Integer $position If this is -1 will return the last field found
+ * @param array $db_table_config
+ * @param integer $position If this is -1 will return the last field found
  * @return String Label field name
  */
 function get_db_table_label_fields($db_table_config)
@@ -907,8 +907,8 @@ function get_db_table_refereces($db_table_config)
 
 /**
  * From an array returns a text as key1--key2--keyN with ONLY the key fields 
- * @param Array $row_data
- * @param Array $db_table_config
+ * @param array $row_data
+ * @param array $db_table_config
  * @return Array FALSE on error
  */
 function table_keys_to_text($row_data, $db_table_config)

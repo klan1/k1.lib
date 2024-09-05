@@ -15,9 +15,9 @@ use k1lib\html as html;
 
 /**
  * This SHOULD be used always to receive any kind of value from _GET _POST _REQUEST if it will be used on SQL staments.
- * @param String $var Value to check.
- * @param Boolean $request FALSE to check $var as is. Use TRUE if $var become an index as: $_REQUEST[$var]
- * @param Boolean $url_decode TRUE if the data should be URL decoded.
+ * @param string $var Value to check.
+ * @param bool $request FALSE to check $var as is. Use TRUE if $var become an index as: $_REQUEST[$var]
+ * @param bool $url_decode TRUE if the data should be URL decoded.
  * @return String Rerturn NULL on error This could be that $var IS NOT String, Number or IS Array.
  */
 function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE) {
@@ -131,9 +131,9 @@ function get_form_field_from_serialized($form_name, $field_name, $default = "", 
 
 /**
  * Checks with this function if a received value matchs with a item on a ENUM field on a table
- * @param String $value Value to check
- * @param String  $table_name SQL table name
- * @param String $table_field SQL table field to check
+ * @param string $value Value to check
+ * @param string  $table_name SQL table name
+ * @param string $table_field SQL table field to check
  * @param \PDO $db DB connection object
  * @return string
  */

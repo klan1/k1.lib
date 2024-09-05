@@ -9,8 +9,8 @@ class script extends tag {
     /**
      * Create a SCRIPT html tag with VALUE as data. Use $script->set_value($crs) 
      * for load a file.
-     * @param String $class
-     * @param String $id
+     * @param string $class
+     * @param string $id
      */
     function __construct($src = NULL) {
         parent::__construct("script", FALSE);

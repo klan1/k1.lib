@@ -11,14 +11,15 @@ class DOM {
     /**
      * @var html_document
      */
-    static protected $html = NULL;
+    static protected $html_document = NULL;
 
-    static function start($lang = "en") {
-        self::$html = new html_document($lang);
+    static function start($lang = "en") : html_document {
+        self::$html_document = new html_document($lang);
+        return self::$html_document;
     }
 
     static function is_started() {
-        if (!empty(self::$html)) {
+        if (!empty(self::$html_document)) {
             return TRUE;
         } else {
             return FALSE;
@@ -26,26 +27,26 @@ class DOM {
     }
 
     static function end() {
-        self::$html = NULL;
+        self::$html_document = NULL;
     }
 
     /**
-     * @return html
+     * @return html_document
      */
-    static function html() {
-        return self::$html;
+    static function html_document() : html_document {
+        return self::$html_document;
     }
 
     static function generate() {
-        if (!empty(self::$html)) {
-            self::$html->pre_code("<!DOCTYPE html>\n");
-            return self::$html->generate();
+        if (!empty(self::$html_document)) {
+            self::$html_document->pre_code("<!DOCTYPE html>\n");
+            return self::$html_document->generate();
         } else {
             return NULL;
         }
     }
 
-    static function link_html(html $html_to_link) {
-        self::$html = $html_to_link;
+    static function link_html(html_document $html_document_to_link) {
+        self::$html_document = $html_document_to_link;
     }
 }

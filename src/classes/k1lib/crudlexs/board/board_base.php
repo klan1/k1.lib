@@ -127,7 +127,7 @@ class board_base {
 
     public function set_board_name($board_name) {
         if (!empty($board_name)) {
-            $head = DOM::html()->head();
+            $head = DOM::html_document()->head();
             $current_html_title = $head->get_title();
             $head->set_title($current_html_title . " - " . $board_name);
 

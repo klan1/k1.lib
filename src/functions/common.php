@@ -52,7 +52,7 @@ function check_on_k1lib() {
 
 /**
  * This will make an Array with $data_array[keys] as values as $return_array[0] = value0 .. $return_array[N] = $valueN. Is recursive.
- * @param Array $data_array
+ * @param array $data_array
  * @return Array
  */
 function make_guide_array($data_array) {
@@ -69,8 +69,8 @@ function make_guide_array($data_array) {
 
 /**
  * Only the existing KEYS of $array_to_clean in $guide_array will be returned
- * @param Array $array_to_clean
- * @param Array $guide_array
+ * @param array $array_to_clean
+ * @param array $guide_array
  * @return Array
  */
 function clean_array_with_guide($array_to_clean, $guide_array) {
@@ -105,8 +105,8 @@ function organize_array_with_guide($array_to_organize, $guide_array) {
 
 /**
  * Takes an Array and transform in key1=value1&keyN=valueN. Is recursive.
- * @param Array $data_array The data to convert to GET URL
- * @param Array $guide_array Only the existing KEYS in this Array will be converted
+ * @param array $data_array The data to convert to GET URL
+ * @param array $guide_array Only the existing KEYS in this Array will be converted
  * @return string 
  */
 function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = FALSE, $upper_name = "") {
@@ -159,9 +159,9 @@ function array_rename_key(&$array, $key_to_rename, $new_key_name) {
 
 /**
  * Converts Booleans vars to text
- * @param Boolean $bolean
- * @param String $true_value Text to convert on TRUE
- * @param String $false_value Text to convert on FALSE
+ * @param bool $bolean
+ * @param string $true_value Text to convert on TRUE
+ * @param string $false_value Text to convert on FALSE
  * @return String
  */
 function bolean_to_string($bolean, $true_value = "Si", $false_value = "No") {
@@ -174,7 +174,7 @@ function bolean_to_string($bolean, $true_value = "Si", $false_value = "No") {
 
 /**
  * Returns a qualified MAGIC NAME
- * @param String $name
+ * @param string $name
  * @return String
  */
 function get_magic_name($name) {
@@ -187,7 +187,7 @@ function get_magic_name($name) {
 
 /**
  * Uses the PHP Session system to generate and stores the MAGIC VALUE by $name
- * @param String $name This name HAVE TO BE used to check the form on the receiver script.
+ * @param string $name This name HAVE TO BE used to check the form on the receiver script.
  * @return String Magic value to be used on FORM
  */
 function set_magic_value($name) {
@@ -203,8 +203,8 @@ function set_magic_value($name) {
 
 /**
  * Check a incomming MAGIC VALUE 
- * @param String $name The name with it was stored
- * @param String $value_to_check Received var
+ * @param string $name The name with it was stored
+ * @param string $value_to_check Received var
  * @return boolean
  */
 function check_magic_value($name, $value_to_check) {
@@ -281,7 +281,7 @@ function unset_serialize_var($saved_name, $method = "session") {
 
 /**
  * Checks if the $email var is a valid email by regular expressions.
- * @param String $email
+ * @param string $email
  * @return boolean
  */
 function check_email_address($email) {
@@ -298,8 +298,8 @@ function check_email_address($email) {
 
 /**
  * This supposed to conver an XML string stored on $xml and return the JSON data as string. NOT TESTED!!
- * @param String $xml
- * @param String $append Any string to append to the converted string... but has no logic -.-
+ * @param string $xml
+ * @param string $append Any string to append to the converted string... but has no logic -.-
  * @return JSON String
  */
 function XmlToJson($xml, $append = "") {
