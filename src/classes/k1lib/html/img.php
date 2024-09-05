@@ -19,5 +19,18 @@ class img extends tag
     function set_value($value, $append = FALSE)
     {
         $this->set_attrib("alt", $value, $append);
+        return $this;
+    }
+
+    function set_src(string $src)
+    {
+        $this->set_attrib("src", $src);
+        return $this;
+    }
+
+    function set_alt(string $alt_text, $append = FALSE)
+    {
+        $this->set_attrib("alt", $alt_text, $append);
+        return $this;
     }
 }

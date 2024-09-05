@@ -467,7 +467,6 @@ class tag {
      * @param string $attribute
      * @param string $value
      * @param bool $append
-     * @return tag
      */
     public function set_attrib($attribute, $value, $append = FALSE) {
         if (!empty($attribute) && is_string($attribute)) {

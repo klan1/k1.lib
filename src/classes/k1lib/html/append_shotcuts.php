@@ -35,6 +35,7 @@ trait append_shotcuts
     }
 
     /**
+     * @param string $value
      * @param string $class
      * @param string $id
      * @return p
@@ -42,6 +43,18 @@ trait append_shotcuts
     function append_p($value = NULL, $class = NULL, $id = NULL)
     {
         $new = new p($value, $class, $id);
+        $this->append_child($new);
+        return $new;
+    }
+    /**
+     * @param string $value
+     * @param string $class
+     * @param string $id
+     * @return i
+     */
+    function append_i($value = NULL, $class = NULL, $id = NULL)
+    {
+        $new = new i($value, $class, $id);
         $this->append_child($new);
         return $new;
     }
@@ -75,7 +88,7 @@ trait append_shotcuts
         return $new;
     }
 
-    function append_img($src = NULL, $alt = 'Image', $class = NULL, $id = NULL)
+    function append_img($src = NULL, $alt = 'Image', $class = NULL, $id = NULL): img
     {
         $new = new img($src, $alt, $class, $id);
         $this->append_child($new);
