@@ -262,7 +262,7 @@ class creating extends base_with_data implements base_interface
 
     /**
      * Put an input object of certain type depending of the MySQL Table Feld Type on each data row[n]
-     * @param Int $row_to_apply
+     * @param int $row_to_apply
      */
     public function insert_inputs_on_data_row($create_labels_tags_on_headers = TRUE)
     {

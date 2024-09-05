@@ -11,7 +11,7 @@ use k1lib\html as html_classes;
 /**
  * Loads files and get contents from templates directory from k1.lib no from the app template directory.
  * Returns FALSE on load error.
- * @param String $function_name
+ * @param string $function_name
  * @return String
  */
 function load_html_template($function_name) {
@@ -23,12 +23,12 @@ function load_html_template($function_name) {
 
 /**
  * Using a HTML Template makes the couple of label-inpunt
- * @param String $field_name
- * @param String $value
- * @param String $label
- * @param Boolean $required
- * @param String $error_msg
- * @param String $label_link 
+ * @param string $field_name
+ * @param string $value
+ * @param string $label
+ * @param bool $required
+ * @param string $error_msg
+ * @param string $label_link 
  * @return String
  */
 function label_input_text_combo($field_name, $value, $label, $required = FALSE, $error_msg = "", $label_link = null) {
@@ -62,12 +62,12 @@ function label_input_text_combo($field_name, $value, $label, $required = FALSE, 
 
 /**
  * Using a HTML Template makes the couple of label-inpunt
- * @param String $field_name
- * @param String $value
- * @param String $label
- * @param Boolean $required
- * @param String $error_msg
- * @param String $label_link 
+ * @param string $field_name
+ * @param string $value
+ * @param string $label
+ * @param bool $required
+ * @param string $error_msg
+ * @param string $label_link 
  * @return String
  */
 function label_text_combo($label, $value) {
@@ -83,12 +83,12 @@ function label_text_combo($label, $value) {
 
 /**
  * Using a HTML Template makes the couple of label-inpunt as 2 columns
- * @param String $field_name
- * @param String $value
- * @param String $label
- * @param Boolean $required
- * @param String $error_msg
- * @param String $label_link 
+ * @param string $field_name
+ * @param string $value
+ * @param string $label
+ * @param bool $required
+ * @param string $error_msg
+ * @param string $label_link 
  * @return String
  */
 function label_text_combo_2columns($label, $value) {
@@ -104,12 +104,12 @@ function label_text_combo_2columns($label, $value) {
 
 /**
  * Generate a <SELECT></SELECT> HTML tag object with options from an Array() 
- * @param String $name
- * @param Array $data_array
+ * @param string $name
+ * @param array $data_array
  * @param type $default_value
- * @param Boolean $allow_empty
- * @param String $class
- * @param String $id
+ * @param bool $allow_empty
+ * @param string $class
+ * @param string $id
  * @return html_classes\select_tag
  */
 function select_list_from_array($name, $data_array, $default_value = "", $allow_empty = FALSE, $class = "", $id = "", $select_message = 'Select an option') {
@@ -129,10 +129,10 @@ function select_list_from_array($name, $data_array, $default_value = "", $allow_
 
 /**
  * Generate a <TABLE></TABLE> HTML tag with data from an Array() 
- * @param Array $data_array
- * @param Boolean $has_header
- * @param String $class
- * @param String $id
+ * @param array $data_array
+ * @param bool $has_header
+ * @param string $class
+ * @param string $id
  * @return String
  */
 function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "", $text_limit_to_trim = null) {
@@ -183,11 +183,11 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
 
 /**
  * 
- * @param String $linkTo
- * @param String $label
- * @param Boolean $mini
- * @param Boolean $inline
- * @param Boolean $keep_get_vars
+ * @param string $linkTo
+ * @param string $label
+ * @param bool $mini
+ * @param bool $inline
+ * @param bool $keep_get_vars
  * @return \k1lib\html\a_tag
  */
 function get_link_button($linkTo, $label, $class = "", $id = "") {

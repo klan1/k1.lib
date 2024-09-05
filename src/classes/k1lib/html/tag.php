@@ -74,8 +74,8 @@ class tag {
 
     /**
      * Constructor with $tag_name and $self_closed options for beginning
-     * @param String $tag_name
-     * @param Boolean $self_closed Is self closed as <tag> or tag closed one <tag></tag>
+     * @param string $tag_name
+     * @param bool $self_closed Is self closed as <tag> or tag closed one <tag></tag>
      */
     function __construct($tag_name, $self_closed = IS_SELF_CLOSED) {
         if (!empty($tag_name) && is_string($tag_name)) {
@@ -291,7 +291,7 @@ class tag {
 
     /**
      * Add free TEXT before the generated TAG
-     * @param String $pre_code
+     * @param string $pre_code
      */
     function pre_code($pre_code) {
         if (substr($pre_code, 0, 1) != "\n") {
@@ -305,7 +305,7 @@ class tag {
 
     /**
      * Add free TEXT after the generated TAG
-     * @param String $post_code
+     * @param string $post_code
      */
     function post_code($post_code) {
         if (substr($post_code, 0, 1) != "\n") {
@@ -319,7 +319,7 @@ class tag {
 
     /**
      * Add free TEXT before the generated TAG
-     * @param String $pre_value
+     * @param string $pre_value
      */
     function pre_value($pre_value) {
         if (substr($pre_value, 0, 1) != "\n") {
@@ -333,7 +333,7 @@ class tag {
 
     /**
      * Add free TEXT after the generated TAG
-     * @param String $post_value
+     * @param string $post_value
      */
     function post_value($post_value) {
         if (substr($post_value, 0, 1) != "\n") {
@@ -392,7 +392,7 @@ class tag {
 
     /**
      * Set the VALUE for the TAG, as <TAG value="$value" /> or <TAG>$value</TAG>
-     * @param String $value
+     * @param string $value
      * @return tag
      */
     public function set_value($value, $append = FALSE) {
@@ -427,7 +427,7 @@ class tag {
 
     /**
      * Return the reference for chained HTML tag object
-     * @param Int $n Index beginning from 0
+     * @param int $n Index beginning from 0
      * @return tag Returns FALSE if is not set
      */
     public function get_child($n) {
@@ -464,10 +464,9 @@ class tag {
 
     /**
      * Set an attribute with its value always overwriting if $append is not set TRUE to append old value with the recieved one.
-     * @param String $attribute
-     * @param String $value
-     * @param Boolean $append
-     * @return tag
+     * @param string $attribute
+     * @param string $value
+     * @param bool $append
      */
     public function set_attrib($attribute, $value, $append = FALSE) {
         if (!empty($attribute) && is_string($attribute)) {
@@ -548,7 +547,7 @@ class tag {
 
     /**
      * If the attribute was set returns its value
-     * @param String $attribute
+     * @param string $attribute
      * @return String Returns FALSE if is not set
      */
     public function get_attribute($attribute) {
@@ -635,7 +634,7 @@ class tag {
 
     /**
      * VALUE for the TAG, as <TAG attribute1="value1" .. attributeN="valueN" /> or <TAG attribute1="value1" .. attributeN="valueN">$value</TAG>
-     * @param Boolean $do_echo
+     * @param bool $do_echo
      * @return string Returns FALSE if is not attributes to generate
      */
     protected function generate_attributes_code() {
@@ -670,9 +669,9 @@ class tag {
 
     /**
      * This will generate the HTML TAG with ALL his childs by default. If the TAG is not SELF CLOSED will generate all as <TAG attributeN="valueN">$value</TAG>
-     * @param Boolean $do_echo Do ECHO action or RETURN HTML
-     * @param Boolean $with_childs
-     * @param Int $n_childs
+     * @param bool $do_echo Do ECHO action or RETURN HTML
+     * @param bool $with_childs
+     * @param int $n_childs
      * @return string Won't return any if is set $do_echo = TRUE
      */
     public function generate($with_childs = \TRUE, $n_childs = 0) {
@@ -726,7 +725,7 @@ class tag {
 
     /**
      * This will generate the HTML CLOSE TAG 
-     * @param Boolean $do_echo Do ECHO action or RETURN HTML
+     * @param bool $do_echo Do ECHO action or RETURN HTML
      * @return string Won't return any if is set $do_echo = TRUE
      */
     protected function generate_close() {
