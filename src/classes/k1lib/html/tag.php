@@ -5,7 +5,8 @@ namespace k1lib\html;
 /**
  * HTML Tag abstraction
  */
-class tag {
+class tag
+{
 
     use \k1lib\html\append_shotcuts;
 
@@ -77,7 +78,8 @@ class tag {
      * @param string $tag_name
      * @param bool $self_closed Is self closed as <tag> or tag closed one <tag></tag>
      */
-    function __construct($tag_name, $self_closed = IS_SELF_CLOSED) {
+    function __construct($tag_name, $self_closed = IS_SELF_CLOSED)
+    {
         if (!empty($tag_name) && is_string($tag_name)) {
             $this->tag_name = $tag_name;
         } else {
@@ -89,15 +91,16 @@ class tag {
         } else {
             trigger_error("Self closed value has to be boolean", E_USER_WARNING);
         }
-//            $this->set_attrib("class", "k1lib-{$tag_name}-object");
-// GET the global tag ID and catalog the object
+        //            $this->set_attrib("class", "k1lib-{$tag_name}-object");
+        // GET the global tag ID and catalog the object
         $this->tag_id = tag_catalog::increase($this);
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} was created");
         }
     }
 
-    function __clone() {
+    function __clone()
+    {
         $this->tag_id = tag_catalog::increase($this);
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} was cloned");
@@ -108,22 +111,28 @@ class tag {
      * Remove the tag Object from the Array catalog, this will disable the 
      * Object to be found or generated on chain actions.     
      */
-    function decatalog() {
-// Itself from Catalog
+    function decatalog()
+    {
+        // Itself from Catalog
         tag_catalog::decatalog($this->tag_id);
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} was decataloged");
         }
-// His childs
+        // His childs
         if ($this->has_child) {
             foreach ($this->childs as $child_object) {
                 $child_object->decatalog();
             }
         }
-// Inline objects
+        // Inline objects
         foreach ($this->get_inline_tags() as $tag) {
             $tag->decatalog();
         }
+    }
+
+    function is_cataloged()
+    {
+        return tag_catalog::is_cataloged($this->tag_id);
     }
 
     /**
@@ -131,7 +140,8 @@ class tag {
      * Object has been decataloged
      * @return integer|NULL
      */
-    function get_tag_id() {
+    function get_tag_id()
+    {
         if (tag_catalog::index_exist($this->tag_id)) {
             return $this->tag_id;
         } else {
@@ -143,11 +153,13 @@ class tag {
      * Whatever or not EVERY tag Object created will use the log system
      * @return boolean
      */
-    static function get_use_log() {
+    static function get_use_log()
+    {
         return self::$use_log;
     }
 
-    static function set_use_log($use_log) {
+    static function set_use_log($use_log)
+    {
         self::$use_log = $use_log;
     }
 
@@ -155,7 +167,8 @@ class tag {
      * Return the parent tag Object.
      * @return \k1lib\html\tag|NULL
      */
-    function get_parent() {
+    function get_parent()
+    {
         return $this->parent;
     }
 
@@ -163,7 +176,8 @@ class tag {
      * Chains the parent tag Object
      * @param \k1lib\html\tag $parent
      */
-    function set_parent(tag $parent) {
+    function set_parent(tag $parent)
+    {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is child of [{$parent->get_tag_name()}] ID:{$parent->tag_id} ");
         }
@@ -176,7 +190,8 @@ class tag {
      * generated 
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         if ($this->get_tag_id()) {
             if (html_document::get_use_log()) {
                 tag_log::log("[{$this->get_tag_name()}] is returned for inline use");
@@ -187,14 +202,14 @@ class tag {
         }
     }
 
-//    /**
-//     * Wherever the tag Object is used as string, will be returned as 
-//     * the generated tag
-//     * @return string
-//     */
-//    public function __toString() {
-//        return $this->generate();
-//    }
+    //    /**
+    //     * Wherever the tag Object is used as string, will be returned as 
+    //     * the generated tag
+    //     * @return string
+    //     */
+    //    public function __toString() {
+    //        return $this->generate();
+    //    }
 
     /**
      * Chains an HTML tag into the actual HTML tag on MAIN collection, by default will put on last 
@@ -202,7 +217,8 @@ class tag {
      * @param tag $child_object
      * @return tag 
      */
-    public function append_child(tag $child_object, $put_last_position = TRUE, $tag_position = APPEND_ON_MAIN) {
+    public function append_child(tag $child_object, $put_last_position = TRUE, $tag_position = APPEND_ON_MAIN)
+    {
         $child_object->set_parent($this);
         if ($put_last_position) {
             switch ($tag_position) {
@@ -242,7 +258,8 @@ class tag {
      * @param tag $child_object
      * @return tag 
      */
-    public function append_child_head(tag $child_object, $put_last_position = TRUE) {
+    public function append_child_head(tag $child_object, $put_last_position = TRUE)
+    {
         $this->append_child($child_object, $put_last_position, APPEND_ON_HEAD);
         return $child_object;
     }
@@ -253,7 +270,8 @@ class tag {
      * @param tag $child_object
      * @return tag 
      */
-    public function append_child_tail(tag $child_object, $put_last_position = TRUE) {
+    public function append_child_tail(tag $child_object, $put_last_position = TRUE)
+    {
         $this->append_child($child_object, $put_last_position, APPEND_ON_TAIL);
         return $child_object;
     }
@@ -263,7 +281,8 @@ class tag {
      * @param tag $child_object
      * @return tag 
      */
-    public function append_to($html_object) {
+    public function append_to($html_object)
+    {
         $this->set_parent($html_object);
         $html_object->append_child($this);
         return $this;
@@ -272,7 +291,8 @@ class tag {
     /**
      * @return tag
      */
-    public function remove_childs() {
+    public function remove_childs()
+    {
         foreach ($this->childs as $key => $child) {
             unset($this->childs[$key]);
             $child->decatalog();
@@ -293,7 +313,8 @@ class tag {
      * Add free TEXT before the generated TAG
      * @param string $pre_code
      */
-    function pre_code($pre_code) {
+    function pre_code($pre_code)
+    {
         if (substr($pre_code, 0, 1) != "\n") {
             $pre_code = "\n" . $pre_code;
         }
@@ -307,7 +328,8 @@ class tag {
      * Add free TEXT after the generated TAG
      * @param string $post_code
      */
-    function post_code($post_code) {
+    function post_code($post_code)
+    {
         if (substr($post_code, 0, 1) != "\n") {
             $post_code = "\n" . $post_code;
         }
@@ -321,7 +343,8 @@ class tag {
      * Add free TEXT before the generated TAG
      * @param string $pre_value
      */
-    function pre_value($pre_value) {
+    function pre_value($pre_value)
+    {
         if (substr($pre_value, 0, 1) != "\n") {
             $pre_value = "\n" . $pre_value;
         }
@@ -335,7 +358,8 @@ class tag {
      * Add free TEXT after the generated TAG
      * @param string $post_value
      */
-    function post_value($post_value) {
+    function post_value($post_value)
+    {
         if (substr($post_value, 0, 1) != "\n") {
             $post_value = "\n" . $post_value;
         }
@@ -345,7 +369,8 @@ class tag {
         $this->post_value = $post_value;
     }
 
-    function load_file($file_path, $position = INSERT_ON_VALUE, $include_file = TRUE) {
+    function load_file($file_path, $position = INSERT_ON_VALUE, $include_file = TRUE)
+    {
         if (file_exists($file_path)) {
             if ($include_file) {
                 ob_start();
@@ -395,14 +420,15 @@ class tag {
      * @param string $value
      * @return tag
      */
-    public function set_value($value, $append = FALSE) {
+    public function set_value($value, $append = FALSE)
+    {
 
         if (empty($this->this_link)) {
             if (($value !== FALSE) && ($value !== NULL)) {
                 $this->value = ($append === TRUE) ? ($this->value . " " . $value) : ("$value");
             }
         } else {
-            $this->this_link->set_value((($append === TRUE) && (!empty($this->this_link->get_value())) ) ? ($this->this_link->get_value() . " " . $value) : ("$value"));
+            $this->this_link->set_value((($append === TRUE) && (!empty($this->this_link->get_value()))) ? ($this->this_link->get_value() . " " . $value) : ("$value"));
         }
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} set value to: {$value}");
@@ -414,14 +440,16 @@ class tag {
      * Links the value of the current object to a child one. The current WON't be used and the value will be placed on the link object.
      * @param tag $obj_to_link
      */
-    public function link_value_obj(tag $obj_to_link) {
+    public function link_value_obj(tag $obj_to_link)
+    {
         $this->this_link = $obj_to_link;
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is linked to [{$obj_to_link->get_tag_name()}]");
         }
     }
 
-    public function unlink_value_obj() {
+    public function unlink_value_obj()
+    {
         $this->this_link = NULL;
     }
 
@@ -430,7 +458,8 @@ class tag {
      * @param int $n Index beginning from 0
      * @return tag Returns FALSE if is not set
      */
-    public function get_child($n) {
+    public function get_child($n)
+    {
         if (isset($this->childs[$n])) {
             return $this->childs[$n];
         } else {
@@ -442,7 +471,8 @@ class tag {
      * Return array of reference for chained HTML tags objects
      * @return tag[] Returns [] if is not set
      */
-    public function get_childs() {
+    public function get_childs()
+    {
         if (!empty($this->childs)) {
             return $this->childs;
         } else {
@@ -455,10 +485,11 @@ class tag {
      * @param type $n
      * @param \k1lib\html\tag $new_object
      */
-    public function replace_child($n, tag $new_object) {
+    public function replace_child($n, tag $new_object)
+    {
         if (array_key_exists($n, $this->childs)) {
             $this->childs[$n] = $new_object;
-//            echo "$n exists ! {$this->childs[$n]} {$this->childs[$n]->generate()} <br>";
+            //            echo "$n exists ! {$this->childs[$n]} {$this->childs[$n]->generate()} <br>";
         }
     }
 
@@ -468,7 +499,8 @@ class tag {
      * @param string $value
      * @param bool $append
      */
-    public function set_attrib($attribute, $value, $append = FALSE) {
+    public function set_attrib($attribute, $value, $append = FALSE)
+    {
         if (!empty($attribute) && is_string($attribute)) {
             if (empty($this->this_link)) {
                 if ($value !== NULL) {
@@ -490,13 +522,15 @@ class tag {
         return $this;
     }
 
-    public function remove_attrib($attribute) {
+    public function remove_attrib($attribute)
+    {
         if (isset($this->attributes[$attribute])) {
             unset($this->attributes[$attribute]);
         }
     }
 
-    public function remove_attribute_text($attribute, $text) {
+    public function remove_attribute_text($attribute, $text)
+    {
         $attribute_value = $this->get_attribute($attribute);
         $text_regexp = "/(\s*$text\s*)/";
         $regexp_match = [];
@@ -514,7 +548,8 @@ class tag {
      * @param string $id
      * @return tag
      */
-    public function set_id($id, $append = FALSE) {
+    public function set_id($id, $append = FALSE)
+    {
         if (!empty($id)) {
             $this->set_attrib("id", $id, $append);
         }
@@ -526,7 +561,8 @@ class tag {
      * @param string $class
      * @return tag
      */
-    public function set_class($class, $append = FALSE) {
+    public function set_class($class, $append = FALSE)
+    {
         if (!empty($class)) {
             $this->set_attrib("class", $class, $append);
         }
@@ -538,7 +574,8 @@ class tag {
      * @param string $style
      * @return tag
      */
-    public function set_style($style, $append = FALSE) {
+    public function set_style($style, $append = FALSE)
+    {
         if (!empty($style)) {
             $this->set_attrib("style", $style, $append);
         }
@@ -550,7 +587,8 @@ class tag {
      * @param string $attribute
      * @return String Returns FALSE if is not set
      */
-    public function get_attribute($attribute) {
+    public function get_attribute($attribute)
+    {
         if (isset($this->attributes[$attribute])) {
             return $this->attributes[$attribute];
         } else {
@@ -558,7 +596,8 @@ class tag {
         }
     }
 
-    public function get_attributes_array() {
+    public function get_attributes_array()
+    {
         return $this->attributes;
     }
 
@@ -566,7 +605,8 @@ class tag {
      * Gets the VALUE for the TAG, as <TAG value="$value" /> or <TAG>$value</TAG>
      * @return String
      */
-    public function get_value($current_child_level = 0) {
+    public function get_value($current_child_level = 0)
+    {
         if (is_object($this->value)) {
             trigger_error("This shouldn't be used more", E_USER_NOTICE);
             return $this->get_value();
@@ -579,7 +619,8 @@ class tag {
     /**
      * Generate inline tag Objects on the value property
      */
-    public function parse_value($current_child_level = 0) {
+    public function parse_value($current_child_level = 0)
+    {
         $value_original = $this->value;
         foreach ($this->get_inline_ids() as $tag_id) {
             if (tag_catalog::index_exist($tag_id)) {
@@ -598,7 +639,8 @@ class tag {
      * Returns an Array with the ID list found on $this->value
      * @return integer[]
      */
-    public function get_inline_ids() {
+    public function get_inline_ids()
+    {
         $regexp = "/\{\{ID:(\d*)\}\}/";
         $matches = [];
         $cataloged = [];
@@ -617,8 +659,9 @@ class tag {
      * 
      * @return tag[]
      */
-// TODO: Fix the error!
-    public function get_inline_tags() {
+    // TODO: Fix the error!
+    public function get_inline_tags()
+    {
         $regexp = "/\{\{ID:(\d*)\}\}/";
         $matches = [];
         $tags = [];
@@ -637,7 +680,8 @@ class tag {
      * @param bool $do_echo
      * @return string Returns FALSE if is not attributes to generate
      */
-    protected function generate_attributes_code() {
+    protected function generate_attributes_code()
+    {
         // WTF line
         // TODO: Check for numeric value on 0
         if ($this->is_self_closed && ($this->value !== 0) && ($this->value != NULL)) {
@@ -674,7 +718,8 @@ class tag {
      * @param int $n_childs
      * @return string Won't return any if is set $do_echo = TRUE
      */
-    public function generate($with_childs = \TRUE, $n_childs = 0) {
+    public function generate($with_childs = \TRUE, $n_childs = 0)
+    {
         /**
          * Merge the child arrays HEAD, MAIN and TAIL collections
          */
@@ -728,7 +773,8 @@ class tag {
      * @param bool $do_echo Do ECHO action or RETURN HTML
      * @return string Won't return any if is set $do_echo = TRUE
      */
-    protected function generate_close() {
+    protected function generate_close()
+    {
         /**
          * TAB constructor
          */
@@ -749,7 +795,8 @@ class tag {
      * Returns the tag name. <tag name> or <tag name></tag name>
      * @return string
      */
-    public function get_tag_name() {
+    public function get_tag_name()
+    {
         return $this->tag_name;
     }
 
@@ -758,7 +805,8 @@ class tag {
      * @param string $id
      * @return tag|NULL
      */
-    public function get_element_by_id($id) {
+    public function get_element_by_id($id)
+    {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by ID='$id'");
         }
@@ -789,13 +837,23 @@ class tag {
             return NULL;
         }
     }
+    /**
+     * Return the FIRST object found with the $id
+     * @param string $id
+     * @return tag|NULL
+     */
+    public function id($id)
+    {
+        return $this->get_element_by_id($id);
+    }
 
     /**
      * Return an Array with all the objects that TAG is $tag_name
      * @param string $tag_name
      * @return tag[]
      */
-    public function get_elements_by_tag($tag_name) {
+    public function get_elements_by_tag($tag_name)
+    {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by TAG='$tag_name'");
         }
@@ -819,7 +877,7 @@ class tag {
                 }
                 $child_search_result = $child->get_elements_by_tag($tag_name);
                 if (!empty($child_search_result)) {
-//                        print_r($child_search_result);
+                    //                        print_r($child_search_result);
                     if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return child [{$child->get_tag_name()}] ID:{$child->tag_id} results");
                     }
@@ -839,7 +897,8 @@ class tag {
      * @param boolean $partial_text_search
      * @return tag[]
      */
-    public function get_elements_by_attrib($attribute_name, $partial_text_search = FALSE) {
+    public function get_elements_by_attrib($attribute_name, $partial_text_search = FALSE)
+    {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by ATTRIB='$attribute_name'");
         }
@@ -872,7 +931,7 @@ class tag {
                 }
                 $child_search_result = $child->get_elements_by_attrib($attribute_name);
                 if (!empty($child_search_result)) {
-//                        print_r($child_search_result);
+                    //                        print_r($child_search_result);
                     if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return child [{$child->get_tag_name()}] ID:{$child->tag_id} results");
                     }
@@ -892,7 +951,8 @@ class tag {
      * @param boolean $partial_text_search
      * @return tag[]
      */
-    public function get_elements_by_attrib_value($attribute_name, $attribute_value, $partial_attribute_text_search = FALSE, $partial_value_text_search = FALSE) {
+    public function get_elements_by_attrib_value($attribute_name, $attribute_value, $partial_attribute_text_search = FALSE, $partial_value_text_search = FALSE)
+    {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by ATTRIB='$attribute_name' and VALUE='$attribute_value'");
         }
@@ -948,7 +1008,7 @@ class tag {
                 $child_search_result = [];
                 $child_search_result = $child->get_elements_by_attrib_value($attribute_name, $attribute_value, $partial_attribute_text_search, $partial_value_text_search);
                 if (!empty($child_search_result)) {
-//                        print_r($child_search_result);
+                    //                        print_r($child_search_result);
                     if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return child [{$child->get_tag_name()}] ID:{$child->tag_id} results");
                     }
@@ -968,13 +1028,14 @@ class tag {
      * @param string $class_name
      * @return tag[]
      */
-    public function get_elements_by_class($class_name) {
+    public function get_elements_by_class($class_name)
+    {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will SEARCH by CLASS='$class_name'");
         }
         $classes = [];
         if ($this->get_tag_id()) {
-//            if ($this->get_attribute("class") == $class_name) {
+            //            if ($this->get_attribute("class") == $class_name) {
             if (strstr($this->get_attribute("class"), $class_name) !== FALSE) {
                 if (html_document::get_use_log()) {
                     tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} is returned");
@@ -993,7 +1054,7 @@ class tag {
                 }
                 $child_search_result = $child->get_elements_by_class($class_name);
                 if (!empty($child_search_result)) {
-//                        print_r($child_search_result);
+                    //                        print_r($child_search_result);
                     if (html_document::get_use_log()) {
                         tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return child [{$child->get_tag_name()}] ID:{$child->tag_id} results");
                     }
@@ -1011,7 +1072,8 @@ class tag {
      * TRUE if this Objects have child and FALSE if not.
      * @return boolean
      */
-    function has_childs() {
+    function has_childs()
+    {
         return $this->has_child;
     }
 
@@ -1019,7 +1081,8 @@ class tag {
      * Merge and return the $childs_head, $childs and $childs_tail
      * @return \k1lib\html\tag[]
      */
-    protected function get_all_childs() {
+    protected function get_all_childs()
+    {
         /**
          * Merge the child arrays HEAD, MAIN and TAIL collections
          */
@@ -1041,6 +1104,4 @@ class tag {
         }
         return $merged_childs;
     }
-
 }
-
