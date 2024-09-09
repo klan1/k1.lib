@@ -47,6 +47,29 @@ trait append_shotcuts
         return $new;
     }
     /**
+     * @param string $class
+     * @param string $id
+     * @return ul
+     */
+    function append_ul($class = NULL, $id = NULL)
+    {
+        $new = new ul($class, $id);
+        $this->append_child($new);
+        return $new;
+    }
+    /**
+     * @param string $value
+     * @param string $class
+     * @param string $id
+     * @return li
+     */
+    function append_li($value = NULL, $class = NULL, $id = NULL)
+    {
+        $new = new li($value, $class, $id);
+        $this->append_child($new);
+        return $new;
+    }
+    /**
      * @param string $value
      * @param string $class
      * @param string $id
@@ -98,7 +121,7 @@ trait append_shotcuts
     /**
      * @param string $class
      * @param string $id
-     * @return p
+     * @return h1
      */
     function append_h1($value = NULL, $class = NULL, $id = NULL)
     {
@@ -110,7 +133,7 @@ trait append_shotcuts
     /**
      * @param string $class
      * @param string $id
-     * @return p
+     * @return h2
      */
     function append_h2($value = NULL, $class = NULL, $id = NULL)
     {
@@ -122,7 +145,7 @@ trait append_shotcuts
     /**
      * @param string $class
      * @param string $id
-     * @return p
+     * @return h3
      */
     function append_h3($value = NULL, $class = NULL, $id = NULL)
     {
@@ -134,7 +157,7 @@ trait append_shotcuts
     /**
      * @param string $class
      * @param string $id
-     * @return p
+     * @return h4
      */
     function append_h4($value = NULL, $class = NULL, $id = NULL)
     {
@@ -146,7 +169,7 @@ trait append_shotcuts
     /**
      * @param string $class
      * @param string $id
-     * @return p
+     * @return h5
      */
     function append_h5($value = NULL, $class = NULL, $id = NULL)
     {
@@ -158,7 +181,7 @@ trait append_shotcuts
     /**
      * @param string $class
      * @param string $id
-     * @return p
+     * @return h6
      */
     function append_h6($value = NULL, $class = NULL, $id = NULL)
     {
