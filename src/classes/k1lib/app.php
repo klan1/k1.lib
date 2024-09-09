@@ -1,14 +1,17 @@
 <?php
 
 namespace k1lib;
+
 use k1lib\app\config;
+use k1lib\session\session_plain;
+use k1lib\urlrewrite\url;
 
 class app
 {
     protected config $config;
-    protected bool $is_web = false;
-    protected bool $is_shell = false;
-    protected bool $is_api = false;
+    public bool $is_web = false;
+    public bool $is_shell = false;
+    public bool $is_api = false;
     protected string $script_path;
     static string $base_path;
     static string $base_url;
@@ -92,7 +95,7 @@ class app
             define('k1app\K1APP_BASE_URL', $app_base_url);
 
             //    define('k1app\K1APP_DOMAIN_URL', (\k1lib\common\get_http_protocol() . '://') . \k1app\K1APP_DOMAIN);
-            define('k1app\K1APP_DOMAIN_URL', '//' . \k1app\K1APP_DOMAIN);
+            define('k1app\K1APP_DOMAIN_URL', '//' . $_SERVER['HTTP_HOST']);
 
             define('k1app\K1APP_URL', \k1app\K1APP_DOMAIN_URL  . \k1app\K1APP_BASE_URL);
             define('k1app\K1APP_HOME_URL', \k1app\K1APP_URL);
@@ -113,6 +116,19 @@ class app
      */
     function start_controllers(): void
     {
-
+        \k1lib\forms\file_uploads::enable(\k1app\K1APP_UPLOADS_PATH, \k1app\K1APP_UPLOADS_URL);
+        \k1lib\forms\file_uploads::set_overwrite_existent(false);
+        
+        url::enable();
+        include url::get_controller_path_from_url(\k1app\K1APP_CONTROLLERS_PATH);
     }
+
+    function start_session()
+    {
+        session_plain::enable();
+        session_plain::set_session_name($this->config->get_option('app_session_name'));
+        session_plain::set_use_ip_in_userhash($this->config->get_option('app_session_use_ip_in_userhash'));
+        session_plain::set_app_user_levels($this->config->get_option('app_session_levels'));
+    }
+
 }
