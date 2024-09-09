@@ -838,13 +838,28 @@ class tag
         }
     }
     /**
-     * Return the FIRST object found with the $id
-     * @param string $id
-     * @return tag|NULL
+     * This tries to work as in jQuery $('#id') could work. By now, just simple 1 term query as #myid .myclass mytag
+     * @param string $query
+     * @return tag|tag[]|null
      */
-    public function id($id)
+    public function q(string $query): tag|array|null
     {
-        return $this->get_element_by_id($id);
+        $first_char = substr($query, 0, 1);
+        $term = substr($query, 1);
+
+        switch ($first_char) {
+            case '#':
+                $tag = $this->get_element_by_id($term);
+                return $tag;
+
+            case '.':
+                $tags = $this->get_elements_by_class($term);
+                return $tags;
+
+            default:
+                $tags = $this->get_elements_by_tag($query);
+                return $tags;
+        }
     }
 
     /**
