@@ -6,8 +6,8 @@ use k1lib\app\config;
 use k1lib\session\session_plain;
 use k1lib\urlrewrite\url;
 
-class app
-{
+class app {
+
     protected config $config;
     public bool $is_web = false;
     public bool $is_shell = false;
@@ -15,22 +15,22 @@ class app
     protected string $script_path;
     static string $base_path;
     static string $base_url;
+
     /**
      * @param config $app_config
      * @param bool $api_mode
      */
-    function __construct(config $app_config, string $script_path, $api_mode = false)
-    {
+    function __construct(config $app_config, string $script_path, $api_mode = false) {
         $this->config = $app_config;
         $this->is_api = $api_mode;
         $this->script_path = $script_path;
         $this->bootstrap();
     }
+
     /**
      * @return void
      */
-    function bootstrap(): void
-    {
+    function bootstrap(): void {
         /**
          * Lests define if is web or shell
          */
@@ -47,40 +47,36 @@ class app
         }
 
         $this->auto_config();
-
     }
+
     /**
      * @return void
      */
-    function auto_config(): void
-    {
+    function auto_config(): void {
         /**
          * Genral config about paths
          */
-
         // AUTO CONFIGURATED PATHS
         define('k1app\K1APP_ROOT', str_replace('\\', '/', dirname($this->script_path)));
         define('k1app\K1APP_DIR', basename(\k1app\K1APP_ROOT) . '/');
         define('k1app\K1APP_DOMAIN', $_SERVER['HTTP_HOST']);
 
-        define('k1app\K1APP_CONTROLLERS_PATH', \k1app\K1APP_ROOT  . '/src/controllers/'); // 2.0
-        define('k1app\K1APP_CLASSES_PATH', \k1app\K1APP_ROOT  . '/src/classes/'); // 2.0
-        define('k1app\K1APP_ASSETS_PATH', \k1app\K1APP_ROOT  . '/assets/'); // 2.0
-        define('k1app\K1APP_ASSETS_IMAGES_PATH', \k1app\K1APP_ASSETS_PATH  . 'images/'); // 2.0
-
+        define('k1app\K1APP_CONTROLLERS_PATH', \k1app\K1APP_ROOT . '/src/classes/k1app/controllers/'); // 2.0
+        define('k1app\K1APP_CLASSES_PATH', \k1app\K1APP_ROOT . '/src/classes/'); // 2.0
+        define('k1app\K1APP_ASSETS_PATH', \k1app\K1APP_ROOT . '/assets/'); // 2.0
+        define('k1app\K1APP_ASSETS_IMAGES_PATH', \k1app\K1APP_ASSETS_PATH . 'images/'); // 2.0
         // define('k1app\K1APP_VIEWS_PATH', \k1app\K1APP_ROOT . '/views/');
-
         // define('k1app\K1APP_VIEWS_CRUD_PATH', \k1app\K1APP_VIEWS_PATH . '/k1lib.crud/');
-        define('k1app\K1APP_SETTINGS_PATH', \k1app\K1APP_ROOT  . '/settings/');
-        define('k1app\K1APP_UPLOADS_PATH', \k1app\K1APP_ASSETS_PATH  . 'uploads/');
-        define('k1app\K1APP_SHELL_SCRIPTS_PATH', \k1app\K1APP_ASSETS_PATH  . '/shell-scripts/');
+        define('k1app\K1APP_SETTINGS_PATH', \k1app\K1APP_ROOT . '/settings/');
+        define('k1app\K1APP_UPLOADS_PATH', \k1app\K1APP_ASSETS_PATH . 'uploads/');
+        define('k1app\K1APP_SHELL_SCRIPTS_PATH', \k1app\K1APP_ASSETS_PATH . '/shell-scripts/');
         // define('k1app\K1APP_TEMPLATES_PATH', \k1app\K1APP_RESOURCES_PATH . '/templates/');
-        define('k1app\K1APP_FONTS_PATH', \k1app\K1APP_ASSETS_PATH  . 'fonts/');
+        define('k1app\K1APP_FONTS_PATH', \k1app\K1APP_ASSETS_PATH . 'fonts/');
 
         /**
          * COMPOSER
          */
-        define('k1app\COMPOSER_PACKAGES_PATH', \k1app\K1APP_ROOT  . 'vendor/');
+        define('k1app\COMPOSER_PACKAGES_PATH', \k1app\K1APP_ROOT . 'vendor/');
 
         // AUTO CONFIGURATED URLS
         if ($this->is_web) {
@@ -97,38 +93,39 @@ class app
             //    define('k1app\K1APP_DOMAIN_URL', (\k1lib\common\get_http_protocol() . '://') . \k1app\K1APP_DOMAIN);
             define('k1app\K1APP_DOMAIN_URL', '//' . $_SERVER['HTTP_HOST']);
 
-            define('k1app\K1APP_URL', \k1app\K1APP_DOMAIN_URL  . \k1app\K1APP_BASE_URL);
+            define('k1app\K1APP_URL', \k1app\K1APP_DOMAIN_URL . \k1app\K1APP_BASE_URL);
             define('k1app\K1APP_HOME_URL', \k1app\K1APP_URL);
-            define('k1app\K1APP_ASSETS_URL', \k1app\K1APP_HOME_URL  . 'assets/');
-            define('k1app\K1APP_IMAGES_URL', \k1app\K1APP_ASSETS_URL  . 'images/');
-            define('k1app\K1APP_UPLOADS_URL', \k1app\K1APP_ASSETS_URL  . 'uploads/');
-            define('k1app\K1APP_TEMPLATES_URL', \k1app\K1APP_ASSETS_URL  . 'templates/');
+            define('k1app\K1APP_ASSETS_URL', \k1app\K1APP_HOME_URL . 'assets/');
+            define('k1app\K1APP_IMAGES_URL', \k1app\K1APP_ASSETS_URL . 'images/');
+            define('k1app\K1APP_UPLOADS_URL', \k1app\K1APP_ASSETS_URL . 'uploads/');
+            define('k1app\K1APP_TEMPLATES_URL', \k1app\K1APP_ASSETS_URL . 'templates/');
             //    define('k1app\K1APP_TEMPLATE_IMAGES_URL', \k1app\K1APP_TEMPLATE_URL . 'img/');
 
             /**
              * COMPOSER
              */
-            define('k1app\COMPOSER_PACKAGES_URL', \k1app\K1APP_URL  . 'vendor/');
+            define('k1app\COMPOSER_PACKAGES_URL', \k1app\K1APP_URL . 'vendor/');
         }
     }
+
     /**
      * @return void
      */
-    function start_controllers(): void
-    {
+    function run_controllers(): void {
         \k1lib\forms\file_uploads::enable(\k1app\K1APP_UPLOADS_PATH, \k1app\K1APP_UPLOADS_URL);
         \k1lib\forms\file_uploads::set_overwrite_existent(false);
-        
+
         url::enable();
-        include url::get_controller_path_from_url(\k1app\K1APP_CONTROLLERS_PATH);
+        $controller_full = url::get_controller_path_from_url(\k1app\K1APP_CONTROLLERS_PATH);
+        $controller = str_replace('/', '\\', substr($controller_full, strlen(\k1app\K1APP_CONTROLLERS_PATH), -4));
+        $class = 'k1app\controllers\\' . $controller;
+        $class::run();
     }
 
-    function start_session()
-    {
+    function start_session() {
         session_plain::enable();
         session_plain::set_session_name($this->config->get_option('app_session_name'));
         session_plain::set_use_ip_in_userhash($this->config->get_option('app_session_use_ip_in_userhash'));
         session_plain::set_app_user_levels($this->config->get_option('app_session_levels'));
     }
-
 }
