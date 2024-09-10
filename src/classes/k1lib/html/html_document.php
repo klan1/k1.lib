@@ -27,18 +27,18 @@ class html_document extends tag
      */
     protected body $body;
 
-    function __construct($lang = "en", $custom_head = false, $custom_body = false)
+    function __construct($lang = "en", $default_head = false, $default_body = false)
     {
         parent::__construct("html", FALSE);
 
         $this->pre_code("<!DOCTYPE html>\n");
         $this->set_attrib("lang", $lang);
 
-        if (!$custom_head) {
+        if (!$default_head) {
             $this->head = new head();
             $this->append_child($this->head);
         }
-        if (!$custom_body) {
+        if (!$default_body) {
             $this->body = new body();
             $this->append_child($this->body);
         }

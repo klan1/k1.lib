@@ -2,9 +2,11 @@
 
 namespace k1lib\app;
 
+use k1app\template\mazer\layouts\blank;
+
 class controller {
 
-//    static protected $template;
+    static protected blank $tpl;
 
     function __construct() {
         
@@ -15,7 +17,7 @@ class controller {
     }
 
     static function use_tpl($tpl) {
-        self::$template = $tpl;
+        self::$tpl = $tpl;
     }
 
     static function tpl() {
