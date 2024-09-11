@@ -3,8 +3,20 @@
 namespace k1lib;
 
 use k1lib\app\config;
+use k1lib\db\PDO_k1;
+use k1lib\forms\file_uploads;
 use k1lib\session\session_plain;
 use k1lib\urlrewrite\url;
+use const k1app\K1APP_ASSETS_PATH;
+use const k1app\K1APP_ASSETS_URL;
+use const k1app\K1APP_BASE_URL;
+use const k1app\K1APP_CONTROLLERS_PATH;
+use const k1app\K1APP_DOMAIN_URL;
+use const k1app\K1APP_HOME_URL;
+use const k1app\K1APP_ROOT;
+use const k1app\K1APP_UPLOADS_PATH;
+use const k1app\K1APP_UPLOADS_URL;
+use const k1app\K1APP_URL;
 
 class app {
 
@@ -17,6 +29,15 @@ class app {
     static string $base_url;
 
     /**
+     * DB
+     */
+
+    /**
+     * @var PDO_k1[]
+     */
+    protected array $db_connections = [];
+
+    /**
      * @param config $app_config
      * @param bool $api_mode
      */
@@ -25,6 +46,8 @@ class app {
         $this->is_api = $api_mode;
         $this->script_path = $script_path;
         $this->bootstrap();
+
+        $this->db_connections[1] = null;
     }
 
     /**
@@ -39,11 +62,14 @@ class app {
                 trigger_error('You can\'t start an API app with shell', E_USER_ERROR);
             }
             $this->is_shell = true;
+            define('k1app\K1APP_MODE', 'shel');
         }
         if (array_key_exists('HTTP_HOST', $_SERVER)) {
             if (!$this->is_api) {
                 $this->is_web = true;
+                define('k1app\K1APP_MODE', 'web');
             }
+            define('k1app\K1APP_MODE', 'api');
         }
 
         $this->auto_config();
@@ -58,25 +84,25 @@ class app {
          */
         // AUTO CONFIGURATED PATHS
         define('k1app\K1APP_ROOT', str_replace('\\', '/', dirname($this->script_path)));
-        define('k1app\K1APP_DIR', basename(\k1app\K1APP_ROOT) . '/');
+        define('k1app\K1APP_DIR', basename(K1APP_ROOT) . '/');
         define('k1app\K1APP_DOMAIN', $_SERVER['HTTP_HOST']);
 
-        define('k1app\K1APP_CONTROLLERS_PATH', \k1app\K1APP_ROOT . '/src/classes/k1app/controllers/'); // 2.0
-        define('k1app\K1APP_CLASSES_PATH', \k1app\K1APP_ROOT . '/src/classes/'); // 2.0
-        define('k1app\K1APP_ASSETS_PATH', \k1app\K1APP_ROOT . '/assets/'); // 2.0
-        define('k1app\K1APP_ASSETS_IMAGES_PATH', \k1app\K1APP_ASSETS_PATH . 'images/'); // 2.0
+        define('k1app\K1APP_CONTROLLERS_PATH', K1APP_ROOT . '/src/classes/k1app/controllers/'); // 2.0
+        define('k1app\K1APP_CLASSES_PATH', K1APP_ROOT . '/src/classes/'); // 2.0
+        define('k1app\K1APP_ASSETS_PATH', K1APP_ROOT . '/assets/'); // 2.0
+        define('k1app\K1APP_ASSETS_IMAGES_PATH', K1APP_ASSETS_PATH . 'images/'); // 2.0
         // define('k1app\K1APP_VIEWS_PATH', \k1app\K1APP_ROOT . '/views/');
         // define('k1app\K1APP_VIEWS_CRUD_PATH', \k1app\K1APP_VIEWS_PATH . '/k1lib.crud/');
-        define('k1app\K1APP_SETTINGS_PATH', \k1app\K1APP_ROOT . '/settings/');
-        define('k1app\K1APP_UPLOADS_PATH', \k1app\K1APP_ASSETS_PATH . 'uploads/');
-        define('k1app\K1APP_SHELL_SCRIPTS_PATH', \k1app\K1APP_ASSETS_PATH . '/shell-scripts/');
+        define('k1app\K1APP_SETTINGS_PATH', K1APP_ROOT . '/settings/');
+        define('k1app\K1APP_UPLOADS_PATH', K1APP_ASSETS_PATH . 'uploads/');
+        define('k1app\K1APP_SHELL_SCRIPTS_PATH', K1APP_ASSETS_PATH . '/shell-scripts/');
         // define('k1app\K1APP_TEMPLATES_PATH', \k1app\K1APP_RESOURCES_PATH . '/templates/');
-        define('k1app\K1APP_FONTS_PATH', \k1app\K1APP_ASSETS_PATH . 'fonts/');
+        define('k1app\K1APP_FONTS_PATH', K1APP_ASSETS_PATH . 'fonts/');
 
         /**
          * COMPOSER
          */
-        define('k1app\COMPOSER_PACKAGES_PATH', \k1app\K1APP_ROOT . 'vendor/');
+        define('k1app\COMPOSER_PACKAGES_PATH', K1APP_ROOT . 'vendor/');
 
         // AUTO CONFIGURATED URLS
         if ($this->is_web) {
@@ -93,18 +119,18 @@ class app {
             //    define('k1app\K1APP_DOMAIN_URL', (\k1lib\common\get_http_protocol() . '://') . \k1app\K1APP_DOMAIN);
             define('k1app\K1APP_DOMAIN_URL', '//' . $_SERVER['HTTP_HOST']);
 
-            define('k1app\K1APP_URL', \k1app\K1APP_DOMAIN_URL . \k1app\K1APP_BASE_URL);
-            define('k1app\K1APP_HOME_URL', \k1app\K1APP_URL);
-            define('k1app\K1APP_ASSETS_URL', \k1app\K1APP_HOME_URL . 'assets/');
-            define('k1app\K1APP_IMAGES_URL', \k1app\K1APP_ASSETS_URL . 'images/');
-            define('k1app\K1APP_UPLOADS_URL', \k1app\K1APP_ASSETS_URL . 'uploads/');
-            define('k1app\K1APP_TEMPLATES_URL', \k1app\K1APP_ASSETS_URL . 'templates/');
+            define('k1app\K1APP_URL', K1APP_DOMAIN_URL . K1APP_BASE_URL);
+            define('k1app\K1APP_HOME_URL', K1APP_URL);
+            define('k1app\K1APP_ASSETS_URL', K1APP_HOME_URL . 'assets/');
+            define('k1app\K1APP_IMAGES_URL', K1APP_ASSETS_URL . 'images/');
+            define('k1app\K1APP_UPLOADS_URL', K1APP_ASSETS_URL . 'uploads/');
+            define('k1app\K1APP_TEMPLATES_URL', K1APP_ASSETS_URL . 'templates/');
             //    define('k1app\K1APP_TEMPLATE_IMAGES_URL', \k1app\K1APP_TEMPLATE_URL . 'img/');
 
             /**
              * COMPOSER
              */
-            define('k1app\COMPOSER_PACKAGES_URL', \k1app\K1APP_URL . 'vendor/');
+            define('k1app\COMPOSER_PACKAGES_URL', K1APP_URL . 'vendor/');
         }
     }
 
@@ -112,14 +138,36 @@ class app {
      * @return void
      */
     function run_controllers(): void {
-        \k1lib\forms\file_uploads::enable(\k1app\K1APP_UPLOADS_PATH, \k1app\K1APP_UPLOADS_URL);
-        \k1lib\forms\file_uploads::set_overwrite_existent(false);
+        file_uploads::enable(K1APP_UPLOADS_PATH, K1APP_UPLOADS_URL);
+        file_uploads::set_overwrite_existent(false);
 
         url::enable();
-        $controller_full = url::get_controller_path_from_url(\k1app\K1APP_CONTROLLERS_PATH);
-        $controller = str_replace('/', '\\', substr($controller_full, strlen(\k1app\K1APP_CONTROLLERS_PATH), -4));
+        $controller_full = url::get_controller_path_from_url(K1APP_CONTROLLERS_PATH);
+        $controller = str_replace('/', '\\', substr($controller_full, strlen(K1APP_CONTROLLERS_PATH), -4));
         $class = 'k1app\controllers\\' . $controller;
-        $class::run();
+        $class::link_app($this);
+
+        if ($this->is_web) {
+            switch ($_SERVER['REQUEST_METHOD']) {
+                case 'GET':
+                    $class::run();
+                    break;
+                case 'POST':
+                    $class::on_post();
+                    break;
+                case 'PUT':
+                    $class::on_post();
+                    break;
+                case 'DELETE':
+                    $class::on_post();
+                    break;
+                default :
+            }
+        } else if ($this->is_api) {
+            $class::run();
+        } else {
+            die('not yet');
+        }
     }
 
     function start_session() {
@@ -127,5 +175,31 @@ class app {
         session_plain::set_session_name($this->config->get_option('app_session_name'));
         session_plain::set_use_ip_in_userhash($this->config->get_option('app_session_use_ip_in_userhash'));
         session_plain::set_app_user_levels($this->config->get_option('app_session_levels'));
+    }
+
+    function db($index = 1) {
+        if ($index === 1) {
+            if (empty($this->db_connections[1])) {
+
+                try {
+                    /**
+                     * @var \k1lib\db\PDO_k1 
+                     */
+                    $this->db_connections[1] = new PDO_k1(
+                            $this->config->get_option('db_name'),
+                            $this->config->get_option('db_user'),
+                            $this->config->get_option('db_password'),
+                            $this->config->get_option('db_host'),
+                            $this->config->get_option('db_port'),
+                            $this->config->get_option('db_type')
+                    );
+                    $this->db_connections[1]->set_verbose_level($this->config->get_option('app_verbose_level'));
+                } catch (\PDOException $e) {
+                    trigger_error($e->getMessage(), E_USER_ERROR);
+                }
+                $this->db_connections[1]->exec('set names utf8');
+            }
+        }
+        return $this->db_connections[$index];
     }
 }
