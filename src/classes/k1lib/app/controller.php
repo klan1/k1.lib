@@ -4,6 +4,8 @@ namespace k1lib\app;
 
 use k1app\template\mazer\layouts\blank;
 use k1lib\app;
+use k1lib\html\notifications\on_DOM;
+use function k1lib\forms\check_all_incomming_vars;
 
 class controller {
 
@@ -12,7 +14,7 @@ class controller {
     static array $POST = [];
 
     static function on_post() {
-        self::$POST = \k1lib\forms\check_all_incomming_vars($_POST);
+        self::$POST = check_all_incomming_vars($_POST);
     }
 
     static function POST($key = null) {
@@ -28,8 +30,21 @@ class controller {
         }
     }
 
+    static function launch() {
+        static::start();
+        static::run();
+        static::end();
+    }
+
+    static function start() {
+    }
+
     static function run() {
         
+    }
+
+    static function end() {
+        on_DOM::insert_messases_on_DOM();
     }
 
     static function use_tpl($tpl) {

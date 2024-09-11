@@ -2,17 +2,22 @@
 
 namespace k1lib\session;
 
+use k1lib\crudlexs\db_table;
+use k1lib\crypt;
 use k1lib\html\notifications\on_DOM as DOM_notifications;
+use PDO;
+use function k1lib\common\check_magic_value;
+use function k1lib\forms\check_all_incomming_vars;
 
 class session_db extends session_plain {
 
     /**
-     * @var \k1lib\crudlexs\db_table
+     * @var db_table
      */
     private $db_table;
 
     /**
-     * @var \PDO
+     * @var PDO
      */
     private $db_object;
 
@@ -86,14 +91,14 @@ class session_db extends session_plain {
      */
     protected $coockie_data = NULL;
 
-    public function __construct(\PDO $db) {
+    public function __construct(PDO $db) {
         $this->db_object = $db;
         $this->save_cookie_name = session_plain::get_session_name() . "-store";
     }
 
     public function set_config($login_db_table, $user_login_field, $user_password_field, $user_level_field = NULL) {
         $this->user_login_db_table = $login_db_table;
-        $this->db_table = new \k1lib\crudlexs\db_table($this->db_object, $this->user_login_db_table);
+        $this->db_table = new db_table($this->db_object, $this->user_login_db_table);
         if ($this->db_table->get_state()) {
             $this->user_login_field = $user_login_field;
             $this->user_password_field = $user_password_field;
@@ -109,7 +114,7 @@ class session_db extends session_plain {
 
     public function catch_post($skip_magic = FALSE) {
         if (isset($_POST['magic_value'])) {
-            $magic_test = \k1lib\common\check_magic_value("login_form", $_POST['magic_value']);
+            $magic_test = check_magic_value("login_form", $_POST['magic_value']);
             if (($magic_test == TRUE) || ($skip_magic)) {
                 unset($_POST['magic_value']);
 // the form was correct, so lets try to login
@@ -117,7 +122,7 @@ class session_db extends session_plain {
                 /**
                  * Check the _GET incomming vars
                  */
-                $form_values = \k1lib\forms\check_all_incomming_vars($_POST, "k1lib_login");
+                $form_values = check_all_incomming_vars($_POST, "k1lib_login");
 
                 /**
                  * Login fields
@@ -184,7 +189,7 @@ class session_db extends session_plain {
             'user_level_field' => $this->user_level_field,
             'user_hash' => parent::get_user_hash($this->user_login_input_value),
         ];
-        $data_encoded = \k1lib\crypt::encrypt($data);
+        $data_encoded = crypt::encrypt($data);
         if ($this->user_remember_me_value) {
             $coockie_time = time() + (15 * 60 * 60 * 24);
         } else {
@@ -199,7 +204,7 @@ class session_db extends session_plain {
             $_COOKIE[$this->save_cookie_name] = $this->coockie_data;
         }
         if (isset($_COOKIE[$this->save_cookie_name])) {
-            $data = \k1lib\crypt::decrypt($_COOKIE[$this->save_cookie_name]);
+            $data = crypt::decrypt($_COOKIE[$this->save_cookie_name]);
 
             if ($return_coockie_data) {
                 return $data;
@@ -245,7 +250,7 @@ class session_db extends session_plain {
             return $cookie_data;
         } else {
             if (isset($_COOKIE[$this->save_cookie_name])) {
-                $data = \k1lib\crypt::decrypt($_COOKIE[$this->save_cookie_name]);
+                $data = crypt::decrypt($_COOKIE[$this->save_cookie_name]);
                 if ($data['user_hash'] === self::get_user_hash($data['user_login_input_value'])) {
                     $this->set_config($data['db_table_name'], $data['user_login_field'], $data['user_password_field'], $data['user_level_field']);
                     $this->set_inputs($data['user_login_input_name'], $data['user_password_input_name'], $data['user_remember_me_input']);

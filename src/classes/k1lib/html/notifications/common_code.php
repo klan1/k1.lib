@@ -10,7 +10,11 @@
 
 namespace k1lib\html\notifications;
 
+use k1lib\html\html_document;
+
 class common_code {
+
+    static protected html_document $tpl;
 
     /**
      *
@@ -34,7 +38,7 @@ class common_code {
      * Enable the engenie
      */
     static public function test() {
-        if (!class_exists('\k1lib\html\DOM', FALSE)) {
+        if (!empty(self::$tpl)) {
             trigger_error(__CLASS__ . " needs \k1lib\html\DOM class", E_USER_ERROR);
         }
     }
@@ -71,5 +75,4 @@ class common_code {
         unset($_SESSION['k1lib_notifications']);
         unset($_SESSION['k1lib_notifications_titles']);
     }
-
 }
