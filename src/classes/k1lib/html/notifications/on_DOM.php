@@ -10,7 +10,9 @@
 
 namespace k1lib\html\notifications;
 
-use k1lib\html\DOM as DOM;
+use k1lib\html\div;
+use k1lib\html\foundation\callout;
+use k1lib\html\ul;
 
 class on_DOM extends common_code {
 
@@ -40,20 +42,21 @@ class on_DOM extends common_code {
             if ($order == 'asc') {
                 self::$data[self::$section_name] = array_reverse(self::$data[self::$section_name]);
             }
-            $tag_object = DOM::html_document()->body()->get_element_by_id("k1lib-output");
+            $tag_object = self::$tpl->body()->get_element_by_id("k1lib-output");
+            var_dump($tag_object);
             foreach (self::$data[self::$section_name] as $tag_id => $types_messages) {
                 if ($tag_object->get_attribute("id") != $tag_id) {
-                    $tag_object = DOM::html_document()->body()->get_element_by_id($tag_id);
+                    $tag_object = self::$tpl->body()->get_element_by_id($tag_id);
                     if (empty($tag_object)) {
-                        if (DOM::html_document()->body()->header()) {
-                            $tag_object = DOM::html_document()->body()->header()->append_div(NULL, $tag_id);
+                        if (self::$tpl->body()->header()) {
+                            $tag_object = self::$tpl->body()->header()->append_div(NULL, $tag_id);
                         } else {
-                            $tag_object = DOM::html_document()->body()->append_child_head(new \k1lib\html\div(NULL, $tag_id));
+                            $tag_object = self::$tpl->body()->append_child_head(new div(NULL, $tag_id));
                         }
                     } // else no needed
                 } // else no needed
                 foreach ($types_messages as $type => $messages) {
-                    $call_out = new \k1lib\html\foundation\callout();
+                    $call_out = new callout();
                     $call_out->set_class($type);
                     if (isset(self::$data_titles[self::$section_name][$type]) && !empty(self::$data_titles[self::$section_name][$type])) {
                         $call_out->set_title(self::$data_titles[self::$section_name][$type]);
@@ -62,7 +65,7 @@ class on_DOM extends common_code {
                         $call_out->set_message($messages[0]);
                         $call_out->append_to($tag_object);
                     } else {
-                        $ul = new \k1lib\html\ul();
+                        $ul = new ul();
                         foreach ($messages as $message) {
                             $ul->append_li($message);
                         }

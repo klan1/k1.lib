@@ -68,8 +68,9 @@ class app {
             if (!$this->is_api) {
                 $this->is_web = true;
                 define('k1app\K1APP_MODE', 'web');
+            } else {
+                define('k1app\K1APP_MODE', 'api');
             }
-            define('k1app\K1APP_MODE', 'api');
         }
 
         $this->auto_config();
@@ -150,7 +151,7 @@ class app {
         if ($this->is_web) {
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'GET':
-                    $class::run();
+                    $class::launch();
                     break;
                 case 'POST':
                     $class::on_post();
@@ -164,7 +165,7 @@ class app {
                 default :
             }
         } else if ($this->is_api) {
-            $class::run();
+            $class::launch();
         } else {
             die('not yet');
         }
@@ -175,6 +176,7 @@ class app {
         session_plain::set_session_name($this->config->get_option('app_session_name'));
         session_plain::set_use_ip_in_userhash($this->config->get_option('app_session_use_ip_in_userhash'));
         session_plain::set_app_user_levels($this->config->get_option('app_session_levels'));
+        session_plain::start_session();
     }
 
     function db($index = 1) {
