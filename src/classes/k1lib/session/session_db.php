@@ -149,7 +149,7 @@ class session_db extends session_plain {
                 return FALSE;
             }
         } else {
-            DOM_notifications::queue_mesasage("There is not magic present here!", "alert");
+            DOM_notifications::queue_mesasage("There is not magic present here!", "danger");
             return NULL;
         }
     }
