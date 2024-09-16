@@ -16,7 +16,7 @@ class html_document extends tag
 {
 
     use append_shotcuts;
-
+    
     /**
      * @var head
      */
@@ -30,6 +30,8 @@ class html_document extends tag
     function __construct($lang = "en", $default_head = false, $default_body = false)
     {
         parent::__construct("html", FALSE);
+        
+        parent::$root = $this;
 
         $this->pre_code("<!DOCTYPE html>\n");
         $this->set_attrib("lang", $lang);
