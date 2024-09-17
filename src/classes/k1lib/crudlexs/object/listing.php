@@ -11,7 +11,7 @@ use k1lib\urlrewrite\url as url;
 class listing extends base_with_data implements base_interface {
 
     /**
-     * @var \k1lib\html\foundation\table_from_data
+     * @var \k1lib\html\bootstrap\table_from_data
      */
     public $html_table;
 
@@ -124,7 +124,7 @@ class listing extends base_with_data implements base_interface {
             /**
              * Create the HTML table from DATA lodaed 
              */
-            $this->html_table = new \k1lib\html\foundation\table_from_data("k1lib-crudlexs-list responsive-card-table unstriped {$table_alias}");
+            $this->html_table = new \k1lib\html\bootstrap\table_from_data("k1lib-crudlexs-list table table-striped mb-0 {$table_alias}");
             $this->html_table->append_to($this->div_container);
             $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
             $this->html_table->set_data($this->db_table_data_filtered);
@@ -136,7 +136,7 @@ class listing extends base_with_data implements base_interface {
     }
 
     /**
-     * @return \k1lib\html\foundation\table_from_data
+     * @return \k1lib\html\bootstrap\table_from_data
      */
     public function get_html_table() {
         return $this->html_table;
@@ -180,14 +180,14 @@ class listing extends base_with_data implements base_interface {
                 $class_active = ' ordering';
                 if (isset($_GET[$sort_mode_name]) && ($_GET[$sort_mode_name] == 'ASC')) {
                     $sort_mode = 'DESC';
-                    $class_sort_mode = 'fi-arrow-down';
+                    $class_sort_mode = 'bi bi-arrow-down';
                 } else {
-                    $class_sort_mode = 'fi-arrow-up';
+                    $class_sort_mode = 'bi bi-arrow-up';
                 }
             }
 
             $sort_url = url::do_url($_SERVER['REQUEST_URI'], [$sort_by_name => $field_encrypted, $sort_mode_name => $sort_mode]);
-            $a = new \k1lib\html\a($sort_url, " $label", NULL, $class_sort_mode . $class_active);
+            $a = new \k1lib\html\a($sort_url, " $label", NULL, $class_sort_mode . $class_active . ' text-uppercase');
             $headers[$field] = $a;
         }
     }

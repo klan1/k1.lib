@@ -14,8 +14,8 @@ class grid_cell extends \k1lib\html\div {
      * @param integer $id
      *  */
     public function __construct($col_number = NULL, $class = NULL, $id = NULL) {
-        parent::__construct("cell cell-{$col_number}" . $class, NULL);
-        $this->set_attrib("data-grid-cell", $col_number);
+        parent::__construct("col-{$col_number}" . $class, NULL);
+//        $this->set_attrib("data-grid-cell", $col_number);
     }
 
     // change the default behaivor of append from FALSE to TRUE
@@ -28,7 +28,7 @@ class grid_cell extends \k1lib\html\div {
      * @return \k1lib\html\div
      */
     public function end() {
-        $this->set_attrib("class", "end", TRUE);
+        $this->set_attrib("class", "", TRUE);
         return $this;
     }
 

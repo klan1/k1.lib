@@ -208,6 +208,7 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
         "edit" => ["edit", "editar", "cambiar", "change"],
         "delete" => ["delete", "borrar", "eliminar", "suprimir", "quitar", "cancelar"],
         "list" => ["lista", "list", "all data", "view data", "data", "todos"],
+        "search" => ["buscar", "search", "locate", "ubicar"],
     ];
 
     $label_low = strtolower($label);
@@ -224,55 +225,60 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
     $js_confirm_dialog = FALSE;
     switch ($possible_action) {
         case "export":
-            $button_icon = "fi-download";
-            $theme = "secondary";
+            $button_icon = "bi bi-download";
+            $theme = "btn-outline-secondary";
             break;
         case "back":
-            $button_icon = "fi-arrow-left";
-            $theme = "secondary";
+            $button_icon = "bi bi-arrow-left";
+            $theme = "btn-outline-secondary";
             break;
         case "go":
-            $button_icon = "fi-check";
-            $theme = "success";
+            $button_icon = "bi bi-check";
+            $theme = "btn-outline-success";
             break;
         case "cancel":
-            $button_icon = "fi-x";
-            $theme = "alert";
+            $button_icon = "bi bi-x";
+            $theme = "btn-outline-alert";
             break;
         case "ok":
-            $button_icon = "fi-check";
-            $theme = "success";
+            $button_icon = "bi bi-check";
+            $theme = "btn-outline-success";
             break;
         case "view":
-            $button_icon = "fi-clipboard-notes";
-            $theme = "";
+            $button_icon = "bi bi-clipboard2";
+            $theme = "btn-outline-primary";
             break;
         case "new":
-            $button_icon = "fi-plus";
-            $theme = "success";
+            $button_icon = "bi bi-plus";
+            $theme = "btn-outline-success";
             break;
         case "edit":
-            $button_icon = "fi-clipboard-pencil";
-            $theme = "";
+            $button_icon = "bi bi-pencil-square";
+            $theme = "btn-outline-primary";
             break;
         case "delete":
-            $button_icon = "fi-page-delete";
-            $theme = "alert";
+            $button_icon = "bi bi-exclamation-triangle-fill";
+            $theme = "btn-outline-warning";
             $js_confirm_dialog = TRUE;
             break;
         case "list":
-            $button_icon = "fi-list";
-            $theme = "primary";
+            $button_icon = "bi bi-grid-3x3";
+            $theme = "btn-outline-primary";
+            break;
+        case "search":
+            $button_icon = "bi bi-search";
+            $theme = "btn-outline-primary";
             break;
         default:
-            $button_icon = "fi-widget";
-            $theme = "secondary";
+            $button_icon = "bi bi-link";
+            $theme = "btn-outline-secondary";
             break;
     }
+    $icon = new \k1lib\html\i(NULL, $button_icon);
 
-    $button_object = new \k1lib\html\a($linkTo, " " . $label, "_self", "button {$class}", $id);
-    $button_object->set_attrib("class", "$button_icon", TRUE);
-    $button_object->set_attrib("class", "$theme", TRUE);
+    $button_object = new \k1lib\html\a($linkTo, "$icon " . $label, "_self", "btn icon {$theme} {$class}", $id);
+//    $button_object->set_attrib("class", "$button_icon", TRUE);
+//    $button_object->set_attrib("class", "btn icon $theme", TRUE);
     if ($js_confirm_dialog) {
         $button_object->set_attrib("onclick", "return confirm('Esta seguro que desea hacer esto ?\\n\\nEsta accion no se podra deshacer.')");
     }
