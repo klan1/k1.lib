@@ -5,6 +5,7 @@ namespace k1lib;
 use k1lib\app\config;
 use k1lib\db\PDO_k1;
 use k1lib\forms\file_uploads;
+use k1lib\html\notifications\on_DOM;
 use k1lib\session\session_db;
 use k1lib\session\session_plain;
 use k1lib\urlrewrite\url;
@@ -29,6 +30,8 @@ class app {
     protected string $script_path;
     static string $base_path;
     static string $base_url;
+    
+    protected $app_session;
 
     /**
      * DB
@@ -184,9 +187,19 @@ class app {
 
     function start_session_db(int $db_index) {
         session_db::set_session_name($this->config->get_option('app_session_name'));
-        $app_session = new session_db($this->db($db_index));
-        $app_session->start_session();
-        $app_session->load_logged_session_db();
+        $this->app_session = new session_db($this->db($db_index));
+        $this->app_session->start_session();
+        $this->app_session->load_logged_session_db();
+    }
+
+    function end_session() {
+        $this->app_session->unset_coockie(K1APP_BASE_URL);
+        session_db::end_session();
+
+        $this->app_session = new session_plain();
+        $this->start_session();
+
+        on_DOM::queue_mesasage("Bye!", "success");
     }
 
     function db($index = 1) {

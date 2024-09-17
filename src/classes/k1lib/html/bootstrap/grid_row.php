@@ -1,10 +1,10 @@
 <?php
 
-namespace k1lib\html\foundation;
+namespace k1lib\html\bootstrap;
 
 class grid_row extends \k1lib\html\div {
 
-    use foundation_methods;
+    use bootstrap_methods;
 
 
     /**
@@ -33,7 +33,7 @@ class grid_row extends \k1lib\html\div {
 
     /**
      * @param integer $col_number
-     * @return \k1lib\html\foundation\grid_cell
+     * @return \k1lib\html\bootstrap\grid_cell
      */
     public function col($col_number) {
         return $this->cell($col_number);
@@ -41,7 +41,7 @@ class grid_row extends \k1lib\html\div {
 
     /**
      * @param integer $col_number
-     * @return \k1lib\html\foundation\grid_cell
+     * @return \k1lib\html\bootstrap\grid_cell
      */
     public function cell($col_number) {
         if (isset($this->num_cols[$col_number])) {

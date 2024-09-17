@@ -131,7 +131,7 @@ class url
      * self::$url_data[$level]['value']
      * @param int $level Level deep to define
      * @param string $name Level name
-     * @param boolean $required Required? is TRUE the app will stop is the leves is not pressent on the APP_URL
+     * @param boolean $required Required? is TRUE the app will stop is the leves is not pressent on the \k1app\K1APP_URL
      * @return boolean 
      * TODO: check level prerequisites 
      */
