@@ -2,9 +2,34 @@
 
 namespace k1lib\crudlexs\controller;
 
-use k1lib\urlrewrite\url as url;
+use k1lib\common_strings;
+use k1lib\crudlexs\board\board_base_strings;
+use k1lib\crudlexs\board\board_list;
+use k1lib\crudlexs\board\create;
+use k1lib\crudlexs\board\delete;
+use k1lib\crudlexs\board\read;
+use k1lib\crudlexs\board\search;
+use k1lib\crudlexs\board\update;
+use k1lib\crudlexs\db_table;
+use k1lib\crudlexs\object\creating;
+use k1lib\crudlexs\object\listing;
+use k1lib\crudlexs\object\reading;
+use k1lib\crudlexs\object\updating;
+use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\script;
+use k1lib\html\span;
+use k1lib\html\tag;
+use k1lib\K1MAGIC;
+use k1lib\session\session_plain;
+use k1lib\urlrewrite\url as url;
+use PDO;
+use Ramsey\Uuid\DegradedUuid;
+use const k1lib\K1LIB_BASE_PATH;
+use function k1lib\common\clean_array_with_guide;
+use function k1lib\html\html_header_go;
+use function k1lib\sql\table_url_text_to_keys;
 
 class base {
 
@@ -12,7 +37,7 @@ class base {
 
     /**
      * DB table main object
-     * @var \k1lib\crudlexs\db_table 
+     * @var db_table 
      */
     public $db_table;
 
@@ -51,13 +76,13 @@ class base {
 
     /**
      *
-     * @var \k1lib\html\div
+     * @var div
      */
     public $board_div_content;
 
     /**
      *
-     * @var \k1lib\html\tag
+     * @var tag
      */
     public $html_title_tags = NULL;
     /**
@@ -114,7 +139,6 @@ class base {
     protected $board_search_url_name = "search";
     protected $board_search_allowed_levels = [];
 
-
     /**
      *
      * Board names for html title and controller name tag
@@ -148,19 +172,18 @@ class base {
     protected $board_read_enabled = TRUE;
     protected $board_update_enabled = TRUE;
     protected $board_delete_enabled = TRUE;
-
     protected $board_finished = FALSE;
 
     /**
      * One line config for more time to party and less coding :)
      * @param string $app_base_dir Use here \k1app\APP_BASE_URL
-     * @param \PDO $db DB app object
+     * @param PDO $db DB app object
      * @param string $db_table_name Table to open from the DB
      * @param string $controller_name Name for html title and controller name tag
      * @param string $template_place_name_html_title 
      * @param string $template_place_name_controller_name 
      */
-    public function __construct($app_base_dir, \PDO $db, $db_table_name, $controller_name, $title_tag_class = null) {
+    public function __construct($tpl, $app_base_dir, PDO $db, $db_table_name, $controller_name, $title_tag_class = null) {
         /**
          * URL Management
          */
@@ -174,7 +197,7 @@ class base {
         /**
          * DB Table 
          */
-        $this->db_table = new \k1lib\crudlexs\db_table($db, $db_table_name);
+        $this->db_table = new db_table($db, $db_table_name);
 
         /**
          * Controller name for add on <html><title> and controller name tag
@@ -182,7 +205,7 @@ class base {
         $this->controller_name = $controller_name;
         $this->html_title_tags = DOM::html()->body()->get_elements_by_class($title_tag_class);
         if (!empty($this->html_title_tags)) {
-            $span = (new \k1lib\html\span("subheader"))->set_value($controller_name);
+            $span = (new span("subheader"))->set_value($controller_name);
             foreach ($this->html_title_tags as $tag) {
                 $tag->set_value($span);
             }
@@ -207,7 +230,7 @@ class base {
             if (file_exists($js_file)) {
                 $js_content = file_get_contents($js_file);
 
-                $js_script = new \k1lib\html\script();
+                $js_script = new script();
                 $js_script->set_value($js_content);
 
                 DOM::html()->body()->append_child_tail($js_script);
@@ -309,7 +332,7 @@ class base {
 
     /**
      * @param string $specific_board_to_init 
-     * @return \k1lib\html\div|boolean
+     * @return div|boolean
      */
     public function init_board($specific_board_to_init = NULL) {
         if ($this->security_no_rules_enable === FALSE) {
@@ -322,7 +345,7 @@ class base {
         }
         switch ($specific_board_to_init) {
             case $this->board_create_url_name:
-                $this->board_create_object = new \k1lib\crudlexs\board\create($this, $this->board_create_allowed_levels);
+                $this->board_create_object = new create($this, $this->board_create_allowed_levels);
                 $this->board_create_object->set_is_enabled($this->board_create_enabled);
                 $this->board_create_object->set_board_name($this->board_create_name);
                 $this->board_div_content = $this->board_create_object->board_content_div;
@@ -330,7 +353,7 @@ class base {
                 break;
 
             case $this->board_read_url_name:
-                $this->board_read_object = new \k1lib\crudlexs\board\read($this, $this->board_read_allowed_levels);
+                $this->board_read_object = new read($this, $this->board_read_allowed_levels);
                 $this->board_read_object->set_is_enabled($this->board_read_enabled);
                 $this->board_read_object->set_board_name($this->board_read_name);
                 $this->board_div_content = $this->board_read_object->board_content_div;
@@ -346,7 +369,7 @@ class base {
                 break;
 
             case $this->board_update_url_name:
-                $this->board_update_object = new \k1lib\crudlexs\board\update($this, $this->board_update_allowed_levels);
+                $this->board_update_object = new update($this, $this->board_update_allowed_levels);
                 $this->board_update_object->set_is_enabled($this->board_update_enabled);
                 $this->board_update_object->set_board_name($this->board_update_name);
                 $this->board_div_content = $this->board_update_object->board_content_div;
@@ -354,14 +377,14 @@ class base {
                 break;
 
             case $this->board_delete_url_name:
-                $this->board_delete_object = new \k1lib\crudlexs\board\delete($this, $this->board_delete_allowed_levels);
+                $this->board_delete_object = new delete($this, $this->board_delete_allowed_levels);
                 $this->board_delete_object->set_is_enabled($this->board_delete_enabled);
                 $this->board_delete_object->set_board_name($this->board_delete_name);
                 $this->board_div_content = $this->board_delete_object->board_content_div;
                 break;
 
             case $this->board_list_url_name:
-                $this->board_list_object = new \k1lib\crudlexs\board\board_list($this, $this->board_list_allowed_levels);
+                $this->board_list_object = new board_list($this, $this->board_list_allowed_levels);
                 $this->board_list_object->set_is_enabled($this->board_list_enabled);
                 $this->board_list_object->set_board_name($this->board_list_name);
                 $this->board_div_content = $this->board_list_object->board_content_div;
@@ -370,7 +393,7 @@ class base {
                 }
                 break;
             case $this->board_search_url_name:
-                $this->board_search_object = new \k1lib\crudlexs\board\search($this, $this->board_list_allowed_levels);
+                $this->board_search_object = new search($this, $this->board_list_allowed_levels);
                 $this->board_search_object->set_is_enabled($this->board_list_enabled);
                 $this->board_search_object->set_board_name($this->board_search_url_name);
                 $this->board_div_content = $this->board_search_object->board_content_div;
@@ -378,7 +401,7 @@ class base {
 
             default:
                 $this->board_inited = FALSE;
-                \k1lib\html\html_header_go(url::do_url($this->controller_root_dir . $this->get_board_list_url_name() . "/"));
+                html_header_go(url::do_url($this->controller_root_dir . $this->get_board_list_url_name() . "/"));
                 return FALSE;
         }
         $this->board_inited = TRUE;
@@ -386,7 +409,7 @@ class base {
     }
 
     public function get_board_create_allowed_for_current_user() {
-        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_create_allowed_levels)))) {
+        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_create_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -394,7 +417,7 @@ class base {
     }
 
     public function get_board_read_allowed_for_current_user() {
-        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_read_allowed_levels)))) {
+        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_read_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -402,7 +425,7 @@ class base {
     }
 
     public function get_board_update_allowed_for_current_user() {
-        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_update_allowed_levels)))) {
+        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_update_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -410,7 +433,7 @@ class base {
     }
 
     public function get_board_delete_allowed_for_current_user() {
-        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_delete_allowed_levels)))) {
+        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_delete_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -418,7 +441,7 @@ class base {
     }
 
     public function get_board_list_allowed_for_current_user() {
-        if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->board_list_allowed_levels)))) {
+        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_list_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -433,8 +456,8 @@ class base {
             $related_url_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "related_url_keys_text", FALSE);
             if (!empty($related_url_keys_text)) {
                 $related_table = $db_table_name;
-                $related_db_table = new \k1lib\crudlexs\db_table($this->db_table->db, $related_table);
-                $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                $related_db_table = new db_table($this->db_table->db, $related_table);
+                $related_url_keys_array = table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
                 /**
                  * lets fix the non-same key name
                  */
@@ -451,16 +474,16 @@ class base {
                         }
                     }
                 }
-                $related_url_keys_array = \k1lib\common\clean_array_with_guide($related_url_keys_array, $db_table_config);
+                $related_url_keys_array = clean_array_with_guide($related_url_keys_array, $db_table_config);
                 /////
                 $keys_array_to_return = $related_url_keys_array;
-                $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
+                $related_url_keys_text_auth_code = md5(K1MAGIC::get_value() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
                     $this->db_table->set_field_constants($related_url_keys_array);
                     return $related_url_keys_text;
                 } else {
                     $this->board_create_object->set_is_enabled(FALSE);
-                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_auth, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
+                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_auth, "alert", $this->notifications_div_id, common_strings::$error);
                     return FALSE;
                 }
             } else {
@@ -490,8 +513,8 @@ class base {
             $related_url_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), "related_url_keys_text", FALSE);
             if (!empty($related_url_keys_text)) {
                 $related_table = $db_table_name;
-                $related_db_table = new \k1lib\crudlexs\db_table($this->db_table->db, $related_table);
-                $related_url_keys_array = \k1lib\sql\table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                $related_db_table = new db_table($this->db_table->db, $related_table);
+                $related_url_keys_array = table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
                 /**
                  * lets fix the non-same key name
                  */
@@ -507,21 +530,21 @@ class base {
                         }
                     }
                 }
-                $related_url_keys_array = \k1lib\common\clean_array_with_guide($related_url_keys_array, $db_table_config);
+                $related_url_keys_array = clean_array_with_guide($related_url_keys_array, $db_table_config);
                 /////
-                $related_url_keys_text_auth_code = md5(\k1lib\K1MAGIC::get_value() . $related_url_keys_text);
+                $related_url_keys_text_auth_code = md5(K1MAGIC::get_value() . $related_url_keys_text);
                 if (isset($_GET['auth-code']) && ($_GET['auth-code'] === $related_url_keys_text_auth_code)) {
                     $this->db_table->set_query_filter($related_url_keys_array, TRUE);
                     return $related_url_keys_text;
                 } else {
                     $this->board_list_object->set_is_enabled(FALSE);
-                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_auth, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
+                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_auth, "alert", $this->notifications_div_id, common_strings::$error);
                     return FALSE;
                 }
             } else {
                 if ($is_required) {
                     $this->board_list_object->set_is_enabled(FALSE);
-                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
+                    DOM_notification::queue_mesasage(board_base_strings::$error_url_keys_no_keys_text, "alert", $this->notifications_div_id, common_strings::$error);
                     return FALSE;
                 }
             }
@@ -561,7 +584,7 @@ class base {
 
                 default:
                     $this->board_started = FALSE;
-                    \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
+                    html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
                     return FALSE;
             }
         } else {
@@ -575,7 +598,7 @@ class base {
      * 
      * @param boolean $do_echo
      * @param string $specific_board_to_exec
-     * @return \k1lib\html\div
+     * @return div
      */
     public function exec_board($specific_board_to_exec = NULL) {
         $this->board_executed = TRUE;
@@ -605,7 +628,7 @@ class base {
 
                 default:
                     $this->board_executed = FALSE;
-                    \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
+                    html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
                     break;
             }
         } else {
@@ -640,7 +663,7 @@ class base {
 
                 default:
                     $this->board_finished = FALSE;
-                    \k1lib\html\html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
+                    html_header_go($this->controller_root_dir . $this->get_board_list_url_name() . "/");
                     break;
             }
         } else {
@@ -1065,5 +1088,4 @@ class base {
     public function set_security_no_rules_enable($security_no_rules_enable) {
         $this->security_no_rules_enable = $security_no_rules_enable;
     }
-
 }
