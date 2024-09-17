@@ -2,11 +2,25 @@
 
 namespace k1lib\crudlexs\object;
 
-use \k1lib\common_strings as common_strings;
-use \k1lib\urlrewrite\url as url;
-use \k1lib\session\session_plain as session_plain;
-use \k1lib\forms\file_uploads as file_uploads;
-use \k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\common_strings as common_strings;
+use k1lib\crudlexs\db_table;
+use k1lib\forms\file_uploads as file_uploads;
+use k1lib\html\a;
+use k1lib\html\img;
+use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\tag;
+use k1lib\K1MAGIC;
+use k1lib\session\session_plain as session_plain;
+use k1lib\urlrewrite\url as url;
+use function k1lib\sql\get_db_table_keys_array;
+use function k1lib\sql\get_db_table_label_fields;
+use function k1lib\sql\get_db_table_label_fields_from_row;
+use function k1lib\sql\get_fk_field_label;
+use function k1lib\sql\table_keys_to_text;
+use function k1lib\sql\table_url_text_to_keys;
+use function k1lib\urlrewrite\get_back_url;
+use function k1lib\utils\decimal_to_n36;
+use function k1lib\utils\n36_to_decimal;
 
 class base_with_data extends base
 {
@@ -71,11 +85,11 @@ class base_with_data extends base
 
     /**
      * Always to create the object you must have a valid DB Table object already 
-     * @param \k1lib\crudlexs\db_table $db_table DB Table object
+     * @param db_table $db_table DB Table object
      */
-    public function __construct(\k1lib\crudlexs\db_table $db_table, $row_keys_text = null, $custom_auth_code = null)
+    public function __construct(db_table $db_table, $row_keys_text = null, $custom_auth_code = null)
     {
-        $this->back_url = \k1lib\urlrewrite\get_back_url();
+        $this->back_url = get_back_url();
 
         if (!empty($row_keys_text)) {
             $this->row_keys_text = $row_keys_text;
@@ -86,14 +100,14 @@ class base_with_data extends base
                     } else {
                         $auth_code = $_GET['auth-code'];
                     }
-                    $auth_expected = md5(\k1lib\K1MAGIC::get_value() . $this->row_keys_text);
+                    $auth_expected = md5(K1MAGIC::get_value() . $this->row_keys_text);
                     $auth_personal_expected = md5(session_plain::get_user_hash() . $this->row_keys_text);
 
                     if (($auth_code === $auth_expected) || ($auth_code === $auth_personal_expected)) {
                         parent::__construct($db_table);
                         $this->auth_code = $auth_expected;
                         $this->auth_code_personal = $auth_personal_expected;
-                        $this->row_keys_array = \k1lib\sql\table_url_text_to_keys($this->row_keys_text, $this->db_table->get_db_table_config());
+                        $this->row_keys_array = table_url_text_to_keys($this->row_keys_text, $this->db_table->get_db_table_config());
                         $this->db_table->set_query_filter($this->row_keys_array, TRUE);
                         $this->is_valid = TRUE;
                     } else {
@@ -121,7 +135,7 @@ class base_with_data extends base
 
     public function set_auth_code($row_keys_text)
     {
-        $this->auth_code = md5(\k1lib\K1MAGIC::get_value() . $row_keys_text);
+        $this->auth_code = md5(K1MAGIC::get_value() . $row_keys_text);
     }
 
     public function get_auth_code_personal()
@@ -259,7 +273,7 @@ class base_with_data extends base
                             //                            $fk_table_field = $refereced_column_config['field'];
                             //                            $fk_db_table = new db_table($this->db_table->db, $fk_table);
                             //                            $fk_label_field = $fk_db_table->get_db_table_label_fields();
-                            $fk_label_field = \k1lib\sql\get_fk_field_label($this->db_table->db, $fk_table, [$field => $value], $table_config_array);
+                            $fk_label_field = get_fk_field_label($this->db_table->db, $fk_table, [$field => $value], $table_config_array);
                             //                            $this->db_table_data_filtered[$index][$field] = $fk_label_field;
                             if (!empty($fk_label_field)) {
                                 //                                d($this->db_table_data_filtered[$index][$field], TRUE);
@@ -301,14 +315,14 @@ class base_with_data extends base
                             case "image":
                                 //                                $div_container = new \k1lib\html\div();
 
-                                $img_tag = new \k1lib\html\img(file_uploads::get_uploads_url($options['table']) . "--fieldvalue--");
+                                $img_tag = new img(file_uploads::get_uploads_url($options['table']) . "--fieldvalue--");
                                 $img_tag->set_attrib("onClick", "window.open(this.getAttribute('src'),'imgWindow', 'height=1024,width=768,toolbar=0,location=0,menubar=0');", TRUE);
                                 $img_tag->set_attrib("class", "k1lib-data-img", TRUE);
 
                                 return $this->apply_html_tag_on_field_filter($img_tag, array_keys($file_upload_fields));
 
                             default:
-                                $link_tag = new \k1lib\html\a(url::do_url(file_uploads::get_uploads_url() . "{$file_upload_table[$field]}/--fieldvalue--"), "--fieldvalue--", "_blank");
+                                $link_tag = new a(url::do_url(file_uploads::get_uploads_url() . "{$file_upload_table[$field]}/--fieldvalue--"), "--fieldvalue--", "_blank");
                                 $link_tag->set_attrib("class", "k1lib-data-link", TRUE);
                                 return $this->apply_html_tag_on_field_filter($link_tag, array_keys($file_upload_fields));
                         }
@@ -324,7 +338,7 @@ class base_with_data extends base
     {
         if ($this->get_state()) {
             $this->link_on_field_filter_applied = true;
-            $a_tag = new \k1lib\html\a(url::do_url($link_to_apply), "", $href_target);
+            $a_tag = new a(url::do_url($link_to_apply), "", $href_target);
             $a_tag->set_attrib("class", "k1lib-link-filter", TRUE);
             if (empty($fields_to_change)) {
                 $fields_to_change = base::USE_KEY_FIELDS;
@@ -335,7 +349,7 @@ class base_with_data extends base
         }
     }
 
-    public function apply_html_tag_on_field_filter(\k1lib\html\tag $tag_object, $fields_to_change = base::USE_KEY_FIELDS, $custom_field_value = null)
+    public function apply_html_tag_on_field_filter(tag $tag_object, $fields_to_change = base::USE_KEY_FIELDS, $custom_field_value = null)
     {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
@@ -343,13 +357,13 @@ class base_with_data extends base
                 return FALSE;
             } else {
                 if ($fields_to_change === base::USE_KEY_FIELDS) {
-                    $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
+                    $fields_to_change = get_db_table_keys_array($this->db_table->get_db_table_config());
                 } elseif ($fields_to_change === base::USE_ALL_FIELDS) {
                     $fields_to_change = $this->db_table_data[0];
                 } elseif ($fields_to_change === base::USE_LABEL_FIELDS) {
-                    $fields_to_change = \k1lib\sql\get_db_table_label_fields($this->db_table->get_db_table_config());
+                    $fields_to_change = get_db_table_label_fields($this->db_table->get_db_table_config());
                     if (empty($fields_to_change)) {
-                        $fields_to_change = \k1lib\sql\get_db_table_keys_array($this->db_table->get_db_table_config());
+                        $fields_to_change = get_db_table_keys_array($this->db_table->get_db_table_config());
                     }
                 } elseif (empty($fields_to_change)) {
                     $fields_to_change = $this->db_table_data[0];
@@ -415,8 +429,8 @@ class base_with_data extends base
                                             $custom_field_value = implode("--", $custom_field_value);
                                         }
 
-                                        $key_array_text = \k1lib\sql\table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
-                                        $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
+                                        $key_array_text = table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
+                                        $auth_code = md5(K1MAGIC::get_value() . $key_array_text);
 
                                         /**
                                          * HREF STR_REPLACE
@@ -427,7 +441,7 @@ class base_with_data extends base
                                         if (!empty($custom_field_value)) {
                                             $actual_custom_field_value = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $custom_field_value);
                                             $tag_href = str_replace("--customfieldvalue--", urlencode($actual_custom_field_value), $tag_href);
-                                            $tag_href = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
+                                            $tag_href = str_replace("--fieldauthcode--", md5(K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
                                         } else {
                                             $actual_custom_field_value = null;
                                         }
@@ -442,7 +456,7 @@ class base_with_data extends base
                                             if (!empty($actual_custom_field_value)) {
                                                 $tag_value = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_value);
                                             }
-                                            $tag_value = str_replace("--fieldauthcode--", md5(\k1lib\K1MAGIC::get_value() . (!empty($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_value);
+                                            $tag_value = str_replace("--fieldauthcode--", md5(K1MAGIC::get_value() . (!empty($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_value);
                                         }
 
                                         if (get_class($tag_object) == "k1lib\html\a") {
@@ -536,7 +550,7 @@ class base_with_data extends base
                     $field_pos++;
                 }
                 //            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos);
-                $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos + $rnd);
+                $new_field_name = "k1_" . decimal_to_n36($field_pos + $rnd);
                 return $new_field_name;
             } else {
                 return $field_name;
@@ -562,7 +576,7 @@ class base_with_data extends base
             } else {
                 trigger_error(__METHOD__ . ' ' . object_base_strings::$error_no_session_random, E_USER_ERROR);
             }
-            $field_position = \k1lib\utils\n36_to_decimal($n36_number) - $rnd;
+            $field_position = n36_to_decimal($n36_number) - $rnd;
             $fields_from_table_config = array_keys($this->db_table->get_db_table_config());
             //            $field_position = \k1lib\utils\n36_to_decimal($n36_number);
             return $fields_from_table_config[$field_position];
@@ -588,7 +602,7 @@ class base_with_data extends base
     public function get_labels_from_data($row = 1)
     {
         if ($this->db_table_data) {
-            $data_label = \k1lib\sql\get_db_table_label_fields_from_row($this->db_table_data_filtered[$row], $this->db_table->get_db_table_config());
+            $data_label = get_db_table_label_fields_from_row($this->db_table_data_filtered[$row], $this->db_table->get_db_table_config());
             if (!empty($data_label)) {
                 return $data_label;
             } else {
@@ -602,7 +616,7 @@ class base_with_data extends base
     public function remove_labels_from_data_filtered($row = 1)
     {
         if ($this->db_table_data) {
-            $label_fields_array = \k1lib\sql\get_db_table_label_fields($this->db_table->get_db_table_config());
+            $label_fields_array = get_db_table_label_fields($this->db_table->get_db_table_config());
             foreach ($label_fields_array as $field) {
                 unset($this->db_table_data_filtered[$row][$field]);
             }

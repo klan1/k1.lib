@@ -2,6 +2,8 @@
 
 namespace k1lib\crudlexs\object;
 
+use k1lib\common_strings;
+
 class read_helper {
 
 //    static $do_fk_search_tool = TRUE;
@@ -34,12 +36,12 @@ class read_helper {
 //        d(self::$boolean_true, true);
         if (self::$boolean_true === NULL) {
 //            d('yes');
-            self::$boolean_true = \k1lib\common_strings::$yes;
+            self::$boolean_true = common_strings::$yes;
         }
 //        d(self::$boolean_false, true);
         if (self::$boolean_false === NULL) {
 //            d('no');
-            self::$boolean_false = \k1lib\common_strings::$no;
+            self::$boolean_false = common_strings::$no;
         }
         return $value;
     }

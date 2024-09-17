@@ -2,7 +2,22 @@
 
 namespace k1lib\crudlexs\object;
 
+use k1lib\html\bootstrap\grid;
+use k1lib\html\bootstrap\grid_row;
+use k1lib\html\bootstrap\label_value_row;
+use k1lib\html\div;
+use k1lib\html\form;
+use k1lib\html\input;
+use k1lib\html\label;
 use k1lib\html\notifications\on_DOM as DOM_notification;
+use function k1lib\common\clean_array_with_guide;
+use function k1lib\common\unserialize_var;
+use function k1lib\common\unset_serialize_var;
+use function k1lib\forms\check_all_incomming_vars;
+use function k1lib\html\get_link_button;
+use function k1lib\html\html_header_go;
+use function k1lib\sql\get_keys_array_from_row_data;
+use function k1lib\sql\table_keys_to_text;
 
 /**
  * 
@@ -198,8 +213,8 @@ class creating extends base_with_data implements base_interface
         /**
          * Search util hack
          */
-        $post_data_to_use = \k1lib\common\unserialize_var("post-data-to-use");
-        $post_data_table_config = \k1lib\common\unserialize_var("post-data-table-config");
+        $post_data_to_use = unserialize_var("post-data-to-use");
+        $post_data_table_config = unserialize_var("post-data-table-config");
         /**
          * lets fix the non-same key name
          */
@@ -221,12 +236,12 @@ class creating extends base_with_data implements base_interface
         ///
         if (!empty($post_data_to_use)) {
             $_POST = $post_data_to_use;
-            \k1lib\common\unset_serialize_var("post-data-to-use");
-            \k1lib\common\unset_serialize_var("post-data-table-config");
+            unset_serialize_var("post-data-to-use");
+            unset_serialize_var("post-data-table-config");
         }
 
 
-        $_POST = \k1lib\forms\check_all_incomming_vars($_POST);
+        $_POST = check_all_incomming_vars($_POST);
 
         $this->post_incoming_array = array_merge($this->post_incoming_array, $_POST);
         if (isset($this->post_incoming_array['k1magic'])) {
@@ -246,7 +261,7 @@ class creating extends base_with_data implements base_interface
                     $this->post_incoming_array = $new_post_data;
                     unset($new_post_data);
                 }
-                $this->post_incoming_array = \k1lib\common\clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
+                $this->post_incoming_array = clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
 
                 // PUT BACK the password data
                 //                $this->post_incoming_array = array_merge($this->post_incoming_array, $password_array);
@@ -317,7 +332,7 @@ class creating extends base_with_data implements base_interface
              * LABELS 
              */
             if ($create_labels_tags_on_headers) {
-                $label_tag = new \k1lib\html\label($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
+                $label_tag = new label($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
                 if ($this->db_table->get_field_config($field, 'required') === TRUE) {
                     $label_tag->set_value(" *", TRUE);
                 }
@@ -330,7 +345,7 @@ class creating extends base_with_data implements base_interface
              * ERROR TESTING
              */
             if (isset($this->post_validation_errors[$field])) {
-                $div_error = new \k1lib\html\bootstrap\grid_row(2);
+                $div_error = new grid_row(2);
 
                 $div_input = $div_error->cell(1)->large(12);
                 $div_message = $div_error->cell(2)->large(12)->end();
@@ -411,7 +426,7 @@ class creating extends base_with_data implements base_interface
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
     public function do_html_object()
     {
@@ -427,7 +442,7 @@ class creating extends base_with_data implements base_interface
             /**
              * FORM time !!
              */
-            $html_form = new \k1lib\html\form();
+            $html_form = new form();
             $html_form->append_to($this->div_container);
             if ($this->enable_foundation_form_check) {
                 $html_form->set_attrib("data-abide", TRUE);
@@ -435,7 +450,7 @@ class creating extends base_with_data implements base_interface
 
             $form_header = $html_form->append_div("k1lib-form-header");
             $form_body = $html_form->append_div("k1lib-form-body");
-            $form_grid = new \k1lib\html\bootstrap\grid(1, 1, $form_body);
+            $form_grid = new grid(1, 1, $form_body);
             $form_grid->row(1)->align_center();
             $form_grid->row(1)->cell(1)->large(8)->medium(10)->small(12);
 
@@ -446,7 +461,7 @@ class creating extends base_with_data implements base_interface
             /**
              * Hidden input
              */
-            $hidden_input = new \k1lib\html\input("hidden", "k1magic", "123123");
+            $hidden_input = new input("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
             // FORM LAYOUT
             // <div class="grid-x">
@@ -454,7 +469,7 @@ class creating extends base_with_data implements base_interface
             $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
                 $row_number++;
-                $row = new \k1lib\html\bootstrap\label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
+                $row = new label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
                 $row->append_to($form_grid->row(1)->cell(1));
             }
 
@@ -462,12 +477,12 @@ class creating extends base_with_data implements base_interface
             /**
              * BUTTONS
              */
-            $submit_button = new \k1lib\html\input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
+            $submit_button = new input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
             if ($this->show_cancel_button) {
-                $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
-                $buttons_div = new \k1lib\html\bootstrap\label_value_row(NULL, "{$cancel_button} {$submit_button}");
+                $cancel_button = get_link_button($this->back_url, creating_strings::$button_cancel, "small");
+                $buttons_div = new label_value_row(NULL, "{$cancel_button} {$submit_button}");
             } else {
-                $buttons_div = new \k1lib\html\bootstrap\label_value_row(NULL, "{$submit_button}");
+                $buttons_div = new label_value_row(NULL, "{$submit_button}");
             }
 
             $buttons_div->append_to($form_buttons);
@@ -493,7 +508,7 @@ class creating extends base_with_data implements base_interface
     public function do_insert()
     {
         $error_data = NULL;
-        $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
+        $this->post_incoming_array = check_all_incomming_vars($this->post_incoming_array);
         $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array, $error_data);
         if ($this->inserted_result !== FALSE) {
             DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
@@ -521,7 +536,7 @@ class creating extends base_with_data implements base_interface
                     }
                 }
             }
-            $new_keys_array = \k1lib\sql\get_keys_array_from_row_data(
+            $new_keys_array = get_keys_array_from_row_data(
                 array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields()),
                 $this->db_table->get_db_table_config()
             );
@@ -552,7 +567,7 @@ class creating extends base_with_data implements base_interface
     {
         if (($this->inserted) && ($this->inserted_result !== FALSE)) {
 
-            $new_keys_text = \k1lib\sql\table_keys_to_text($this->get_inserted_keys(), $this->db_table->get_db_table_config());
+            $new_keys_text = table_keys_to_text($this->get_inserted_keys(), $this->db_table->get_db_table_config());
 
             if (!empty($url_to_go)) {
                 $this->set_auth_code($new_keys_text);
@@ -562,10 +577,10 @@ class creating extends base_with_data implements base_interface
             }
             if ($do_redirect) {
                 if ($new_keys_text) {
-                    \k1lib\html\html_header_go($url_to_go);
+                    html_header_go($url_to_go);
                     exit;
                 } else {
-                    \k1lib\html\html_header_go("../");
+                    html_header_go("../");
                     exit;
                 }
                 return TRUE;

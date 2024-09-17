@@ -2,21 +2,21 @@
 
 namespace k1lib\api;
 
-use \k1lib\api\base;
-use \k1lib\urlrewrite\url;
-use \k1lib\crudlexs\db_table;
-use \k1lib\api\model;
+use k1lib\api\model;
+use k1lib\crudlexs\db_table;
+use k1lib\urlrewrite\url;
+use function k1lib\forms\check_single_incomming_var;
 
 class crud extends api {
 
     /**
-     * @var \k1lib\api\model
+     * @var model
      */
     private $table_model;
 
     /**
      *
-     * @var \k1lib\crudlexs\db_table
+     * @var db_table
      */
     public $db_table;
     private $db_table_name;
@@ -42,19 +42,19 @@ class crud extends api {
          * POSSIBLE GETS
          */
         if (array_key_exists('page', $_GET)) {
-            $this->get_list_page = \k1lib\forms\check_single_incomming_var($_GET['page']);
+            $this->get_list_page = check_single_incomming_var($_GET['page']);
         }
         if (array_key_exists('page-size', $_GET)) {
-            $this->get_list_page_size = \k1lib\forms\check_single_incomming_var($_GET['page-size']);
+            $this->get_list_page_size = check_single_incomming_var($_GET['page-size']);
         }
         if (array_key_exists('get-query-filter', $_GET)) {
-            $this->get_query_filter = json_decode(\k1lib\forms\check_single_incomming_var($_GET['get-query-filter'], false, true), TRUE);
+            $this->get_query_filter = json_decode(check_single_incomming_var($_GET['get-query-filter'], false, true), TRUE);
         }
         if (array_key_exists('keys-fields', $_GET)) {
-            $this->db_table_keys_fields = explode(',', \k1lib\forms\check_single_incomming_var($_GET['keys-fields']));
+            $this->db_table_keys_fields = explode(',', check_single_incomming_var($_GET['keys-fields']));
         }
         if (array_key_exists('order-by', $_GET)) {
-            $this->orderby = \k1lib\forms\check_single_incomming_var($_GET['order-by']);
+            $this->orderby = check_single_incomming_var($_GET['order-by']);
         }
         /**
          * CRUD URL MANAGMENT
