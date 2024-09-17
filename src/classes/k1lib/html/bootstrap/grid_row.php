@@ -17,14 +17,14 @@ class grid_row extends \k1lib\html\div {
 
         $this->parent = $parent;
 
-        parent::__construct("grid-x row-{$grid_row}", NULL);
+        parent::__construct("row-cols-{$grid_row}", NULL);
         if (!empty($this->parent)) {
             $this->append_to($this->parent);
         }
 
-        if (!empty($grid_row)) {
-            $this->set_attrib("data-grid-row", $grid_row);
-        }
+//        if (!empty($grid_row)) {
+//            $this->set_attrib("data-grid-row", $grid_row);
+//        }
 
         for ($col = 1; $col <= $num_cols; $col++) {
             $this->num_cols[$col] = $this->append_cell($col);
@@ -52,10 +52,10 @@ class grid_row extends \k1lib\html\div {
     /**
      * @return \k1lib\html\div
      */
-    public function expanded() {
-        $this->set_attrib("class", "expanded", TRUE);
-        return $this;
-    }
+//    public function expanded() {
+//        $this->set_attrib("class", "expanded", TRUE);
+//        return $this;
+//    }
 
     /**
      * 

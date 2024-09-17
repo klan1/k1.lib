@@ -49,7 +49,7 @@ class read extends board_base implements board_interface {
     protected $related_html_object_show_all_data = NULL;
 
     /**
-     * @var \k1lib\html\foundation\table_from_data
+     * @var \k1lib\html\bootstrap\table_from_data
      */
     protected $related_html_table_object = NULL;
 
@@ -448,7 +448,7 @@ class read extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\foundation\table_from_data
+     * @return \k1lib\html\bootstrap\table_from_data
      */
     public function get_related_html_table_object() {
         return $this->related_html_table_object;

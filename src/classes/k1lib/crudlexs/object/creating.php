@@ -330,7 +330,7 @@ class creating extends base_with_data implements base_interface
              * ERROR TESTING
              */
             if (isset($this->post_validation_errors[$field])) {
-                $div_error = new \k1lib\html\foundation\grid_row(2);
+                $div_error = new \k1lib\html\bootstrap\grid_row(2);
 
                 $div_input = $div_error->cell(1)->large(12);
                 $div_message = $div_error->cell(2)->large(12)->end();
@@ -435,7 +435,7 @@ class creating extends base_with_data implements base_interface
 
             $form_header = $html_form->append_div("k1lib-form-header");
             $form_body = $html_form->append_div("k1lib-form-body");
-            $form_grid = new \k1lib\html\foundation\grid(1, 1, $form_body);
+            $form_grid = new \k1lib\html\bootstrap\grid(1, 1, $form_body);
             $form_grid->row(1)->align_center();
             $form_grid->row(1)->cell(1)->large(8)->medium(10)->small(12);
 
@@ -454,7 +454,7 @@ class creating extends base_with_data implements base_interface
             $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
                 $row_number++;
-                $row = new \k1lib\html\foundation\label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
+                $row = new \k1lib\html\bootstrap\label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
                 $row->append_to($form_grid->row(1)->cell(1));
             }
 
@@ -465,9 +465,9 @@ class creating extends base_with_data implements base_interface
             $submit_button = new \k1lib\html\input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
             if ($this->show_cancel_button) {
                 $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
-                $buttons_div = new \k1lib\html\foundation\label_value_row(NULL, "{$cancel_button} {$submit_button}");
+                $buttons_div = new \k1lib\html\bootstrap\label_value_row(NULL, "{$cancel_button} {$submit_button}");
             } else {
-                $buttons_div = new \k1lib\html\foundation\label_value_row(NULL, "{$submit_button}");
+                $buttons_div = new \k1lib\html\bootstrap\label_value_row(NULL, "{$submit_button}");
             }
 
             $buttons_div->append_to($form_buttons);

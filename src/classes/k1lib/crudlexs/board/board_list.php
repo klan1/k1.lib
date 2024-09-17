@@ -2,9 +2,26 @@
 
 namespace k1lib\crudlexs\board;
 
-use \k1lib\urlrewrite\url as url;
+use k1lib\crudlexs\controller\base as base2;
+use k1lib\crudlexs\object\base;
+use k1lib\crudlexs\object\listing;
+use k1lib\forms\file_uploads;
+use k1lib\html\a;
+use k1lib\html\div;
 use k1lib\html\DOM as DOM;
+use k1lib\html\i;
+use k1lib\html\iframe;
 use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\urlrewrite\url as url;
+use Ramsey\Uuid\DegradedUuid;
+use const k1app\K1APP_URL;
+use function k1lib\common\serialize_var;
+use function k1lib\common\unserialize_var;
+use function k1lib\common\unset_serialize_var;
+use function k1lib\forms\check_all_incomming_vars;
+use function k1lib\html\get_link_button;
+use function k1lib\html\html_header_go;
+use function k1lib\urlrewrite\get_back_url;
 
 class board_list extends board_base implements board_interface {
 
@@ -27,17 +44,17 @@ class board_list extends board_base implements board_interface {
      */
     public $list_object;
 
-    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(base2 $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-list";
-            $this->list_object = new \k1lib\crudlexs\object\listing($this->controller_object->db_table, FALSE);
+            $this->list_object = new listing($this->controller_object->db_table, FALSE);
             $this->list_object->set_do_table_field_name_encrypt(TRUE);
         }
     }
 
     /**
-     * @return \k1lib\html\div|boolean
+     * @return div|boolean
      */
     public function start_board() {
         if (!parent::start_board()) {
@@ -50,8 +67,8 @@ class board_list extends board_base implements board_interface {
              * BACK
              */
             if ($this->back_enable && (isset($_GET['back-url']))) {
-                $back_url = \k1lib\urlrewrite\get_back_url();
-                $back_link = \k1lib\html\get_link_button($back_url, board_read_strings::$button_back);
+                $back_url = get_back_url();
+                $back_link = get_link_button($back_url, board_read_strings::$button_back);
                 $back_link->append_to($this->button_div_tag);
             }
             /**
@@ -60,10 +77,10 @@ class board_list extends board_base implements board_interface {
             $related_url_keys_text = url::get_url_level_value_by_name("related_url_keys_text");
             if (empty($related_url_keys_text)) {
                 $related_url_keys_text = "";
-                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
+                $new_link = get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
             } else {
                 $related_url_keys_text .= "/";
-                $new_link = \k1lib\html\get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
+                $new_link = get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
             }
             if ($this->create_enable) {
 //                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
@@ -78,31 +95,28 @@ class board_list extends board_base implements board_interface {
                 $controller_id = url::get_this_controller_id();
 
                 if (isset($_GET['clear-search']) && $_GET['clear-search'] == 1) {
-                    \k1lib\common\unset_serialize_var($controller_id);
+                    unset_serialize_var($controller_id);
                     unset($_GET['clear-search']);
-                    $next_url = url::do_url(\k1app\K1APP_URL . url::get_this_url(), [], TRUE, array_keys($_GET));
+                    $next_url = url::do_url(K1APP_URL . url::get_this_url(), [], TRUE, array_keys($_GET));
                     d($next_url);
-                    \k1lib\html\html_header_go($next_url);
+                    html_header_go($next_url);
                     exit;
                 }
 
-                $search_iframe = new \k1lib\html\iframe(url::do_url(
+                $search_iframe = new iframe(url::do_url(
                                 $this->controller_object->get_controller_root_dir() . "search/?just-controller=1&caller-id=" . $controller_id)
                         , 'utility-iframe', "search-iframe"
                 );
 //                $this->board_content_div->append_child_tail($search_iframe);
                 DOM::html_document()->body()->append_child_tail($search_iframe);
 //                $search_iframe->append_to($this->board_content_div);
-
-                $search_buttom = new \k1lib\html\a(NULL, " " . board_list_strings::$button_search, "_self");
-                $search_buttom->set_id("search-button");
-                $search_buttom->set_attrib("class", "button fi-page-search");
+                $search_buttom = get_link_button('#', board_list_strings::$button_search, NULL, 'search-button');
                 $search_buttom->append_to($this->button_div_tag);
 
                 /**
                  * LOAD SEARCH DATA FROM SESSION
                  */
-                $search_session_data = \k1lib\common\unserialize_var($controller_id);
+                $search_session_data = unserialize_var($controller_id);
                 if (!empty($search_session_data) && empty($_POST)) {
                     $_POST = $search_session_data;
                 }
@@ -112,23 +126,25 @@ class board_list extends board_base implements board_interface {
                     /**
                      * decrypt post field names
                      */
-                    $incomming_search_data = \k1lib\forms\check_all_incomming_vars($_POST);
+                    $incomming_search_data = check_all_incomming_vars($_POST);
                     if ($this->list_object->get_do_table_field_name_encrypt()) {
                         $search_data = $this->list_object->decrypt_field_names($incomming_search_data);
                     } else {
                         $search_data = $incomming_search_data;
                     }
                     $this->controller_object->db_table->set_query_filter($search_data);
-                    $search_post = \k1lib\common\serialize_var($_POST, $controller_id);
+                    $search_post = serialize_var($_POST, $controller_id);
                     /**
                      * Clear search
                      */
-                    $clear_search_buttom = new \k1lib\html\a(url::do_url($_SERVER['REQUEST_URI'], ['clear-search' => 1]), board_list_strings::$button_search_cancel, "_self");
+                    $clear_search_buttom = get_link_button(
+                            url::do_url($_SERVER['REQUEST_URI'], ['clear-search' => 1]),
+                            board_list_strings::$button_search, 'btn-warning', 'search-button');
+
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
-                    $clear_search_buttom->set_attrib("class", "button warning");
                     $clear_search_buttom->append_to($this->button_div_tag);
                 } else {
-                    $search_post = \k1lib\common\unserialize_var($controller_id);
+                    $search_post = unserialize_var($controller_id);
                 }
             }
 
@@ -145,7 +161,7 @@ class board_list extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div|boolean
+     * @return div|boolean
      */
     public function exec_board() {
         if (!$this->is_enabled) {
@@ -161,7 +177,7 @@ class board_list extends board_base implements board_interface {
             if ($this->apply_field_label_filter) {
                 $this->list_object->apply_field_label_filter();
             }
-            if (\k1lib\forms\file_uploads::is_enabled()) {
+            if (file_uploads::is_enabled()) {
                 $this->list_object->apply_file_uploads_filter();
             }
             // IF NOT previous link applied this will try to apply ONLY on keys if are present on show-list filter
@@ -170,7 +186,7 @@ class board_list extends board_base implements board_interface {
                     "auth-code" => "--authcode--",
                     "back-url" => urlencode($_SERVER['REQUEST_URI'])
                 ];
-                $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), \k1lib\crudlexs\object\base::USE_KEY_FIELDS);
+                $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), base::USE_KEY_FIELDS);
             }
             // Show stats BEFORE
             if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_BEFORE_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {

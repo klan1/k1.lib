@@ -2,7 +2,11 @@
 
 namespace k1lib\html\bootstrap;
 
-class table_from_data extends \k1lib\html\table
+use k1lib\html\table;
+use k1lib\html\tag;
+use k1lib\K1MAGIC;
+
+class table_from_data extends table
 {
 
     static public $float_round_default = NULL;
@@ -44,7 +48,7 @@ class table_from_data extends \k1lib\html\table
      */
     protected $float_round = NULL;
 
-    function __construct($class = "", $id = "")
+    function __construct($class = "table table-striped mb-0", $id = "")
     {
 
         //        $this->parent = $parent;
@@ -142,7 +146,7 @@ class table_from_data extends \k1lib\html\table
         $this->fields_for_key_array_text = $fields_for_key_array_text;
     }
 
-    public function insert_tag_on_field(\k1lib\html\tag $tag_object, array $fields_to_insert, $tag_attrib_to_use = NULL, $append = FALSE, $respect_blanks = FALSE, $just_replace_attribs = FALSE, $just_this_row = NULL)
+    public function insert_tag_on_field(tag $tag_object, array $fields_to_insert, $tag_attrib_to_use = NULL, $append = FALSE, $respect_blanks = FALSE, $just_replace_attribs = FALSE, $just_this_row = NULL)
     {
         $row = 0;
         //        if ($just_replace_attribs) {
@@ -238,7 +242,7 @@ class table_from_data extends \k1lib\html\table
                 }
                 $key_array_text = implode("--", $key_array);
                 if (!empty($key_array_text)) {
-                    $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
+                    $auth_code = md5(K1MAGIC::get_value() . $key_array_text);
                 } else {
                     $auth_code = NULL;
                 }
@@ -263,7 +267,7 @@ class table_from_data extends \k1lib\html\table
                 }
                 $key_array_text = implode("--", $key_array);
                 if (!empty($key_array_text)) {
-                    $auth_code = md5(\k1lib\K1MAGIC::get_value() . $key_array_text);
+                    $auth_code = md5(K1MAGIC::get_value() . $key_array_text);
                 } else {
                     $auth_code = NULL;
                 }
