@@ -21,12 +21,13 @@
 
 namespace k1lib\api;
 
-use \k1lib\crudlexs\db_table;
+use k1lib\crudlexs\db_table;
+use function k1lib\sql\get_keys_array_from_row_data;
 
 class model {
 
     /**
-     * @var \k1lib\crudlexs\db_table
+     * @var db_table
      */
     private db_table | bool | null $db_table;
     private $errors = FALSE;
@@ -70,7 +71,7 @@ class model {
     function get_data(array $custom_key_array = []) {
         if (empty($custom_key_array)) {
             $data_array = $this->get_data_from_params();
-            $data_keys = \k1lib\sql\get_keys_array_from_row_data($data_array, $this->db_table->get_db_table_config());
+            $data_keys = get_keys_array_from_row_data($data_array, $this->db_table->get_db_table_config());
             $this->db_table->set_query_filter($data_keys, TRUE);
         } else {
             $this->db_table->set_query_filter($custom_key_array, TRUE);

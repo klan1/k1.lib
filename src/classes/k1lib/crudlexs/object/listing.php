@@ -3,7 +3,17 @@
 namespace k1lib\crudlexs\object;
 
 use k1lib\crudlexs\board\board_list_strings;
+use k1lib\db\security\db_table_aliases;
+use k1lib\html\a;
+use k1lib\html\bootstrap\table_from_data;
+use k1lib\html\div;
+use k1lib\html\label;
+use k1lib\html\p;
+use k1lib\html\select;
+use k1lib\html\ul;
 use k1lib\urlrewrite\url as url;
+use k1lib\urlrewrite\url as url2;
+use const k1app\K1APP_URL;
 
 /**
  * 
@@ -11,7 +21,7 @@ use k1lib\urlrewrite\url as url;
 class listing extends base_with_data implements base_interface {
 
     /**
-     * @var \k1lib\html\bootstrap\table_from_data
+     * @var table_from_data
      */
     public $html_table;
 
@@ -111,10 +121,10 @@ class listing extends base_with_data implements base_interface {
 
     /**
      * 
-     * @return \k1lib\html\div
+     * @return div
      */
     public function do_html_object() {
-        $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
+        $table_alias = db_table_aliases::encode($this->db_table->get_db_table_name());
 
         $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content scroll-x");
         if ($this->db_table_data) {
@@ -124,26 +134,26 @@ class listing extends base_with_data implements base_interface {
             /**
              * Create the HTML table from DATA lodaed 
              */
-            $this->html_table = new \k1lib\html\bootstrap\table_from_data("k1lib-crudlexs-list table table-striped mb-0 {$table_alias}");
+            $this->html_table = new table_from_data("k1lib-crudlexs-list table table-striped mb-0 {$table_alias}");
             $this->html_table->append_to($this->div_container);
             $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
             $this->html_table->set_data($this->db_table_data_filtered);
         } else {
-            $div_message = new \k1lib\html\p(board_list_strings::$no_table_data, "callout primary");
+            $div_message = new p(board_list_strings::$no_table_data, "callout primary");
             $div_message->append_to($this->div_container);
         }
         return $this->div_container;
     }
 
     /**
-     * @return \k1lib\html\bootstrap\table_from_data
+     * @return table_from_data
      */
     public function get_html_table() {
         return $this->html_table;
     }
 
     public function apply_orderby_headers() {
-        $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
+        $table_alias = db_table_aliases::encode($this->db_table->get_db_table_name());
 
         $sort_by_name = $table_alias . '-sort-by';
         $sort_mode_name = $table_alias . '-sort-mode';
@@ -167,7 +177,7 @@ class listing extends base_with_data implements base_interface {
         $headers = &$this->db_table_data_filtered[0];
         foreach ($headers as $field => $label) {
             $field_encrypted = $this->encrypt_field_name($field);
-            $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
+            $table_alias = db_table_aliases::encode($this->db_table->get_db_table_name());
 
             $sort_by_name = $table_alias . '-sort-by';
             $sort_mode_name = $table_alias . '-sort-mode';
@@ -187,17 +197,17 @@ class listing extends base_with_data implements base_interface {
             }
 
             $sort_url = url::do_url($_SERVER['REQUEST_URI'], [$sort_by_name => $field_encrypted, $sort_mode_name => $sort_mode]);
-            $a = new \k1lib\html\a($sort_url, " $label", NULL, $class_sort_mode . $class_active . ' text-uppercase');
+            $a = new a($sort_url, " $label", NULL, $class_sort_mode . $class_active . ' text-uppercase');
             $headers[$field] = $a;
         }
     }
 
     /**
      * 
-     * @return \k1lib\html\div
+     * @return div
      */
     public function do_row_stats($custom_msg = "") {
-        $div_stats = new \k1lib\html\div("k1lib-crudlexs-list-stats clearfix");
+        $div_stats = new div("k1lib-crudlexs-list-stats clearfix");
         if (($this->db_table_data)) {
             if (empty($custom_msg)) {
                 $stat_msg = $this->stat_msg;
@@ -216,11 +226,11 @@ class listing extends base_with_data implements base_interface {
 
     /**
      * 
-     * @return \k1lib\html\div
+     * @return div
      */
     public function do_pagination() {
 
-        $div_pagination = new \k1lib\html\div("k1lib-crudlexs-list-pagination clearfix", $this->get_object_id() . "-pagination");
+        $div_pagination = new div("k1lib-crudlexs-list-pagination clearfix", $this->get_object_id() . "-pagination");
         $div_scroller = $div_pagination->append_div("float-left pagination-scroller");
         $div_page_chooser = $div_pagination->append_div("float-left pagination-rows");
 
@@ -229,7 +239,7 @@ class listing extends base_with_data implements base_interface {
             $page_get_var_name = $this->get_object_id() . "-page";
             $rows_get_var_name = $this->get_object_id() . "-rows";
 
-            $this_url = \k1app\K1APP_URL . \k1lib\urlrewrite\url::get_this_url() . "#" . $this->get_object_id() . "-pagination";
+            $this_url = K1APP_URL . url2::get_this_url() . "#" . $this->get_object_id() . "-pagination";
             if ($this->actual_page > 2) {
                 $this->page_first = url::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => self::$rows_per_page]);
             } else {
@@ -255,7 +265,7 @@ class listing extends base_with_data implements base_interface {
             /**
              * HTML UL- LI construction
              */
-            $ul = (new \k1lib\html\ul("pagination k1lib-crudlexs " . $this->get_object_id()));
+            $ul = (new ul("pagination k1lib-crudlexs " . $this->get_object_id()));
             $ul->append_to($div_scroller);
 
             // First page LI
@@ -274,7 +284,7 @@ class listing extends base_with_data implements base_interface {
             /**
              * Page GOTO selector
              */
-            $page_selector = new \k1lib\html\select("goto_page", "k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-goto");
+            $page_selector = new select("goto_page", "k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-goto");
             $page_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
             for ($i = 1; $i <= $this->total_pages; $i++) {
                 $option_url = url::do_url($this_url, [$page_get_var_name => $i, $rows_get_var_name => self::$rows_per_page]);
@@ -296,7 +306,7 @@ class listing extends base_with_data implements base_interface {
             /**
              * PAGE ROWS selector
              */
-            $num_rows_selector = new \k1lib\html\select("goto_page", "k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-rows-goto");
+            $num_rows_selector = new select("goto_page", "k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-rows-goto");
             $num_rows_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
             foreach (self::$rows_per_page_options as $num_rows) {
                 if ($num_rows <= $this->total_rows) {
@@ -310,7 +320,7 @@ class listing extends base_with_data implements base_interface {
                 $option_url = url::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => $this->total_rows]);
                 $option = $num_rows_selector->append_option($option_url, $this->total_rows, ((self::$rows_per_page == $this->total_rows) ? TRUE : FALSE));
             }
-            $label = (new \k1lib\html\label("Show", $this->get_object_id() . "-page-rows-goto"));
+            $label = (new label("Show", $this->get_object_id() . "-page-rows-goto"));
             $label->set_attrib("style", "display:inline");
             $label->append_to($div_page_chooser);
             $num_rows_selector->append_to($div_page_chooser);

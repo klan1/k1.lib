@@ -2,7 +2,14 @@
 
 namespace k1lib\crudlexs\board;
 
+use k1lib\common_strings;
+use k1lib\crudlexs\controller\base;
+use k1lib\crudlexs\object\search_helper;
+use k1lib\db\security\db_table_aliases;
+use k1lib\html\a;
+use k1lib\html\div;
 use k1lib\html\DOM as DOM;
+use k1lib\html\iframe;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 
 class search extends board_base implements board_interface {
@@ -14,16 +21,16 @@ class search extends board_base implements board_interface {
     public $search_object;
     protected $search_catch_post_enable = TRUE;
 
-    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
-            $this->search_object = new \k1lib\crudlexs\object\search_helper($this->controller_object->db_table);
+            $this->search_object = new search_helper($this->controller_object->db_table);
             $this->data_loaded = $this->search_object->load_db_table_data(TRUE);
         }
     }
 
     /**
-     * @return \k1lib\html\div|boolean
+     * @return div|boolean
      */
     public function start_board() {
         if (!parent::start_board()) {
@@ -32,11 +39,11 @@ class search extends board_base implements board_interface {
         /**
          * IFRAME for KF tool
          */
-        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
+        $fk_iframe = new iframe('', 'utility-iframe', "fk-iframe");
         DOM::html_document()->body()->content()->append_child_tail($fk_iframe);
         
         if ($this->search_object->get_state()) {
-            $close_search_buttom = new \k1lib\html\a(NULL, " " . \k1lib\common_strings::$button_cancel, "_parent");
+            $close_search_buttom = new a(NULL, " " . common_strings::$button_cancel, "_parent");
             $close_search_buttom->set_id("close-search-button");
             $close_search_buttom->set_attrib("class", "button warning fi-page-close");
             $close_search_buttom->set_attrib("onClick", "parent.close_search();");
@@ -57,7 +64,7 @@ class search extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div|boolean
+     * @return div|boolean
      */
     public function exec_board() {
         if (!$this->is_enabled) {

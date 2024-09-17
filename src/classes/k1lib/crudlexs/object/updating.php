@@ -2,21 +2,28 @@
 
 namespace k1lib\crudlexs\object;
 
-use \k1lib\urlrewrite\url as url;
-use k1lib\html\DOM as DOM;
-use \k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\common_strings;
+use k1lib\crudlexs\db_table;
+use k1lib\forms\file_uploads;
+use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\urlrewrite\url as url;
+use function k1lib\forms\check_all_incomming_vars;
+use function k1lib\html\html_header_go;
+use function k1lib\sql\get_keys_array_from_row_data;
+use function k1lib\sql\table_keys_to_text;
+use function k1lib\urlrewrite\get_back_url;
 
-class updating extends \k1lib\crudlexs\object\creating {
+class updating extends creating {
 
     protected $update_perfomed = FALSE;
     protected $do_redirect = FALSE;
     protected $updated = NULL;
 
-    public function __construct(\k1lib\crudlexs\db_table $db_table, $row_keys_text) {
+    public function __construct(db_table $db_table, $row_keys_text) {
         if (!empty($row_keys_text)) {
             parent::__construct($db_table, $row_keys_text);
         } else {
-            DOM_notification::queue_mesasage(object_base_strings::$error_no_row_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
+            DOM_notification::queue_mesasage(object_base_strings::$error_no_row_keys_text, "alert", $this->notifications_div_id, common_strings::$error);
         }
 
         creating_strings::$button_submit = updating_strings::$button_submit;
@@ -35,12 +42,12 @@ class updating extends \k1lib\crudlexs\object\creating {
         if ($url_action == "unlink-uploaded-file") {
             $this->db_table_data[1][$url_action_on_field] = NULL;
             if ($this->db_table->update_data($this->db_table_data[1], $this->db_table_data_keys[1])) {
-                \k1lib\forms\file_uploads::unlink_uploaded_file($this->db_table_data[1][$url_action_on_field], $this->db_table->get_db_table_name());
+                file_uploads::unlink_uploaded_file($this->db_table_data[1][$url_action_on_field], $this->db_table->get_db_table_name());
                 DOM_notification::queue_mesasage("File deleted!", 'success');
             } else {
                 DOM_notification::queue_mesasage("File could not be deleted, please upload another to replace.", 'alert');
             }
-            \k1lib\html\html_header_go(\k1lib\urlrewrite\get_back_url());
+            html_header_go(get_back_url());
         }
 
         return $return_data;
@@ -51,7 +58,7 @@ class updating extends \k1lib\crudlexs\object\creating {
         $error_data = NULL;
 
         $this->div_container->set_attrib("class", "k1lib-crudlexs-update");
-        $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
+        $this->post_incoming_array = check_all_incomming_vars($this->post_incoming_array);
         $update_result = $this->db_table->update_data($this->post_incoming_array, $this->db_table_data_keys[1], $error_data);
         if ($update_result !== FALSE) {
             $this->update_perfomed = TRUE;
@@ -89,12 +96,12 @@ class updating extends \k1lib\crudlexs\object\creating {
              */
             $merged_key_array = array_merge(
                     $this->db_table_data_keys[1]
-                    , \k1lib\sql\get_keys_array_from_row_data(
+                    , get_keys_array_from_row_data(
                             $this->post_incoming_array
                             , $this->db_table->get_db_table_config()
                     )
             );
-            $row_key_text = \k1lib\sql\table_keys_to_text($merged_key_array, $this->db_table->get_db_table_config());
+            $row_key_text = table_keys_to_text($merged_key_array, $this->db_table->get_db_table_config());
             if (!empty($url_to_go)) {
                 $this->set_auth_code($row_key_text);
                 $this->set_auth_code_personal($row_key_text);
@@ -102,7 +109,7 @@ class updating extends \k1lib\crudlexs\object\creating {
                 $url_to_go = str_replace("--authcode--", $this->get_auth_code(), $url_to_go);
             }
             if ($do_redirect) {
-                \k1lib\html\html_header_go($url_to_go);
+                html_header_go($url_to_go);
                 return TRUE;
             } else {
                 return $url_to_go;

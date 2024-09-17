@@ -2,8 +2,10 @@
 
 namespace k1lib\crudlexs\object;
 
-use k1lib\templates\temply as temply;
-use k1lib\html\DOM as DOM;
+use k1lib\common_strings;
+use k1lib\db\security\db_table_aliases;
+use k1lib\html\div;
+use k1lib\html\h3;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 
 /**
@@ -17,7 +19,7 @@ class reading extends base_with_data implements base_interface {
         if (!empty($row_keys_text)) {
             parent::__construct($db_table, $row_keys_text, $custom_auth_code);
         } else {
-            DOM_notification::queue_mesasage(object_base_strings::$error_no_row_keys_text, "alert", $this->notifications_div_id, \k1lib\common_strings::$error);
+            DOM_notification::queue_mesasage(object_base_strings::$error_no_row_keys_text, "alert", $this->notifications_div_id, common_strings::$error);
         }
 
         /**
@@ -31,18 +33,18 @@ class reading extends base_with_data implements base_interface {
             $this->div_container->set_attrib("class", "row k1lib-crudlexs-" . $this->css_class);
             $this->div_container->set_attrib("id", $this->object_id);
 
-            $table_alias = \k1lib\db\security\db_table_aliases::encode($this->db_table->get_db_table_name());
+            $table_alias = db_table_aliases::encode($this->db_table->get_db_table_name());
 
-            $data_group = new \k1lib\html\div("k1lib-data-group");
+            $data_group = new div("k1lib-data-group");
             $data_group->set_id("{$table_alias}-fields");
 
             $data_group->append_to($this->div_container);
-            $text_fields_div = new \k1lib\html\div("grid-x");
+            $text_fields_div = new div("grid-x");
 
             $data_label = $this->get_labels_from_data(1);
             if (!empty($data_label)) {
                 $this->remove_labels_from_data_filtered();
-                (new \k1lib\html\h3($data_label, "k1lib-data-group-title " . $this->css_class, "label-field-{$this->object_id}"))->append_to($data_group);
+                (new h3($data_label, "k1lib-data-group-title " . $this->css_class, "label-field-{$this->object_id}"))->append_to($data_group);
             }
             $labels = $this->db_table_data_filtered[0];
             $values = $this->db_table_data_filtered[1];

@@ -2,10 +2,14 @@
 
 namespace k1lib\crudlexs\board;
 
-use k1lib\urlrewrite\url as url;
-use k1lib\session\session_plain as session_plain;
-use k1lib\html\DOM as DOM;
+use k1lib\crudlexs\controller\base;
+use k1lib\crudlexs\object\updating;
+use k1lib\html\div;
 use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\session\session_plain as session_plain;
+use k1lib\urlrewrite\url as url;
+use function k1lib\html\get_link_button;
+use function k1lib\urlrewrite\get_back_url;
 
 class update extends board_base implements board_interface {
 
@@ -16,17 +20,17 @@ class update extends board_base implements board_interface {
     public $update_object;
     private $row_keys_text;
 
-    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-update";
             $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
-            $this->update_object = new \k1lib\crudlexs\object\updating($this->controller_object->db_table, $this->row_keys_text);
+            $this->update_object = new updating($this->controller_object->db_table, $this->row_keys_text);
         }
     }
 
     /**
-     * @return \k1lib\html\div|boolean
+     * @return div|boolean
      */
     public function start_board() {
         if (!parent::start_board()) {
@@ -41,7 +45,7 @@ class update extends board_base implements board_interface {
         if (!empty($this->row_keys_text)) {
 
             if ($this->update_object->get_state()) {
-                $this->update_object->set_back_url(\k1lib\urlrewrite\get_back_url());
+                $this->update_object->set_back_url(get_back_url());
 
                 $this->update_object->set_do_table_field_name_encrypt(TRUE);
                 $this->controller_object->db_table->set_db_table_show_rule($this->show_rule_to_apply);
@@ -60,7 +64,7 @@ class update extends board_base implements board_interface {
     }
 
     /**
-     * @return \k1lib\html\div|boolean
+     * @return div|boolean
      */
     public function exec_board() {
         if (!$this->is_enabled) {
@@ -91,19 +95,19 @@ class update extends board_base implements board_interface {
                  */
                 if ($this->controller_object->get_board_delete_enabled() && $this->controller_object->get_board_delete_allowed_for_current_user()) {
                     $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/" . urlencode($this->row_keys_text) . '/';
-                    if (\k1lib\urlrewrite\get_back_url(TRUE)) {
+                    if (get_back_url(TRUE)) {
                         $get_vars = [
                             "auth-code" => md5(session_plain::get_user_hash() . $this->row_keys_text),
-                            "back-url" => \k1lib\urlrewrite\get_back_url(TRUE),
+                            "back-url" => get_back_url(TRUE),
                         ];
                     } else {
                         $get_vars = [
                             "auth-code" => md5(session_plain::get_user_hash() . $this->row_keys_text),
                         ];
                     }
-                    $back_link = \k1lib\html\get_link_button(url::do_url(\k1lib\urlrewrite\get_back_url()), board_read_strings::$button_back, "small");
+                    $back_link = get_link_button(url::do_url(get_back_url()), board_read_strings::$button_back, "small");
                     $back_link->append_to($this->button_div_tag);
-                    $delete_link = \k1lib\html\get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "small");
+                    $delete_link = get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "small");
                     $delete_link->append_to($this->button_div_tag);
                 }
 

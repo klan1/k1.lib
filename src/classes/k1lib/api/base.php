@@ -11,8 +11,11 @@
 
 namespace k1lib\api;
 
-use \k1lib\urlrewrite\url;
-use \k1lib\crudlexs\db_table;
+use k1app\template\mazer\components\app\sidebar\wrapper\header;
+use k1lib\crudlexs\db_table;
+use k1lib\db\PDO_k1;
+use k1lib\urlrewrite\url;
+use function getallheaders;
 
 const K1LIB_API_USE_MAGIC_HEADER = TRUE;
 const K1LIB_API_DISABLE_MAGIC_HEADER = FALSE;
@@ -29,14 +32,14 @@ class base {
     // DB conection object
 
     /**
-     * @var \k1lib\db\PDO_k1
+     * @var PDO_k1
      */
     protected $db = NULL;
     protected $do_debug = FALSE;
 
     /**
      *
-     * @var \k1lib\crudlexs\db_table
+     * @var db_table
      */
     protected $debug_table = FALSE;
     // MAGIC HEADER
@@ -243,7 +246,7 @@ class base {
         return $array_to_check;
     }
 
-    function set_db(\k1lib\db\PDO_k1 $db) {
+    function set_db(PDO_k1 $db) {
         $this->db = $db;
     }
 
