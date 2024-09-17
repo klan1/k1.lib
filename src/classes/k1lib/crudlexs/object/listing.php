@@ -229,7 +229,7 @@ class listing extends base_with_data implements base_interface {
             $page_get_var_name = $this->get_object_id() . "-page";
             $rows_get_var_name = $this->get_object_id() . "-rows";
 
-            $this_url = APP_URL . \k1lib\urlrewrite\url::get_this_url() . "#" . $this->get_object_id() . "-pagination";
+            $this_url = \k1app\K1APP_URL . \k1lib\urlrewrite\url::get_this_url() . "#" . $this->get_object_id() . "-pagination";
             if ($this->actual_page > 2) {
                 $this->page_first = url::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => self::$rows_per_page]);
             } else {

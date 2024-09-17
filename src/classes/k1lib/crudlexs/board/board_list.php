@@ -80,7 +80,7 @@ class board_list extends board_base implements board_interface {
                 if (isset($_GET['clear-search']) && $_GET['clear-search'] == 1) {
                     \k1lib\common\unset_serialize_var($controller_id);
                     unset($_GET['clear-search']);
-                    $next_url = url::do_url(APP_URL . url::get_this_url(), [], TRUE, array_keys($_GET));
+                    $next_url = url::do_url(\k1app\K1APP_URL . url::get_this_url(), [], TRUE, array_keys($_GET));
                     d($next_url);
                     \k1lib\html\html_header_go($next_url);
                     exit;

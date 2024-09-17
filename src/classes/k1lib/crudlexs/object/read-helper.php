@@ -5,8 +5,8 @@ namespace k1lib\crudlexs\object;
 class read_helper {
 
 //    static $do_fk_search_tool = TRUE;
-//    static $url_to_search_fk_data = APP_URL . "general-utils/select-row-keys/";
-//    static $url_to_send_row_keys_fk_data = APP_URL . "general-utils/send-row-keys/";
+//    static $url_to_search_fk_data = \k1app\K1APP_URL . "general-utils/select-row-keys/";
+//    static $url_to_send_row_keys_fk_data = \k1app\K1APP_URL . "general-utils/send-row-keys/";
 //    static $main_css = "";
 //    static private $fk_fields_to_skip = [];
 //    static public $boolean_true = NULL;
