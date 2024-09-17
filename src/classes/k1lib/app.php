@@ -5,8 +5,10 @@ namespace k1lib;
 use k1lib\app\config;
 use k1lib\db\PDO_k1;
 use k1lib\forms\file_uploads;
+use k1lib\session\session_db;
 use k1lib\session\session_plain;
 use k1lib\urlrewrite\url;
+use PDOException;
 use const k1app\K1APP_ASSETS_PATH;
 use const k1app\K1APP_ASSETS_URL;
 use const k1app\K1APP_BASE_URL;
@@ -176,7 +178,15 @@ class app {
         session_plain::set_session_name($this->config->get_option('app_session_name'));
         session_plain::set_use_ip_in_userhash($this->config->get_option('app_session_use_ip_in_userhash'));
         session_plain::set_app_user_levels($this->config->get_option('app_session_levels'));
-        session_plain::start_session();
+        // TODO: manage non DB session
+        //session_plain::start_session();;
+    }
+
+    function start_session_db(int $db_index) {
+        session_db::set_session_name($this->config->get_option('app_session_name'));
+        $app_session = new session_db($this->db($db_index));
+        $app_session->start_session();
+        $app_session->load_logged_session_db();
     }
 
     function db($index = 1) {
@@ -185,7 +195,7 @@ class app {
 
                 try {
                     /**
-                     * @var \k1lib\db\PDO_k1 
+                     * @var PDO_k1 
                      */
                     $this->db_connections[1] = new PDO_k1(
                             $this->config->get_option('db_name'),
@@ -196,7 +206,7 @@ class app {
                             $this->config->get_option('db_type')
                     );
                     $this->db_connections[1]->set_verbose_level($this->config->get_option('app_verbose_level'));
-                } catch (\PDOException $e) {
+                } catch (PDOException $e) {
                     trigger_error($e->getMessage(), E_USER_ERROR);
                 }
                 $this->db_connections[1]->exec('set names utf8');

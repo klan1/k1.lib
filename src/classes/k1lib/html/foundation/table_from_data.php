@@ -10,11 +10,6 @@ class table_from_data extends \k1lib\html\table
     use foundation_methods;
 
     /**
-     * @var \k1lib\html\tag
-     */
-    protected $parent;
-
-    /**
      * @var array
      */
     protected $data = [];
