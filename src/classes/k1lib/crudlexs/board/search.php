@@ -50,8 +50,8 @@ class search extends board_base implements board_interface {
             $close_search_buttom->append_to($this->button_div_tag);
 
             $this->search_object->set_search_catch_post_enable($this->search_catch_post_enable);
-            $this->search_object->set_html_column_classes("column large-11 medium-11 small-12");
-            $this->search_object->set_html_form_column_classes("large-11");
+            $this->search_object->set_html_column_classes("column lg-11 md-11 sm-12");
+            $this->search_object->set_html_form_column_classes("lg-11");
 
             $this->search_object->do_html_object()->append_to($this->board_content_div);
 

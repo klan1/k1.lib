@@ -30,7 +30,6 @@ class app {
     protected string $script_path;
     static string $base_path;
     static string $base_url;
-    
     protected $app_session;
 
     /**
@@ -96,7 +95,9 @@ class app {
         define('k1app\K1APP_CONTROLLERS_PATH', K1APP_ROOT . '/src/classes/k1app/controllers/'); // 2.0
         define('k1app\K1APP_CLASSES_PATH', K1APP_ROOT . '/src/classes/'); // 2.0
         define('k1app\K1APP_ASSETS_PATH', K1APP_ROOT . '/assets/'); // 2.0
-        define('k1app\K1APP_ASSETS_IMAGES_PATH', K1APP_ASSETS_PATH . 'images/'); // 2.0
+        define('k1app\K1APP_ASSETS_IMAGES_PATH', K1APP_ASSETS_PATH . 'static/img/'); // 2.0
+        define('k1app\K1APP_ASSETS_CSS_PATH', K1APP_ASSETS_PATH . 'static/css/'); // 2.0
+        define('k1app\K1APP_ASSETS_JS_PATH', K1APP_ASSETS_PATH . 'static/js/'); // 2.0
         // define('k1app\K1APP_VIEWS_PATH', \k1app\K1APP_ROOT . '/views/');
         // define('k1app\K1APP_VIEWS_CRUD_PATH', \k1app\K1APP_VIEWS_PATH . '/k1lib.crud/');
         define('k1app\K1APP_SETTINGS_PATH', K1APP_ROOT . '/settings/');
@@ -128,7 +129,11 @@ class app {
             define('k1app\K1APP_URL', K1APP_DOMAIN_URL . K1APP_BASE_URL);
             define('k1app\K1APP_HOME_URL', K1APP_URL);
             define('k1app\K1APP_ASSETS_URL', K1APP_HOME_URL . 'assets/');
-            define('k1app\K1APP_IMAGES_URL', K1APP_ASSETS_URL . 'images/');
+//            define('k1app\K1APP_IMAGES_URL', K1APP_ASSETS_URL . 'images/');
+            define('k1app\K1APP_ASSETS_IMAGES_URL', K1APP_ASSETS_URL . 'static/img/'); // 2.0
+            define('k1app\K1APP_ASSETS_CSS_URL', K1APP_ASSETS_URL . 'static/css/'); // 2.0
+            define('k1app\K1APP_ASSETS_JS_URL', K1APP_ASSETS_URL . 'static/js/'); // 2.0
+
             define('k1app\K1APP_UPLOADS_URL', K1APP_ASSETS_URL . 'uploads/');
             define('k1app\K1APP_TEMPLATES_URL', K1APP_ASSETS_URL . 'templates/');
             //    define('k1app\K1APP_TEMPLATE_IMAGES_URL', \k1app\K1APP_TEMPLATE_URL . 'img/');
