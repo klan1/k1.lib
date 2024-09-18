@@ -9,7 +9,7 @@ trait bootstrap_methods {
     protected $large = NULL;
 
     /**
-     * Will search for the $text as small-1, medium-12 as: /({$text}-[0-9]+)/
+     * Will search for the $text as sm-1, md-12 as: /({$text}-[0-9]+)/
      * and replace the number part with the new number
      * @param type $attribute
      * @param type $text
@@ -44,10 +44,9 @@ trait bootstrap_methods {
     }
 
     public function append_close_button() {
-        $close_button = new \k1lib\html\button(NULL, "close-button");
-        $close_button->set_attrib("data-close", TRUE);
-        $close_button->set_attrib("aria-label", "Close reveal");
-        $close_button->append_span()->set_attrib("aria-hidden", TRUE)->set_value("&times;");
+        $close_button = new \k1lib\html\button(NULL, "btn-close");
+        $close_button->set_attrib('data-bs-dismiss', 'alert');
+        $close_button->set_attrib("aria-label", "Close");
         $this->append_child_tail($close_button);
     }
 
@@ -90,7 +89,7 @@ trait bootstrap_methods {
         $this->small = $cols;
 
         if ($clear) {
-            $this->set_attrib("class", "cell small-{$cols}", (!$clear));
+            $this->set_attrib("class", "col-sm-{$cols}", (!$clear));
         } else {
             $this->replace_attribute_number("class", "small", $cols);
         }
@@ -105,7 +104,7 @@ trait bootstrap_methods {
         $this->medium = $cols;
 
         if ($clear) {
-            $this->set_attrib("class", "cell medium-{$cols}", (!$clear));
+            $this->set_attrib("class", "col-md-{$cols}", (!$clear));
         } else {
             $this->replace_attribute_number("class", "medium", $cols);
         }
@@ -120,7 +119,7 @@ trait bootstrap_methods {
         $this->large = $cols;
 
         if ($clear) {
-            $this->set_attrib("class", "cell large-{$cols}", (!$clear));
+            $this->set_attrib("class", "col-lg-{$cols}", (!$clear));
         } else {
             $this->replace_attribute_number("class", "large", $cols);
         }

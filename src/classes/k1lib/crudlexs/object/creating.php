@@ -54,8 +54,8 @@ class creating extends base_with_data implements base_interface
     protected $show_cancel_button = TRUE;
     protected $inserted_result = NULL;
     protected $inserted = NULL;
-    protected $html_form_column_classes = "large-8 medium-10 small-11";
-    protected $html_column_classes = "small-12 column";
+    protected $html_form_column_classes = "lg-8 md-10 sm-11";
+    protected $html_column_classes = "sm-12 column";
 
     public function __construct($db_table, $row_keys_text)
     {

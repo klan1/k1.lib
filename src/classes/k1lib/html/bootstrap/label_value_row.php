@@ -6,7 +6,7 @@ class label_value_row extends grid_row {
 
     function __construct($label, $value, $grid_row = 0, $parent = NULL) {
         parent::__construct(2, $grid_row, $parent);
-        $this->set_class('grid-margin-x', TRUE);
+//        $this->set_class('grid-margin-x', TRUE);
         $this->cell(1)->medium(3)->large(3);
         $this->cell(2)->medium(9)->large(9)->end();
 
