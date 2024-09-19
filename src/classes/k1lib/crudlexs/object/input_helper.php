@@ -35,8 +35,8 @@ class input_helper {
 
         $div_continer = new div();
 
-        $input_tag_new = new input("password", $field_encrypted . "_new", NULL, "k1lib-input-insert");
-        $input_tag_confirm = new input("password", $field_encrypted . "_confirm", NULL, "k1lib-input-insert");
+        $input_tag_new = new input("password", $field_encrypted . "_new", NULL, "k1lib-input-insert form-control");
+        $input_tag_confirm = new input("password", $field_encrypted . "_confirm", NULL, "k1lib-input-insert form-control");
 
         if ($case == "create") {
             $div_continer->link_value_obj($input_tag_new);
@@ -126,7 +126,7 @@ class input_helper {
     static function file_upload(creating $crudlex_obj, $field) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
 
-        $input_tag = new input("file", $field_encrypted, "", "k1lib-file-upload");
+        $input_tag = new input("file", $field_encrypted, "", "k1lib-file-upload form-control");
         if (isset($crudlex_obj->db_table_data[1][$field]['name']) || empty($crudlex_obj->db_table_data[1][$field])) {
             return $input_tag;
         } else {
@@ -193,7 +193,7 @@ class input_helper {
         if ((!empty($crudlex_obj->db_table->get_field_config($field, 'refereced_table_name')) && self::$do_fk_search_tool) && (array_search($field, self::$fk_fields_to_skip) === FALSE)) {
             $div_input_group = new div("input-group");
 
-            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field");
+            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field form-control");
             if (!empty($crudlex_obj->db_table->get_field_config($field, 'placeholder'))) {
                 $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
             } else {
