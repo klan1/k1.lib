@@ -2,11 +2,17 @@
 
 namespace k1lib\html\bootstrap;
 
+use k1lib\html\button;
+use k1lib\html\div;
+
 trait bootstrap_methods {
 
+    protected $general = NULL;
     protected $small = NULL;
     protected $medium = NULL;
     protected $large = NULL;
+    protected $xlarge = NULL;
+    protected $xxlarge = NULL;
 
     /**
      * Will search for the $text as sm-1, md-12 as: /({$text}-[0-9]+)/
@@ -44,14 +50,14 @@ trait bootstrap_methods {
     }
 
     public function append_close_button() {
-        $close_button = new \k1lib\html\button(NULL, "btn-close");
+        $close_button = new button(NULL, "btn-close");
         $close_button->set_attrib('data-bs-dismiss', 'alert');
         $close_button->set_attrib("aria-label", "Close");
         $this->append_child_tail($close_button);
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
     public function align_center() {
         $this->set_attrib("class", "align-center", TRUE);
@@ -59,7 +65,7 @@ trait bootstrap_methods {
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
     public function align_left() {
         $this->set_attrib("class", "align-left", TRUE);
@@ -67,7 +73,7 @@ trait bootstrap_methods {
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
     public function align_right() {
         $this->set_attrib("class", "align-right", TRUE);
@@ -75,7 +81,7 @@ trait bootstrap_methods {
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
     public function align_justify() {
         $this->set_attrib("class", "align-justify", TRUE);
@@ -83,7 +89,21 @@ trait bootstrap_methods {
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
+     */
+    public function general($cols, $clear = FALSE) {
+        $this->general = $cols;
+
+        if ($clear) {
+            $this->set_attrib("class", "col-{$cols}", (!$clear));
+        } else {
+            $this->replace_attribute_number("class", "col", $cols);
+        }
+
+        return $this;
+    }
+    /**
+     * @return div
      */
     public function small($cols, $clear = FALSE) {
         $this->small = $cols;
@@ -91,14 +111,14 @@ trait bootstrap_methods {
         if ($clear) {
             $this->set_attrib("class", "col-sm-{$cols}", (!$clear));
         } else {
-            $this->replace_attribute_number("class", "small", $cols);
+            $this->replace_attribute_number("class", "col-sm", $cols);
         }
 
         return $this;
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
     public function medium($cols, $clear = FALSE) {
         $this->medium = $cols;
@@ -106,14 +126,14 @@ trait bootstrap_methods {
         if ($clear) {
             $this->set_attrib("class", "col-md-{$cols}", (!$clear));
         } else {
-            $this->replace_attribute_number("class", "medium", $cols);
+            $this->replace_attribute_number("class", "col-md", $cols);
         }
 
         return $this;
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
     public function large($cols, $clear = FALSE) {
         $this->large = $cols;
@@ -121,7 +141,35 @@ trait bootstrap_methods {
         if ($clear) {
             $this->set_attrib("class", "col-lg-{$cols}", (!$clear));
         } else {
-            $this->replace_attribute_number("class", "large", $cols);
+            $this->replace_attribute_number("class", "col-lg", $cols);
+        }
+
+        return $this;
+    }
+    /**
+     * @return div
+     */
+    public function xlarge($cols, $clear = FALSE) {
+        $this->xlarge = $cols;
+
+        if ($clear) {
+            $this->set_attrib("class", "col-xlg-{$cols}", (!$clear));
+        } else {
+            $this->replace_attribute_number("class", "col-xlg", $cols);
+        }
+
+        return $this;
+    }
+    /**
+     * @return div
+     */
+    public function xxlarge($cols, $clear = FALSE) {
+        $this->xxlarge = $cols;
+
+        if ($clear) {
+            $this->set_attrib("class", "col-xxlg-{$cols}", (!$clear));
+        } else {
+            $this->replace_attribute_number("class", "col-xxlg", $cols);
         }
 
         return $this;

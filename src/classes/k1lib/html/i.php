@@ -3,7 +3,7 @@
 namespace k1lib\html;
 
 /**
- * P
+ * I
  */
 class i extends tag {
 

@@ -3,18 +3,16 @@
 namespace k1lib\html;
 
 /**
- * P
+ * NAV
  */
-class i extends tag {
+class nav extends tag {
 
     use append_shotcuts;
 
     function __construct($value = NULL, $class = NULL, $id = NULL) {
-        parent::__construct("i", FALSE);
-        $this->set_value($value);
+        parent::__construct("nav", FALSE);
+        $this->set_attrib('aria-label', $value);
         $this->set_class($class);
         $this->set_id($id);
     }
-
 }
-
