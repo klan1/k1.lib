@@ -2,11 +2,16 @@
 
 namespace k1lib\urlrewrite;
 
-use \k1lib\api\base as api_base;
+use k1app\template\mazer\components\app\sidebar\wrapper\header;
+use k1lib\api\base as api_base;
 use k1lib\html\html_document;
+use const k1lib\URL_REWRITE_VAR_NAME;
+use function k1lib\common\explode_with_2_delimiters;
+use function k1lib\controllers\load_controller;
+use function k1lib\forms\check_all_incomming_vars;
+use function k1lib\forms\check_single_incomming_var;
 
-class url
-{
+class url {
 
     /**
      * Enable state
@@ -37,44 +42,42 @@ class url
      */
     static private string $url_rewrite_data;
 
-    static function set_api_mode()
-    {
+    static function set_api_mode() {
         self::$api_mode = TRUE;
     }
 
-    static function get_api_mode()
-    {
+    static function get_api_mode() {
         return self::$api_mode;
     }
 
-    static public function enable()
-    {
+    static public function enable() {
         self::$enabled = TRUE;
         self::$levels_count = null;
         self::$url_data = [];
-        self::$url_rewrite_data = \k1lib\forms\check_single_incomming_var($_GET[\k1lib\URL_REWRITE_VAR_NAME]) ?? '';
-        unset($_GET[\k1lib\URL_REWRITE_VAR_NAME]);
+        if (key_exists(URL_REWRITE_VAR_NAME, $_GET)) {
+            self::$url_rewrite_data = check_single_incomming_var($_GET[URL_REWRITE_VAR_NAME]) ?? '';
+        } else {
+            self::$url_rewrite_data = '';
+        }
+        unset($_GET[URL_REWRITE_VAR_NAME]);
     }
 
     /**
      * Query the enabled state
      * @return bool
      */
-    static public function is_enabled($show_error = false)
-    {
+    static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {
             trigger_error("URL Rewrite system is not enabled yet", E_USER_ERROR);
         }
         return self::$enabled;
     }
 
-    static public function get_data()
-    {
+    static public function get_data() {
         return self::$url_data;
     }
 
-    static public function get_controller_path_from_url(string $controllers_path)
-    {
+    static public function get_controller_path_from_url(string $controllers_path) {
         $rewrite_data = self::get_url_rewrite_data();
 
         $url_array = explode('/', $rewrite_data);
@@ -88,7 +91,7 @@ class url
         foreach ($url_array as $key => $url_part) {
             self::set_url_rewrite_var($key, 'url_level_' . $key, false);
             if (!empty($url_part)) {
-                $path_examined .=  '/' . $url_part;
+                $path_examined .= '/' . $url_part;
             } elseif ($key > 0 && empty($url_part)) {
                 break;
             }
@@ -113,8 +116,8 @@ class url
             self::error_404($rewrite_data);
         }
     }
-    static function error_404($non_found_name)
-    {
+
+    static function error_404($non_found_name) {
         http_response_code(404);
         header("Access-Control-Allow-Origin: *");
         $html = new html_document();
@@ -124,6 +127,7 @@ class url
         trigger_error('App error fired', E_USER_NOTICE);
         exit;
     }
+
     /**
      * Set the URL level name for the app 
      * The self::$url_data array will hold the data in this way:
@@ -135,8 +139,7 @@ class url
      * @return boolean 
      * TODO: check level prerequisites 
      */
-    static public function set_url_rewrite_var($level, $name, $required = TRUE)
-    {
+    static public function set_url_rewrite_var($level, $name, $required = TRUE) {
         self::is_enabled(true);
         if (!empty(self::$url_rewrite_data)) {
 
@@ -195,8 +198,7 @@ class url
         }
     }
 
-    static public function get_url_level_count()
-    {
+    static public function get_url_level_count() {
         return count(self::$url_data);
     }
 
@@ -206,8 +208,7 @@ class url
      * @param int $level Level number for query
      * @return string 
      */
-    static public function get_url_level_index_by_name($level_name)
-    {
+    static public function get_url_level_index_by_name($level_name) {
 
         if (is_string($level_name)) {
             foreach (self::$url_data as $index => $array) {
@@ -227,8 +228,7 @@ class url
      * @param int $level Level number for query
      * @return string 
      */
-    static public function get_url_level_value_by_name($level_name)
-    {
+    static public function get_url_level_value_by_name($level_name) {
 
         if (is_string($level_name)) {
             foreach (self::$url_data as $index => $array) {
@@ -248,8 +248,7 @@ class url
      * @param int $level Level number for query
      * @return string 
      */
-    static public function get_url_level_value($level = "this")
-    {
+    static public function get_url_level_value($level = "this") {
 
         if (is_int($level)) {
             if (isset(self::$url_data[$level])) {
@@ -268,8 +267,7 @@ class url
      * @param int $level Level number for query
      * @return string 
      */
-    static public function get_url_level_name($level = "this")
-    {
+    static public function get_url_level_name($level = "this") {
 
         if (is_int($level)) {
             if (isset(self::$url_data[$level])) {
@@ -287,20 +285,17 @@ class url
      * @global array self::$url_data
      * @return string URL 
      */
-    static public function get_this_url()
-    {
+    static public function get_this_url() {
         return self::make_url_from_rewrite("this");
     }
 
-    static public function get_this_controller_id()
-    {
+    static public function get_this_controller_id() {
         $controller_url = self::make_url_from_rewrite();
         $controller_id = str_replace("/", "-", rtrim($controller_url, '/'));
         return $controller_id;
     }
 
-    static public function set_last_url($url_to_set = "", $exclude = "fb-connect")
-    {
+    static public function set_last_url($url_to_set = "", $exclude = "fb-connect") {
         if (!strpos($url_to_set, $exclude)) {
             $_SESSION['last_url'] = $url_to_set;
         }
@@ -312,8 +307,7 @@ class url
      * @param type $level_to_built
      * @return string 
      */
-    static public function make_url_from_rewrite($level_to_built = 'this')
-    {
+    static public function make_url_from_rewrite($level_to_built = 'this') {
         $url_num_levels = count(self::$url_data) - 1;
         if ($url_num_levels < 0) {
             return "/";
@@ -363,8 +357,7 @@ class url
      * @param type $keep_including
      * @return string
      */
-    static public function do_url($url, array $new_get_vars = [], $keep_actual_get_vars = TRUE, array $wich_get_vars = [], $keep_including = TRUE)
-    {
+    static public function do_url($url, array $new_get_vars = [], $keep_actual_get_vars = TRUE, array $wich_get_vars = [], $keep_including = TRUE) {
         if (!is_string($url)) {
             trigger_error("The value to make the link have to be a string", E_USER_ERROR);
         }
@@ -383,7 +376,7 @@ class url
         $url = str_replace($url_vars, "", $url);
         // Now remove the ? from GET vars part
         //        $url_vars = str_replace("?", "", $url_vars);
-        $url_var_array = \k1lib\common\explode_with_2_delimiters("&", "=", $url_vars, 1);
+        $url_var_array = explode_with_2_delimiters("&", "=", $url_vars, 1);
         /**
          * Catch all _GET vars
          */
@@ -391,8 +384,8 @@ class url
         foreach ($myGET as $key => $value) {
             $myGET[$key] = urldecode($value);
         }
-        $actual_get_vars = \k1lib\forms\check_all_incomming_vars($myGET);
-        unset($actual_get_vars[\k1lib\URL_REWRITE_VAR_NAME]);
+        $actual_get_vars = check_all_incomming_vars($myGET);
+        unset($actual_get_vars[URL_REWRITE_VAR_NAME]);
 
         /**
          * Join actual GET vars with the URL GET vars
@@ -449,20 +442,18 @@ class url
         return $url_to_return;
     }
 
-    static function do_clean_url($url)
-    {
+    static function do_clean_url($url) {
         return self::do_url($url, [], FALSE);
     }
 
-    static function set_next_url_level($controller_path, $required_level = FALSE, $level_name = 'default', $return_non_existent_level = FALSE)
-    {
+    static function set_next_url_level($controller_path, $required_level = FALSE, $level_name = 'default', $return_non_existent_level = FALSE) {
         $next_url_level = self::get_url_level_count();
         // get the base URL to load the next one
         $actual_url = self::get_this_url();
         // get from the URL the next level value :   /$actual_url/next_level_value
         $next_directory_name = self::set_url_rewrite_var($next_url_level, $level_name, $required_level);
         if (!empty($next_directory_name)) {
-            $file_to_include = \k1lib\controllers\load_controller($next_directory_name, $controller_path . $actual_url, $return_non_existent_level, self::$api_mode);
+            $file_to_include = load_controller($next_directory_name, $controller_path . $actual_url, $return_non_existent_level, self::$api_mode);
             if (!empty($file_to_include)) {
                 return $file_to_include;
             } else {
@@ -477,13 +468,11 @@ class url
         }
     }
 
-    static public function is_https()
-    {
+    static public function is_https() {
         return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
     }
 
-    public static function get_url_rewrite_data(): string
-    {
+    public static function get_url_rewrite_data(): string {
         return self::$url_rewrite_data;
     }
 }
