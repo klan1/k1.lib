@@ -7,7 +7,7 @@ use k1lib\db\security\db_table_aliases;
 use k1lib\html\a;
 use k1lib\html\bootstrap\table_from_data;
 use k1lib\html\div;
-use k1lib\html\label;
+use k1lib\html\nav;
 use k1lib\html\p;
 use k1lib\html\select;
 use k1lib\html\ul;
@@ -207,7 +207,8 @@ class listing extends base_with_data implements base_interface {
      * @return div
      */
     public function do_row_stats($custom_msg = "") {
-        $div_stats = new div("k1lib-crudlexs-list-stats clearfix");
+        $div_stats = new p(NULL, "k1lib-crudlexs-list-stats mt-3");
+        $div_stats->set_style('font-size: 0.8rem;');
         if (($this->db_table_data)) {
             if (empty($custom_msg)) {
                 $stat_msg = $this->stat_msg;
@@ -230,9 +231,9 @@ class listing extends base_with_data implements base_interface {
      */
     public function do_pagination() {
 
-        $div_pagination = new div("k1lib-crudlexs-list-pagination clearfix", $this->get_object_id() . "-pagination");
-        $div_scroller = $div_pagination->append_div("float-left pagination-scroller");
-        $div_page_chooser = $div_pagination->append_div("float-left pagination-rows");
+        $nav_pagination = new nav('list-pagination', "k1lib-crudlexs-list-pagination mt-2", $this->get_object_id() . "-pagination");
+        $div_scroller = $nav_pagination->append_div("pagination-scroller");
+        $div_page_chooser = $nav_pagination->append_div("pagination-rows");
 
         if (($this->db_table_data) && (self::$rows_per_page <= $this->total_rows)) {
 
@@ -265,48 +266,50 @@ class listing extends base_with_data implements base_interface {
             /**
              * HTML UL- LI construction
              */
-            $ul = (new ul("pagination k1lib-crudlexs " . $this->get_object_id()));
+            $ul = (new ul("pagination pagination-primary pagination-sm k1lib-crudlexs justify-content-center" . $this->get_object_id()));
             $ul->append_to($div_scroller);
 
             // First page LI
-            $li = $ul->append_li();
+            $li = $ul->append_li(null, 'page-item');
 //    function append_a($href = NULL, $label = NULL, $target = NULL, $alt = NULL, $class = NULL, $id = NULL) {
-            $a = $li->append_a($this->page_first, "‹‹", "_self", "k1lib-crudlexs-first-page");
+            $a = $li->append_a($this->page_first, "‹‹", "_self", "page-link k1lib-crudlexs-first-page");
             if ($this->page_first == "#") {
-                $a->set_attrib("class", "disabled");
+                $a->set_attrib("class", "disabled", true);
             }
             // Previuos page LI
-            $li = $ul->append_li("");
-            $a = $li->append_a($this->page_previous, "‹", "_self", "k1lib-crudlexs-previous-page");
+            $li = $ul->append_li(NULL, 'page-item');
+            $a = $li->append_a($this->page_previous, "‹", "_self", "page-link k1lib-crudlexs-previous-page");
             if ($this->page_previous == "#") {
-                $a->set_attrib("class", "disabled");
+                $a->set_attrib("class", "disabled", true);
             }
             /**
              * Page GOTO selector
              */
-            $page_selector = new select("goto_page", "k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-goto");
+            $page_selector = new select("goto_page", "form-select form-select-sm k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-goto");
             $page_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
             for ($i = 1; $i <= $this->total_pages; $i++) {
                 $option_url = url::do_url($this_url, [$page_get_var_name => $i, $rows_get_var_name => self::$rows_per_page]);
                 $option = $page_selector->append_option($option_url, $i, (($this->actual_page == $i) ? TRUE : FALSE));
             }
-            $ul->append_li()->append_child($page_selector);
+            $ul->append_li(NULL, 'page-item')->append_child($page_selector);
             // Next page LI
-            $li = $ul->append_li("");
-            $a = $li->append_a($this->page_next, "›", "_self", "k1lib-crudlexs-next-page");
+            $li = $ul->append_li(NULL, 'page-item');
+            $a = $li->append_a($this->page_next, "›", "_self", "page-link k1lib-crudlexs-next-page");
             if ($this->page_next == "#") {
-                $a->set_attrib("class", "disabled");
+                $a->set_attrib("class", "disabled", true);
             }
             // Last page LI
-            $li = $ul->append_li("");
-            $a = $li->append_a($this->page_last, "››", "_self", "k1lib-crudlexs-last-page");
+            $li = $ul->append_li(NULL, 'page-item');
+            $a = $li->append_a($this->page_last, "››", "_self", "page-link k1lib-crudlexs-last-page");
             if ($this->page_last == "#") {
-                $a->set_attrib("class", "disabled");
+                $a->set_attrib("class", "disabled", true);
             }
             /**
              * PAGE ROWS selector
              */
-            $num_rows_selector = new select("goto_page", "k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-rows-goto");
+            $num_rows_input_gorup = new div('input-group mb-3');
+            $num_rows_input_gorup->append_label('Show', 'goto_page', 'input-group-text');
+            $num_rows_selector = new select("goto_page", "form-select col-2 k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-rows-goto");
             $num_rows_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
             foreach (self::$rows_per_page_options as $num_rows) {
                 if ($num_rows <= $this->total_rows) {
@@ -320,12 +323,10 @@ class listing extends base_with_data implements base_interface {
                 $option_url = url::do_url($this_url, [$page_get_var_name => 1, $rows_get_var_name => $this->total_rows]);
                 $option = $num_rows_selector->append_option($option_url, $this->total_rows, ((self::$rows_per_page == $this->total_rows) ? TRUE : FALSE));
             }
-            $label = (new label("Show", $this->get_object_id() . "-page-rows-goto"));
-            $label->set_attrib("style", "display:inline");
-            $label->append_to($div_page_chooser);
-            $num_rows_selector->append_to($div_page_chooser);
+            $num_rows_selector->append_to($num_rows_input_gorup);
+            $num_rows_input_gorup->append_to($div_page_chooser);
         }
-        return $div_pagination;
+        return $nav_pagination;
     }
 
     function set_stat_msg($stat_msg) {

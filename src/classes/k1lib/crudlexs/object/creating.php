@@ -444,16 +444,16 @@ class creating extends base_with_data implements base_interface
              */
             $html_form = new form();
             $html_form->append_to($this->div_container);
-            if ($this->enable_foundation_form_check) {
-                $html_form->set_attrib("data-abide", TRUE);
-            }
+//            if ($this->enable_foundation_form_check) {
+//                $html_form->set_attrib("data-abide", TRUE);
+//            }
 
             $form_header = $html_form->append_div("k1lib-form-header");
-            $form_body = $html_form->append_div("k1lib-form-body");
-            $form_grid = new grid(1, 1, $form_body);
-            $form_grid->row(1)->align_center();
-            $form_grid->row(1)->cell(1)->large(8)->medium(10)->small(12);
-
+            $form_body = $html_form->append_div("k1lib-form-body row");
+//            $form_grid = new grid(1, 1, $form_body);
+////            $form_grid->row(1)->align_center();
+//            $form_grid->row(1)->cell(1)->general(12)->medium(6);
+//
             $form_footer = $html_form->append_div("k1lib-form-footer");
             $form_footer->set_attrib("style", "margin-top:0.9em;");
             $form_buttons = $html_form->append_div("k1lib-form-buttons");
@@ -470,16 +470,16 @@ class creating extends base_with_data implements base_interface
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
                 $row_number++;
                 $row = new label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
-                $row->append_to($form_grid->row(1)->cell(1));
+                $row->append_to($form_body);
             }
 
 
             /**
              * BUTTONS
              */
-            $submit_button = new input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
+            $submit_button = new input("submit", "k1send", creating_strings::$button_submit, "btn icon btn-outline-success");
             if ($this->show_cancel_button) {
-                $cancel_button = get_link_button($this->back_url, creating_strings::$button_cancel, "small");
+                $cancel_button = get_link_button($this->back_url, creating_strings::$button_cancel);
                 $buttons_div = new label_value_row(NULL, "{$cancel_button} {$submit_button}");
             } else {
                 $buttons_div = new label_value_row(NULL, "{$submit_button}");

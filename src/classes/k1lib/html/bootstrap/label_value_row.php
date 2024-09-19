@@ -12,20 +12,20 @@ class label_value_row extends div
     {
         parent::__construct();
 //        $this->set_class('grid-margin-x', TRUE);
-        $this->medium(6)->large(12);
-        $this->medium(6)->large(12);
+        $this->general(12)->medium(6);
 
         $form_group = $this->append_div('form-group');
 
         if (is_object($value) && is_subclass_of($value, 'k1lib\html\tag')) {
             $input_name = $this->get_name_attribute($value);
             $label_tag = new \k1lib\html\label($label, $input_name, "k1lib-label-object");
+            
+            $value->set_class('form-control', TRUE);
         } else {
             $label_tag = new \k1lib\html\label($label, null, "k1lib-label-object");
 
         }
-        $form_group->append_child_head($label_tag);
-        $form_group->set_value($value);
+        $form_group->set_value("$label_tag $value");
     }
 
     private function get_name_attribute($tag_object)

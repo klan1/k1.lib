@@ -14,7 +14,7 @@ class grid_cell extends \k1lib\html\div {
      * @param integer $id
      *  */
     public function __construct($col_number = NULL, $class = NULL, $id = NULL) {
-        parent::__construct("col-{$col_number}" . $class, NULL);
+        parent::__construct($class, NULL);
 //        $this->set_attrib("data-grid-cell", $col_number);
     }
 
