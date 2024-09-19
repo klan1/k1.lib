@@ -432,13 +432,13 @@ class creating extends base_with_data implements base_interface
     {
         if (!empty($this->db_table_data_filtered)) {
             $this->div_container->set_attrib("class", "k1lib-crudlexs-create");
-
+            
             /**
              * DIV content
              */
             $this->div_container->set_attrib("class", "k1lib-form-generator " . $this->html_form_column_classes, TRUE);
             $this->div_container->set_attrib("style", "margin:0 auto;", TRUE);
-
+            
             /**
              * FORM time !!
              */
@@ -486,8 +486,8 @@ class creating extends base_with_data implements base_interface
             }
 
             $buttons_div->append_to($form_buttons);
-            $buttons_div->cell(1)->remove_childs();
-            $buttons_div->cell(2)->set_class("text-center", TRUE);
+            // $buttons_div->cell(1)->remove_childs();
+            // $buttons_div->cell(2)->set_class("text-center", TRUE);
 
 
             /**
