@@ -65,7 +65,7 @@ class board_base {
     /**
      * @var string
      */
-    protected $button_div_id = "k1lib-crudlexs-buttons";
+    protected $button_div_id = "k1lib-crudlexs-buttons mb-3";
 
     /**
      * @var string
@@ -135,11 +135,7 @@ class board_base {
             $current_html_title = $head->get_title();
             $head->set_title($current_html_title . " - " . $board_name);
 
-            if (is_array($this->controller_object->html_title_tags)) {
-                foreach ($this->controller_object->html_title_tags as $tag) {
-                    $tag->set_value(" - {$board_name}", TRUE);
-                }
-            }
+            $this->controller_object->html_subtitle_tag->set_value("{$board_name}", TRUE);
         }
     }
 
@@ -234,5 +230,4 @@ class board_base {
     function set_skip_form_action($skip_form_action) {
         $this->skip_form_action = $skip_form_action;
     }
-
 }

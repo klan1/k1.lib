@@ -81,11 +81,6 @@ class base {
     public $board_div_content;
 
     /**
-     *
-     * @var tag
-     */
-    public $html_title_tags = NULL;
-    /**
      * 
      * URL MANAGEMENT VALUES
      * 
@@ -144,6 +139,10 @@ class base {
      * Board names for html title and controller name tag
      * 
      */
+    protected string $title_tag_id = '#k1app-page-title';
+    protected string $subtitle_tag_id = '#k1app-page-subtitle';
+    public tag $html_title_tag;
+    public tag $html_subtitle_tag;
 
     /**
      * Template name set for HTML-TITLE on the header.php
@@ -183,7 +182,7 @@ class base {
      * @param string $template_place_name_html_title 
      * @param string $template_place_name_controller_name 
      */
-    public function __construct($tpl, $app_base_dir, PDO $db, $db_table_name, $controller_name, $title_tag_class = null) {
+    public function __construct($app_base_dir, PDO $db, $db_table_name, $controller_name) {
         /**
          * URL Management
          */
@@ -203,12 +202,11 @@ class base {
          * Controller name for add on <html><title> and controller name tag
          */
         $this->controller_name = $controller_name;
-        $this->html_title_tags = DOM::html()->body()->get_elements_by_class($title_tag_class);
-        if (!empty($this->html_title_tags)) {
-            $span = (new span("subheader"))->set_value($controller_name);
-            foreach ($this->html_title_tags as $tag) {
-                $tag->set_value($span);
-            }
+        $this->html_title_tag = DOM::html()->body()->q($this->title_tag_id);
+        $this->html_subtitle_tag = DOM::html()->body()->q($this->subtitle_tag_id);
+
+        if (!empty($this->html_title_tag)) {
+            $this->html_title_tag->set_value($controller_name);
             DOM::html()->head()->set_title(DOM::html()->head()->get_title() . " | $controller_name");
         }
 
@@ -238,6 +236,14 @@ class base {
                 d($js_file);
             }
         }
+    }
+
+    public function set_title_tag_id($title_tag_id): void {
+        $this->title_tag_id = $title_tag_id;
+    }
+
+    public function set_subtitle_tag_id($subtitle_tag_id): void {
+        $this->subtitle_tag_id = $subtitle_tag_id;
     }
 
     public function set_config_from_class($class_name = NULL) {
