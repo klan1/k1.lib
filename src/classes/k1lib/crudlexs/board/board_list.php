@@ -6,6 +6,7 @@ use k1lib\crudlexs\controller\base as base2;
 use k1lib\crudlexs\object\base;
 use k1lib\crudlexs\object\listing;
 use k1lib\forms\file_uploads;
+use k1lib\html\bootstrap\grid_row;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\iframe;
@@ -198,8 +199,17 @@ class board_list extends board_base implements board_interface {
             $list_content_div->append_to($this->board_content_div);
             // Show stats AFTER
             if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_AFTER_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {
-                $this->list_object->do_row_stats()->append_to($this->board_content_div);
-                $this->list_object->do_pagination()->append_to($this->board_content_div);
+                $grid_row = new grid_row(3, 1);
+                
+                $grid_row->set_class('mt-3', TRUE);
+                $grid_row->cell(1)->small(4);
+                $grid_row->cell(2)->small(5);
+                $grid_row->cell(3)->small(3);
+
+                $grid_row->cell(1)->append_child($this->list_object->do_row_stats());
+                $grid_row->cell(2)->append_child($this->list_object->do_pagination());
+                $grid_row->cell(3)->append_child($this->list_object->do_show_rows_per_page());
+                $this->board_content_div->append_child($grid_row);
             }
 
             return $this->board_content_div;

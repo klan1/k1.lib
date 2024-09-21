@@ -157,7 +157,8 @@ class app {
         $controller = str_replace('/', '\\', substr($controller_full, strlen(K1APP_CONTROLLERS_PATH), -4));
         $class = 'k1app\controllers\\' . $controller;
         $class::link_app($this);
-
+        
+        // TODO: complete this cases
         if ($this->is_web) {
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'GET':

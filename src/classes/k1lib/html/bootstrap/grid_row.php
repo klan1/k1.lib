@@ -17,7 +17,7 @@ class grid_row extends \k1lib\html\div {
 
         $this->parent = $parent;
 
-        parent::__construct("row-cols-{$grid_row}", NULL);
+        parent::__construct("row row-cols-{$num_cols}", NULL);
         if (!empty($this->parent)) {
             $this->append_to($this->parent);
         }

@@ -233,7 +233,6 @@ class listing extends base_with_data implements base_interface {
 
         $nav_pagination = new nav('list-pagination', "k1lib-crudlexs-list-pagination mt-2", $this->get_object_id() . "-pagination");
         $div_scroller = $nav_pagination->append_div("pagination-scroller");
-        $div_page_chooser = $nav_pagination->append_div("pagination-rows");
 
         if (($this->db_table_data) && (self::$rows_per_page <= $this->total_rows)) {
 
@@ -304,10 +303,21 @@ class listing extends base_with_data implements base_interface {
             if ($this->page_last == "#") {
                 $a->set_attrib("class", "disabled", true);
             }
+        }
+        return $nav_pagination;
+    }
+
+    public function do_show_rows_per_page() {
+        $num_rows_input_gorup = new div('input-group mb-3');
+        if (($this->db_table_data) && (self::$rows_per_page <= $this->total_rows)) {
+
+            $this_url = K1APP_URL . url2::get_this_url() . "#" . $this->get_object_id() . "-pagination";
+            $page_get_var_name = $this->get_object_id() . "-page";
+            $rows_get_var_name = $this->get_object_id() . "-rows";
+
             /**
              * PAGE ROWS selector
              */
-            $num_rows_input_gorup = new div('input-group mb-3');
             $num_rows_input_gorup->append_label('Show', 'goto_page', 'input-group-text');
             $num_rows_selector = new select("goto_page", "form-select col-2 k1lib-crudlexs-page-goto", $this->get_object_id() . "-page-rows-goto");
             $num_rows_selector->set_attrib("onChange", "use_select_option_to_url_go(this)");
@@ -324,9 +334,8 @@ class listing extends base_with_data implements base_interface {
                 $option = $num_rows_selector->append_option($option_url, $this->total_rows, ((self::$rows_per_page == $this->total_rows) ? TRUE : FALSE));
             }
             $num_rows_selector->append_to($num_rows_input_gorup);
-            $num_rows_input_gorup->append_to($div_page_chooser);
         }
-        return $nav_pagination;
+        return $num_rows_input_gorup;
     }
 
     function set_stat_msg($stat_msg) {

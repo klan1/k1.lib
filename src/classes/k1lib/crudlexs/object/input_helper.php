@@ -7,6 +7,7 @@ use k1lib\crudlexs\db_table;
 use k1lib\db\security\db_table_aliases;
 use k1lib\html\a;
 use k1lib\html\div;
+use k1lib\html\DOM;
 use k1lib\html\input;
 use k1lib\html\label;
 use k1lib\html\script;
@@ -15,6 +16,7 @@ use k1lib\html\span;
 use k1lib\html\textarea;
 use k1lib\urlrewrite\url as url;
 use const k1app\K1APP_URL;
+use const k1app\template\mazer\TPL_URL;
 use function k1lib\urlrewrite\get_back_url;
 
 class input_helper {
@@ -100,22 +102,28 @@ class input_helper {
         $input_tag = new textarea($field_encrypted);
         $input_tag->set_attrib("rows", 5);
 
+        DOM::html_document()->body()->append_child_tail(new script(TPL_URL . "assets/extensions/tinymce/tinymce.min.js"));
+        DOM::html_document()->body()->append_child_tail(new script(TPL_URL . "assets/static/js/pages/tinymce.js"));
+
         if ($load_tinymce) {
-            $html_script = "tinymce.init({ "
+            $html_script = "document.addEventListener('DOMContentLoaded', () => {" 
+                    . "tinymce.init({ "
                     . "selector: '#$field_encrypted',"
-                    . "height: 120,"
-                    . "plugins: [ 
-                    'advlist autolink lists link image charmap print preview anchor',
-                    'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table contextmenu paste code'
-                ],"
+                    . "height: 300,"
+                    . "menubar: false,"
+//                    . "plugins: [ 
+//                    'advlist autolink lists link image charmap print preview anchor',
+//                    'searchreplace visualblocks code fullscreen',
+//                    'insertdatetime media table contextmenu paste code'
+//                ],"
                     . $css_option
                     . "body_class: 'html-editor',"
 //                . "content_style: 'div {margin: 100px; border: 50px solid red; padding: 3px}',"
-                    . "toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',"
-                    . "paste_data_images: true,"
+                    . "toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent',"
+//                    . "paste_data_images: true,"
                     . ""
-                    . "});";
+                    . "});"
+                    . "})";
             $script = (new script())->set_value($html_script);
             $input_tag->post_code($script->generate());
         }
@@ -162,7 +170,6 @@ class input_helper {
         }
 
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
-
 
         $input_div = new div();
         $input_div->link_value_obj(new span('hidden'));
@@ -238,18 +245,20 @@ class input_helper {
             $div_input_group->link_value_obj($input_tag);
             return $div_input_group;
         } elseif (strstr("date,date-past,date-future", $crudlex_obj->db_table->get_field_config($field, 'validation')) !== FALSE) {
+
+            DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.js"));
+            DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/static/js/pages/date-picker.js"));
+
             $div_input_group = new div("input-group");
+            $span_icon = $div_input_group->append_span('input-group-text');
+            $span_icon->append_i(null, 'bi bi-calendar');
 
-            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field");
+            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert form-control flatpickr-crudlexs");
             $input_tag->set_attrib("placeholder", input_helper_strings::$input_date_placeholder);
-            $input_tag->set_attrib("k1lib-data-datepickup", TRUE);
+//            $input_tag->set_attrib("k1lib-data-datepickup", TRUE);
             $input_tag->append_to($div_input_group);
+            
 
-            $div_input_group_button = new div("input-group-button");
-            $div_input_group_button->append_to($div_input_group);
-
-            $search_button = new a("#", "", "_self", "button fi-calendar");
-            $search_button->append_to($div_input_group_button);
 
             $div_input_group->link_value_obj($input_tag);
             return $div_input_group;
@@ -275,5 +284,4 @@ class input_helper {
     public static function set_fk_fields_to_skip(array $fk_fields_to_skip) {
         self::$fk_fields_to_skip = $fk_fields_to_skip;
     }
-
 }
