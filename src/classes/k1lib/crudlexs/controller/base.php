@@ -19,13 +19,13 @@ use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\html\script;
-use k1lib\html\span;
 use k1lib\html\tag;
 use k1lib\K1MAGIC;
 use k1lib\session\session_plain;
 use k1lib\urlrewrite\url as url;
 use PDO;
 use Ramsey\Uuid\DegradedUuid;
+use const k1app\template\mazer\TPL_URL;
 use const k1lib\K1LIB_BASE_PATH;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\html\html_header_go;
@@ -558,6 +558,9 @@ class base {
     }
 
     public function start_board($specific_board_to_start = NULL) {
+
+        DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/extensions/jquery/jquery.min.js"));
+
         $this->board_started = TRUE;
         if ($this->board_inited) {
             if (empty($specific_board_to_start)) {

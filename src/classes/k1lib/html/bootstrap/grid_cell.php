@@ -2,7 +2,9 @@
 
 namespace k1lib\html\bootstrap;
 
-class grid_cell extends \k1lib\html\div {
+use k1lib\html\div;
+
+class grid_cell extends div {
 
     use bootstrap_methods;
 
@@ -13,7 +15,7 @@ class grid_cell extends \k1lib\html\div {
      * @param integer $class
      * @param integer $id
      *  */
-    public function __construct($col_number = NULL, $class = NULL, $id = NULL) {
+    public function __construct($col_number = NULL, $class = 'col', $id = NULL) {
         parent::__construct($class, NULL);
 //        $this->set_attrib("data-grid-cell", $col_number);
     }
@@ -25,17 +27,17 @@ class grid_cell extends \k1lib\html\div {
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
-    public function end() {
-        $this->set_attrib("class", "", TRUE);
-        return $this;
-    }
+//    public function end() {
+//        $this->set_attrib("class", "", TRUE);
+//        return $this;
+//    }
 
     /**
      * @param integer $num_rows
      * @param integer $num_cols
-     * @return \k1lib\html\bootstrap\grid
+     * @return grid
      */
     public function append_grid($num_rows, $num_cols) {
         $grid = new grid($num_rows, $num_cols, $this);

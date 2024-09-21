@@ -34,13 +34,13 @@ class DOM {
     }
 
     /**
-     * @return html
+     * @return html_document
      */
-    static function html() {
+    static function html(): html_document {
         return self::$html;
     }
 
-    static function html_document() {
+    static function html_document(): html_document {
         return self::$html;
     }
 
