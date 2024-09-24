@@ -106,7 +106,7 @@ class input_helper {
         DOM::html_document()->body()->append_child_tail(new script(TPL_URL . "assets/static/js/pages/tinymce.js"));
 
         if ($load_tinymce) {
-            $html_script = "document.addEventListener('DOMContentLoaded', () => {" 
+            $html_script = "document.addEventListener('DOMContentLoaded', () => {"
                     . "tinymce.init({ "
                     . "selector: '#$field_encrypted',"
                     . "height: 300,"
@@ -246,6 +246,7 @@ class input_helper {
             return $div_input_group;
         } elseif (strstr("date,date-past,date-future", $crudlex_obj->db_table->get_field_config($field, 'validation')) !== FALSE) {
 
+            DOM::html_document()->head()->link_css(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.css");
             DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.js"));
             DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/static/js/pages/date-picker.js"));
 
@@ -257,8 +258,6 @@ class input_helper {
             $input_tag->set_attrib("placeholder", input_helper_strings::$input_date_placeholder);
 //            $input_tag->set_attrib("k1lib-data-datepickup", TRUE);
             $input_tag->append_to($div_input_group);
-            
-
 
             $div_input_group->link_value_obj($input_tag);
             return $div_input_group;

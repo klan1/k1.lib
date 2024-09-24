@@ -8,7 +8,7 @@ class db_table {
      *
      * @var \PDO
      */
-    public $db;
+    public \k1lib\db\PDO_k1 $db;
     private $db_table_name = FALSE;
     public $db_table_config = FALSE;
     private $db_table_label_field = FALSE;
@@ -62,7 +62,7 @@ class db_table {
      * @param \PDO $db
      * @param string $db_table_name
      */
-    public function __construct(\PDO $db, $db_table_name) {
+    public function __construct(\k1lib\db\PDO_k1 $db, $db_table_name) {
         $this->db = $db;
         // check $db_table_name type
         if (is_string($db_table_name)) {
@@ -73,7 +73,7 @@ class db_table {
 
         $this->db_table_config = $this->_get_db_table_config($db_table_name);
         if ($this->db_table_config) {
-            $this->db_table_label_field = $this->_get_db_table_label_fields($this->db_table_config);
+            $this->db_table_label_field = $this->db->get_db_table_label_fields($this->db_table_config);
         } else {
             
         }
@@ -98,7 +98,7 @@ class db_table {
     public function set_custom_sql_query($sql_query, $override_db_table_config = FALSE) {
         $this->custom_sql_query_code = $sql_query;
         if ($override_db_table_config) {
-            $this->db_table_config = \k1lib\sql\get_db_tables_config_from_sql($this->db, $this->custom_sql_query_code);
+            $this->db_table_config = $this->db->get_db_tables_config_from_sql($this->custom_sql_query_code);
         }
 //        return $this->db_table_config;
     }
@@ -109,10 +109,6 @@ class db_table {
 
     public function get_db_table_label_fields() {
         return $this->db_table_label_field;
-    }
-
-    private static function _get_db_table_label_fields(&$db_table_config) {
-        return \k1lib\sql\get_db_table_label_fields($db_table_config);
     }
 
     public function get_db_table_config($reload = FALSE) {
@@ -135,11 +131,11 @@ class db_table {
     }
 
     private function _get_db_table_config($db_table_name, $recursion = TRUE, $use_cache = TRUE) {
-        return \k1lib\sql\get_db_table_config($this->db, $db_table_name, $recursion, $use_cache);
+        return $this->db->get_db_table_config($db_table_name, $recursion, $use_cache);
     }
 
     private function _get_db_table_keys_array($db_table_config) {
-        return \k1lib\sql\get_db_table_keys_array($db_table_config);
+        return $this->db->get_db_table_keys_array($db_table_config);
     }
 
     public function set_query_limit($offset = 0, $row_count = NULL) {
@@ -182,7 +178,7 @@ class db_table {
                     }
                 }
                 if (!empty($normal_filter)) {
-                    $query_where_pairs = \k1lib\sql\array_to_sql_set($this->db, $normal_filter, TRUE, TRUE);
+                    $query_where_pairs = $this->db->array_to_sql_set($normal_filter, TRUE, TRUE);
                 }
                 if (!empty($between_filter)) {
                     if (!empty($query_where_pairs)) {
@@ -233,7 +229,7 @@ class db_table {
         } else {
             $query_where_pairs = "";
             if ($exact_filter) {
-                $query_where_pairs = \k1lib\sql\array_to_sql_set_exclude($this->db, $clean_filter_array, TRUE, TRUE);
+                $query_where_pairs = $this->db->array_to_sql_set_exclude($clean_filter_array, TRUE, TRUE);
             } else {
                 $doFilter = FALSE;
                 foreach ($clean_filter_array as $search_value) {
@@ -324,7 +320,7 @@ class db_table {
                     $fields = $this->generate_sql_query_fields_by_rule($this->db_table_show_rule);
                     break;
                 case 'keys':
-                    $db_table_key_fields = \k1lib\sql\make_name_fields_sql_safe(\k1lib\sql\get_db_table_keys_array($this->db_table_config));
+                    $db_table_key_fields = $this->db->make_name_fields_sql_safe($this->db->get_db_table_keys_array($this->db_table_config));
                     if (!empty($db_table_key_fields)) {
                         $fields = implode(",", $db_table_key_fields);
                     } else {
@@ -346,7 +342,7 @@ class db_table {
              */
             if (!empty($this->custom_sql_query_code)) {
                 $sql_code = $this->custom_sql_query_code . " ";
-                $this->query_sql_total_rows = \k1lib\sql\get_sql_count_query_from_sql_code($sql_code) . " ";
+                $this->query_sql_total_rows = $this->db->get_sql_count_query_from_sql_code($sql_code) . " ";
             } else {
                 $sql_code = "SELECT {$fields} FROM {$this->db_table_name} ";
                 $this->query_sql_total_rows = "SELECT COUNT(*) as num_rows FROM {$this->db_table_name} ";
@@ -449,7 +445,7 @@ class db_table {
      */
     public function get_data($return_all = TRUE, $do_fields = TRUE) {
         if ($this->generate_sql_query()) {
-            $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql, $return_all, $do_fields);
+            $query_result = $this->db->sql_query($this->query_sql, $return_all, $do_fields);
 
             if (!empty($query_result)) {
                 $this->total_rows_filtered_result = count($query_result) - 1;
@@ -475,7 +471,7 @@ class db_table {
             }
 
             $operation_sql = "SELECT {$operation}(`$field`) AS `$field`  {$sql_last_part}";
-            $query_result = \k1lib\sql\sql_query($this->db, $operation_sql, FALSE);
+            $query_result = $this->db->sql_query($operation_sql, FALSE);
 
             if (!empty($query_result)) {
 
@@ -490,13 +486,13 @@ class db_table {
 
     public function get_data_keys() {
         if ($this->generate_sql_query('keys')) {
-            $query_result = \k1lib\sql\sql_query($this->db, $this->query_sql_keys, TRUE, TRUE);
+            $query_result = $this->db->sql_query($this->query_sql_keys, TRUE, TRUE);
             $just_keys_result = [];
             foreach ($query_result as $row => $data) {
                 if ($row === 0) {
                     continue;
                 }
-                $just_keys_result[$row] = \k1lib\sql\get_keys_array_from_row_data($query_result[$row], $this->db_table_config);
+                $just_keys_result[$row] = $this->db->get_keys_array_from_row_data($query_result[$row], $this->db_table_config);
             }
 
             if (!empty($just_keys_result)) {
@@ -515,7 +511,7 @@ class db_table {
 
     function get_total_rows() {
         if ($this->generate_sql_query()) {
-            $this->total_rows_result = \k1lib\sql\sql_query($this->db, $this->query_sql_total_rows, FALSE, FALSE);
+            $this->total_rows_result = $this->db->sql_query($this->query_sql_total_rows, FALSE, FALSE);
             if ($this->total_rows_result) {
                 return (int) $this->total_rows_result['num_rows'];
             } else {
@@ -535,7 +531,7 @@ class db_table {
     }
 
     public function get_enum_options($field) {
-        return \k1lib\sql\get_db_table_enum_values($this->db, $this->db_table_name, $field);
+        return $this->db->get_db_table_enum_values($this->db_table_name, $field);
     }
 
     public function do_data_validation(&$data_array_to_validate) {
@@ -553,7 +549,7 @@ class db_table {
             return FALSE;
         }
         $data_to_insert_merged = array_merge($data_to_insert, $this->constant_fields);
-        return \k1lib\sql\sql_insert($this->db, $this->db_table_name, $data_to_insert_merged, $error_data, $sql_query);
+        return $this->db->sql_insert($this->db_table_name, $data_to_insert_merged, $error_data, $sql_query);
     }
 
     /**
@@ -572,7 +568,7 @@ class db_table {
             return FALSE;
         }
         $data_to_update_merged = array_merge($data_to_update, $this->constant_fields);
-        return \k1lib\sql\sql_update($this->db, $this->db_table_name, $data_to_update_merged, $key_to_update, [], $error_data, $sql_query);
+        return $this->db->sql_update($this->db_table_name, $data_to_update_merged, $key_to_update, [], $error_data, $sql_query);
     }
 
     public function delete_data(array $key_to_delete) {
@@ -581,7 +577,7 @@ class db_table {
             trigger_error(__METHOD__ . ' ' . db_table_strings::$error_empty_data_delete_key, E_USER_WARNING);
             return FALSE;
         }
-        return \k1lib\sql\sql_del_row($this->db, $this->db_table_name, $key_to_delete);
+        return $this->db->sql_del_row($this->db_table_name, $key_to_delete);
     }
 
     public function set_order_by($field, $order = 'ASC') {
@@ -629,5 +625,4 @@ class db_table {
             return FALSE;
         }
     }
-
 }

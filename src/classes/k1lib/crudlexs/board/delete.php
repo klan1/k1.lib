@@ -51,7 +51,7 @@ class delete extends board_base implements board_interface {
         }
         if (!empty($this->row_keys_text)) {
             if ($this->read_object->load_db_table_data()) {
-                $this->row_keys_text_array = table_url_text_to_keys($this->row_keys_text, $this->controller_object->db_table->get_db_table_config());
+                $this->row_keys_text_array = $this->controller_object->db_table->db->table_url_text_to_keys($this->row_keys_text, $this->controller_object->db_table->get_db_table_config());
                 if ($_GET['auth-code'] === $this->read_object->get_auth_code_personal()) {
                     $this->sql_action_result = $this->controller_object->db_table->delete_data($this->row_keys_text_array);
                     if ($this->sql_action_result) {
