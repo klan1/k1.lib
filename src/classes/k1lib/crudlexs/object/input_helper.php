@@ -6,6 +6,7 @@ use k1lib\common_strings;
 use k1lib\crudlexs\db_table;
 use k1lib\db\security\db_table_aliases;
 use k1lib\html\a;
+use k1lib\html\button;
 use k1lib\html\div;
 use k1lib\html\DOM;
 use k1lib\html\input;
@@ -15,15 +16,18 @@ use k1lib\html\select;
 use k1lib\html\span;
 use k1lib\html\textarea;
 use k1lib\urlrewrite\url as url;
+use Ramsey\Uuid\DegradedUuid;
 use const k1app\K1APP_URL;
 use const k1app\template\mazer\TPL_URL;
+use const k1lib\K1LIB_BASE_PATH;
 use function k1lib\urlrewrite\get_back_url;
 
 class input_helper {
 
     static $do_fk_search_tool = TRUE;
-    static $url_to_search_fk_data = K1APP_URL . "general-utils/select-row-keys/";
-    static $url_to_send_row_keys_fk_data = K1APP_URL . "general-utils/send-row-keys/";
+    static $fk_search_tool_js_loaded = FALSE;
+    static $url_to_search_fk_data = K1APP_URL . "core/tools/select-row-keys/";
+    static $url_to_send_row_keys_fk_data = K1APP_URL . "core/tools/send-row-keys/";
     static $main_css = "";
     static private $fk_fields_to_skip = [];
     static public $boolean_true = NULL;
@@ -198,20 +202,6 @@ class input_helper {
     static function default_type(creating $crudlex_obj, $field) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
         if ((!empty($crudlex_obj->db_table->get_field_config($field, 'refereced_table_name')) && self::$do_fk_search_tool) && (array_search($field, self::$fk_fields_to_skip) === FALSE)) {
-            $div_input_group = new div("input-group");
-
-            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field form-control");
-            if (!empty($crudlex_obj->db_table->get_field_config($field, 'placeholder'))) {
-                $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
-            } else {
-                $input_tag->set_attrib("placeholder", input_helper_strings::$input_fk_placeholder);
-            }
-            $input_tag->set_attrib("k1lib-data-group-" . $crudlex_obj->db_table->get_field_config($field, 'refereced_table_name'), TRUE);
-            $input_tag->append_to($div_input_group);
-
-            $div_input_group_button = new div("input-group-button");
-            $div_input_group_button->append_to($div_input_group);
-
             /**
              * FK TABLE EXTRACTOR
              */
@@ -228,24 +218,62 @@ class input_helper {
 //            $crudlex_obj->set_do_table_field_name_encrypt();
             $static_values = $crudlex_obj->db_table->get_constant_fields();
             $static_values_enconded = $crudlex_obj->encrypt_field_names($static_values);
+            /**
+             * FK JS INPUT TOOL
+             */
+            if (DOM::html()->body() && !self::$fk_search_tool_js_loaded) {
+                $js_file = K1LIB_BASE_PATH . '/static/js/crudlexs.js';
+                if (file_exists($js_file)) {
+                    $js_content = file_get_contents($js_file);
+                    $js_script = new script();
+                    $js_script->set_value($js_content);
 
-            $search_button = new input("button", "search", "&#xf18d;", "button fi-page-search fk-button");
-            $search_button->set_attrib("style", "font-family:foundation-icons");
+                    $js_script->append_to(DOM::html()->body());
+                    self::$fk_search_tool_js_loaded = TRUE;
+                } else {
+                    d($js_file);
+                }
+            }
 
-            $url_params = [
-                "back-url" => $_SERVER['REQUEST_URI']
-            ];
-            $url_params = array_merge($static_values_enconded, $url_params);
+            /**
+             * INPUT GROUP
+             */
+            $div_input_group = new div("input-group");
+
+            /**
+             * INPUT TEXT
+             */
+            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert input-group-field form-control");
+            if (!empty($crudlex_obj->db_table->get_field_config($field, 'placeholder'))) {
+                $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
+            } else {
+                $input_tag->set_attrib("placeholder", input_helper_strings::$input_fk_placeholder);
+            }
+            $input_tag->set_attrib("k1lib-data-group-" . $crudlex_obj->db_table->get_field_config($field, 'refereced_table_name'), TRUE);
+            $input_tag->append_to($div_input_group);
+            /**
+             * FK SEARCH BUTTON
+             */
+            $search_button = new button(null, "btn btn-outline-secondary fk-button");
+            $search_button->append_i(null, 'bi bi-search');
+//            $search_button->set_attrib("style", "font-family:foundation-icons");
+
+            $url_params = array_merge(
+                    ["back-url" => $_SERVER['REQUEST_URI']],
+                    $static_values_enconded,
+            );
 
             $url_to_search_fk_data = url::do_url(self::$url_to_search_fk_data . "{$fk_table_alias}/list/$this_table_alias/", $url_params);
             $search_button->set_attrib("onclick", "javascript:use_select_row_keys(this.form,'{$url_to_search_fk_data}')");
 
-            $search_button->append_to($div_input_group_button);
+            $search_button->append_to($div_input_group);
 
             $div_input_group->link_value_obj($input_tag);
             return $div_input_group;
         } elseif (strstr("date,date-past,date-future", $crudlex_obj->db_table->get_field_config($field, 'validation')) !== FALSE) {
-
+            /**
+             * DATE TIME CALENDAR TOOL
+             */
             DOM::html_document()->head()->link_css(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.css");
             DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.js"));
             DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/static/js/pages/date-picker.js"));
@@ -262,7 +290,10 @@ class input_helper {
             $div_input_group->link_value_obj($input_tag);
             return $div_input_group;
         } else {
-            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert");
+            /**
+             * REGULAR INPUT FOR SIMPLE FIELDS
+             */
+            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert form-control");
             $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
             return $input_tag;
         }
