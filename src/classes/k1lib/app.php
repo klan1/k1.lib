@@ -59,7 +59,7 @@ class app {
      */
     function bootstrap(): void {
         /**
-         * Lests define if is web or shell
+         * Let's define if is web or shell
          */
         if (array_key_exists('SHELL', $_SERVER)) {
             if ($this->is_api) {
@@ -155,9 +155,12 @@ class app {
         url::enable();
         $controller_full = url::get_controller_path_from_url(K1APP_CONTROLLERS_PATH);
         $controller = str_replace('/', '\\', substr($controller_full, strlen(K1APP_CONTROLLERS_PATH), -4));
-        $class = 'k1app\controllers\\' . $controller;
-        $class::link_app($this);
+        $controlle_root_url = K1APP_URL . str_replace('\\', '/', $controller . '/');
         
+        $class = 'k1app\controllers\\' . $controller;
+        $class::set_root_url($controlle_root_url);
+        $class::link_app($this);
+
         // TODO: complete this cases
         if ($this->is_web) {
             switch ($_SERVER['REQUEST_METHOD']) {

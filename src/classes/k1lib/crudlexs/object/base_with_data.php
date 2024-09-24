@@ -16,8 +16,7 @@ use function k1lib\urlrewrite\get_back_url;
 use function k1lib\utils\decimal_to_n36;
 use function k1lib\utils\n36_to_decimal;
 
-class base_with_data extends base
-{
+class base_with_data extends base {
 
     /**
      *
@@ -74,15 +73,13 @@ class base_with_data extends base
     protected $force_file_uploads_as_links = TRUE;
     protected $custom_field_labels = [];
     protected $fields_to_hide = [];
-
     protected $is_valid = FALSE;
 
     /**
      * Always to create the object you must have a valid DB Table object already 
      * @param db_table $db_table DB Table object
      */
-    public function __construct(db_table $db_table, $row_keys_text = null, $custom_auth_code = null)
-    {
+    public function __construct(db_table $db_table, $row_keys_text = null, $custom_auth_code = null) {
         $this->back_url = get_back_url();
 
         if (!empty($row_keys_text)) {
@@ -122,33 +119,27 @@ class base_with_data extends base
         $this->set_css_class(get_class($this));
     }
 
-    public function get_auth_code()
-    {
+    public function get_auth_code() {
         return $this->auth_code;
     }
 
-    public function set_auth_code($row_keys_text)
-    {
+    public function set_auth_code($row_keys_text) {
         $this->auth_code = md5(K1MAGIC::get_value() . $row_keys_text);
     }
 
-    public function get_auth_code_personal()
-    {
+    public function get_auth_code_personal() {
         return $this->auth_code_personal;
     }
 
-    public function set_auth_code_personal($row_keys_text)
-    {
+    public function set_auth_code_personal($row_keys_text) {
         $this->auth_code_personal = md5(session_plain::get_user_hash() . $row_keys_text);
     }
 
-    public function get_do_table_field_name_encrypt()
-    {
+    public function get_do_table_field_name_encrypt() {
         return $this->do_table_field_name_encrypt;
     }
 
-    public function set_do_table_field_name_encrypt($do_table_field_name_encryp = TRUE)
-    {
+    public function set_do_table_field_name_encrypt($do_table_field_name_encryp = TRUE) {
         $this->do_table_field_name_encrypt = $do_table_field_name_encryp;
     }
 
@@ -156,8 +147,7 @@ class base_with_data extends base
      * 
      * @return Array Data with data[0] as table fields and data[1..n] for data rows. FALSE on no data.
      */
-    public function load_db_table_data($show_rule = null)
-    {
+    public function load_db_table_data($show_rule = null) {
         if ($this->is_valid()) {
             if (!empty($show_rule)) {
                 $this->db_table->set_db_table_show_rule($show_rule);
@@ -175,8 +165,7 @@ class base_with_data extends base
         }
     }
 
-    public function simulate_db_data_with_array(array $data_array)
-    {
+    public function simulate_db_data_with_array(array $data_array) {
         if (array_key_exists(0, $data_array)) {
             $headers_count = count($data_array[0]);
             foreach ($data_array as $row => $row_array) {
@@ -196,8 +185,7 @@ class base_with_data extends base
         return FALSE;
     }
 
-    public function simulate_db_data_keys_with_array(array $data_array)
-    {
+    public function simulate_db_data_keys_with_array(array $data_array) {
         if (array_key_exists(0, $data_array)) {
             $headers_count = count($data_array[0]);
             foreach ($data_array as $row => $row_array) {
@@ -216,8 +204,7 @@ class base_with_data extends base
         return FALSE;
     }
 
-    public function apply_label_filter()
-    {
+    public function apply_label_filter() {
         if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
             //            trigger_error(__METHOD__ . " - Can't work with an empty result", E_USER_WARNING);
             return FALSE;
@@ -242,8 +229,7 @@ class base_with_data extends base
         }
     }
 
-    public function apply_field_label_filter(array $apply_to = [])
-    {
+    public function apply_field_label_filter(array $apply_to = []) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_WARNING);
@@ -288,8 +274,7 @@ class base_with_data extends base
         }
     }
 
-    public function apply_file_uploads_filter()
-    {
+    public function apply_file_uploads_filter() {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_WARNING);
@@ -328,8 +313,7 @@ class base_with_data extends base
         }
     }
 
-    public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null, $custom_field_value = null, $href_target = null)
-    {
+    public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null, $custom_field_value = null, $href_target = null) {
         if ($this->get_state()) {
             $this->link_on_field_filter_applied = true;
             $a_tag = new a(url::do_url($link_to_apply), "", $href_target);
@@ -343,8 +327,7 @@ class base_with_data extends base
         }
     }
 
-    public function apply_html_tag_on_field_filter(tag $tag_object, $fields_to_change = base::USE_KEY_FIELDS, $custom_field_value = null)
-    {
+    public function apply_html_tag_on_field_filter(tag $tag_object, $fields_to_change = base::USE_KEY_FIELDS, $custom_field_value = null) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 //                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_NOTICE);
@@ -444,8 +427,11 @@ class base_with_data extends base
                                          * VALUE STR_REPLACE
                                          */
                                         if (!empty($tag_value)) {
+                                            d($row_data[$field_to_change]);
+                                            d(urlencode($row_data[$field_to_change]));
+
                                             $tag_value = str_replace("--rowkeys--", $key_array_text, $tag_value);
-                                            $tag_value = str_replace("--fieldvalue--", $row_data[$field_to_change], $tag_value);
+                                            $tag_value = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $tag_value);
                                             $tag_value = str_replace("--authcode--", $auth_code, $tag_value);
                                             if (!empty($actual_custom_field_value)) {
                                                 $tag_value = str_replace("--customfieldvalue--", $actual_custom_field_value, $tag_value);
@@ -487,23 +473,19 @@ class base_with_data extends base
         }
     }
 
-    public function get_link_on_field_filter_applied()
-    {
+    public function get_link_on_field_filter_applied() {
         return $this->link_on_field_filter_applied;
     }
 
-    public function get_back_url()
-    {
+    public function get_back_url() {
         return $this->back_url;
     }
 
-    public function set_back_url($back_url)
-    {
+    public function set_back_url($back_url) {
         $this->back_url = $back_url;
     }
 
-    function get_row_keys_text()
-    {
+    function get_row_keys_text() {
         if (!empty($this->row_keys_text)) {
             return $this->row_keys_text;
         } else {
@@ -511,8 +493,7 @@ class base_with_data extends base
         }
     }
 
-    function get_row_keys_array()
-    {
+    function get_row_keys_array() {
         if (!empty($this->row_keys_array)) {
             return $this->row_keys_array;
         } else {
@@ -520,8 +501,7 @@ class base_with_data extends base
         }
     }
 
-    public function encrypt_field_name($field_name)
-    {
+    public function encrypt_field_name($field_name) {
         // first, we need to know in what position is the field on the table design.
         if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
             $rnd = $_SESSION['CRUDLEXS-RND'];
@@ -552,8 +532,7 @@ class base_with_data extends base
         }
     }
 
-    public function encrypt_field_names($data_array)
-    {
+    public function encrypt_field_names($data_array) {
         $encoded_data_array = [];
         foreach ($data_array as $field => $value) {
             $encoded_data_array[$this->encrypt_field_name($field)] = $value;
@@ -561,8 +540,7 @@ class base_with_data extends base
         return $encoded_data_array;
     }
 
-    public function decrypt_field_name($encrypted_name)
-    {
+    public function decrypt_field_name($encrypted_name) {
         if (strstr($encrypted_name, "k1_") !== FALSE) {
             list($prefix, $n36_number) = explode("_", $encrypted_name);
             if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
@@ -584,8 +562,7 @@ class base_with_data extends base
         }
     }
 
-    public function decrypt_field_names($data_array)
-    {
+    public function decrypt_field_names($data_array) {
         $decoded_data_array = [];
         foreach ($data_array as $field => $value) {
             $decoded_data_array[$this->decrypt_field_name($field)] = $value;
@@ -593,8 +570,7 @@ class base_with_data extends base
         return $decoded_data_array;
     }
 
-    public function get_labels_from_data($row = 1)
-    {
+    public function get_labels_from_data($row = 1) {
         if ($this->db_table_data) {
             $data_label = $this->db_table->db->get_db_table_label_fields_from_row($this->db_table_data_filtered[$row], $this->db_table->get_db_table_config());
             if (!empty($data_label)) {
@@ -607,8 +583,7 @@ class base_with_data extends base
         }
     }
 
-    public function remove_labels_from_data_filtered($row = 1)
-    {
+    public function remove_labels_from_data_filtered($row = 1) {
         if ($this->db_table_data) {
             $label_fields_array = $this->db_table->get_db_table_label_fields($this->db_table->get_db_table_config());
             foreach ($label_fields_array as $field) {
@@ -617,50 +592,43 @@ class base_with_data extends base
         }
     }
 
-    public function get_db_table_data()
-    {
+    public function get_db_table_data() {
         return $this->db_table_data;
     }
 
-    public function get_db_table_data_keys()
-    {
+    public function get_db_table_data_keys() {
         return $this->db_table_data_keys;
     }
 
-    public function get_db_table_data_filtered()
-    {
+    public function get_db_table_data_filtered() {
         return $this->db_table_data_filtered;
     }
 
     /**
      * @return array
      */
-    function get_custom_field_labels()
-    {
+    function get_custom_field_labels() {
         return $this->custom_field_labels;
     }
 
     /**
      * @param array $custom_field_labels
      */
-    function set_custom_field_labels(array $custom_field_labels)
-    {
+    function set_custom_field_labels(array $custom_field_labels) {
         $this->custom_field_labels = $custom_field_labels;
     }
 
     /**
      * @return array
      */
-    public function get_fields_to_hide()
-    {
+    public function get_fields_to_hide() {
         return $this->fields_to_hide;
     }
 
     /**
      * @param array $fields_to_hide
      */
-    public function set_fields_to_hide(array $fields_to_hide)
-    {
+    public function set_fields_to_hide(array $fields_to_hide) {
         $this->fields_to_hide = $fields_to_hide;
     }
 }

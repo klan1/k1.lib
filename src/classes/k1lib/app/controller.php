@@ -9,9 +9,12 @@ use function k1lib\forms\check_all_incomming_vars;
 
 class controller {
 
+    static protected string $root_url;
+
     static protected blank $tpl;
     static protected app $app;
     static array $POST = [];
+    
 
     static function on_post() {
         self::$POST = check_all_incomming_vars($_POST);
@@ -69,4 +72,15 @@ class controller {
     static function app(): app {
         return self::$app;
     }
+    public static function get_root_url(): string {
+        return self::$root_url;
+    }
+
+    public static function set_root_url(string $root_url): void {
+        self::$root_url = $root_url;
+    }
+
+
+
+
 }

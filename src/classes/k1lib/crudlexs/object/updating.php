@@ -9,8 +9,6 @@ use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
 use function k1lib\forms\check_all_incomming_vars;
 use function k1lib\html\html_header_go;
-use function k1lib\sql\get_keys_array_from_row_data;
-use function k1lib\sql\table_keys_to_text;
 use function k1lib\urlrewrite\get_back_url;
 
 class updating extends creating {
@@ -96,12 +94,12 @@ class updating extends creating {
              */
             $merged_key_array = array_merge(
                     $this->db_table_data_keys[1]
-                    , get_keys_array_from_row_data(
+                    , $this->db_table->db->get_keys_array_from_row_data(
                             $this->post_incoming_array
                             , $this->db_table->get_db_table_config()
                     )
             );
-            $row_key_text = table_keys_to_text($merged_key_array, $this->db_table->get_db_table_config());
+            $row_key_text = $this->db_table->db->table_keys_to_text($merged_key_array, $this->db_table->get_db_table_config());
             if (!empty($url_to_go)) {
                 $this->set_auth_code($row_key_text);
                 $this->set_auth_code_personal($row_key_text);

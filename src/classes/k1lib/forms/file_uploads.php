@@ -116,12 +116,12 @@ class file_uploads {
 
     static function get_uploaded_file_url($file_name, $directory = NULL) {
 //        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-
+        d('uploaded: ' . $file_name);
         if (self::get_uploaded_file_path($file_name, $directory)) {
-            $file_name_to_get = self::$uploads_url . $directory . '/' . $file_name;
+            $file_name_to_get = self::$uploads_url . $directory . '/' . base64_encode($file_name);
 //        $file_name_to_get = self::$uploads_url . md5($file_name) . ".{$file_extension}";
         } else if (self::get_uploaded_file_path($file_name)) {
-            $file_name_to_get = self::$uploads_url . $file_name;
+            $file_name_to_get = self::$uploads_url . base64_encode($file_name);
 //        $file_name_to_get = self::$uploads_url . md5($file_name) . ".{$file_extension}";
         } else {
             return FALSE;
@@ -163,5 +163,4 @@ class file_uploads {
     static function get_last_error() {
         return self::$last_error;
     }
-
 }
