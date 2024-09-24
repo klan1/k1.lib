@@ -37,7 +37,7 @@ class DOM {
      * @return html_document
      */
     static function html(): html_document {
-        return self::$html;
+        return self::html_document();
     }
 
     static function html_document(): html_document {

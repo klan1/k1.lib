@@ -2,11 +2,13 @@
 
 namespace k1lib\crudlexs\board;
 
-use k1lib\crudlexs\controller\base as base2;
+use k1lib\common_strings;
+use k1lib\crudlexs\controller\base as controller_base;
 use k1lib\crudlexs\object\base;
 use k1lib\crudlexs\object\listing;
 use k1lib\forms\file_uploads;
 use k1lib\html\bootstrap\grid_row;
+use k1lib\html\bootstrap\modal;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\iframe;
@@ -43,7 +45,7 @@ class board_list extends board_base implements board_interface {
      */
     public $list_object;
 
-    public function __construct(base2 $controller_object, array $user_levels_allowed = []) {
+    public function __construct(controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-list";
@@ -101,15 +103,23 @@ class board_list extends board_base implements board_interface {
                     html_header_go($next_url);
                     exit;
                 }
-
+                /**
+                 * SERACH BUTTON AND MODAL
+                 */
                 $search_iframe = new iframe(url::do_url(
                                 $this->controller_object->get_controller_root_dir() . "search/?just-controller=1&caller-id=" . $controller_id)
-                        , 'utility-iframe', "search-iframe"
+                        , 'utility-iframe mw-100', "search-iframe"
                 );
-//                $this->board_content_div->append_child_tail($search_iframe);
-                DOM::html_document()->body()->append_child_tail($search_iframe);
-//                $search_iframe->append_to($this->board_content_div);
+                $search_iframe->set_attrib('width', '100%');
+                $search_iframe->set_attrib('height', '1200px');
+                
+                $modal = new modal(board_list_strings::$button_search, $search_iframe, common_strings::$button_cancel, NULL);
+
+                DOM::html_document()->body()->append_child_tail($modal);
+
                 $search_buttom = get_link_button('#', board_list_strings::$button_search, NULL, 'search-button');
+                $search_buttom->set_attrib('data-bs-toggle', 'modal');
+                $search_buttom->set_attrib('data-bs-target', '#staticBackdrop"');
                 $search_buttom->append_to($this->button_div_tag);
 
                 /**
@@ -200,7 +210,7 @@ class board_list extends board_base implements board_interface {
             // Show stats AFTER
             if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_AFTER_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {
                 $grid_row = new grid_row(3, 1);
-                
+
                 $grid_row->set_class('mt-3', TRUE);
                 $grid_row->cell(1)->small(4);
                 $grid_row->cell(2)->small(5);

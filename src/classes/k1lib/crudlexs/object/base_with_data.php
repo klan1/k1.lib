@@ -267,7 +267,7 @@ class base_with_data extends base
                             //                            $fk_table_field = $refereced_column_config['field'];
                             //                            $fk_db_table = new db_table($this->db_table->db, $fk_table);
                             //                            $fk_label_field = $fk_db_table->$this->db_table->get_db_table_label_fields();
-                            $fk_label_field = $this->db_table->get_fk_field_label($fk_table, [$field => $value], $table_config_array);
+                            $fk_label_field = $this->db_table->db->get_fk_field_label($fk_table, [$field => $value], $table_config_array);
                             //                            $this->db_table_data_filtered[$index][$field] = $fk_label_field;
                             if (!empty($fk_label_field)) {
                                 //                                d($this->db_table_data_filtered[$index][$field], TRUE);

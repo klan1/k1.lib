@@ -2,11 +2,12 @@
 
 namespace k1lib\crudlexs\board;
 
+use k1app\core\template\base as blank_tpl;
 use k1lib\common_strings;
 use k1lib\crudlexs\controller\base;
 use k1lib\crudlexs\object\search_helper;
 use k1lib\db\security\db_table_aliases;
-use k1lib\html\a;
+use k1lib\html\bootstrap\modal;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\iframe;
@@ -36,18 +37,20 @@ class search extends board_base implements board_interface {
         if (!parent::start_board()) {
             return FALSE;
         }
+        $blank_tpl = new blank_tpl();
+
+        $this->controller_object->app_controller::use_tpl($blank_tpl);
+        DOM::start($blank_tpl);
         /**
          * IFRAME for KF tool
          */
-        $fk_iframe = new iframe('', 'utility-iframe', "fk-iframe");
-        DOM::html_document()->body()->content()->append_child_tail($fk_iframe);
-        
+        $fk_iframe = new iframe('', 'utility-iframe mw-100', "fk-iframe");
+//        $fk_iframe->set_style($style)
+
+        $modal = new modal(common_strings::$fk_tool_name, $fk_iframe);
+        DOM::html_document()->body()->append_child_tail($modal);
+
         if ($this->search_object->get_state()) {
-            $close_search_buttom = new a(NULL, " " . common_strings::$button_cancel, "_parent");
-            $close_search_buttom->set_id("close-search-button");
-            $close_search_buttom->set_attrib("class", "button warning fi-page-close");
-            $close_search_buttom->set_attrib("onClick", "parent.close_search();");
-            $close_search_buttom->append_to($this->button_div_tag);
 
             $this->search_object->set_search_catch_post_enable($this->search_catch_post_enable);
             $this->search_object->set_html_column_classes("column lg-11 md-11 sm-12");
@@ -100,5 +103,4 @@ class search extends board_base implements board_interface {
         }
         return $this->object_id = $table_name . "-" . basename(str_replace("\\", "/", $class_name));
     }
-
 }

@@ -584,7 +584,7 @@ AND table_name = '{$table}'";
                         $db_table_config = $this->get_db_table_config($table);
                     }
                     if (empty($table_keys)) {
-                        $keys_where_condition = table_keys_to_where_condition($data, $db_table_config);
+                        $keys_where_condition = $this->table_keys_to_where_condition($data, $db_table_config);
                     } else {
                         $keys_where_condition = $this->array_to_sql_set($table_keys, TRUE, TRUE);
                     }
@@ -938,7 +938,7 @@ AND table_name = '{$table}'";
      * @param integer $position If this is -1 will return the last field found
      * @return String Label field name
      */
-    function get_db_table_label_fields($db_table_config) {
+    public function get_db_table_label_fields($db_table_config) {
         if (!is_array($db_table_config)) {
             die(__FUNCTION__ . ": need an array to work on \$db_table_config");
         }
@@ -974,7 +974,7 @@ AND table_name = '{$table}'";
         }
     }
 
-    function resolve_fk_real_field_name(&$data_array_to_modify, $field_to_resolve, $table_config_array) {
+    public function resolve_fk_real_field_name(&$data_array_to_modify, $field_to_resolve, $table_config_array) {
         if (!empty($table_config_array[$field_to_resolve]['refereced_column_config'])) {
             $refereced_column_config = $table_config_array[$field_to_resolve]['refereced_column_config'];
             while (!empty($refereced_column_config['refereced_column_config'])) {
@@ -1011,17 +1011,17 @@ AND table_name = '{$table}'";
         foreach ($url_key_array as $url_key_index => $url_key_value) {
             
         }
-        resolve_fk_real_field_name($url_key_array, $url_key_index, $source_table_config);
+        $this->resolve_fk_real_field_name($url_key_array, $url_key_index, $source_table_config);
 
         if (!is_string($fk_table_name)) {
             trigger_error("\$fk_table_name must to be a String", E_USER_ERROR);
         }
         $fk_table_config = $this->get_db_table_config($fk_table_name);
-        $fk_table_label_fields = get_db_table_label_fields($fk_table_config);
+        $fk_table_label_fields = $this->get_db_table_label_fields($fk_table_config);
 
         if (!empty($fk_table_label_fields)) {
-            $fk_table_label_fields_text = implode(",", make_name_fields_sql_safe($fk_table_label_fields));
-            $fk_where_condition = table_keys_to_where_condition($url_key_array, $fk_table_config);
+            $fk_table_label_fields_text = implode(",", $this->make_name_fields_sql_safe($fk_table_label_fields));
+            $fk_where_condition = $this->table_keys_to_where_condition($url_key_array, $fk_table_config);
             if (!empty($fk_where_condition)) {
                 $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM `$fk_table_name` WHERE $fk_where_condition";
                 $sql_result = $this->sql_query($fk_sql_query, FALSE);
@@ -1245,7 +1245,7 @@ AND table_name = '{$table}'";
         // now go one by one row on the result
         foreach ($query_result as $column => $value) {
             if ($db_table_config[$column]['type'] == 'enum') {
-                $enum_values_array = get_db_table_enum_values($db, $db_table_config[$column]['table'], $column);
+                $enum_values_array = $this->get_db_table_enum_values($db, $db_table_config[$column]['table'], $column);
                 if (count($enum_values_array) > 0) {
                     $enum_values_array = array_flip($enum_values_array);
                     $query_result[$column] = $enum_values_array[$value];

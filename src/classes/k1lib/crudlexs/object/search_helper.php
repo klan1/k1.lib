@@ -3,8 +3,8 @@
 namespace k1lib\crudlexs\object;
 
 use k1lib\crudlexs\db_table;
+use k1lib\html\div;
 use k1lib\html\input;
-use Ramsey\Uuid\DegradedUuid;
 use function k1lib\common\unserialize_var;
 
 class search_helper extends creating {
@@ -55,12 +55,16 @@ class search_helper extends creating {
         $this->apply_label_filter();
 
         $this->insert_inputs_on_data_row();
+        
+        $div_container = new div('container');
 
         $search_html = parent::do_html_object();
-        $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $_SERVER['HTTP_REFERER']);
+        $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $_SERVER['HTTP_REFERER'] ?? '#');
         $search_html->get_elements_by_tag("form")[0]->set_attrib("target", "_parent");
         $search_html->get_elements_by_tag("form")[0]->append_child(new input("hidden", "from-search", urlencode($this->caller_url)));
-        return $search_html;
+        
+        $search_html->append_to($div_container);
+        return $div_container;
     }
 
     function catch_post_data() {

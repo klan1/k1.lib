@@ -2,6 +2,7 @@
 
 namespace k1lib\crudlexs\controller;
 
+use k1lib\app;
 use k1lib\common_strings;
 use k1lib\crudlexs\board\board_base_strings;
 use k1lib\crudlexs\board\board_list;
@@ -15,6 +16,7 @@ use k1lib\crudlexs\object\creating;
 use k1lib\crudlexs\object\listing;
 use k1lib\crudlexs\object\reading;
 use k1lib\crudlexs\object\updating;
+use k1lib\db\PDO_k1;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
@@ -24,9 +26,7 @@ use k1lib\K1MAGIC;
 use k1lib\session\session_plain;
 use k1lib\urlrewrite\url as url;
 use PDO;
-use Ramsey\Uuid\DegradedUuid;
 use const k1app\template\mazer\TPL_URL;
-use const k1lib\K1LIB_BASE_PATH;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\html\html_header_go;
 use function k1lib\sql\table_url_text_to_keys;
@@ -39,7 +39,10 @@ class base {
      * DB table main object
      * @var db_table 
      */
-    public $db_table;
+    public db_table $db_table;
+    public PDO_k1 $db;
+    public app $app;
+    public string $app_controller;
 
     /**
      * Controller name for add on <html><title> and controller name tag
@@ -182,7 +185,7 @@ class base {
      * @param string $template_place_name_html_title 
      * @param string $template_place_name_controller_name 
      */
-    public function __construct($app_base_dir, PDO $db, $db_table_name, $controller_name) {
+    public function __construct($app_base_dir, string $app_controller, $db_table_name, $controller_name) {
         /**
          * URL Management
          */
@@ -196,7 +199,10 @@ class base {
         /**
          * DB Table 
          */
-        $this->db_table = new db_table($db, $db_table_name);
+        $this->app = $app_controller::app();
+        $this->app_controller = $app_controller;
+        $this->db = $this->app->db();
+        $this->db_table = new db_table($this->db, $db_table_name);
 
         /**
          * Controller name for add on <html><title> and controller name tag
@@ -224,17 +230,17 @@ class base {
         $this->board_delete_name = controller_base_strings::$board_delete_name;
 
         if (DOM::html()->body()) {
-            $js_file = K1LIB_BASE_PATH . '/../dist/crudlexs/main.js';
-            if (file_exists($js_file)) {
-                $js_content = file_get_contents($js_file);
-
-                $js_script = new script();
-                $js_script->set_value($js_content);
-
-                DOM::html()->body()->append_child_tail($js_script);
-            } else {
-                d($js_file);
-            }
+//            $js_file = K1LIB_BASE_PATH . '/../dist/crudlexs/main.js';
+//            if (file_exists($js_file)) {
+//                $js_content = file_get_contents($js_file);
+//
+//                $js_script = new script();
+//                $js_script->set_value($js_content);
+//
+//                DOM::html()->body()->append_child_tail($js_script);
+//            } else {
+//                d($js_file);
+//            }
         }
     }
 
@@ -997,6 +1003,25 @@ class base {
 
     public function on_board_update() {
         if (isset($this->board_update_object) && $this->board_update_object->get_is_enabled()) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * @return board_search
+     */
+    public function board_search() {
+        if (isset($this->board_search_object) && $this->board_search_object->get_is_enabled()) {
+            return $this->board_search_object;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function on_board_search() {
+        if (isset($this->board_search_object) && $this->board_search_object->get_is_enabled()) {
             return TRUE;
         } else {
             return FALSE;
