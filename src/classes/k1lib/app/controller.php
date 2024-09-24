@@ -5,7 +5,6 @@ namespace k1lib\app;
 use k1app\template\mazer\layouts\blank;
 use k1lib\app;
 use k1lib\html\notifications\on_DOM as DOM_notifications;
-
 use function k1lib\forms\check_all_incomming_vars;
 
 class controller {
@@ -38,6 +37,7 @@ class controller {
     }
 
     static function start() {
+        
     }
 
     static function run() {
@@ -52,8 +52,14 @@ class controller {
         self::$tpl = $tpl;
         DOM_notifications::set_tpl($tpl, $tag_id_override);
     }
+
     static function tpl() {
         return self::$tpl;
+    }
+
+    public function set_tpl($tpl, $tag_id_override = null) {
+        self::$tpl = $tpl;
+        DOM_notifications::set_tpl($tpl, $tag_id_override);
     }
 
     static function link_app(app $app) {
