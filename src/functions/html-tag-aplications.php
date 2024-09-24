@@ -1,4 +1,4 @@
-<?php
+<?php //
 
 /**
  * HTML Related funcions that uses the HTML Classes
@@ -238,7 +238,7 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
             break;
         case "cancel":
             $button_icon = "bi bi-x";
-            $theme = "btn-outline-alert";
+            $theme = "btn-outline-secondary";
             break;
         case "ok":
             $button_icon = "bi bi-check";

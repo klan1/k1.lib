@@ -30,7 +30,6 @@
             "src/lang/init-lang.php",
             "src/functions/global.php",
             "src/functions/forms.php",
-            "src/functions/sql.php",
             "src/functions/urlrewrite.php",
             "src/functions/utils.php",
             "src/functions/xml.php",

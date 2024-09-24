@@ -12,12 +12,6 @@ use k1lib\html\tag;
 use k1lib\K1MAGIC;
 use k1lib\session\session_plain as session_plain;
 use k1lib\urlrewrite\url as url;
-use function k1lib\sql\get_db_table_keys_array;
-use function k1lib\sql\get_db_table_label_fields;
-use function k1lib\sql\get_db_table_label_fields_from_row;
-use function k1lib\sql\get_fk_field_label;
-use function k1lib\sql\table_keys_to_text;
-use function k1lib\sql\table_url_text_to_keys;
 use function k1lib\urlrewrite\get_back_url;
 use function k1lib\utils\decimal_to_n36;
 use function k1lib\utils\n36_to_decimal;
@@ -107,7 +101,7 @@ class base_with_data extends base
                         parent::__construct($db_table);
                         $this->auth_code = $auth_expected;
                         $this->auth_code_personal = $auth_personal_expected;
-                        $this->row_keys_array = table_url_text_to_keys($this->row_keys_text, $this->db_table->get_db_table_config());
+                        $this->row_keys_array = $this->db_table->db->table_url_text_to_keys($this->row_keys_text, $this->db_table->get_db_table_config());
                         $this->db_table->set_query_filter($this->row_keys_array, TRUE);
                         $this->is_valid = TRUE;
                     } else {
@@ -272,8 +266,8 @@ class base_with_data extends base
                             $fk_table = $refereced_column_config['table'];
                             //                            $fk_table_field = $refereced_column_config['field'];
                             //                            $fk_db_table = new db_table($this->db_table->db, $fk_table);
-                            //                            $fk_label_field = $fk_db_table->get_db_table_label_fields();
-                            $fk_label_field = get_fk_field_label($this->db_table->db, $fk_table, [$field => $value], $table_config_array);
+                            //                            $fk_label_field = $fk_db_table->$this->db_table->get_db_table_label_fields();
+                            $fk_label_field = $this->db_table->get_fk_field_label($fk_table, [$field => $value], $table_config_array);
                             //                            $this->db_table_data_filtered[$index][$field] = $fk_label_field;
                             if (!empty($fk_label_field)) {
                                 //                                d($this->db_table_data_filtered[$index][$field], TRUE);
@@ -357,13 +351,13 @@ class base_with_data extends base
                 return FALSE;
             } else {
                 if ($fields_to_change === base::USE_KEY_FIELDS) {
-                    $fields_to_change = get_db_table_keys_array($this->db_table->get_db_table_config());
+                    $fields_to_change = $this->db_table->get_db_table_keys_array($this->db_table->get_db_table_config());
                 } elseif ($fields_to_change === base::USE_ALL_FIELDS) {
                     $fields_to_change = $this->db_table_data[0];
                 } elseif ($fields_to_change === base::USE_LABEL_FIELDS) {
-                    $fields_to_change = get_db_table_label_fields($this->db_table->get_db_table_config());
+                    $fields_to_change = $this->db_table->get_db_table_label_fields($this->db_table->get_db_table_config());
                     if (empty($fields_to_change)) {
-                        $fields_to_change = get_db_table_keys_array($this->db_table->get_db_table_config());
+                        $fields_to_change = $this->db_table->get_db_table_keys_array($this->db_table->get_db_table_config());
                     }
                 } elseif (empty($fields_to_change)) {
                     $fields_to_change = $this->db_table_data[0];
@@ -429,7 +423,7 @@ class base_with_data extends base
                                             $custom_field_value = implode("--", $custom_field_value);
                                         }
 
-                                        $key_array_text = table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
+                                        $key_array_text = $this->db_table->db->table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
                                         $auth_code = md5(K1MAGIC::get_value() . $key_array_text);
 
                                         /**
@@ -602,7 +596,7 @@ class base_with_data extends base
     public function get_labels_from_data($row = 1)
     {
         if ($this->db_table_data) {
-            $data_label = get_db_table_label_fields_from_row($this->db_table_data_filtered[$row], $this->db_table->get_db_table_config());
+            $data_label = $this->db_table->db->get_db_table_label_fields_from_row($this->db_table_data_filtered[$row], $this->db_table->get_db_table_config());
             if (!empty($data_label)) {
                 return $data_label;
             } else {
@@ -616,7 +610,7 @@ class base_with_data extends base
     public function remove_labels_from_data_filtered($row = 1)
     {
         if ($this->db_table_data) {
-            $label_fields_array = get_db_table_label_fields($this->db_table->get_db_table_config());
+            $label_fields_array = $this->db_table->get_db_table_label_fields($this->db_table->get_db_table_config());
             foreach ($label_fields_array as $field) {
                 unset($this->db_table_data_filtered[$row][$field]);
             }
