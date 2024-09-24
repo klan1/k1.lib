@@ -29,7 +29,6 @@ use PDO;
 use const k1app\template\mazer\TPL_URL;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\html\html_header_go;
-use function k1lib\sql\table_url_text_to_keys;
 
 class base {
 
@@ -46,7 +45,7 @@ class base {
 
     /**
      * Controller name for add on <html><title> and controller name tag
-     * @var string 
+     * @var string    
      */
     protected $controller_name;
 
@@ -469,7 +468,7 @@ class base {
             if (!empty($related_url_keys_text)) {
                 $related_table = $db_table_name;
                 $related_db_table = new db_table($this->db_table->db, $related_table);
-                $related_url_keys_array = table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                $related_url_keys_array = $related_db_table->db->table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
                 /**
                  * lets fix the non-same key name
                  */

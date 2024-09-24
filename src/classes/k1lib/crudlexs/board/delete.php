@@ -9,7 +9,6 @@ use k1lib\html\div;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
 use function k1lib\html\html_header_go;
-use function k1lib\sql\table_url_text_to_keys;
 use function k1lib\urlrewrite\get_back_url;
 
 class delete extends board_base implements board_interface {

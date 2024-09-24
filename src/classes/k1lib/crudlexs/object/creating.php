@@ -2,7 +2,6 @@
 
 namespace k1lib\crudlexs\object;
 
-use k1lib\html\bootstrap\grid;
 use k1lib\html\bootstrap\grid_row;
 use k1lib\html\bootstrap\label_value_row;
 use k1lib\html\div;
@@ -16,8 +15,6 @@ use function k1lib\common\unset_serialize_var;
 use function k1lib\forms\check_all_incomming_vars;
 use function k1lib\html\get_link_button;
 use function k1lib\html\html_header_go;
-use function k1lib\sql\get_keys_array_from_row_data;
-use function k1lib\sql\table_keys_to_text;
 
 /**
  * 
@@ -524,7 +521,7 @@ class creating extends base_with_data implements base_interface {
                     }
                 }
             }
-            $new_keys_array = get_keys_array_from_row_data(
+            $new_keys_array = $this->db_table->db->get_keys_array_from_row_data(
                     array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields()),
                     $this->db_table->get_db_table_config()
             );
@@ -553,7 +550,7 @@ class creating extends base_with_data implements base_interface {
     public function post_insert_redirect($url_to_go = "../", $do_redirect = TRUE) {
         if (($this->inserted) && ($this->inserted_result !== FALSE)) {
 
-            $new_keys_text = table_keys_to_text($this->get_inserted_keys(), $this->db_table->get_db_table_config());
+            $new_keys_text = $this->db_table->db->table_keys_to_text($this->get_inserted_keys(), $this->db_table->get_db_table_config());
 
             if (!empty($url_to_go)) {
                 $this->set_auth_code($new_keys_text);
