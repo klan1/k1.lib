@@ -427,9 +427,6 @@ class base_with_data extends base {
                                          * VALUE STR_REPLACE
                                          */
                                         if (!empty($tag_value)) {
-                                            d($row_data[$field_to_change]);
-                                            d(urlencode($row_data[$field_to_change]));
-
                                             $tag_value = str_replace("--rowkeys--", $key_array_text, $tag_value);
                                             $tag_value = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $tag_value);
                                             $tag_value = str_replace("--authcode--", $auth_code, $tag_value);
@@ -438,13 +435,13 @@ class base_with_data extends base {
                                             }
                                             $tag_value = str_replace("--fieldauthcode--", md5(K1MAGIC::get_value() . (!empty($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_value);
                                         }
-
                                         if (get_class($tag_object) == "k1lib\html\a") {
                                             $tag_object->set_attrib("href", $tag_href);
                                             $tag_object->set_value($tag_value);
                                         }
                                         if (get_class($tag_object) == "k1lib\html\img") {
                                             $tag_object->set_attrib("src", $tag_href);
+                                            $tag_object->set_style("max-height:150px; max-width:150px"); // inline styles, yes
                                         }
                                         // get-elements-by-tags fix
                                         foreach ($a_tags as $a_tag) {
