@@ -230,7 +230,7 @@ class read extends board_base implements board_interface {
      * @param boolean $show_create
      * @return div|boolean
      */
-    public function create_related_list(db_table $db_table, $field_links_array, $title, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
+    public function create_related_list(db_table $db_table, $field_links_array, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
 
         $table_alias = db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new div();
@@ -242,7 +242,7 @@ class read extends board_base implements board_interface {
             $current_row_keys_text_auth_code = md5(K1MAGIC::get_value() . $current_row_keys_text);
 
             $detail_div->set_class("k1lib-related-data-list {$table_alias}");
-            $related_title = $detail_div->append_h4($title, "{$table_alias}");
+            $related_buttons = $detail_div->append_div("related-buttons related-{$table_alias} mb-2");
             $detail_div->append_div("related-messaje");
 
             $get_vars = [
@@ -254,7 +254,7 @@ class read extends board_base implements board_interface {
                 $all_data_url = url::do_url($board_root . $board_list . "/" . urlencode($current_row_keys_text) . "/", $get_vars, FALSE);
                 $this->related_html_object_show_all_data = get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
                 if ($this->related_show_all_data) {
-                    $related_title->set_value($this->related_html_object_show_all_data, TRUE);
+                    $related_buttons->set_value($this->related_html_object_show_all_data, TRUE);
                 }
             }
             if ($use_back_url) {
@@ -268,7 +268,7 @@ class read extends board_base implements board_interface {
             $this->related_html_object_show_new = get_link_button($create_url, board_list_strings::$button_new, "tiny");
 
             if ($this->related_show_new) {
-                $related_title->set_value($this->related_html_object_show_new, TRUE);
+                $related_buttons->set_value($this->related_html_object_show_new, TRUE);
             }
 
             $this->related_list->do_html_object()->append_to($detail_div);

@@ -115,8 +115,16 @@ class controller_crud extends controller {
     }
 
     static function add_related_table($table_name, $controller_url, $related_title) {
+
         if (self::$co->on_board_read()) {
-            $related_div = self::$crud_container->append_div("k1lib-crudlexs-related-data");
+            $page_heading = self::$tpl->q('.page-heading');
+            if (!empty($page_heading)) {
+                $related_div = $page_heading[0]->append_div("k1lib-crudlexs-related-data");
+            } else {
+                $related_div = self::$tpl->body()->append_div("k1lib-crudlexs-related-data");
+            }
+//        ->append_div('section k1lib-crudlexs-related-data');;
+//            $related_div = self::$crud_container->append_div("k1lib-crudlexs-related-data");
             /**
              * Related list
              */
@@ -126,14 +134,15 @@ class controller_crud extends controller {
             $related_list = self::$co->board_read_object->create_related_list(
                     $related_db_table,
                     NULL,
-                    $related_title,
                     $controller_url,
                     ('\k1app\table_config\\' . $table_name)::BOARD_CREATE_URL,
                     ('\k1app\table_config\\' . $table_name)::BOARD_READ_URL,
                     ('\k1app\table_config\\' . $table_name)::BOARD_LIST_URL,
                     FALSE
             );
-            $related_list->append_to($related_div);
+//            $related_list->append_to($related_div);
+            $related_card = new \k1app\template\mazer\components\card($related_title, $related_list);
+            $related_card->append_to($related_div);
         }
     }
 
