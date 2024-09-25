@@ -413,7 +413,7 @@ class base_with_data extends base {
                                          * HREF STR_REPLACE
                                          */
                                         $tag_href = str_replace("--rowkeys--", urlencode($key_array_text), $tag_href);
-                                        $tag_href = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $tag_href);
+                                        $tag_href = str_replace("--fieldvalue--", rawurlencode($row_data[$field_to_change]), $tag_href); // rawurlencode for images loads correctly
                                         // TODO: Why did I needed this ? WFT Line
                                         if (!empty($custom_field_value)) {
                                             $actual_custom_field_value = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $custom_field_value);
