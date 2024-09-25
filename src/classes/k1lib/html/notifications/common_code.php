@@ -10,7 +10,6 @@
 
 namespace k1lib\html\notifications;
 
-use k1lib\html\div;
 use k1lib\html\html_document;
 
 class common_code {
