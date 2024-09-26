@@ -246,6 +246,7 @@ class session_db {
                             return FALSE;
                         }
                     } else {
+                        d('session from coockie');
                         app_session::start_logged_session(
                                 $data['user_data'][self::$user_login_field],
                                 $data['user_data'],
@@ -253,6 +254,10 @@ class session_db {
                         );
                     }
                 } else {
+                    d('NOT session from coockie');
+                    d($data);
+                    d(app_session::get_user_hash($data['user_login_input_value']));
+
                     return FALSE;
                 }
             }
