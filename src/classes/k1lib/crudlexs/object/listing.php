@@ -134,7 +134,7 @@ class listing extends base_with_data implements base_interface {
             /**
              * Create the HTML table from DATA lodaed 
              */
-            $this->html_table = new table_from_data("k1lib-crudlexs-list table table-striped mb-0 {$table_alias}");
+            $this->html_table = new table_from_data("k1lib-crudlexs-list table table-striped table-hover mb-0 {$table_alias}");
             $this->html_table->append_to($this->div_container);
             $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
             $this->html_table->set_data($this->db_table_data_filtered);

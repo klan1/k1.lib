@@ -48,7 +48,7 @@ class table_from_data extends table
      */
     protected $float_round = NULL;
 
-    function __construct($class = "table table-striped mb-0", $id = "")
+    function __construct($class = "table table-striped table-hover mb-0", $id = "")
     {
 
         //        $this->parent = $parent;
