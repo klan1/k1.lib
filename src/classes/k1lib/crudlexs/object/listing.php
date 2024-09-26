@@ -123,10 +123,10 @@ class listing extends base_with_data implements base_interface {
      * 
      * @return div
      */
-    public function do_html_object() {
+    public function do_html_object(): div {
         $table_alias = db_table_aliases::encode($this->db_table->get_db_table_name());
 
-        $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content scroll-x");
+        $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content table-responsive");
         if ($this->db_table_data) {
             if ($this->do_orderby_headers) {
                 $this->do_orderby_headers();
@@ -148,11 +148,11 @@ class listing extends base_with_data implements base_interface {
     /**
      * @return table_from_data
      */
-    public function get_html_table() {
+    public function get_html_table(): table_from_data {
         return $this->html_table;
     }
 
-    public function apply_orderby_headers() {
+    public function apply_orderby_headers(): void {
         $table_alias = db_table_aliases::encode($this->db_table->get_db_table_name());
 
         $sort_by_name = $table_alias . '-sort-by';
@@ -171,7 +171,7 @@ class listing extends base_with_data implements base_interface {
         }
     }
 
-    public function do_orderby_headers() {
+    public function do_orderby_headers(): void {
         $this->set_do_table_field_name_encrypt();
 
         $headers = &$this->db_table_data_filtered[0];
@@ -206,7 +206,7 @@ class listing extends base_with_data implements base_interface {
      * 
      * @return div
      */
-    public function do_row_stats($custom_msg = "") {
+    public function do_row_stats($custom_msg = ""): p {
         $div_stats = new p(NULL, "k1lib-crudlexs-list-stats mt-3");
         $div_stats->set_style('font-size: 0.8rem;');
         if (($this->db_table_data)) {
@@ -229,7 +229,7 @@ class listing extends base_with_data implements base_interface {
      * 
      * @return div
      */
-    public function do_pagination() {
+    public function do_pagination(): nav {
 
         $nav_pagination = new nav('list-pagination', "k1lib-crudlexs-list-pagination mt-2", $this->get_object_id() . "-pagination");
         $div_scroller = $nav_pagination->append_div("pagination-scroller");
@@ -307,7 +307,7 @@ class listing extends base_with_data implements base_interface {
         return $nav_pagination;
     }
 
-    public function do_show_rows_per_page() {
+    public function do_show_rows_per_page(): div {
         $num_rows_input_gorup = new div('input-group mb-3');
         if (($this->db_table_data) && (self::$rows_per_page <= $this->total_rows)) {
 
@@ -338,15 +338,15 @@ class listing extends base_with_data implements base_interface {
         return $num_rows_input_gorup;
     }
 
-    function set_stat_msg($stat_msg) {
+    function set_stat_msg($stat_msg): void {
         $this->stat_msg = $stat_msg;
     }
 
-    function get_actual_page() {
+    function get_actual_page(): int {
         return $this->actual_page;
     }
 
-    function set_actual_page($actual_page) {
+    function set_actual_page($actual_page): void {
         $this->actual_page = $actual_page;
     }
 
@@ -354,11 +354,11 @@ class listing extends base_with_data implements base_interface {
         return self::$rows_per_page;
     }
 
-    function set_rows_per_page($rows_per_page) {
+    function set_rows_per_page($rows_per_page): void {
         self::$rows_per_page = $rows_per_page;
     }
 
-    public function load_db_table_data($show_rule = null) {
+    public function load_db_table_data($show_rule = null): bool {
         // FIRST of all, get TABLE total rows
         $this->total_rows = $this->db_table->get_total_rows();
 
@@ -416,27 +416,27 @@ class listing extends base_with_data implements base_interface {
         }
     }
 
-    function get_page_first() {
+    function get_page_first(): int {
         return $this->page_first;
     }
 
-    function get_page_previous() {
+    function get_page_previous(): int {
         return $this->page_previous;
     }
 
-    function get_page_next() {
+    function get_page_next(): int {
         return $this->page_next;
     }
 
-    function get_page_last() {
+    function get_page_last(): int {
         return $this->page_last;
     }
 
-    public function get_do_orderby_headers() {
+    public function get_do_orderby_headers(): bool {
         return $this->do_orderby_headers;
     }
 
-    public function set_do_orderby_headers($do_orderby_headers) {
+    public function set_do_orderby_headers($do_orderby_headers): void {
         $this->do_orderby_headers = $do_orderby_headers;
     }
 }
