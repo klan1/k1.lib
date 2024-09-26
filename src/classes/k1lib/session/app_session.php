@@ -2,7 +2,13 @@
 
 namespace k1lib\session;
 
-class session_plain {
+use EndyJasmi\Cuid;
+use k1lib\K1MAGIC;
+use WhichBrowser\Parser;
+use function getallheaders;
+use function k1lib\html\html_header_go;
+
+class app_session {
 
     /**
      * Enable state
@@ -100,20 +106,54 @@ class session_plain {
         self::$session_name = $session_name;
     }
 
+    static public function reset_session_data() {
+        $_SESSION['k1lib_session']['user_login'] = false;
+        $_SESSION['k1lib_session']['user_hash'] = false;
+        $_SESSION['k1lib_session']['user_level'] = 'guest';
+        $_SESSION['k1lib_session']['user_data'] = [];
+    }
+
     static public function start_session() {
         self::is_enabled(true);
-        \session_name(self::$session_name);
-        \session_start();
+        ini_set('session.use_strict_mode', 1);
+        session_name(self::$session_name);
+        session_start();
         self::$has_started = TRUE;
         /**
          * TODO: ENCRYPT THIS !!
          */
         if (!isset($_SESSION['k1lib_session']['user_login'])) {
-            $_SESSION['k1lib_session']['user_login'] = NULL;
-            $_SESSION['k1lib_session']['user_hash'] = NULL;
-            $_SESSION['k1lib_session']['user_level'] = 'guest';
-            $_SESSION['k1lib_session']['user_data'] = NULL;
+            self::reset_session_data();
         }
+    }
+
+    static function session_regenerate_id() {
+        // Call session_create_id() while session is active to 
+        // make sure collision free.
+        if (session_status() != PHP_SESSION_ACTIVE) {
+            self::start_session();
+        }
+        // WARNING: Never use confidential strings for prefix!
+        $newid = session_create_id('k1app-');
+        // Set deleted timestamp. Session data must not be deleted immediately for reasons.
+        $_SESSION['deleted_time'] = time();
+        // Finish session
+        session_commit();
+        // Make sure to accept user defined session ID
+        // NOTE: You must enable use_strict_mode for normal operations.
+        ini_set('session.use_strict_mode', 0);
+        // Set new custom session ID
+        session_id($newid);
+        // Start with custom session ID
+        self::start_session();
+    }
+
+    static function unset_coockie($path = "/") {
+        self::$save_cookie_name = app_session::get_session_name() . "-store";
+        if (isset($_COOKIE[self::$save_cookie_name])) {
+            unset($_COOKIE[self::$save_cookie_name]);
+        }
+        setcookie(self::$save_cookie_name, '', time() - (60 * 60 * 24), $path);
     }
 
     static public function on_session() {
@@ -155,7 +195,7 @@ class session_plain {
 
     static public function get_user_data() {
         if (self::is_enabled(true)) {
-            if (isset($_SESSION['k1lib_session']['user_data'])) {
+            if (!empty($_SESSION['k1lib_session']['user_data'])) {
                 return $_SESSION['k1lib_session']['user_data'];
             } else {
                 return [];
@@ -176,9 +216,9 @@ class session_plain {
         } else {
             ob_clean();
             if (empty($where_redirect_to) && !empty(self::$log_form_url)) {
-                \k1lib\html\html_header_go(self::$log_form_url);
+                html_header_go(self::$log_form_url);
             } else {
-                \k1lib\html\html_header_go($where_redirect_to);
+                html_header_go($where_redirect_to);
             }
             exit;
         }
@@ -215,9 +255,9 @@ class session_plain {
             $user_login = self::$user_login;
         }
         if (self::$use_ip_in_userhash) {
-            return md5($user_login . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . \k1lib\K1MAGIC::get_value());
+            return md5($user_login . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . K1MAGIC::get_value());
         } else {
-            return md5($user_login . $_SERVER['HTTP_USER_AGENT'] . \k1lib\K1MAGIC::get_value());
+            return md5($user_login . $_SERVER['HTTP_USER_AGENT'] . K1MAGIC::get_value());
         }
     }
 
@@ -291,7 +331,7 @@ class session_plain {
      * @return string
      */
     public static function get_cuid() {
-        return \EndyJasmi\Cuid::make();
+        return Cuid::make();
     }
 
     /**
@@ -303,7 +343,7 @@ class session_plain {
         if (empty($user_agent)) {
             $user_agent = $_SERVER['HTTP_USER_AGENT'];
         }
-        $result = new \WhichBrowser\Parser($user_agent);
+        $result = new Parser($user_agent);
 
         $terminar_array = [
             'browser_name' => $result->browser->getName(),
@@ -322,8 +362,9 @@ class session_plain {
      * Get a browser fingerprint
      * @return string
      */
-    public static function get_browser_fp($return_array = FALSE, $return_all = FALSE) {
+    public static function get_browser_fp($magic_value, $return_array = false) {
         $headers = getallheaders();
+        $headers['client_ip'] = $_SERVER['REMOTE_ADDR'];
         unset($headers['Cookie']);
         unset($headers['Cache-Control']);
         ksort($headers);
@@ -331,9 +372,8 @@ class session_plain {
         if ($return_array) {
             return $headers;
         } else {
-            $fp = md5(implode('-', $headers)) . \k1lib\MAGIC_VALUE;
+            $fp = md5(implode('-', $headers)) . $magic_value;
             return $fp;
         }
     }
-
 }

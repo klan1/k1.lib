@@ -40,7 +40,7 @@ function k1lib_include_files($path_to_explore, array $prefix_to_exclude = ['.', 
 namespace k1lib\common;
 
 use k1lib\K1MAGIC;
-use k1lib\session\session_plain;
+use k1lib\session\app_session;
 use Ramsey\Uuid\DegradedUuid;
 
 /**
@@ -182,7 +182,7 @@ function bolean_to_string($bolean, $true_value = "Si", $false_value = "No") {
  * @return String
  */
 function get_magic_name($name) {
-    if (session_plain::on_session()) {
+    if (app_session::on_session()) {
         return "magic_{$name}_secret";
     } else {
         trigger_error("Magic system REQUIRES the session system to be enabled and a session started", E_USER_ERROR);
@@ -195,7 +195,7 @@ function get_magic_name($name) {
  * @return String Magic value to be used on FORM
  */
 function set_magic_value($name) {
-    if (session_plain::on_session()) {
+    if (app_session::on_session()) {
         $secret = md5($name . microtime(TRUE));
         $_SESSION[get_magic_name($name)] = $secret;
         $client_magic = md5(K1MAGIC::get_value() . $secret);
@@ -212,7 +212,7 @@ function set_magic_value($name) {
  * @return boolean
  */
 function check_magic_value($name, $value_to_check) {
-    if (session_plain::on_session()) {
+    if (app_session::on_session()) {
         if ($value_to_check == "") {
             die("The magic value never can be empty!");
         } else {

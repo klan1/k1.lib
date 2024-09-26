@@ -11,7 +11,7 @@ use k1lib\crudlexs\db_table;
 use k1lib\crudlexs\object\base as ob;
 use k1lib\html\div;
 use k1lib\html\DOM;
-use k1lib\session\session_db;
+use k1lib\session\app_session;
 use k1lib\urlrewrite\url;
 use const k1app\K1APP_BASE_URL;
 
@@ -25,17 +25,17 @@ class controller_crud extends controller {
     static protected div $crud_container;
     static protected cb $co;
 
-    static function on_post() {
+    static function on_post(): void {
         self::launch();
     }
 
-    static function start_crud($controller_name, $controller_db_table) {
+    static function start_crud($controller_name, $controller_db_table): void {
         self::app()->start_session_db(1);
         self::$controller_name = $controller_name;
         self::$controller_db_table = $controller_db_table;
     }
 
-    static function run_crud($parent_class, base|blank|sidebar_page $tpl, string $nav_id) {
+    static function run_crud($parent_class, base|blank|sidebar_page $tpl, string $nav_id): void {
 //        $tpl = new my_sidebar_page();
         self::use_tpl($tpl);
 
@@ -71,7 +71,7 @@ class controller_crud extends controller {
         /**
          * USE THIS IF THE TABLE NEED THE LOGIN_ID ON EVERY ROW FOR TRACKING
          */
-        self::$co->db_table->set_field_constants(['user_login' => session_db::get_user_login()]);
+        self::$co->db_table->set_field_constants(['user_login' => app_session::get_user_login()]);
 
         static::init_board();
 
@@ -82,11 +82,11 @@ class controller_crud extends controller {
         static::finish_board();
     }
 
-    static function init_board() {
+    static function init_board(): void {
         self::$crud_container = self::$co->init_board();
     }
 
-    static function start_board() {
+    static function start_board(): void {
         self::$co->start_board();
 
         // LIST
@@ -96,7 +96,7 @@ class controller_crud extends controller {
         }
     }
 
-    static function exec_board() {
+    static function exec_board(): void {
         self::$co->exec_board();
 
         if (self::$co->on_object_list()) {
@@ -104,7 +104,7 @@ class controller_crud extends controller {
         }
     }
 
-    static function finish_board() {
+    static function finish_board(): void {
         self::$co->finish_board();
 
         if (method_exists(self::$tpl, 'page_content')) {
@@ -114,7 +114,7 @@ class controller_crud extends controller {
         }
     }
 
-    static function add_related_table($table_name, $controller_url, $related_title) {
+    static function add_related_table($table_name, $controller_url, $related_title): void {
 
         if (self::$co->on_board_read()) {
             $page_heading = self::$tpl->q('.page-heading');
@@ -146,7 +146,7 @@ class controller_crud extends controller {
         }
     }
 
-    static function end() {
+    static function end(): void {
         parent::end();
         echo self::$tpl->generate();
     }

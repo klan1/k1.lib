@@ -6,7 +6,7 @@ use k1lib\crudlexs\controller\base;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
-use k1lib\session\session_plain;
+use k1lib\session\app_session;
 use function k1lib\common\unserialize_var;
 
 class board_base {
@@ -83,7 +83,7 @@ class board_base {
 
         $this->user_levels_allowed = $user_levels_allowed;
 
-        if (session_plain::is_enabled()) {
+        if (app_session::is_enabled()) {
             if (!$this->check_user_level_access()) {
                 $this->is_enabled = false;
             } else {
@@ -153,7 +153,7 @@ class board_base {
         if (empty($this->user_levels_allowed)) {
             return TRUE;
         } else {
-            if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->user_levels_allowed)))) {
+            if (empty(array_key_exists(app_session::get_user_level(), array_flip($this->user_levels_allowed)))) {
                 return FALSE;
             } else {
                 return TRUE;

@@ -23,7 +23,7 @@ use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\html\script;
 use k1lib\html\tag;
 use k1lib\K1MAGIC;
-use k1lib\session\session_plain;
+use k1lib\session\app_session;
 use k1lib\urlrewrite\url as url;
 use PDO;
 use const k1app\template\mazer\TPL_URL;
@@ -420,7 +420,7 @@ class base {
     }
 
     public function get_board_create_allowed_for_current_user() {
-        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_create_allowed_levels)))) {
+        if (empty(array_key_exists(app_session::get_user_level(), array_flip($this->board_create_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -428,7 +428,7 @@ class base {
     }
 
     public function get_board_read_allowed_for_current_user() {
-        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_read_allowed_levels)))) {
+        if (empty(array_key_exists(app_session::get_user_level(), array_flip($this->board_read_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -436,7 +436,7 @@ class base {
     }
 
     public function get_board_update_allowed_for_current_user() {
-        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_update_allowed_levels)))) {
+        if (empty(array_key_exists(app_session::get_user_level(), array_flip($this->board_update_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -444,7 +444,7 @@ class base {
     }
 
     public function get_board_delete_allowed_for_current_user() {
-        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_delete_allowed_levels)))) {
+        if (empty(array_key_exists(app_session::get_user_level(), array_flip($this->board_delete_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
@@ -452,7 +452,7 @@ class base {
     }
 
     public function get_board_list_allowed_for_current_user() {
-        if (empty(array_key_exists(session_plain::get_user_level(), array_flip($this->board_list_allowed_levels)))) {
+        if (empty(array_key_exists(app_session::get_user_level(), array_flip($this->board_list_allowed_levels)))) {
             return FALSE;
         } else {
             return TRUE;
