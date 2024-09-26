@@ -196,8 +196,10 @@ class app {
         // TODO: manage non DB session
         ini_set('session.use_strict_mode', 1);
         app_session::start_session();
-        session_db::init(self::db());
-        session_db::load_data_from_coockie(false);
+        if (isset($_COOKIE[app_session::get_session_name() . '-store'])) {
+            session_db::init(self::db());
+            session_db::load_data_from_coockie(false);
+        }
     }
 
     function end_app_session() {
