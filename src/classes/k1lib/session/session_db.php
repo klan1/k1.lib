@@ -208,7 +208,7 @@ class session_db {
             $coockie_time = 0;
         }
         self::$coockie_data = $data_encoded;
-        $coockie = setcookie(self::$save_cookie_name, $data_encoded, $coockie_time, $path);
+        setcookie(self::$save_cookie_name, $data_encoded, $coockie_time, $path);
     }
 
     static function load_data_from_coockie($return_coockie_data = FALSE) {
@@ -222,7 +222,7 @@ class session_db {
                 return $data;
             } else {
 
-                if ($data['user_hash'] === self::get_user_hash($data['user_login_input_value'])) {
+                if ($data['user_hash'] === app_session::get_user_hash($data['user_login_input_value'])) {
                     self::set_config($data['db_table_name'], $data['user_login_field'], $data['user_password_field'], $data['user_level_field']);
                     self::set_inputs($data['user_login_input_name'], $data['user_password_input_name'], $data['user_remember_me_input']);
                     self::$user_login_input_value = $data['user_login_input_value'];
@@ -232,7 +232,7 @@ class session_db {
                     $user_data = self::check_login();
                     if ($user_data) {
                         self::$user_data = $user_data;
-                        self::start_logged_session($user_data[self::$user_login_field], $user_data, $user_data[self::$user_level_field]);
+                        app_session::start_logged_session($user_data[self::$user_login_field], $user_data, $user_data[self::$user_level_field]);
                         return $user_data;
                     } else {
                         return FALSE;
@@ -270,6 +270,14 @@ class session_db {
             }
             return TRUE;
         }
+    }
+
+    static function unset_coockie($path = "/") {
+        self::$save_cookie_name = app_session::get_session_name() . "-store";
+        if (isset($_COOKIE[self::$save_cookie_name])) {
+            unset($_COOKIE[self::$save_cookie_name]);
+        }
+        setcookie(self::$save_cookie_name, '', time() - (60 * 60 * 24), $path);
     }
 
     static function end_session($path = '/') {
