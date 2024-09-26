@@ -30,7 +30,6 @@ class controller_crud extends controller {
     }
 
     static function start_crud($controller_name, $controller_db_table): void {
-        self::app()->start_session_db(1);
         self::$controller_name = $controller_name;
         self::$controller_db_table = $controller_db_table;
     }

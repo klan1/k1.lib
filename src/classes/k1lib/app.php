@@ -30,7 +30,6 @@ class app {
     protected string $script_path;
     static string $base_path;
     static string $base_url;
-    protected $app_session;
 
     /**
      * DB
@@ -195,20 +194,12 @@ class app {
         app_session::set_use_ip_in_userhash($this->config->get_option('app_session_use_ip_in_userhash'));
         app_session::set_app_user_levels($this->config->get_option('app_session_levels'));
         // TODO: manage non DB session
-        app_session::start_session();;
-    }
-
-    function start_session_db(int $db_index) {
-        app_session::set_session_name($this->config->get_option('app_session_name'));
+        ini_set('session.use_strict_mode', 1);
         app_session::start_session();
-        session_db::init($this->db($db_index));
-        session_db::load_logged_session_db();
     }
 
-    function end_session() {
-        app_session::unset_coockie(K1APP_BASE_URL);
+    function end_app_session() {
         session_db::end_session();
-
         on_DOM::queue_mesasage("Bye!", "success");
     }
 

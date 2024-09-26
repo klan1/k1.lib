@@ -14,7 +14,7 @@ class app_session {
      * Enable state
      * @var bool 
      */
-    static private $enabled = FALSE;
+    static protected $enabled = FALSE;
 
     /**
      * If TRUE on IP change the session will be invalidated
@@ -26,55 +26,55 @@ class app_session {
      * Logged state
      * @var bool
      */
-    static private $has_started;
+    static protected $has_started;
 
     /**
      * Keeps the logged state
      * @var bool
      */
-    static private $is_logged;
+    static protected $is_logged;
 
     /**
      *
      * @var string 
      */
-    static private $user_login = null;
+    static protected int|string $user_login = -1;
 
     /**
      *
      * @var string 
      */
-    static private $user_hash = null;
+    static protected bool|string $user_hash = false;
 
     /**
      *
      * @var string 
      */
-    static private $user_level = null;
+    static protected bool|string $user_level = 'guest';
 
     /**
      * the user levels ['user', 'guest'] are defautls
      * @var array
      */
-    static private $app_user_levels = ['user', 'guest'];
+    static protected $app_user_levels = ['user', 'guest'];
 
     /**
      * Session name for the PHP session handler
      * @var string 
      */
-    static private $session_name;
+    static protected $session_name;
 
     /**
      * User session data
      * @var array
      */
-    static public $session_data;
+    static public array $session_data = [];
 
     /**
      * URL for default login redirection
      * @var string
      */
-    static private $log_form_url;
+    static protected $log_form_url;
 
     /**
      * Enable the engenie
@@ -107,6 +107,10 @@ class app_session {
     }
 
     static public function reset_session_data() {
+        self::$user_login = -1;
+        self::$user_hash = false;
+        self::$user_level = 'guest';
+        self::$session_data = [];
         $_SESSION['k1lib_session']['user_login'] = false;
         $_SESSION['k1lib_session']['user_hash'] = false;
         $_SESSION['k1lib_session']['user_level'] = 'guest';
@@ -115,23 +119,34 @@ class app_session {
 
     static public function start_session() {
         self::is_enabled(true);
+
         ini_set('session.use_strict_mode', 1);
+        if (isset($_COOKIE[self::$session_name])) {
+            session_id($_COOKIE[self::$session_name]);
+        }
         session_name(self::$session_name);
         session_start();
+        // Do not allow to use too old session ID
+//        if (!empty($_SESSION['deleted_time']) && $_SESSION['deleted_time'] < time() - 180) {
+//            session_destroy();
+//            session_start();
+//        }
         self::$has_started = TRUE;
         /**
          * TODO: ENCRYPT THIS !!
          */
         if (!isset($_SESSION['k1lib_session']['user_login'])) {
             self::reset_session_data();
+        } else {
+            self::load_logged_session();
         }
     }
 
-    static function session_regenerate_id() {
+    static function regenerate_id() {
         // Call session_create_id() while session is active to 
         // make sure collision free.
         if (session_status() != PHP_SESSION_ACTIVE) {
-            self::start_session();
+            session_start();
         }
         // WARNING: Never use confidential strings for prefix!
         $newid = session_create_id('k1app-');
@@ -145,15 +160,7 @@ class app_session {
         // Set new custom session ID
         session_id($newid);
         // Start with custom session ID
-        self::start_session();
-    }
-
-    static function unset_coockie($path = "/") {
-        self::$save_cookie_name = app_session::get_session_name() . "-store";
-        if (isset($_COOKIE[self::$save_cookie_name])) {
-            unset($_COOKIE[self::$save_cookie_name]);
-        }
-        setcookie(self::$save_cookie_name, '', time() - (60 * 60 * 24), $path);
+        session_start();
     }
 
     static public function on_session() {
@@ -170,13 +177,10 @@ class app_session {
         self::$has_started = FALSE;
         self::$is_logged = FALSE;
 
-        self::$user_login = NULL;
-        self::$user_hash = NULL;
-        self::$user_level = NULL;
-        self::$session_data = array();
+        session_commit();
 
-        session_destroy();
-        session_unset();
+        self::regenerate_id();
+        self::reset_session_data();
     }
 
     static public function start_logged_session($login, array $user_data = [], $user_level = 'guest') {
@@ -231,18 +235,16 @@ class app_session {
     static public function load_logged_session($redirect = FALSE, $where_redirect_to = "") {
         if ((self::is_enabled(true)) && (self::$has_started)) {
             if ($_SESSION['k1lib_session']['user_hash'] === self::get_user_hash($_SESSION['k1lib_session']['user_login'])) {
-
                 self::$user_login = $_SESSION['k1lib_session']['user_login'];
                 self::$user_hash = $_SESSION['k1lib_session']['user_hash'];
                 self::$user_level = $_SESSION['k1lib_session']['user_level'];
-
                 self::$session_data = $_SESSION['k1lib_session'];
-
                 return TRUE;
             } else {
                 self::$user_login = -1;
+                self::$user_hash = false;
                 self::$user_level = 'guest';
-//                self::$session_data['user_data'] = null;
+                self::$session_data = [];
                 return FALSE;
             }
         } else {
