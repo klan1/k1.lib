@@ -124,6 +124,9 @@ class app_session {
         if (isset($_COOKIE[self::$session_name])) {
             session_id($_COOKIE[self::$session_name]);
         }
+        if (isset($_COOKIE[self::$session_name . '-store'])) {
+            session_db::load_data_from_coockie(false);
+        }
         session_name(self::$session_name);
         session_start();
         // Do not allow to use too old session ID
