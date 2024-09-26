@@ -196,10 +196,12 @@ class app {
         // TODO: manage non DB session
         ini_set('session.use_strict_mode', 1);
         app_session::start_session();
+        session_db::init(self::db());
+        session_db::load_data_from_coockie(false);
     }
 
     function end_app_session() {
-        session_db::end_session();
+        session_db::end_session(K1APP_BASE_URL);
         on_DOM::queue_mesasage("Bye!", "success");
     }
 

@@ -187,7 +187,7 @@ class session_db {
         return self::$user_data;
     }
 
-    static function save_data_to_coockie($path = "/") {
+    static function save_data_to_coockie($path = "/", $user_data = []) {
         $data = [
             'db_table_name' => self::$db_table->get_db_table_name(),
             'user_login_field' => self::$user_login_field,
@@ -199,6 +199,7 @@ class session_db {
             'user_remember_me_input' => self::$user_remember_me_input,
             'user_remember_me_value' => self::$user_remember_me_value,
             'user_level_field' => self::$user_level_field,
+            'user_data' => $user_data,
             'user_hash' => app_session::get_user_hash(self::$user_login_input_value),
         ];
         $data_encoded = crypt::encrypt($data);
@@ -216,6 +217,7 @@ class session_db {
             $_COOKIE[self::$save_cookie_name] = self::$coockie_data;
         }
         if (isset($_COOKIE[self::$save_cookie_name])) {
+
             $data = crypt::decrypt($_COOKIE[self::$save_cookie_name]);
 
             if ($return_coockie_data) {
@@ -234,13 +236,21 @@ class session_db {
                         $user_data = self::check_login();
                         if ($user_data) {
                             self::$user_data = $user_data;
-                            app_session::start_logged_session($user_data[self::$user_login_field], $user_data, $user_data[self::$user_level_field]);
+                            app_session::start_logged_session(
+                                    $user_data[self::$user_login_field],
+                                    $user_data,
+                                    $user_data[self::$user_level_field]
+                            );
                             return $user_data;
                         } else {
                             return FALSE;
                         }
                     } else {
-                        app_session::start_logged_session($user_data[self::$user_login_field], $user_data, $user_data[self::$user_level_field]);
+                        app_session::start_logged_session(
+                                $data['user_data'][self::$user_login_field],
+                                $data['user_data'],
+                                $data['user_data'][self::$user_level_field]
+                        );
                     }
                 } else {
                     return FALSE;

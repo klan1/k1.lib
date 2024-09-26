@@ -5,6 +5,8 @@ namespace k1lib\session;
 use EndyJasmi\Cuid;
 use k1lib\K1MAGIC;
 use WhichBrowser\Parser;
+use const k1app\K1APP_BASE_URL;
+use const k1app\K1APP_DOMAIN;
 use function getallheaders;
 use function k1lib\html\html_header_go;
 
@@ -118,15 +120,18 @@ class app_session {
     }
 
     static public function start_session() {
+//        d(K1APP_DOMAIN);
+        session_set_cookie_params(0, K1APP_BASE_URL);
+
         self::is_enabled(true);
 
         ini_set('session.use_strict_mode', 1);
         if (isset($_COOKIE[self::$session_name])) {
             session_id($_COOKIE[self::$session_name]);
         }
-        if (isset($_COOKIE[self::$session_name . '-store'])) {
-            session_db::load_data_from_coockie(false);
-        }
+//        if (isset($_COOKIE[self::$session_name . '-store'])) {
+//            session_db::load_data_from_coockie(false);
+//        }
         session_name(self::$session_name);
         session_start();
         // Do not allow to use too old session ID
@@ -138,10 +143,44 @@ class app_session {
         /**
          * TODO: ENCRYPT THIS !!
          */
-        if (!isset($_SESSION['k1lib_session']['user_login'])) {
+        if (!isset($_SESSION['k1lib_session'])) {
             self::reset_session_data();
         } else {
             self::load_logged_session();
+        }
+    }
+
+    static public function start_logged_session($login, array $user_data = [], $user_level = 'guest') {
+        if (self::is_enabled(true)) {
+
+            $_SESSION['k1lib_session']['user_login'] = $login;
+            $_SESSION['k1lib_session']['user_hash'] = self::get_user_hash($login);
+            $_SESSION['k1lib_session']['user_level'] = $user_level;
+            $_SESSION['k1lib_session']['user_data'] = $user_data;
+
+            return self::load_logged_session();
+        } else {
+            return FALSE;
+        }
+    }
+
+    static public function load_logged_session($redirect = FALSE, $where_redirect_to = "") {
+        if ((self::is_enabled(true)) && (self::$has_started)) {
+            if ($_SESSION['k1lib_session']['user_hash'] === self::get_user_hash($_SESSION['k1lib_session']['user_login'])) {
+                self::$user_login = $_SESSION['k1lib_session']['user_login'];
+                self::$user_hash = $_SESSION['k1lib_session']['user_hash'];
+                self::$user_level = $_SESSION['k1lib_session']['user_level'];
+                self::$session_data = $_SESSION['k1lib_session'];
+                return TRUE;
+            } else {
+                self::$user_login = -1;
+                self::$user_hash = false;
+                self::$user_level = 'guest';
+                self::$session_data = [];
+                return FALSE;
+            }
+        } else {
+            return FALSE;
         }
     }
 
@@ -186,20 +225,6 @@ class app_session {
         self::reset_session_data();
     }
 
-    static public function start_logged_session($login, array $user_data = [], $user_level = 'guest') {
-        if (self::is_enabled(true)) {
-
-            $_SESSION['k1lib_session']['user_login'] = $login;
-            $_SESSION['k1lib_session']['user_hash'] = self::get_user_hash($login);
-            $_SESSION['k1lib_session']['user_level'] = $user_level;
-            $_SESSION['k1lib_session']['user_data'] = $user_data;
-
-            return self::load_logged_session();
-        } else {
-            return FALSE;
-        }
-    }
-
     static public function get_user_data() {
         if (self::is_enabled(true)) {
             if (!empty($_SESSION['k1lib_session']['user_data'])) {
@@ -233,26 +258,6 @@ class app_session {
 
     static function set_log_form_url($log_form_url) {
         self::$log_form_url = $log_form_url;
-    }
-
-    static public function load_logged_session($redirect = FALSE, $where_redirect_to = "") {
-        if ((self::is_enabled(true)) && (self::$has_started)) {
-            if ($_SESSION['k1lib_session']['user_hash'] === self::get_user_hash($_SESSION['k1lib_session']['user_login'])) {
-                self::$user_login = $_SESSION['k1lib_session']['user_login'];
-                self::$user_hash = $_SESSION['k1lib_session']['user_hash'];
-                self::$user_level = $_SESSION['k1lib_session']['user_level'];
-                self::$session_data = $_SESSION['k1lib_session'];
-                return TRUE;
-            } else {
-                self::$user_login = -1;
-                self::$user_hash = false;
-                self::$user_level = 'guest';
-                self::$session_data = [];
-                return FALSE;
-            }
-        } else {
-            return FALSE;
-        }
     }
 
     static public function get_user_hash($user_login = null) {
