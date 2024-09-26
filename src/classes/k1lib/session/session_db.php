@@ -211,7 +211,7 @@ class session_db {
         setcookie(self::$save_cookie_name, $data_encoded, $coockie_time, $path);
     }
 
-    static function load_data_from_coockie($return_coockie_data = FALSE) {
+    static function load_data_from_coockie($do_credential_checks = true, $return_coockie_data = FALSE) {
         if (!empty(self::$coockie_data)) {
             $_COOKIE[self::$save_cookie_name] = self::$coockie_data;
         }
@@ -229,13 +229,18 @@ class session_db {
                     self::$user_password_input_value = $data['user_password_input_value'];
                     self::$user_remember_me_value = $data['user_remember_me_value'];
 
-                    $user_data = self::check_login();
-                    if ($user_data) {
-                        self::$user_data = $user_data;
-                        app_session::start_logged_session($user_data[self::$user_login_field], $user_data, $user_data[self::$user_level_field]);
-                        return $user_data;
+                    if ($do_credential_checks) {
+
+                        $user_data = self::check_login();
+                        if ($user_data) {
+                            self::$user_data = $user_data;
+                            app_session::start_logged_session($user_data[self::$user_login_field], $user_data, $user_data[self::$user_level_field]);
+                            return $user_data;
+                        } else {
+                            return FALSE;
+                        }
                     } else {
-                        return FALSE;
+                        app_session::start_logged_session($user_data[self::$user_login_field], $user_data, $user_data[self::$user_level_field]);
                     }
                 } else {
                     return FALSE;
