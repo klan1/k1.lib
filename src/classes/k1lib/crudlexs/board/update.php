@@ -6,7 +6,7 @@ use k1lib\crudlexs\controller\base;
 use k1lib\crudlexs\object\updating;
 use k1lib\html\div;
 use k1lib\html\notifications\on_DOM as DOM_notification;
-use k1lib\session\session_plain as session_plain;
+use k1lib\session\app_session as app_session;
 use k1lib\urlrewrite\url as url;
 use function k1lib\html\get_link_button;
 use function k1lib\urlrewrite\get_back_url;
@@ -97,12 +97,12 @@ class update extends board_base implements board_interface {
                     $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/" . urlencode($this->row_keys_text) . '/';
                     if (get_back_url(TRUE)) {
                         $get_vars = [
-                            "auth-code" => md5(session_plain::get_user_hash() . $this->row_keys_text),
+                            "auth-code" => md5(app_session::get_user_hash() . $this->row_keys_text),
                             "back-url" => get_back_url(TRUE),
                         ];
                     } else {
                         $get_vars = [
-                            "auth-code" => md5(session_plain::get_user_hash() . $this->row_keys_text),
+                            "auth-code" => md5(app_session::get_user_hash() . $this->row_keys_text),
                         ];
                     }
                     $back_link = get_link_button(url::do_url(get_back_url()), board_read_strings::$button_back, "small");

@@ -10,7 +10,7 @@ use k1lib\html\img;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\html\tag;
 use k1lib\K1MAGIC;
-use k1lib\session\session_plain as session_plain;
+use k1lib\session\app_session as app_session;
 use k1lib\urlrewrite\url as url;
 use function k1lib\urlrewrite\get_back_url;
 use function k1lib\utils\decimal_to_n36;
@@ -92,7 +92,7 @@ class base_with_data extends base {
                         $auth_code = $_GET['auth-code'];
                     }
                     $auth_expected = md5(K1MAGIC::get_value() . $this->row_keys_text);
-                    $auth_personal_expected = md5(session_plain::get_user_hash() . $this->row_keys_text);
+                    $auth_personal_expected = md5(app_session::get_user_hash() . $this->row_keys_text);
 
                     if (($auth_code === $auth_expected) || ($auth_code === $auth_personal_expected)) {
                         parent::__construct($db_table);
@@ -132,7 +132,7 @@ class base_with_data extends base {
     }
 
     public function set_auth_code_personal($row_keys_text) {
-        $this->auth_code_personal = md5(session_plain::get_user_hash() . $row_keys_text);
+        $this->auth_code_personal = md5(app_session::get_user_hash() . $row_keys_text);
     }
 
     public function get_do_table_field_name_encrypt() {

@@ -2,9 +2,15 @@
 
 namespace k1lib\session;
 
+use k1lib\crudlexs\db_table as db_table;
+use k1lib\crudlexs\db_table as db_table2;
+use k1lib\crypt;
 use k1lib\html\notifications\on_DOM as DOM_notifications;
-use \k1lib\crudlexs\db_table as db_table;
+use k1lib\urlrewrite\url;
+use PDO;
 use Ramsey\Uuid\Uuid;
+use function k1lib\forms\check_all_incomming_vars;
+use function k1lib\html\html_header_go;
 
 class session_browser_fp extends session_db {
 
@@ -29,17 +35,17 @@ class session_browser_fp extends session_db {
     private static $session_terminal_coockie_name;
 
     /**
-     * @var \k1lib\crudlexs\db_table
+     * @var db_table2
      */
     private static $terminals_table;
 
     /**
-     * @var \k1lib\crudlexs\db_table
+     * @var db_table2
      */
     private static $mobile_nombers_table;
 
     /**
-     * @var \k1lib\crudlexs\db_table
+     * @var db_table2
      */
     private static $terminals_unique_table;
 
@@ -71,7 +77,7 @@ class session_browser_fp extends session_db {
         self::$mobile_numbers_table_name = $mobile_numbers_table_name;
     }
 
-    function __construct(\PDO $db) {
+    function __construct(PDO $db) {
         // Parent assigns the db object to $db_object
         parent::__construct($db);
 
@@ -128,13 +134,13 @@ class session_browser_fp extends session_db {
                 // GET UUID
                 $uuid4 = Uuid::uuid4();
                 // COOKIE will have value as: uuid,browser_fp
-                $cookie_to_set_value = \k1lib\crypt::encrypt($uuid4->toString() . ',' . self::get_browser_fp());
+                $cookie_to_set_value = crypt::encrypt($uuid4->toString() . ',' . self::get_browser_fp());
                 // Set the COOKIE 1 year from now
                 setcookie(self::$session_terminal_coockie_name, $cookie_to_set_value, strtotime('+365 days'), '/');
                 // Redirects the browser to the ACTUAL URL with $_GET['bfp']=md5(browser_fp) to test the cookie is really set.
-                \k1lib\html\html_header_go(\k1lib\urlrewrite\url::do_url($actual_url, ['bfp' => md5(self::get_browser_fp()), 'last_url' => $actual_url]));
+                html_header_go(url::do_url($actual_url, ['bfp' => md5(self::get_browser_fp()), 'last_url' => $actual_url]));
             } else {
-                $cookie_value = \k1lib\crypt::decrypt($_COOKIE[self::$session_terminal_coockie_name]);
+                $cookie_value = crypt::decrypt($_COOKIE[self::$session_terminal_coockie_name]);
                 if (strstr($cookie_value, ',') !== FALSE) {
                     // Retrive COOKIE data as : $current_terminal_uuid,$current_browser_fp
                     $cookie_data = explode(',', $cookie_value);
@@ -182,8 +188,8 @@ class session_browser_fp extends session_db {
                     trigger_error('Browser do not accept cookies and is not possible to keep going. Please enable them.', E_USER_ERROR);
                     exit;
                 } else {
-                    $get_vars = \k1lib\forms\check_all_incomming_vars($_GET);
-                    \k1lib\html\html_header_go($get_vars['last_url']);
+                    $get_vars = check_all_incomming_vars($_GET);
+                    html_header_go($get_vars['last_url']);
                 }
             }
         }
