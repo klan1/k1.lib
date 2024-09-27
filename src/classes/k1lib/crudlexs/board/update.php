@@ -105,9 +105,9 @@ class update extends board_base implements board_interface {
                             "auth-code" => md5(app_session::get_user_hash() . $this->row_keys_text),
                         ];
                     }
-                    $back_link = get_link_button(url::do_url(get_back_url()), board_read_strings::$button_back, "small");
+                    $back_link = get_link_button(url::do_url(get_back_url()), board_read_strings::$button_back, "btn-sm");
                     $back_link->append_to($this->button_div_tag);
-                    $delete_link = get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "small");
+                    $delete_link = get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "btn-sm");
                     $delete_link->append_to($this->button_div_tag);
                 }
 
