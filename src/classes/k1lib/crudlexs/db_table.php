@@ -2,13 +2,19 @@
 
 namespace k1lib\crudlexs;
 
+use k1app\template\mazer\components\app\sidebar\wrapper\header;
+use k1lib\db\PDO_k1;
+use PDO;
+use function k1lib\common\clean_array_with_guide;
+use function k1lib\forms\form_check_values;
+
 class db_table {
 
     /**
      *
-     * @var \PDO
+     * @var PDO
      */
-    public \k1lib\db\PDO_k1 $db;
+    public PDO_k1 $db;
     private $db_table_name = FALSE;
     public $db_table_config = FALSE;
     private $db_table_label_field = FALSE;
@@ -59,10 +65,10 @@ class db_table {
 
     /**
      * 
-     * @param \PDO $db
+     * @param PDO $db
      * @param string $db_table_name
      */
-    public function __construct(\k1lib\db\PDO_k1 $db, $db_table_name) {
+    public function __construct(PDO_k1 $db, $db_table_name) {
         $this->db = $db;
         // check $db_table_name type
         if (is_string($db_table_name)) {
@@ -153,7 +159,7 @@ class db_table {
 
     public function set_query_filter($filter_array, $exact_filter = FALSE, $do_clean_array = TRUE) {
         if ($do_clean_array) {
-            $clean_filter_array = \k1lib\common\clean_array_with_guide($filter_array, $this->db_table_config);
+            $clean_filter_array = clean_array_with_guide($filter_array, $this->db_table_config);
         } else {
             $clean_filter_array = $filter_array;
         }
@@ -220,7 +226,7 @@ class db_table {
 
     public function set_query_filter_exclude($filter_array, $exact_filter = FALSE, $do_clean_array = TRUE) {
         if ($do_clean_array) {
-            $clean_filter_array = \k1lib\common\clean_array_with_guide($filter_array, $this->db_table_config);
+            $clean_filter_array = clean_array_with_guide($filter_array, $this->db_table_config);
         } else {
             $clean_filter_array = $filter_array;
         }
@@ -535,7 +541,7 @@ class db_table {
     }
 
     public function do_data_validation(&$data_array_to_validate) {
-        $validaton_errors = \k1lib\forms\form_check_values($data_array_to_validate, $this->db_table_config, $this->db);
+        $validaton_errors = form_check_values($data_array_to_validate, $this->db_table_config, $this->db);
         if (!is_array($validaton_errors)) {
             return TRUE;
         } else {

@@ -229,7 +229,7 @@ class PDO_k1 extends PDO {
         if ($query_result !== FALSE) {
             if ($query_result->rowCount() > 0) {
                 $queryReturn = [];
-                while ($row = $query_result->fetch(\PDO::FETCH_ASSOC)) {
+                while ($row = $query_result->fetch(PDO::FETCH_ASSOC)) {
                     foreach ($row as $key => $value) {
                         // RESULTS WITH STRING NUMBERS WILL BE CONVERTED TO NUMBERS
                         if (is_numeric($value)) {
@@ -887,16 +887,16 @@ AND table_name = '{$table}'";
         return $new_sql_with_new_fields;
     }
 
-    /**
-     * Check if the recieved var $db is a PDO object. On error the entire sofware will DIE
-     * @param PDO $db
-     * @param string $caller
-     */
-    function db_check_object_type($caller = "") {
-        if (get_class($db) != "PDO") {
-            die(__FUNCTION__ . ": \$db is not a PDO object type" . (($caller != "") ? " - called from: $caller" : ""));
-        }
-    }
+//    /**
+//     * Check if the recieved var $db is a PDO object. On error the entire sofware will DIE
+//     * @param PDO $db
+//     * @param string $caller
+//     */
+//    function db_check_object_type($caller = "") {
+//        if (get_class($db) != "PDO") {
+//            die(__FUNCTION__ . ": \$db is not a PDO object type" . (($caller != "") ? " - called from: $caller" : ""));
+//        }
+//    }
 
     function get_db_table_keys($db_table_config) {
         if (!is_array($db_table_config)) {
