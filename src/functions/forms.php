@@ -344,7 +344,7 @@ function form_file_upload_handle($file_data, $field_config, $table_name = null) 
 //    $file_location_url = file_uploads::get_uploaded_file_url($file_data['name']);
 }
 
-function form_check_values(&$form_array, $table_array_config, \k1lib\dbPDO_k1_k1 $db = NULL) {
+function form_check_values(&$form_array, $table_array_config, PDO_k1 $db = NULL) {
     if (!is_array($form_array)) {
         die(__FUNCTION__ . " need an array to work on \$form_array");
     }
