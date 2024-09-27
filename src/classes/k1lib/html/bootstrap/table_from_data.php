@@ -89,7 +89,7 @@ class table_from_data extends table
             //            print_r($this->data);
             if ($this->has_header && ($row_index === 0)) {
                 $thead = $this->append_thead();
-                $tr = $thead->append_tr();
+                $tr = $thead->append_tr('table-dark');
             } else {
                 $num_row++;
                 if (!isset($tbody)) {

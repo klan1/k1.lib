@@ -91,7 +91,7 @@ class read extends board_base implements board_interface {
                  */
                 if ($this->back_enable && (isset($_GET['back-url']))) {
                     $back_url = get_back_url();
-                    $back_link = get_link_button($back_url, board_read_strings::$button_back, "small");
+                    $back_link = get_link_button($back_url, board_read_strings::$button_back, "btn-sm");
                     $back_link->append_to($this->button_div_tag);
                 }
                 /**
@@ -102,7 +102,7 @@ class read extends board_base implements board_interface {
                     $all_data_link = get_link_button(
                             url::do_url($all_data_url, [], TRUE, ['no-rules'])
                             , board_read_strings::$button_all_data
-                            , "small"
+                            , "btn-sm"
                     );
                     $all_data_link->append_to($this->button_div_tag);
                 }
@@ -115,7 +115,7 @@ class read extends board_base implements board_interface {
                         "auth-code" => $this->read_object->get_auth_code(),
 //                        "back-url" => $_SERVER['REQUEST_URI'],
                     ];
-                    $edit_link = get_link_button(url::do_url($edit_url, $get_vars), board_read_strings::$button_edit, "small");
+                    $edit_link = get_link_button(url::do_url($edit_url, $get_vars), board_read_strings::$button_edit, "btn-sm");
                     $edit_link->append_to($this->button_div_tag);
                 }
                 /**
@@ -133,7 +133,7 @@ class read extends board_base implements board_interface {
                             "auth-code" => $this->read_object->get_auth_code_personal(),
                         ];
                     }
-                    $delete_link = get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "small");
+                    $delete_link = get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "btn-sm");
                     $delete_link->append_to($this->button_div_tag);
                 }
 
@@ -252,7 +252,7 @@ class read extends board_base implements board_interface {
 
             if ($this->related_list->data_loaded) {
                 $all_data_url = url::do_url($board_root . $board_list . "/" . urlencode($current_row_keys_text) . "/", $get_vars, FALSE);
-                $this->related_html_object_show_all_data = get_link_button($all_data_url, board_read_strings::$button_all_data, "tiny");
+                $this->related_html_object_show_all_data = get_link_button($all_data_url, board_read_strings::$button_all_data, "btn-sm");
                 if ($this->related_show_all_data) {
                     $related_buttons->set_value($this->related_html_object_show_all_data, TRUE);
                 }
@@ -265,7 +265,7 @@ class read extends board_base implements board_interface {
                 ];
                 $create_url = url::do_url($board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/", $get_vars, TRUE, ['back-url'], FALSE);
             }
-            $this->related_html_object_show_new = get_link_button($create_url, board_list_strings::$button_new, "tiny");
+            $this->related_html_object_show_new = get_link_button($create_url, board_list_strings::$button_new, "btn-sm");
 
             if ($this->related_show_new) {
                 $related_buttons->set_value($this->related_html_object_show_new, TRUE);

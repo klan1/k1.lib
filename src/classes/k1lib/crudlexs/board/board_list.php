@@ -69,7 +69,7 @@ class board_list extends board_base implements board_interface {
              */
             if ($this->back_enable && (isset($_GET['back-url']))) {
                 $back_url = get_back_url();
-                $back_link = get_link_button($back_url, board_read_strings::$button_back);
+                $back_link = get_link_button($back_url, board_read_strings::$button_back, 'btn-sm');
                 $back_link->append_to($this->button_div_tag);
             }
             /**
@@ -78,10 +78,10 @@ class board_list extends board_base implements board_interface {
             $related_url_keys_text = url::get_url_level_value_by_name("related_url_keys_text");
             if (empty($related_url_keys_text)) {
                 $related_url_keys_text = "";
-                $new_link = get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
+                $new_link = get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new, 'btn-sm');
             } else {
                 $related_url_keys_text .= "/";
-                $new_link = get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new);
+                $new_link = get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new, 'btn-sm');
             }
             if ($this->create_enable) {
 //                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
@@ -117,7 +117,7 @@ class board_list extends board_base implements board_interface {
 
                 DOM::html_document()->body()->append_child_tail($modal);
 
-                $search_buttom = get_link_button('#', board_list_strings::$button_search, NULL, 'search-button');
+                $search_buttom = get_link_button('#', board_list_strings::$button_search, 'btn-sm', 'search-button');
                 $search_buttom->set_attrib('data-bs-toggle', 'modal');
                 $search_buttom->set_attrib('data-bs-target', '#staticBackdrop"');
                 $search_buttom->append_to($this->button_div_tag);
@@ -148,7 +148,7 @@ class board_list extends board_base implements board_interface {
                      */
                     $clear_search_buttom = get_link_button(
                             url::do_url($_SERVER['REQUEST_URI'], ['clear-search' => 1]),
-                            board_list_strings::$button_search, 'btn-warning', 'search-button');
+                            board_list_strings::$button_search, 'btn-warning btn-sm', 'search-button');
 
                     $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
                     $clear_search_buttom->append_to($this->button_div_tag);

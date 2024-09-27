@@ -65,7 +65,7 @@ class board_base {
     /**
      * @var string
      */
-    protected $button_div_id = "k1lib-crudlexs-buttons mb-3";
+    protected $button_div_id = "k1lib-crudlexs-buttons mb-4";
 
     /**
      * @var string
