@@ -11,7 +11,8 @@
 
 namespace k1lib\forms;
 
-use k1lib\html as html;
+use k1lib\db\PDO_k1;
+use function k1lib\common\serialize_var;
 
 /**
  * This SHOULD be used always to receive any kind of value from _GET _POST _REQUEST if it will be used on SQL staments.
@@ -72,13 +73,13 @@ function check_all_incomming_vars($request_array, $save_name = null) {
     $form = array();
     foreach ($request_array as $index => $value) {
         if (!is_array($value)) {
-            $form[$index] = \k1lib\forms\check_single_incomming_var($value);
+            $form[$index] = check_single_incomming_var($value);
         } else {
             $form[$index] = check_all_incomming_vars($value);
         }
     }
     if (!empty($save_name)) {
-        \k1lib\common\serialize_var($form, $save_name);
+        serialize_var($form, $save_name);
     }
     return $form;
 }
@@ -134,11 +135,11 @@ function get_form_field_from_serialized($form_name, $field_name, $default = "", 
  * @param string $value Value to check
  * @param string  $table_name SQL table name
  * @param string $table_field SQL table field to check
- * @param \PDO $db DB connection object
+ * @param PDO_k1 $db DB connection object
  * @return string
  */
-function check_enum_value_type($received_value, $table_name, $table_field, \PDO $db) {
-    $options = \k1lib\sql\get_db_table_enum_values($db, $table_name, $table_field);
+function check_enum_value_type($received_value, $table_name, $table_field, PDO_k1 $db) {
+    $options = $db->get_db_table_enum_values($table_name, $table_field);
     $options_fliped = array_flip($options);
 
     if (!isset($options_fliped[$received_value])) {
@@ -343,7 +344,7 @@ function form_file_upload_handle($file_data, $field_config, $table_name = null) 
 //    $file_location_url = file_uploads::get_uploaded_file_url($file_data['name']);
 }
 
-function form_check_values(&$form_array, $table_array_config, $db = NULL) {
+function form_check_values(&$form_array, $table_array_config, \k1lib\dbPDO_k1_k1 $db = NULL) {
     if (!is_array($form_array)) {
         die(__FUNCTION__ . " need an array to work on \$form_array");
     }
@@ -424,74 +425,74 @@ function form_check_values(&$form_array, $table_array_config, $db = NULL) {
     }
 }
 
-function make_form_select_list(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
-    global $db;
+//function make_form_select_list(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
+//    global $db;
+//
+//    /*
+//     * SELECT LIST
+//     */
+//    //ENUM drop list
+//    $select_data_array = array();
+//    if ($table_config_array[$field_name]['type'] == "enum") {
+//        $select_data_array = $db->get_db_table_enum_values($table_config_array[$field_name]['table'], $field_name);
+//    } elseif ($table_config_array[$field_name]['sql'] != "") {
+//        $table_config_array[$field_name]['sql'];
+//        $sql_data = $db->sql_query($table_config_array[$field_name]['sql'], TRUE);
+//        if (!empty($sql_data)) {
+//            foreach ($sql_data as $row) {
+//                $select_data_array[$row['value']] = $row['label'];
+//            }
+//        }
+//    } elseif (!empty($table_config_array[$field_name]['refereced_table_name'])) {
+//        $select_data_array = \k1lib\forms\get_labels_from_table($table_config_array[$field_name]['refereced_table_name']);
+//    }
+//    $label_object = new html\label($table_config_array[$field_name]['label'], $field_name, "right inline");
+////    $select_object = new html\select($field_name);
+//
+//    if (empty($value) && (!$table_config_array[$field_name]['null'])) {
+//        $value = $table_config_array[$field_name]['default'];
+//    }
+//
+//    if (!empty($error_msg)) {
+//        $select_html = html\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null'], "error");
+//        $html_template = html\load_html_template("label_input_combo-error");
+//        $html_code = sprintf($html_template, $label_object->generate(), $select_html, $error_msg);
+//    } else {
+//        $select_html = html\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null']);
+//        $html_template = html\load_html_template("label_input_combo");
+//        $html_code = sprintf($html_template, $label_object->generate(), $select_html);
+//    }
+//
+//    return $html_code;
+//}
 
-    /*
-     * SELECT LIST
-     */
-    //ENUM drop list
-    $select_data_array = array();
-    if ($table_config_array[$field_name]['type'] == "enum") {
-        $select_data_array = \k1lib\sql\get_db_table_enum_values($db, $table_config_array[$field_name]['table'], $field_name);
-    } elseif ($table_config_array[$field_name]['sql'] != "") {
-        $table_config_array[$field_name]['sql'];
-        $sql_data = \k1lib\sql\sql_query($db, $table_config_array[$field_name]['sql'], TRUE);
-        if (!empty($sql_data)) {
-            foreach ($sql_data as $row) {
-                $select_data_array[$row['value']] = $row['label'];
-            }
-        }
-    } elseif (!empty($table_config_array[$field_name]['refereced_table_name'])) {
-        $select_data_array = \k1lib\forms\get_labels_from_table($db, $table_config_array[$field_name]['refereced_table_name']);
-    }
-    $label_object = new html\label($table_config_array[$field_name]['label'], $field_name, "right inline");
-//    $select_object = new html\select($field_name);
-
-    if (empty($value) && (!$table_config_array[$field_name]['null'])) {
-        $value = $table_config_array[$field_name]['default'];
-    }
-
-    if (!empty($error_msg)) {
-        $select_html = html\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null'], "error");
-        $html_template = html\load_html_template("label_input_combo-error");
-        $html_code = sprintf($html_template, $label_object->generate(), $select_html, $error_msg);
-    } else {
-        $select_html = html\select_list_from_array($field_name, $select_data_array, $value, $table_config_array[$field_name]['null']);
-        $html_template = html\load_html_template("label_input_combo");
-        $html_code = sprintf($html_template, $label_object->generate(), $select_html);
-    }
-
-    return $html_code;
-}
-
-function get_labels_from_table($db, $table_name) {
-
-    \k1lib\sql\db_check_object_type($db, __FUNCTION__);
-
-    if (!is_string($table_name) || empty($table_name)) {
-        die(__FUNCTION__ . " \$table_name should be an non empty string");
-    }
-    $table_config_array = \k1lib\sql\get_db_table_config($db, $table_name);
-    $label_field = \k1lib\sql\get_db_table_label_fields($table_config_array);
-    $table_keys_array = \k1lib\sql\get_db_table_keys($table_config_array);
-    if (!empty($table_keys_array)) {
-        $table_config_array = array_flip($table_keys_array);
-    }
-    if (count($table_keys_array) === 1) {
-        $key_filed = key($table_keys_array);
-        $labels_sql = "SELECT $key_filed as value, $label_field as label FROM $table_name";
-        $labels_data = \k1lib\sql\sql_query($db, $labels_sql);
-        if (!empty($labels_data) && (count($labels_data) > 0)) {
-            $label_array = array();
-            foreach ($labels_data as $row) {
-                $label_array[$row['value']] = $row['label'];
-            }
-            return $label_array;
-        } else {
-            return FALSE;
-        }
-    } else {
-        return FALSE;
-    }
-}
+//function get_labels_from_table($table_name) {
+//
+//    $db->db_check_object_type(__FUNCTION__);
+//
+//    if (!is_string($table_name) || empty($table_name)) {
+//        die(__FUNCTION__ . " \$table_name should be an non empty string");
+//    }
+//    $table_config_array = $db->get_db_table_config($table_name);
+//    $label_field = $db->get_db_table_label_fields($table_config_array);
+//    $table_keys_array = $db->get_db_table_keys($table_config_array);
+//    if (!empty($table_keys_array)) {
+//        $table_config_array = array_flip($table_keys_array);
+//    }
+//    if (count($table_keys_array) === 1) {
+//        $key_filed = key($table_keys_array);
+//        $labels_sql = "SELECT $key_filed as value, $label_field as label FROM $table_name";
+//        $labels_data = $db->sql_query($labels_sql);
+//        if (!empty($labels_data) && (count($labels_data) > 0)) {
+//            $label_array = array();
+//            foreach ($labels_data as $row) {
+//                $label_array[$row['value']] = $row['label'];
+//            }
+//            return $label_array;
+//        } else {
+//            return FALSE;
+//        }
+//    } else {
+//        return FALSE;
+//    }
+//}
