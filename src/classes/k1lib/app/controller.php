@@ -4,6 +4,7 @@ namespace k1lib\app;
 
 use k1app\template\mazer\layouts\blank;
 use k1app\template\mazer\layouts\sidebar_blank;
+use k1app\template\mazer\layouts\single_page;
 use k1lib\app;
 use k1lib\html\notifications\on_DOM as DOM_notifications;
 use function k1lib\forms\check_all_incomming_vars;
@@ -12,7 +13,7 @@ class controller {
 
     static protected string $root_url;
 
-    static protected blank|sidebar_blank $tpl;
+    static protected blank|sidebar_blank|single_page $tpl;
     static protected app $app;
     static array $POST = [];
     
