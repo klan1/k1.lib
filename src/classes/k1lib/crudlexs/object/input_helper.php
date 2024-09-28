@@ -26,8 +26,8 @@ class input_helper {
 
     static $do_fk_search_tool = TRUE;
     static $fk_search_tool_js_loaded = FALSE;
-    static $url_to_search_fk_data = K1APP_URL . "core/tools/select-row-keys/";
-    static $url_to_send_row_keys_fk_data = K1APP_URL . "core/tools/send-row-keys/";
+    static $url_to_search_fk_data = K1APP_URL . "core/tools/select_row_keys/";
+    static $url_to_send_row_keys_fk_data = K1APP_URL . "core/tools/send_row_keys/";
     static $main_css = "";
     static private $fk_fields_to_skip = [];
     static public $boolean_true = NULL;
