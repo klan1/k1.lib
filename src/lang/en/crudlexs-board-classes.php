@@ -2,7 +2,8 @@
 
 namespace k1lib\crudlexs\board;
 
-class board_base_strings {
+class board_base_strings
+{
 
     static $alert_board = "Alert";
     static $error_board = "Error message";
@@ -15,7 +16,8 @@ class board_base_strings {
 
 }
 
-class board_create_strings {
+class board_create_strings
+{
 
     static $error_no_inserted = "Data hasn't been inserted.";
     static $error_form = "Please correct the marked errors:";
@@ -23,7 +25,8 @@ class board_create_strings {
 
 }
 
-class board_delete_strings {
+class board_delete_strings
+{
 
     static $data_deleted = "Data deleted";
     static $error_no_data_deleted = "The record to delete can't be deleted";
@@ -31,7 +34,8 @@ class board_delete_strings {
 
 }
 
-class board_list_strings {
+class board_list_strings
+{
 
     static $no_table_data = "No data to show";
 
@@ -42,10 +46,16 @@ class board_list_strings {
     static $button_search = "Search";
     static $button_search_modify = "Modify search";
     static $button_search_cancel = "Cancel search";
+    /**
+     * FK tool
+     */
+    static $select_fk_tool_title = 'Select record to use on Form';
+    static $select_fk_tool_subtitle = 'You can search and do click on the link column.';
 
 }
 
-class board_read_strings {
+class board_read_strings
+{
 
     static $button_all_data = "All data";
     static $button_back = "Back";
@@ -54,7 +64,8 @@ class board_read_strings {
 
 }
 
-class board_update_strings {
+class board_update_strings
+{
 
     static $button_submit = "Update";
     static $error_no_inserted = "Data hasn't benn updated. Did you leave all unchaged ?";

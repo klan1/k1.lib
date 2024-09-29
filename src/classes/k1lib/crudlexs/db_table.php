@@ -12,7 +12,7 @@ class db_table {
 
     /**
      *
-     * @var PDO
+     * @var PDO_k1
      */
     public PDO_k1 $db;
     private $db_table_name = FALSE;
@@ -65,7 +65,7 @@ class db_table {
 
     /**
      * 
-     * @param PDO $db
+     * @param PDO_k1 $db
      * @param string $db_table_name
      */
     public function __construct(PDO_k1 $db, $db_table_name) {
