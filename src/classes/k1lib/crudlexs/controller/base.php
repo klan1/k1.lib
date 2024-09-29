@@ -228,19 +228,6 @@ class base {
         $this->board_update_name = controller_base_strings::$board_update_name;
         $this->board_delete_name = controller_base_strings::$board_delete_name;
 
-        if (DOM::html()->body()) {
-//            $js_file = K1LIB_BASE_PATH . '/../dist/crudlexs/main.js';
-//            if (file_exists($js_file)) {
-//                $js_content = file_get_contents($js_file);
-//
-//                $js_script = new script();
-//                $js_script->set_value($js_content);
-//
-//                DOM::html()->body()->append_child_tail($js_script);
-//            } else {
-//                d($js_file);
-//            }
-        }
     }
 
     public function set_title_tag_id($title_tag_id): void {
