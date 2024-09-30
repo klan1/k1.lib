@@ -8,7 +8,7 @@ namespace k1lib\html;
 class tag {
 
     use append_shotcuts;
-    
+
     // TODO: make a better solition for this
     static tag|null $root = null;
 
@@ -820,7 +820,11 @@ class tag {
 
             case '.':
                 $tags = $this->get_elements_by_class($term);
-                return $tags;
+                if (count($tags) > 1) {
+                    return $tags;
+                } else {
+                    return $tags[0];
+                }
 
             default:
                 $tags = $this->get_elements_by_tag($query);

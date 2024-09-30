@@ -46,7 +46,7 @@ class controller_crud extends controller {
         if (method_exists(self::$tpl, 'page_content')) {
             self::$tpl->page_content()->set_title(" ");
             self::$tpl->page_content()->set_subtitle(" ");
-            self::$tpl->page_content()->set_content_title(null);
+            self::$tpl->page_content()->set_content_title(" ");
             self::$tpl->page_content()->set_content(null);
         }
 
@@ -60,7 +60,7 @@ class controller_crud extends controller {
          */
         self::$co = new cb(K1APP_BASE_URL, $parent_class, self::$controller_db_table, self::$controller_name);
         self::$co->set_title_tag_id('#k1app-page-title');
-        self::$co->set_subtitle_tag_id('#k1app-page-subtitle');
+        self::$co->set_subtitle_tag_id('.card-title');
 
         if (self::$co->db_table->get_state() === false) {
             die('DB table did not found: ' . $parent_class);
