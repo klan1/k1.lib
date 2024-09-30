@@ -227,15 +227,16 @@ class base {
         $this->board_read_name = controller_base_strings::$board_read_name;
         $this->board_update_name = controller_base_strings::$board_update_name;
         $this->board_delete_name = controller_base_strings::$board_delete_name;
-
     }
 
     public function set_title_tag_id($title_tag_id): void {
+        $this->html_title_tag = DOM::html()->body()->q($this->title_tag_id);
         $this->title_tag_id = $title_tag_id;
     }
 
     public function set_subtitle_tag_id($subtitle_tag_id): void {
         $this->subtitle_tag_id = $subtitle_tag_id;
+        $this->html_subtitle_tag = DOM::html()->body()->q($this->subtitle_tag_id);
     }
 
     public function set_config_from_class($class_name = NULL) {
