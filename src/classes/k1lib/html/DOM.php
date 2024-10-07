@@ -35,6 +35,9 @@ class DOM {
     static function html() {
         return self::$html;
     }
+    static function html_document() {
+        return self::$html;
+    }
 
     static function generate() {
         if (!empty(self::$html)) {
