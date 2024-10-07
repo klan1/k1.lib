@@ -7,6 +7,11 @@ class grid extends \k1lib\html\div {
     use foundation_methods;
 
     /**
+     * @var \k1lib\html\tag
+     */
+    protected $parent;
+
+    /**
      * @var grid_cell[]
      */
     protected $rows = [];

@@ -8,8 +8,8 @@ class strong extends tag {
 
     /**
      * Create a STRONG html tag with VALUE as data. Use $strong->set_value($data)
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      */
     function __construct($value = '', $class = NULL, $id = NULL) {
         parent::__construct("strong", FALSE);

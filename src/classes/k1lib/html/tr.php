@@ -7,8 +7,8 @@ class tr extends tag {
     use append_shotcuts;
 
     /**
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      */
     function __construct($class = NULL, $id = NULL) {
         parent::__construct("tr", FALSE);
@@ -18,9 +18,9 @@ class tr extends tag {
 
     /**
      * Chains a new <TH> HTML TAG
-     * @param string $value <TAG>$value</TAG>
-     * @param string $class
-     * @param string $id
+     * @param String $value <TAG>$value</TAG>
+     * @param String $class
+     * @param String $id
      * @return th
      */
     function append_th($value, $class = NULL, $id = NULL) {
@@ -31,9 +31,9 @@ class tr extends tag {
 
     /**
      * Chains a new <TD> HTML TAG
-     * @param string $value <TAG>$value</TAG>
-     * @param string $class
-     * @param string $id
+     * @param String $value <TAG>$value</TAG>
+     * @param String $class
+     * @param String $id
      * @return td
      */
     function append_td($value, $class = NULL, $id = NULL) {

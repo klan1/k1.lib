@@ -9,8 +9,8 @@ class style extends tag {
     /**
      * Create a SCRIPT html tag with VALUE as data. Use $style->set_value($crs) 
      * for load a file.
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      */
     function __construct($style = NULL) {
         parent::__construct("style", FALSE);

@@ -9,8 +9,8 @@ class table extends tag {
 //    private $data_array = array();
 
     /**
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      */
     function __construct($class = NULL, $id = NULL) {
         parent::__construct("table", FALSE);
@@ -21,8 +21,8 @@ class table extends tag {
 
     /**
      * Chains a new <THEAD> HTML TAG
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      * @return thead
      */
     function append_thead($class = NULL, $id = NULL) {
@@ -33,8 +33,8 @@ class table extends tag {
 
     /**
      * Chains a new <TBODY> HTML TAG
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      * @return tbody
      */
     function append_tbody($class = NULL, $id = NULL) {

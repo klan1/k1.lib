@@ -2,22 +2,17 @@
 
 namespace k1lib\crudlexs\object;
 
-use k1lib\crudlexs\db_table;
-use k1lib\html\div;
-use k1lib\html\input;
-use function k1lib\common\unserialize_var;
-
 class search_helper extends creating {
 
     /**
      *
-     * @var array 
+     * @var Array 
      */
     public $db_table_data = FALSE;
 
     /**
      *
-     * @var bool 
+     * @var Boolean 
      */
     protected $db_table_data_keys = FALSE;
 
@@ -29,7 +24,7 @@ class search_helper extends creating {
     protected $caller_url = null;
 
 // FILTERS
-    public function __construct(db_table $db_table) {
+    public function __construct(\k1lib\crudlexs\db_table $db_table) {
         parent::__construct($db_table, FALSE);
         if (isset($_GET['caller-id'])) {
             $this->caller_url = urldecode($_GET['caller-id']);
@@ -55,20 +50,16 @@ class search_helper extends creating {
         $this->apply_label_filter();
 
         $this->insert_inputs_on_data_row();
-        
-        $div_container = new div('container');
 
         $search_html = parent::do_html_object();
-        $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $_SERVER['HTTP_REFERER'] ?? '#');
+        $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $_SERVER['HTTP_REFERER']);
         $search_html->get_elements_by_tag("form")[0]->set_attrib("target", "_parent");
-        $search_html->get_elements_by_tag("form")[0]->append_child(new input("hidden", "from-search", urlencode($this->caller_url)));
-        
-        $search_html->append_to($div_container);
-        return $div_container;
+        $search_html->get_elements_by_tag("form")[0]->append_child(new \k1lib\html\input("hidden", "from-search", urlencode($this->caller_url)));
+        return $search_html;
     }
 
     function catch_post_data() {
-        $search_post = unserialize_var(urlencode($this->caller_url));
+        $search_post = \k1lib\common\unserialize_var(urlencode($this->caller_url));
         if (empty($search_post)) {
             $search_post = [];
         }

@@ -10,25 +10,25 @@
 
 namespace k1lib\html\notifications;
 
-use k1app\template\mazer\components\alert;
-use k1lib\html\ul;
+use k1lib\html\DOM as DOM;
 
 class on_DOM extends common_code {
 
-    protected static $section_name = 'on_DOM';
+    static protected $section_name = 'on_DOM';
 
-    public static function queue_mesasage($message, $type = "primary", $tag_id = 'k1lib-output', $title = null) {
+    static function queue_mesasage($message, $type = "primary", $tag_id = 'k1lib-output', $title = NULL) {
+        parent::test();
         parent::_queue_mesasage(self::$section_name, $message, $type, $tag_id);
         if (!empty($title)) {
             self::queue_title($title, $type);
         }
     }
 
-    public static function queue_title($title, $type = "primary") {
+    static function queue_title($title, $type = "primary") {
         parent::_queue_mesasage_title(self::$section_name, $title, $type);
     }
 
-    public static function insert_messases_on_DOM($order = 'asc') {
+    static function insert_messases_on_DOM($order = 'asc') {
         if (isset($_SESSION['k1lib_notifications']) && empty(self::$data)) {
             self::$data = & $_SESSION['k1lib_notifications'];
         }
@@ -40,42 +40,34 @@ class on_DOM extends common_code {
             if ($order == 'asc') {
                 self::$data[self::$section_name] = array_reverse(self::$data[self::$section_name]);
             }
+            $tag_object = DOM::html()->body()->get_element_by_id("k1lib-output");
             foreach (self::$data[self::$section_name] as $tag_id => $types_messages) {
-                if (!empty(self::$tag_id_override)) {
-                    $tag_id = self::$tag_id_override;
-                }
-
-                if (isset(self::$tpl)) {
-                    $tag_insert = self::$tpl->body()->get_element_by_id($tag_id);
-                }
-
+                if ($tag_object->get_attribute("id") != $tag_id) {
+                    $tag_object = DOM::html()->body()->get_element_by_id($tag_id);
+                    if (empty($tag_object)) {
+                        if (DOM::html()->body()->header()) {
+                            $tag_object = DOM::html()->body()->header()->append_div(NULL, $tag_id);
+                        } else {
+                            $tag_object = DOM::html()->body()->append_child_head(new \k1lib\html\div(NULL, $tag_id));
+                        }
+                    } // else no needed
+                } // else no needed
                 foreach ($types_messages as $type => $messages) {
-                    if (isset(self::$tpl)) {
-                        $alert = new alert();
-                        $alert->set_class($type);
-                        if (isset(self::$data_titles[self::$section_name][$type]) && !empty(self::$data_titles[self::$section_name][$type])) {
-                            $alert->set_title(self::$data_titles[self::$section_name][$type]);
-                        }
-                        if (count($messages) === 1) {
-                            $alert->set_message($messages[0]);
-                            $alert->append_to($tag_insert);
-                        } else {
-                            $ul = new ul();
-                            foreach ($messages as $message) {
-                                $ul->append_li($message);
-                            }
-                            $alert->set_message($ul);
-                            $alert->append_to($tag_insert);
-                        }
+                    $call_out = new \k1lib\html\foundation\callout();
+                    $call_out->set_class($type);
+                    if (isset(self::$data_titles[self::$section_name][$type]) && !empty(self::$data_titles[self::$section_name][$type])) {
+                        $call_out->set_title(self::$data_titles[self::$section_name][$type]);
+                    }
+                    if (count($messages) === 1) {
+                        $call_out->set_message($messages[0]);
+                        $call_out->append_to($tag_object);
                     } else {
-                        if (count($messages) === 1) {
-                            echo "({$type}) {$messages[0]}" . PHP_EOL;
-                        } else {
-                            $ul = new ul();
-                            foreach ($messages as $message) {
-                                echo "({$type}) {$message}" . PHP_EOL;
-                            }
+                        $ul = new \k1lib\html\ul();
+                        foreach ($messages as $message) {
+                            $ul->append_li($message);
                         }
+                        $call_out->set_message($ul);
+                        $call_out->append_to($tag_object);
                     }
                 }
             }
@@ -83,4 +75,5 @@ class on_DOM extends common_code {
         unset($_SESSION['k1lib_notifications']);
         unset($_SESSION['k1lib_notifications_titles']);
     }
+
 }

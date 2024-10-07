@@ -6,13 +6,13 @@ class _temply {
 
     /**
      * Enable state
-     * @var bool 
+     * @var Boolean 
      */
     static private $enabled = FALSE;
 
     /**
      * URL data array
-     * @var array
+     * @var Array
      */
     static private $output_places;
 

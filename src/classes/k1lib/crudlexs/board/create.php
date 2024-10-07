@@ -2,12 +2,9 @@
 
 namespace k1lib\crudlexs\board;
 
-use k1lib\crudlexs\controller\base;
-use k1lib\crudlexs\object\creating;
-use k1lib\html\div;
-use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
-use function k1lib\urlrewrite\get_back_url;
+use k1lib\html\DOM as DOM;
+use k1lib\html\notifications\on_DOM as DOM_notification;
 
 class create extends board_base implements board_interface {
 
@@ -17,16 +14,16 @@ class create extends board_base implements board_interface {
      */
     public $create_object;
 
-    public function __construct(base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
             $this->show_rule_to_apply = "show-create";
-            $this->create_object = new creating($this->controller_object->db_table, FALSE);
+            $this->create_object = new \k1lib\crudlexs\object\creating($this->controller_object->db_table, FALSE);
         }
     }
 
     /**
-     * @return div|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function start_board() {
         if (!parent::start_board()) {
@@ -37,12 +34,12 @@ class create extends board_base implements board_interface {
          * IFRAME for KF tool
          */
 //        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
-//        DOM::html_document()->body()->content()->append_child_tail($fk_iframe);
+//        DOM::html()->body()->content()->append_child_tail($fk_iframe);
 
         $this->create_object->enable_foundation_form_check();
 
         if ($this->create_object->get_state()) {
-            $this->create_object->set_back_url(get_back_url());
+            $this->create_object->set_back_url(\k1lib\urlrewrite\get_back_url());
 
             $this->create_object->set_do_table_field_name_encrypt(TRUE);
             $this->controller_object->db_table->set_db_table_show_rule($this->show_rule_to_apply);
@@ -58,7 +55,7 @@ class create extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function exec_board() {
         if (!$this->is_enabled) {
@@ -104,7 +101,7 @@ class create extends board_base implements board_interface {
 
                 if (isset($_GET['back-url'])) {
                     $get_params = [];
-                    $url_to_go = get_back_url();
+                    $url_to_go = \k1lib\urlrewrite\get_back_url();
                 } else {
                     $get_params = [
 //                        "back-url" => \k1lib\urlrewrite\get_back_url(),

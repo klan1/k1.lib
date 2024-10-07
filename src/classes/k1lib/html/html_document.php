@@ -12,53 +12,50 @@ namespace k1lib\html;
  *  </body>
  * </html> 
  */
-class html_document extends tag
-{
+class html_document extends tag {
 
     use append_shotcuts;
-    
+
     /**
      * @var head
      */
-    protected head $head;
+    protected $head = NULL;
 
     /**
      * @var body
      */
-    protected body $body;
+    private $body = NULL;
 
-    function __construct($lang = "en", $default_head = false, $default_body = false)
-    {
+    function __construct($lang = "en") {
         parent::__construct("html", FALSE);
-        
-        parent::$root = $this;
-
-        $this->pre_code("<!DOCTYPE html>\n");
         $this->set_attrib("lang", $lang);
+        $this->append_head();
+        $this->append_body();
+    }
 
-        if (!$default_head) {
-            $this->head = new head();
-            $this->append_child($this->head);
-        }
-        if (!$default_body) {
-            $this->body = new body();
-            $this->append_child($this->body);
-        }
+    function append_head() {
+        $this->head = new head();
+        $this->append_child($this->head);
+    }
+
+    function append_body() {
+        $this->body = new body();
+        $this->append_child($this->body);
     }
 
     /**
      * @return head
      */
-    function head()
-    {
+    function head() {
         return $this->head;
     }
 
     /**
      * @return body
      */
-    function body()
-    {
+    function body() {
         return $this->body;
     }
+
 }
+

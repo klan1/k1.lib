@@ -5,8 +5,7 @@ namespace k1lib\html;
 /**
  * Holds all the tags created with the tag Class.
  */
-class tag_catalog
-{
+class tag_catalog {
 
     /**
      * @var integer 
@@ -22,8 +21,7 @@ class tag_catalog
      * Gets the actual index position.
      * @return integer
      */
-    static function get_index()
-    {
+    static function get_index() {
         return self::$index;
     }
 
@@ -32,8 +30,7 @@ class tag_catalog
      * @param integer $index
      * @return tag|NULL
      */
-    static function get_by_index($index)
-    {
+    static function get_by_index($index) {
         if (self::index_exist($index)) {
             return self::$catalog[$index];
         } else {
@@ -46,8 +43,7 @@ class tag_catalog
      * @param integer $index
      * @return boolean
      */
-    static function index_exist($index)
-    {
+    static function index_exist($index) {
         if (isset(self::$catalog[$index])) {
             return TRUE;
         } else {
@@ -60,8 +56,7 @@ class tag_catalog
      * @param \k1lib\html\tag $tag_object
      * @return integer
      */
-    static function increase(tag $tag_object)
-    {
+    static function increase(tag $tag_object) {
         self::$index++;
         self::$catalog[self::$index] = $tag_object;
         return self::$index;
@@ -72,22 +67,13 @@ class tag_catalog
      * Object to be found or generated on chain actions.
      * @param integer|\k1lib\html\tag $tag_index
      */
-    static function decatalog($tag_index)
-    {
+    static function decatalog($tag_index) {
         if (is_object($tag_index) && method_exists($tag_index, "get_tag_id")) {
             $tag_index = $tag_index->get_tag_id();
         }
         if (isset(self::$catalog[$tag_index])) {
-            //            self::$catalog[$tag_index] = NULL;
+//            self::$catalog[$tag_index] = NULL;
             unset(self::$catalog[$tag_index]);
-        }
-    }
-    static function is_cataloged($tag_index)
-    {
-        if (is_object($tag_index) && method_exists($tag_index, "get_tag_id")) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -95,8 +81,9 @@ class tag_catalog
      * Returns all the tag Object Catalog Array
      * @return tag[]
      */
-    static function get_catalog()
-    {
+    static function get_catalog() {
         return self::$catalog;
     }
+
 }
+

@@ -8,8 +8,8 @@ class small extends tag {
 
     /**
      * Create a SMALL html tag with VALUE as data. Use $small->set_value($data)
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      */
     function __construct($class = NULL, $id = NULL) {
         parent::__construct("small", FALSE);

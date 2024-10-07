@@ -3,10 +3,6 @@
 namespace k1lib\html;
 
 /**
- * K1.lib V1 compatibility layer
- */
-
-/**
  * Static Class that holds the first tag Object <html></html>. 
  */
 class DOM {
@@ -15,10 +11,10 @@ class DOM {
     /**
      * @var html_document
      */
-    static protected html_document $html;
+    static protected $html = NULL;
 
-    static function start(html_document $tpl) {
-        self::$html = $tpl;
+    static function start($lang = "en") {
+        self::$html = new html_document($lang);
     }
 
     static function is_started() {
@@ -34,21 +30,22 @@ class DOM {
     }
 
     /**
-     * @return html_document
+     * @return html
      */
-    static function html(): html_document {
-        return self::html_document();
-    }
-
-    static function html_document(): html_document {
+    static function html() {
         return self::$html;
     }
 
     static function generate() {
-        return self::$html->generate();
+        if (!empty(self::$html)) {
+            self::$html->pre_code("<!DOCTYPE html>\n");
+            return self::$html->generate();
+        } else {
+            return NULL;
+        }
     }
 
     static function link_html(html $html_to_link) {
-        trigger_error('Do no do this ' . __METHOD__ . ' at ' . __CLASS__, E_USER_ERROR);
+        self::$html = $html_to_link;
     }
 }

@@ -7,9 +7,9 @@ class td extends tag {
     use append_shotcuts;
 
     /**
-     * @param string $value <TAG>$value</TAG>
-     * @param string $class
-     * @param string $id
+     * @param String $value <TAG>$value</TAG>
+     * @param String $class
+     * @param String $id
      */
     function __construct($value, $class = NULL, $id = NULL) {
         parent::__construct("td", FALSE);

@@ -2,32 +2,25 @@
 
 namespace k1lib\urlrewrite;
 
-use k1app\template\mazer\components\app\sidebar\wrapper\header;
-use k1lib\api\base as api_base;
-use k1lib\html\html_document;
-use const k1lib\URL_REWRITE_VAR_NAME;
-use function k1lib\common\explode_with_2_delimiters;
-use function k1lib\controllers\load_controller;
-use function k1lib\forms\check_all_incomming_vars;
-use function k1lib\forms\check_single_incomming_var;
+use \k1lib\api\base as api_base;
 
 class url {
 
     /**
      * Enable state
-     * @var bool 
+     * @var Boolean 
      */
     static private $enabled = FALSE;
 
     /**
      * Actual URL level 
-     * @var int
+     * @var Int
      */
     static private $levels_count;
 
     /**
      * URL data array
-     * @var array
+     * @var Array
      */
     static private $url_data;
 
@@ -40,7 +33,7 @@ class url {
      * 
      * @var string
      */
-    static private string $url_rewrite_data;
+    static private $url_rewrite_data = NULL;
 
     static function set_api_mode() {
         self::$api_mode = TRUE;
@@ -53,18 +46,14 @@ class url {
     static public function enable() {
         self::$enabled = TRUE;
         self::$levels_count = null;
-        self::$url_data = [];
-        if (key_exists(URL_REWRITE_VAR_NAME, $_GET)) {
-            self::$url_rewrite_data = check_single_incomming_var($_GET[URL_REWRITE_VAR_NAME]) ?? '';
-        } else {
-            self::$url_rewrite_data = '';
-        }
-        unset($_GET[URL_REWRITE_VAR_NAME]);
+        self::$url_data = array();
+        self::$url_rewrite_data = \k1lib\forms\check_single_incomming_var($_GET[\k1lib\URL_REWRITE_VAR_NAME]);
+        unset($_GET[\k1lib\URL_REWRITE_VAR_NAME]);
     }
 
     /**
      * Query the enabled state
-     * @return bool
+     * @return Boolean
      */
     static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {
@@ -77,57 +66,6 @@ class url {
         return self::$url_data;
     }
 
-    static public function get_controller_path_from_url(string $controllers_path) {
-        $rewrite_data = self::get_url_rewrite_data();
-
-        $url_array = explode('/', $rewrite_data);
-
-        if (substr($controllers_path, -1) == '/') {
-            $controllers_path = substr($controllers_path, 0, -1);
-        }
-
-        $path_examined = $controllers_path;
-        $last_working_index = '';
-        foreach ($url_array as $key => $url_part) {
-            self::set_url_rewrite_var($key, 'url_level_' . $key, false);
-            if (!empty($url_part)) {
-                $path_examined .= '/' . $url_part;
-            } elseif ($key > 0 && empty($url_part)) {
-                break;
-            }
-            if (is_dir($path_examined)) {
-                $index_try = $path_examined . ('/index.php');
-                if (is_file($index_try)) {
-                    $last_working_index = $index_try;
-                }
-                continue;
-            } else {
-                if (is_file($path_examined . '.php')) {
-                    $path_examined .= '.php';
-                    return $path_examined;
-                } else {
-                    self::error_404($rewrite_data);
-                }
-            }
-        }
-        if (!empty($last_working_index)) {
-            return $last_working_index;
-        } else {
-            self::error_404($rewrite_data);
-        }
-    }
-
-    static function error_404($non_found_name) {
-        http_response_code(404);
-        header("Access-Control-Allow-Origin: *");
-        $html = new html_document();
-        $html->body()->append_h1('404 Not found');
-        $html->body()->append_p('The controller \'' . $non_found_name . '\' do not exist.');
-        echo $html->generate();
-        trigger_error('App error fired', E_USER_NOTICE);
-        exit;
-    }
-
     /**
      * Set the URL level name for the app 
      * The self::$url_data array will hold the data in this way:
@@ -135,7 +73,7 @@ class url {
      * self::$url_data[$level]['value']
      * @param int $level Level deep to define
      * @param string $name Level name
-     * @param boolean $required Required? is TRUE the app will stop is the leves is not pressent on the \k1app\K1APP_URL
+     * @param boolean $required Required? is TRUE the app will stop is the leves is not pressent on the APP_URL
      * @return boolean 
      * TODO: check level prerequisites 
      */
@@ -375,8 +313,8 @@ class url {
         // Clean the GET vars from URL
         $url = str_replace($url_vars, "", $url);
         // Now remove the ? from GET vars part
-        //        $url_vars = str_replace("?", "", $url_vars);
-        $url_var_array = explode_with_2_delimiters("&", "=", $url_vars, 1);
+//        $url_vars = str_replace("?", "", $url_vars);
+        $url_var_array = \k1lib\common\explode_with_2_delimiters("&", "=", $url_vars, 1);
         /**
          * Catch all _GET vars
          */
@@ -384,8 +322,8 @@ class url {
         foreach ($myGET as $key => $value) {
             $myGET[$key] = urldecode($value);
         }
-        $actual_get_vars = check_all_incomming_vars($myGET);
-        unset($actual_get_vars[URL_REWRITE_VAR_NAME]);
+        $actual_get_vars = \k1lib\forms\check_all_incomming_vars($myGET);
+        unset($actual_get_vars[\k1lib\URL_REWRITE_VAR_NAME]);
 
         /**
          * Join actual GET vars with the URL GET vars
@@ -453,7 +391,7 @@ class url {
         // get from the URL the next level value :   /$actual_url/next_level_value
         $next_directory_name = self::set_url_rewrite_var($next_url_level, $level_name, $required_level);
         if (!empty($next_directory_name)) {
-            $file_to_include = load_controller($next_directory_name, $controller_path . $actual_url, $return_non_existent_level, self::$api_mode);
+            $file_to_include = \k1lib\controllers\load_controller($next_directory_name, $controller_path . $actual_url, $return_non_existent_level, self::$api_mode);
             if (!empty($file_to_include)) {
                 return $file_to_include;
             } else {
@@ -469,7 +407,8 @@ class url {
     }
 
     static public function is_https() {
-        return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
+        return
+                (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
     }
 
     public static function get_url_rewrite_data(): string {

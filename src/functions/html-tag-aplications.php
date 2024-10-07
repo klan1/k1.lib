@@ -1,4 +1,4 @@
-<?php //
+<?php
 
 /**
  * HTML Related funcions that uses the HTML Classes
@@ -11,7 +11,7 @@ use k1lib\html as html_classes;
 /**
  * Loads files and get contents from templates directory from k1.lib no from the app template directory.
  * Returns FALSE on load error.
- * @param string $function_name
+ * @param String $function_name
  * @return String
  */
 function load_html_template($function_name) {
@@ -23,12 +23,12 @@ function load_html_template($function_name) {
 
 /**
  * Using a HTML Template makes the couple of label-inpunt
- * @param string $field_name
- * @param string $value
- * @param string $label
- * @param bool $required
- * @param string $error_msg
- * @param string $label_link 
+ * @param String $field_name
+ * @param String $value
+ * @param String $label
+ * @param Boolean $required
+ * @param String $error_msg
+ * @param String $label_link 
  * @return String
  */
 function label_input_text_combo($field_name, $value, $label, $required = FALSE, $error_msg = "", $label_link = null) {
@@ -62,12 +62,12 @@ function label_input_text_combo($field_name, $value, $label, $required = FALSE, 
 
 /**
  * Using a HTML Template makes the couple of label-inpunt
- * @param string $field_name
- * @param string $value
- * @param string $label
- * @param bool $required
- * @param string $error_msg
- * @param string $label_link 
+ * @param String $field_name
+ * @param String $value
+ * @param String $label
+ * @param Boolean $required
+ * @param String $error_msg
+ * @param String $label_link 
  * @return String
  */
 function label_text_combo($label, $value) {
@@ -83,12 +83,12 @@ function label_text_combo($label, $value) {
 
 /**
  * Using a HTML Template makes the couple of label-inpunt as 2 columns
- * @param string $field_name
- * @param string $value
- * @param string $label
- * @param bool $required
- * @param string $error_msg
- * @param string $label_link 
+ * @param String $field_name
+ * @param String $value
+ * @param String $label
+ * @param Boolean $required
+ * @param String $error_msg
+ * @param String $label_link 
  * @return String
  */
 function label_text_combo_2columns($label, $value) {
@@ -104,12 +104,12 @@ function label_text_combo_2columns($label, $value) {
 
 /**
  * Generate a <SELECT></SELECT> HTML tag object with options from an Array() 
- * @param string $name
- * @param array $data_array
+ * @param String $name
+ * @param Array $data_array
  * @param type $default_value
- * @param bool $allow_empty
- * @param string $class
- * @param string $id
+ * @param Boolean $allow_empty
+ * @param String $class
+ * @param String $id
  * @return html_classes\select_tag
  */
 function select_list_from_array($name, $data_array, $default_value = "", $allow_empty = FALSE, $class = "", $id = "", $select_message = 'Select an option') {
@@ -129,10 +129,10 @@ function select_list_from_array($name, $data_array, $default_value = "", $allow_
 
 /**
  * Generate a <TABLE></TABLE> HTML tag with data from an Array() 
- * @param array $data_array
- * @param bool $has_header
- * @param string $class
- * @param string $id
+ * @param Array $data_array
+ * @param Boolean $has_header
+ * @param String $class
+ * @param String $id
  * @return String
  */
 function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "", $text_limit_to_trim = null) {
@@ -183,11 +183,11 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
 
 /**
  * 
- * @param string $linkTo
- * @param string $label
- * @param bool $mini
- * @param bool $inline
- * @param bool $keep_get_vars
+ * @param String $linkTo
+ * @param String $label
+ * @param Boolean $mini
+ * @param Boolean $inline
+ * @param Boolean $keep_get_vars
  * @return \k1lib\html\a_tag
  */
 function get_link_button($linkTo, $label, $class = "", $id = "") {
@@ -208,7 +208,6 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
         "edit" => ["edit", "editar", "cambiar", "change"],
         "delete" => ["delete", "borrar", "eliminar", "suprimir", "quitar", "cancelar"],
         "list" => ["lista", "list", "all data", "view data", "data", "todos"],
-        "search" => ["buscar", "search", "locate", "ubicar"],
     ];
 
     $label_low = strtolower($label);
@@ -225,60 +224,55 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
     $js_confirm_dialog = FALSE;
     switch ($possible_action) {
         case "export":
-            $button_icon = "bi bi-download";
-            $theme = "btn-outline-secondary";
+            $button_icon = "fi-download";
+            $theme = "secondary";
             break;
         case "back":
-            $button_icon = "bi bi-arrow-left";
-            $theme = "btn-outline-secondary";
+            $button_icon = "fi-arrow-left";
+            $theme = "secondary";
             break;
         case "go":
-            $button_icon = "bi bi-check";
-            $theme = "btn-outline-success";
+            $button_icon = "fi-check";
+            $theme = "success";
             break;
         case "cancel":
-            $button_icon = "bi bi-x";
-            $theme = "btn-outline-secondary";
+            $button_icon = "fi-x";
+            $theme = "alert";
             break;
         case "ok":
-            $button_icon = "bi bi-check";
-            $theme = "btn-outline-success";
+            $button_icon = "fi-check";
+            $theme = "success";
             break;
         case "view":
-            $button_icon = "bi bi-clipboard2";
-            $theme = "btn-outline-primary";
+            $button_icon = "fi-clipboard-notes";
+            $theme = "";
             break;
         case "new":
-            $button_icon = "bi bi-plus";
-            $theme = "btn-outline-success";
+            $button_icon = "fi-plus";
+            $theme = "success";
             break;
         case "edit":
-            $button_icon = "bi bi-pencil-square";
-            $theme = "btn-outline-primary";
+            $button_icon = "fi-clipboard-pencil";
+            $theme = "";
             break;
         case "delete":
-            $button_icon = "bi bi-exclamation-triangle-fill";
-            $theme = "btn-outline-warning";
+            $button_icon = "fi-page-delete";
+            $theme = "alert";
             $js_confirm_dialog = TRUE;
             break;
         case "list":
-            $button_icon = "bi bi-grid-3x3";
-            $theme = "btn-outline-primary";
-            break;
-        case "search":
-            $button_icon = "bi bi-search";
-            $theme = "btn-outline-primary";
+            $button_icon = "fi-list";
+            $theme = "primary";
             break;
         default:
-            $button_icon = "bi bi-link";
-            $theme = "btn-outline-secondary";
+            $button_icon = "fi-widget";
+            $theme = "secondary";
             break;
     }
-    $icon = new \k1lib\html\i(NULL, $button_icon);
 
-    $button_object = new \k1lib\html\a($linkTo, "$icon " . $label, "_self", "btn icon {$theme} {$class}", $id);
-//    $button_object->set_attrib("class", "$button_icon", TRUE);
-//    $button_object->set_attrib("class", "btn icon $theme", TRUE);
+    $button_object = new \k1lib\html\a($linkTo, " " . $label, "_self", "button {$class}", $id);
+    $button_object->set_attrib("class", "$button_icon", TRUE);
+    $button_object->set_attrib("class", "$theme", TRUE);
     if ($js_confirm_dialog) {
         $button_object->set_attrib("onclick", "return confirm('Esta seguro que desea hacer esto ?\\n\\nEsta accion no se podra deshacer.')");
     }

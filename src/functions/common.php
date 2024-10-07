@@ -39,10 +39,6 @@ function k1lib_include_files($path_to_explore, array $prefix_to_exclude = ['.', 
 
 namespace k1lib\common;
 
-use k1lib\K1MAGIC;
-use k1lib\session\app_session;
-use Ramsey\Uuid\DegradedUuid;
-
 /**
  * Checks if the application is runnin with the Framework
  * 
@@ -56,7 +52,7 @@ function check_on_k1lib() {
 
 /**
  * This will make an Array with $data_array[keys] as values as $return_array[0] = value0 .. $return_array[N] = $valueN. Is recursive.
- * @param array $data_array
+ * @param Array $data_array
  * @return Array
  */
 function make_guide_array($data_array) {
@@ -73,8 +69,8 @@ function make_guide_array($data_array) {
 
 /**
  * Only the existing KEYS of $array_to_clean in $guide_array will be returned
- * @param array $array_to_clean
- * @param array $guide_array
+ * @param Array $array_to_clean
+ * @param Array $guide_array
  * @return Array
  */
 function clean_array_with_guide($array_to_clean, $guide_array) {
@@ -109,8 +105,8 @@ function organize_array_with_guide($array_to_organize, $guide_array) {
 
 /**
  * Takes an Array and transform in key1=value1&keyN=valueN. Is recursive.
- * @param array $data_array The data to convert to GET URL
- * @param array $guide_array Only the existing KEYS in this Array will be converted
+ * @param Array $data_array The data to convert to GET URL
+ * @param Array $guide_array Only the existing KEYS in this Array will be converted
  * @return string 
  */
 function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = FALSE, $upper_name = "") {
@@ -163,9 +159,9 @@ function array_rename_key(&$array, $key_to_rename, $new_key_name) {
 
 /**
  * Converts Booleans vars to text
- * @param bool $bolean
- * @param string $true_value Text to convert on TRUE
- * @param string $false_value Text to convert on FALSE
+ * @param Boolean $bolean
+ * @param String $true_value Text to convert on TRUE
+ * @param String $false_value Text to convert on FALSE
  * @return String
  */
 function bolean_to_string($bolean, $true_value = "Si", $false_value = "No") {
@@ -178,11 +174,11 @@ function bolean_to_string($bolean, $true_value = "Si", $false_value = "No") {
 
 /**
  * Returns a qualified MAGIC NAME
- * @param string $name
+ * @param String $name
  * @return String
  */
 function get_magic_name($name) {
-    if (app_session::on_session()) {
+    if (\k1lib\session\session_plain::on_session()) {
         return "magic_{$name}_secret";
     } else {
         trigger_error("Magic system REQUIRES the session system to be enabled and a session started", E_USER_ERROR);
@@ -191,14 +187,14 @@ function get_magic_name($name) {
 
 /**
  * Uses the PHP Session system to generate and stores the MAGIC VALUE by $name
- * @param string $name This name HAVE TO BE used to check the form on the receiver script.
+ * @param String $name This name HAVE TO BE used to check the form on the receiver script.
  * @return String Magic value to be used on FORM
  */
 function set_magic_value($name) {
-    if (app_session::on_session()) {
+    if (\k1lib\session\session_plain::on_session()) {
         $secret = md5($name . microtime(TRUE));
-        $_SESSION[get_magic_name($name)] = $secret;
-        $client_magic = md5(K1MAGIC::get_value() . $secret);
+        $_SESSION[\k1lib\common\get_magic_name($name)] = $secret;
+        $client_magic = md5(\k1lib\K1MAGIC::get_value() . $secret);
         return $client_magic;
     } else {
         trigger_error("Magic system REQUIRES the session system to be enabled and a session started", E_USER_ERROR);
@@ -207,18 +203,18 @@ function set_magic_value($name) {
 
 /**
  * Check a incomming MAGIC VALUE 
- * @param string $name The name with it was stored
- * @param string $value_to_check Received var
+ * @param String $name The name with it was stored
+ * @param String $value_to_check Received var
  * @return boolean
  */
 function check_magic_value($name, $value_to_check) {
-    if (app_session::on_session()) {
+    if (\k1lib\session\session_plain::on_session()) {
         if ($value_to_check == "") {
             die("The magic value never can be empty!");
         } else {
-            if (isset($_SESSION[get_magic_name($name)])) {
-                $secret = $_SESSION[get_magic_name($name)];
-                $client_magic = md5(K1MAGIC::get_value() . $secret);
+            if (isset($_SESSION[\k1lib\common\get_magic_name($name)])) {
+                $secret = $_SESSION[\k1lib\common\get_magic_name($name)];
+                $client_magic = md5(\k1lib\K1MAGIC::get_value() . $secret);
                 if ($client_magic == $value_to_check) {
                     return $client_magic;
                 } else {
@@ -285,7 +281,7 @@ function unset_serialize_var($saved_name, $method = "session") {
 
 /**
  * Checks if the $email var is a valid email by regular expressions.
- * @param string $email
+ * @param String $email
  * @return boolean
  */
 function check_email_address($email) {
@@ -302,8 +298,8 @@ function check_email_address($email) {
 
 /**
  * This supposed to conver an XML string stored on $xml and return the JSON data as string. NOT TESTED!!
- * @param string $xml
- * @param string $append Any string to append to the converted string... but has no logic -.-
+ * @param String $xml
+ * @param String $append Any string to append to the converted string... but has no logic -.-
  * @return JSON String
  */
 function XmlToJson($xml, $append = "") {

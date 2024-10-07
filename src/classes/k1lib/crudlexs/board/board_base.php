@@ -2,18 +2,14 @@
 
 namespace k1lib\crudlexs\board;
 
-use k1lib\crudlexs\controller\base;
-use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
-use k1lib\session\app_session;
-use function k1lib\common\unserialize_var;
 
 class board_base {
 
     /**
      * DB table main object
-     * @var base 
+     * @var \k1lib\crudlexs\controller\base 
      */
     protected $controller_object;
 
@@ -23,17 +19,17 @@ class board_base {
     public $board_content_div;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $data_loaded = FALSE;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $is_enabled = FALSE;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $skip_form_action = FALSE;
 
@@ -53,19 +49,19 @@ class board_base {
     protected $show_rule_to_apply = NULL;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $apply_label_filter = TRUE;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $apply_field_label_filter = TRUE;
 
     /**
      * @var string
      */
-    protected $button_div_id = "k1lib-crudlexs-buttons mb-4";
+    protected $button_div_id = "k1lib-crudlexs-buttons";
 
     /**
      * @var string
@@ -73,17 +69,17 @@ class board_base {
     protected $notifications_div_id = "k1lib-output";
 
     /**
-     * @var div
+     * @var \k1lib\html\div
      */
     protected $button_div_tag;
 
-    public function __construct(base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         $this->controller_object = $controller_object;
-        $this->board_content_div = new div("board-content");
+        $this->board_content_div = new \k1lib\html\div("board-content");
 
         $this->user_levels_allowed = $user_levels_allowed;
 
-        if (app_session::is_enabled()) {
+        if (\k1lib\session\session_plain::is_enabled()) {
             if (!$this->check_user_level_access()) {
                 $this->is_enabled = false;
             } else {
@@ -94,7 +90,7 @@ class board_base {
         /**
          * Search util hack
          */
-        $post_data_to_use = unserialize_var("post-data-to-use");
+        $post_data_to_use = \k1lib\common\unserialize_var("post-data-to-use");
 //        $post_data_table_config = \k1lib\common\unserialize_var("post-data-table-config");
 
         if (!empty($post_data_to_use)) {
@@ -131,12 +127,15 @@ class board_base {
 
     public function set_board_name($board_name) {
         if (!empty($board_name)) {
-            $head = DOM::html_document()->head();
+            $head = DOM::html()->head();
             $current_html_title = $head->get_title();
             $head->set_title($current_html_title . " - " . $board_name);
-            d($this->controller_object->html_subtitle_tag->generate());
 
-            $this->controller_object->html_subtitle_tag->set_value("{$board_name}", TRUE);
+            if (is_array($this->controller_object->html_title_tags)) {
+                foreach ($this->controller_object->html_title_tags as $tag) {
+                    $tag->set_value(" - {$board_name}", TRUE);
+                }
+            }
         }
     }
 
@@ -154,7 +153,7 @@ class board_base {
         if (empty($this->user_levels_allowed)) {
             return TRUE;
         } else {
-            if (empty(array_key_exists(app_session::get_user_level(), array_flip($this->user_levels_allowed)))) {
+            if (empty(array_key_exists(\k1lib\session\session_plain::get_user_level(), array_flip($this->user_levels_allowed)))) {
                 return FALSE;
             } else {
                 return TRUE;
@@ -199,24 +198,24 @@ class board_base {
     }
 
     /**
-     * @return div
+     * @return \k1lib\html\div
      */
     public function button_div_tag() {
         return $this->button_div_tag;
     }
 
-    public function set_button_div_tag(div $button_div_tag) {
+    public function set_button_div_tag(\k1lib\html\div $button_div_tag) {
         $this->button_div_tag = $button_div_tag;
     }
 
     /**
-     * @return div
+     * @return \k1lib\html\div
      */
     public function board_content_div() {
         return $this->board_content_div;
     }
 
-    public function set_board_content_div(div $board_content_div) {
+    public function set_board_content_div(\k1lib\html\div $board_content_div) {
         $this->board_content_div = $board_content_div;
     }
 
@@ -231,4 +230,5 @@ class board_base {
     function set_skip_form_action($skip_form_action) {
         $this->skip_form_action = $skip_form_action;
     }
+
 }

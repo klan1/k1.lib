@@ -7,7 +7,7 @@ class profiler extends common
 
     /**
      * Begin a SQL Profile with a SQL query code 
-     * @param string $sql_query
+     * @param String $sql_query
      * @return Int Profile ID
      */
     static public function add(string $sql_query): int
@@ -22,7 +22,7 @@ class profiler extends common
 
     /**
      * Begin the time count
-     * @param int $profile_id Profile ID
+     * @param Int $profile_id Profile ID
      */
     static public function start_time_count(int $profile_id): void
     {
@@ -43,8 +43,8 @@ class profiler extends common
 
     /**
      * Keep record of cache use of the current query
-     * @param int $sql_md5 Profile ID
-     * @param bool $is_cached 
+     * @param Int $sql_md5 Profile ID
+     * @param Boolean $is_cached 
      */
     static public function set_is_cached(int $profile_id, bool $is_cached): void
     {
@@ -56,7 +56,7 @@ class profiler extends common
 
     /**
      * Filter the data by MD5
-     * @param string $md5
+     * @param String $md5
      * @return Array
      */
     static public function get_by_md5($md5) : array

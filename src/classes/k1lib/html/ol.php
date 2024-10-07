@@ -8,8 +8,8 @@ class ol extends tag {
 
     /**
      * Create a UL html tag.
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      */
     function __construct($class = NULL, $id = NULL) {
         parent::__construct("ol", FALSE);

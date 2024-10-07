@@ -42,7 +42,7 @@ class local_cache extends common {
 
     /**
      * Return if the SQL QUERY is on cache or not
-     * @param string $sql_query
+     * @param String $sql_query
      * @return Boolean
      */
     static public function is_cached($sql_query) {
@@ -52,7 +52,7 @@ class local_cache extends common {
 
     /**
      * Returns a previusly STORED SQL RESULT by SQL QUERY if exist
-     * @param string $sql_query
+     * @param String $sql_query
      * @return Array returns FALSE if not exist
      */
     static public function get_result($sql_query) {

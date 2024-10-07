@@ -7,9 +7,9 @@ class select extends tag {
     use append_shotcuts;
 
     /**
-     * @param string $name
-     * @param string $class
-     * @param string $id
+     * @param String $name
+     * @param String $class
+     * @param String $id
      */
     function __construct($name, $class = NULL, $id = NULL) {
         parent::__construct("select", FALSE);
@@ -20,11 +20,11 @@ class select extends tag {
 
     /**
      * Chains a new <OPTION> HTML TAG
-     * @param string $value
-     * @param string $label
-     * @param bool $selected
-     * @param string $class
-     * @param string $id
+     * @param String $value
+     * @param String $label
+     * @param Boolean $selected
+     * @param String $class
+     * @param String $id
      * @return option
      */
     function append_option($value, $label, $selected = FALSE, $class = NULL, $id = NULL) {

@@ -2,13 +2,11 @@
 
 namespace k1lib\crudlexs\object;
 
-use k1lib\common_strings;
-
 class read_helper {
 
 //    static $do_fk_search_tool = TRUE;
-//    static $url_to_search_fk_data = \k1app\K1APP_URL . "general-utils/select-row-keys/";
-//    static $url_to_send_row_keys_fk_data = \k1app\K1APP_URL . "general-utils/send-row-keys/";
+//    static $url_to_search_fk_data = APP_URL . "general-utils/select-row-keys/";
+//    static $url_to_send_row_keys_fk_data = APP_URL . "general-utils/send-row-keys/";
 //    static $main_css = "";
 //    static private $fk_fields_to_skip = [];
 //    static public $boolean_true = NULL;
@@ -36,12 +34,12 @@ class read_helper {
 //        d(self::$boolean_true, true);
         if (self::$boolean_true === NULL) {
 //            d('yes');
-            self::$boolean_true = common_strings::$yes;
+            self::$boolean_true = \k1lib\common_strings::$yes;
         }
 //        d(self::$boolean_false, true);
         if (self::$boolean_false === NULL) {
 //            d('no');
-            self::$boolean_false = common_strings::$no;
+            self::$boolean_false = \k1lib\common_strings::$no;
         }
         return $value;
     }

@@ -8,8 +8,8 @@ class span extends tag {
 
     /**
      * Create a SPAN html tag with VALUE as data. Use $span->set_value($data)
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      */
     function __construct($class = NULL, $id = NULL) {
         parent::__construct("span", FALSE);

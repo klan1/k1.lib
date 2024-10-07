@@ -10,6 +10,11 @@ class table_from_data extends \k1lib\html\table
     use foundation_methods;
 
     /**
+     * @var \k1lib\html\tag
+     */
+    protected $parent;
+
+    /**
      * @var array
      */
     protected $data = [];
@@ -30,7 +35,7 @@ class table_from_data extends \k1lib\html\table
     protected $fields_for_key_array_text = [];
 
     /**
-     * @var bool 
+     * @var boolean 
      */
     protected $has_header = TRUE;
 
@@ -249,7 +254,7 @@ class table_from_data extends \k1lib\html\table
                  * {{field:NAME}}
                  */
                 $field_tag = "{{field:" . $field . "}}";
-                $value = str_replace($field_tag, rawurlencode($this->data_original[$row][$field] ?? ''), $value);
+                $value = str_replace($field_tag, rawurlencode($this->data_original[$row][$field]), $value);
             }
         }
         foreach ($this->get_raw_fields_on_string($value) as $field) {
@@ -274,7 +279,7 @@ class table_from_data extends \k1lib\html\table
                  * {{field:NAME}}
                  */
                 $field_tag = "{{field-raw:" . $field . "}}";
-                $value = str_replace($field_tag, $this->data_original[$row][$field] ?? '', $value);
+                $value = str_replace($field_tag, $this->data_original[$row][$field], $value);
             }
         }
         return $value;

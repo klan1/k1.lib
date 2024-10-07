@@ -2,15 +2,7 @@
 
 namespace k1lib\crudlexs\board;
 
-use k1app\core\template\base as blank_tpl;
-use k1lib\common_strings;
-use k1lib\crudlexs\controller\base;
-use k1lib\crudlexs\object\search_helper;
-use k1lib\db\security\db_table_aliases;
-use k1lib\html\bootstrap\modal;
-use k1lib\html\div;
 use k1lib\html\DOM as DOM;
-use k1lib\html\iframe;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 
 class search extends board_base implements board_interface {
@@ -22,39 +14,37 @@ class search extends board_base implements board_interface {
     public $search_object;
     protected $search_catch_post_enable = TRUE;
 
-    public function __construct(base $controller_object, array $user_levels_allowed = []) {
+    public function __construct(\k1lib\crudlexs\controller\base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
-            $this->search_object = new search_helper($this->controller_object->db_table);
+            $this->search_object = new \k1lib\crudlexs\object\search_helper($this->controller_object->db_table);
             $this->data_loaded = $this->search_object->load_db_table_data(TRUE);
         }
     }
 
     /**
-     * @return div|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function start_board() {
         if (!parent::start_board()) {
             return FALSE;
         }
-        $blank_tpl = new blank_tpl();
-
-        $this->controller_object->app_controller::use_tpl($blank_tpl);
-        DOM::start($blank_tpl);
         /**
          * IFRAME for KF tool
          */
-        $fk_iframe = new iframe('', 'utility-iframe mw-100', "fk-iframe");
-//        $fk_iframe->set_style($style)
-
-        $modal = new modal(common_strings::$fk_tool_name, $fk_iframe);
-        DOM::html_document()->body()->append_child_tail($modal);
-
+        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
+        DOM::html()->body()->content()->append_child_tail($fk_iframe);
+        
         if ($this->search_object->get_state()) {
+            $close_search_buttom = new \k1lib\html\a(NULL, " " . \k1lib\common_strings::$button_cancel, "_parent");
+            $close_search_buttom->set_id("close-search-button");
+            $close_search_buttom->set_attrib("class", "button warning fi-page-close");
+            $close_search_buttom->set_attrib("onClick", "parent.close_search();");
+            $close_search_buttom->append_to($this->button_div_tag);
 
             $this->search_object->set_search_catch_post_enable($this->search_catch_post_enable);
-            $this->search_object->set_html_column_classes("column lg-11 md-11 sm-12");
-            $this->search_object->set_html_form_column_classes("lg-11");
+            $this->search_object->set_html_column_classes("column large-11 medium-11 small-12");
+            $this->search_object->set_html_form_column_classes("large-11");
 
             $this->search_object->do_html_object()->append_to($this->board_content_div);
 
@@ -67,7 +57,7 @@ class search extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * @return \k1lib\html\div|boolean
      */
     public function exec_board() {
         if (!$this->is_enabled) {
@@ -103,4 +93,5 @@ class search extends board_base implements board_interface {
         }
         return $this->object_id = $table_name . "-" . basename(str_replace("\\", "/", $class_name));
     }
+
 }

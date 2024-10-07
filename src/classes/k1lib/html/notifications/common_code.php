@@ -10,30 +10,34 @@
 
 namespace k1lib\html\notifications;
 
-use k1lib\html\html_document;
-
 class common_code {
-
-    static protected html_document $tpl;
-    static protected string $tag_id_override;
 
     /**
      *
-     * @var int 
+     * @var Int 
      */
     static protected $data_count = 0;
 
     /**
      * Stores the SQL data
-     * @var array
+     * @var Array
      */
     static protected $data = array();
 
     /**
      * Stores the SQL data
-     * @var array
+     * @var Array
      */
     static protected $data_titles = array();
+
+    /**
+     * Enable the engenie
+     */
+    static public function test() {
+        if (!class_exists('\k1lib\html\DOM', FALSE)) {
+            trigger_error(__CLASS__ . " needs \k1lib\html\DOM class", E_USER_ERROR);
+        }
+    }
 
     static public function get_data() {
         self::is_enabled(true);
@@ -68,10 +72,4 @@ class common_code {
         unset($_SESSION['k1lib_notifications_titles']);
     }
 
-    static function set_tpl($tpl, $tag_id_override = null) {
-        self::$tpl = $tpl;
-        if ($tag_id_override !== null) {
-           self::$tag_id_override = $tag_id_override;
-        }
-    }
 }

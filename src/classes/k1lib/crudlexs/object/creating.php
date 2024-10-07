@@ -2,37 +2,26 @@
 
 namespace k1lib\crudlexs\object;
 
-use k1lib\html\bootstrap\grid_row;
-use k1lib\html\bootstrap\label_value_row;
-use k1lib\html\div;
-use k1lib\html\form;
-use k1lib\html\input;
-use k1lib\html\label;
 use k1lib\html\notifications\on_DOM as DOM_notification;
-use function k1lib\common\clean_array_with_guide;
-use function k1lib\common\unserialize_var;
-use function k1lib\common\unset_serialize_var;
-use function k1lib\forms\check_all_incomming_vars;
-use function k1lib\html\get_link_button;
-use function k1lib\html\html_header_go;
 
 /**
  * 
  */
-class creating extends base_with_data implements base_interface {
+class creating extends base_with_data implements base_interface
+{
 
     /**
-     * @var array
+     * @var Array
      */
     protected $post_incoming_array = [];
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $post_data_catched = FALSE;
 
     /**
-     * @var array
+     * @var Array
      */
     protected $post_validation_errors = [];
 
@@ -44,16 +33,17 @@ class creating extends base_with_data implements base_interface {
 
     /**
      *
-     * @var bool
+     * @var Boolean
      */
     protected $enable_foundation_form_check = FALSE;
     protected $show_cancel_button = TRUE;
     protected $inserted_result = NULL;
     protected $inserted = NULL;
-    protected $html_form_column_classes = "lg-8 md-10 sm-11";
-    protected $html_column_classes = "sm-12 column";
+    protected $html_form_column_classes = "large-8 medium-10 small-11";
+    protected $html_column_classes = "small-12 column";
 
-    public function __construct($db_table, $row_keys_text) {
+    public function __construct($db_table, $row_keys_text)
+    {
         parent::__construct($db_table, $row_keys_text);
     }
 
@@ -61,7 +51,8 @@ class creating extends base_with_data implements base_interface {
      * Override the original function to create an empty array the meets the requiriements for all the metods
      * @return boolean
      */
-    public function load_db_table_data($blank_data = FALSE) {
+    public function load_db_table_data($blank_data = FALSE)
+    {
         if (!$blank_data) {
             return parent::load_db_table_data();
         } else {
@@ -78,9 +69,6 @@ class creating extends base_with_data implements base_interface {
                 }
             }
             if (!empty($headers_array) && !empty($blank_row_array)) {
-                if ($this->db_table_data == false) {
-                    $this->db_table_data = [];
-                }
                 $this->db_table_data[0] = $headers_array;
                 $this->db_table_data[1] = $blank_row_array;
                 $this->db_table_data_filtered = $this->db_table_data;
@@ -97,7 +85,8 @@ class creating extends base_with_data implements base_interface {
      * @param string $value
      * @return boolean
      */
-    public function set_post_incomming_value($field, $value) {
+    public function set_post_incomming_value($field, $value)
+    {
         if ($this->post_data_catched && key_exists($field, $this->post_incoming_array)) {
             $this->post_incoming_array[$field] = $value;
             return TRUE;
@@ -111,7 +100,8 @@ class creating extends base_with_data implements base_interface {
      * @param int $row_to_put_on
      * @return boolean
      */
-    public function put_post_data_on_table_data() {
+    public function put_post_data_on_table_data()
+    {
         if ((empty($this->db_table_data)) || empty($this->post_incoming_array)) {
             //            trigger_error(__FUNCTION__ . ": There are not data to work yet", E_USER_WARNING);
             return FALSE;
@@ -125,7 +115,8 @@ class creating extends base_with_data implements base_interface {
         return TRUE;
     }
 
-    function do_password_fields_validation() {
+    function do_password_fields_validation()
+    {
         /**
          * PASSWORD CATCH
          */
@@ -191,7 +182,8 @@ class creating extends base_with_data implements base_interface {
         }
     }
 
-    public function get_post_data_catched() {
+    public function get_post_data_catched()
+    {
         return $this->post_data_catched;
     }
 
@@ -199,14 +191,15 @@ class creating extends base_with_data implements base_interface {
      * Get and check the $_POST data, then remove the non table values. If do_table_field_name_encrypt is TRUE then will decrypt them too.
      * @return boolean
      */
-    function catch_post_data() {
+    function catch_post_data()
+    {
         $this->do_file_uploads_validation();
         $this->do_password_fields_validation();
         /**
          * Search util hack
          */
-        $post_data_to_use = unserialize_var("post-data-to-use");
-        $post_data_table_config = unserialize_var("post-data-table-config");
+        $post_data_to_use = \k1lib\common\unserialize_var("post-data-to-use");
+        $post_data_table_config = \k1lib\common\unserialize_var("post-data-table-config");
         /**
          * lets fix the non-same key name
          */
@@ -228,12 +221,12 @@ class creating extends base_with_data implements base_interface {
         ///
         if (!empty($post_data_to_use)) {
             $_POST = $post_data_to_use;
-            unset_serialize_var("post-data-to-use");
-            unset_serialize_var("post-data-table-config");
+            \k1lib\common\unset_serialize_var("post-data-to-use");
+            \k1lib\common\unset_serialize_var("post-data-table-config");
         }
 
 
-        $_POST = check_all_incomming_vars($_POST);
+        $_POST = \k1lib\forms\check_all_incomming_vars($_POST);
 
         $this->post_incoming_array = array_merge($this->post_incoming_array, $_POST);
         if (isset($this->post_incoming_array['k1magic'])) {
@@ -253,7 +246,7 @@ class creating extends base_with_data implements base_interface {
                     $this->post_incoming_array = $new_post_data;
                     unset($new_post_data);
                 }
-                $this->post_incoming_array = clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
+                $this->post_incoming_array = \k1lib\common\clean_array_with_guide($this->post_incoming_array, $this->db_table->get_db_table_config());
 
                 // PUT BACK the password data
                 //                $this->post_incoming_array = array_merge($this->post_incoming_array, $password_array);
@@ -269,9 +262,10 @@ class creating extends base_with_data implements base_interface {
 
     /**
      * Put an input object of certain type depending of the MySQL Table Feld Type on each data row[n]
-     * @param int $row_to_apply
+     * @param Int $row_to_apply
      */
-    public function insert_inputs_on_data_row($create_labels_tags_on_headers = TRUE) {
+    public function insert_inputs_on_data_row($create_labels_tags_on_headers = TRUE)
+    {
         // Row to apply is constant coz this is CREATE or EDIT and there is allways just 1 set of data to manipulate.
         $row_to_apply = 1;
         /**
@@ -323,7 +317,7 @@ class creating extends base_with_data implements base_interface {
              * LABELS 
              */
             if ($create_labels_tags_on_headers) {
-                $label_tag = new label($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
+                $label_tag = new \k1lib\html\label($this->db_table_data_filtered[0][$field], $this->encrypt_field_name($field));
                 if ($this->db_table->get_field_config($field, 'required') === TRUE) {
                     $label_tag->set_value(" *", TRUE);
                 }
@@ -336,7 +330,7 @@ class creating extends base_with_data implements base_interface {
              * ERROR TESTING
              */
             if (isset($this->post_validation_errors[$field])) {
-                $div_error = new grid_row(2);
+                $div_error = new \k1lib\html\foundation\grid_row(2);
 
                 $div_input = $div_error->cell(1)->large(12);
                 $div_message = $div_error->cell(2)->large(12)->end();
@@ -375,7 +369,8 @@ class creating extends base_with_data implements base_interface {
      * This will check every data with the db_table_config.
      * @return boolean TRUE on no errors or FALSE is some field has any problem.
      */
-    public function do_post_data_validation() {
+    public function do_post_data_validation()
+    {
         //        $this->do_file_uploads_validation();
         $validation_result = $this->db_table->do_data_validation($this->post_incoming_array);
         if ($validation_result !== TRUE) {
@@ -394,7 +389,8 @@ class creating extends base_with_data implements base_interface {
         }
     }
 
-    public function do_file_uploads_validation() {
+    public function do_file_uploads_validation()
+    {
         if (!empty($_FILES)) {
             foreach ($_FILES as $encoded_field => $data) {
                 $decoded_field = $this->decrypt_field_name($encoded_field);
@@ -409,14 +405,16 @@ class creating extends base_with_data implements base_interface {
         }
     }
 
-    public function enable_foundation_form_check() {
+    public function enable_foundation_form_check()
+    {
         $this->enable_foundation_form_check = TRUE;
     }
 
     /**
-     * @return div
+     * @return \k1lib\html\div
      */
-    public function do_html_object() {
+    public function do_html_object()
+    {
         if (!empty($this->db_table_data_filtered)) {
             $this->div_container->set_attrib("class", "k1lib-crudlexs-create");
 
@@ -429,18 +427,18 @@ class creating extends base_with_data implements base_interface {
             /**
              * FORM time !!
              */
-            $html_form = new form();
+            $html_form = new \k1lib\html\form();
             $html_form->append_to($this->div_container);
-//            if ($this->enable_foundation_form_check) {
-//                $html_form->set_attrib("data-abide", TRUE);
-//            }
+            if ($this->enable_foundation_form_check) {
+                $html_form->set_attrib("data-abide", TRUE);
+            }
 
             $form_header = $html_form->append_div("k1lib-form-header");
-            $form_body = $html_form->append_div("k1lib-form-body row");
-//            $form_grid = new grid(1, 1, $form_body);
-////            $form_grid->row(1)->align_center();
-//            $form_grid->row(1)->cell(1)->general(12)->medium(6);
-//
+            $form_body = $html_form->append_div("k1lib-form-body");
+            $form_grid = new \k1lib\html\foundation\grid(1, 1, $form_body);
+            $form_grid->row(1)->align_center();
+            $form_grid->row(1)->cell(1)->large(8)->medium(10)->small(12);
+
             $form_footer = $html_form->append_div("k1lib-form-footer");
             $form_footer->set_attrib("style", "margin-top:0.9em;");
             $form_buttons = $html_form->append_div("k1lib-form-buttons");
@@ -448,7 +446,7 @@ class creating extends base_with_data implements base_interface {
             /**
              * Hidden input
              */
-            $hidden_input = new input("hidden", "k1magic", "123123");
+            $hidden_input = new \k1lib\html\input("hidden", "k1magic", "123123");
             $hidden_input->append_to($html_form);
             // FORM LAYOUT
             // <div class="grid-x">
@@ -456,25 +454,25 @@ class creating extends base_with_data implements base_interface {
             $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
                 $row_number++;
-                $row = new label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
-                $row->append_to($form_body);
+                $row = new \k1lib\html\foundation\label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
+                $row->append_to($form_grid->row(1)->cell(1));
             }
 
 
             /**
              * BUTTONS
              */
-            $submit_button = new input("submit", "k1send", creating_strings::$button_submit, "btn icon btn-outline-success btn-sm");
+            $submit_button = new \k1lib\html\input("submit", "k1send", creating_strings::$button_submit, "small button fi-check success");
             if ($this->show_cancel_button) {
-                $cancel_button = get_link_button($this->back_url, creating_strings::$button_cancel, 'btn-sm');
-                $buttons_div = new label_value_row(NULL, "{$cancel_button} {$submit_button}");
+                $cancel_button = \k1lib\html\get_link_button($this->back_url, creating_strings::$button_cancel, "small");
+                $buttons_div = new \k1lib\html\foundation\label_value_row(NULL, "{$cancel_button} {$submit_button}");
             } else {
-                $buttons_div = new label_value_row(NULL, "{$submit_button}");
+                $buttons_div = new \k1lib\html\foundation\label_value_row(NULL, "{$submit_button}");
             }
 
             $buttons_div->append_to($form_buttons);
-            // $buttons_div->cell(1)->remove_childs();
-            // $buttons_div->cell(2)->set_class("text-center", TRUE);
+            $buttons_div->cell(1)->remove_childs();
+            $buttons_div->cell(2)->set_class("text-center", TRUE);
 
 
             /**
@@ -492,9 +490,10 @@ class creating extends base_with_data implements base_interface {
      * @param type $url_to_go
      * @return boolean TRUE on sucess or FALSE on error.
      */
-    public function do_insert() {
+    public function do_insert()
+    {
         $error_data = NULL;
-        $this->post_incoming_array = check_all_incomming_vars($this->post_incoming_array);
+        $this->post_incoming_array = \k1lib\forms\check_all_incomming_vars($this->post_incoming_array);
         $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array, $error_data);
         if ($this->inserted_result !== FALSE) {
             DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
@@ -511,7 +510,8 @@ class creating extends base_with_data implements base_interface {
         }
     }
 
-    public function get_inserted_keys() {
+    public function get_inserted_keys()
+    {
         if (($this->inserted) && ($this->inserted_result !== FALSE)) {
             $last_inserted_id = [];
             if (is_numeric($this->inserted_result)) {
@@ -521,9 +521,9 @@ class creating extends base_with_data implements base_interface {
                     }
                 }
             }
-            $new_keys_array = $this->db_table->db->get_keys_array_from_row_data(
-                    array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields()),
-                    $this->db_table->get_db_table_config()
+            $new_keys_array = \k1lib\sql\get_keys_array_from_row_data(
+                array_merge($last_inserted_id, $this->post_incoming_array, $this->db_table->get_constant_fields()),
+                $this->db_table->get_db_table_config()
             );
             return $new_keys_array;
         } else {
@@ -531,7 +531,8 @@ class creating extends base_with_data implements base_interface {
         }
     }
 
-    public function get_inserted_data() {
+    public function get_inserted_data()
+    {
         if (($this->inserted) && ($this->inserted_result !== FALSE)) {
             $last_inserted_id = [];
             if (is_numeric($this->inserted_result)) {
@@ -547,10 +548,11 @@ class creating extends base_with_data implements base_interface {
         }
     }
 
-    public function post_insert_redirect($url_to_go = "../", $do_redirect = TRUE) {
+    public function post_insert_redirect($url_to_go = "../", $do_redirect = TRUE)
+    {
         if (($this->inserted) && ($this->inserted_result !== FALSE)) {
 
-            $new_keys_text = $this->db_table->db->table_keys_to_text($this->get_inserted_keys(), $this->db_table->get_db_table_config());
+            $new_keys_text = \k1lib\sql\table_keys_to_text($this->get_inserted_keys(), $this->db_table->get_db_table_config());
 
             if (!empty($url_to_go)) {
                 $this->set_auth_code($new_keys_text);
@@ -560,10 +562,10 @@ class creating extends base_with_data implements base_interface {
             }
             if ($do_redirect) {
                 if ($new_keys_text) {
-                    html_header_go($url_to_go);
+                    \k1lib\html\html_header_go($url_to_go);
                     exit;
                 } else {
-                    html_header_go("../");
+                    \k1lib\html\html_header_go("../");
                     exit;
                 }
                 return TRUE;
@@ -575,31 +577,38 @@ class creating extends base_with_data implements base_interface {
         }
     }
 
-    function get_post_data() {
+    function get_post_data()
+    {
         return $this->post_incoming_array;
     }
 
-    public function set_post_data(array $post_incoming_array) {
+    public function set_post_data(array $post_incoming_array)
+    {
         $this->post_incoming_array = array_merge($this->post_incoming_array, $post_incoming_array);
     }
 
-    public function set_html_column_classes($html_column_classes) {
+    public function set_html_column_classes($html_column_classes)
+    {
         $this->html_column_classes = $html_column_classes;
     }
 
-    public function set_html_form_column_classes($html_form_column_classes) {
+    public function set_html_form_column_classes($html_form_column_classes)
+    {
         $this->html_form_column_classes = $html_form_column_classes;
     }
 
-    public function &get_post_incoming_array() {
+    public function &get_post_incoming_array()
+    {
         return $this->post_incoming_array;
     }
 
-    public function get_post_validation_errors() {
+    public function get_post_validation_errors()
+    {
         return $this->post_validation_errors;
     }
 
-    public function set_post_validation_errors(array $errors_array, $append_array = TRUE) {
+    public function set_post_validation_errors(array $errors_array, $append_array = TRUE)
+    {
         if ($append_array) {
             $this->post_validation_errors = array_merge($this->post_validation_errors, $errors_array);
         } else {
@@ -607,7 +616,8 @@ class creating extends base_with_data implements base_interface {
         }
     }
 
-    public function set_show_cancel_button($show_cancel_button) {
+    public function set_show_cancel_button($show_cancel_button)
+    {
         $this->show_cancel_button = $show_cancel_button;
     }
 }

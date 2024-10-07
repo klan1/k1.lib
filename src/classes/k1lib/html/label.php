@@ -7,10 +7,10 @@ class label extends tag {
     use append_shotcuts;
 
     /**
-     * @param string $label <TAG>$value</TAG>
-     * @param string $for
-     * @param string $class
-     * @param string $id
+     * @param String $label <TAG>$value</TAG>
+     * @param String $for
+     * @param String $class
+     * @param String $id
      */
     function __construct($label, $for, $class = NULL, $id = NULL) {
         parent::__construct("label", FALSE);

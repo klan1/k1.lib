@@ -2,18 +2,14 @@
 
 namespace k1lib\db;
 
-use PDO;
-use PDOException;
-use Ramsey\Uuid\DegradedUuid;
-
 /**
  * 
  */
-class handler extends PDO {
+class handler extends \PDO {
 
     /**
      * Enable state
-     * @var bool 
+     * @var Boolean 
      */
     static protected $enabled = FALSE;
     static protected $db_dsn;
@@ -77,16 +73,16 @@ class handler extends PDO {
         self::is_enabled(true);
         self::$verbose_level = $verbose_level;
         if (self::$verbose_level == 0) {
-            $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+            $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
         } elseif (self::$verbose_level > 0) {
-            $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
     }
 
     function query($statement) {
         try {
             $result = parent::query($statement);
-        } catch (PDOException $exc) {
+        } catch (\PDOException $exc) {
             switch (self::$verbose_level) {
                 case 0:
                     trigger_error("SQL query error", E_USER_NOTICE);
@@ -113,7 +109,7 @@ class handler extends PDO {
     function exec($statement) {
         try {
             $result = parent::exec($statement);
-        } catch (PDOException $exc) {
+        } catch (\PDOException $exc) {
             switch (self::$verbose_level) {
                 case 0:
                     trigger_error("SQL query error", E_USER_WARNING);

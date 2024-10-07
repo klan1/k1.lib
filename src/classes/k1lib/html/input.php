@@ -7,11 +7,11 @@ class input extends tag {
     use append_shotcuts;
 
     /**
-     * @param string $type Should be HTML standars: text, button.... 
-     * @param string $name
-     * @param string $value <TAG value='$value' />
-     * @param string $class
-     * @param string $id
+     * @param String $type Should be HTML standars: text, button.... 
+     * @param String $name
+     * @param String $value <TAG value='$value' />
+     * @param String $class
+     * @param String $id
      */
     function __construct($type, $name, $value, $class = NULL, $id = NULL) {
         parent::__construct("input", TRUE);

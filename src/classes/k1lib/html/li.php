@@ -8,8 +8,8 @@ class li extends tag {
 
     /**
      * Create a LI html tag with VALUE as data. Use $div->set_value($data)
-     * @param string $class
-     * @param string $id
+     * @param String $class
+     * @param String $id
      */
     function __construct($value = NULL, $class = NULL, $id = NULL) {
         parent::__construct("li", FALSE);
