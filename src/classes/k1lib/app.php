@@ -207,7 +207,7 @@ class app {
         on_DOM::queue_mesasage("Bye!", "success");
     }
 
-    function db($index = 1) {
+    function db($index = 1): PDO_k1 {
         if ($index === 1) {
             if (empty($this->db_connections[1])) {
 

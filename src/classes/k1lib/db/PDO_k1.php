@@ -192,7 +192,6 @@ class PDO_k1 extends PDO {
 
     /**
      * Run a SQL Query and returns an Array with all the result data
-     * @param \PDO $db
      * @param string $sql
      * @param bool $return_all
      * @param bool $do_fields
