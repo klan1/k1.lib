@@ -9,80 +9,98 @@ use k1lib\app;
 use k1lib\html\notifications\on_DOM as DOM_notifications;
 use function k1lib\forms\check_all_incomming_vars;
 
-class controller {
+class controller
+{
 
     static protected string $root_url;
-
     static protected blank|sidebar_blank|single_page $tpl;
     static protected app $app;
     static array $POST = [];
-    
 
-    static function on_post() {
+    static function pre_post()
+    {
         self::$POST = check_all_incomming_vars($_POST);
     }
 
-    static function POST($key = null) {
+    static function on_post()
+    {
+        static::pre_post();
+    }
 
-        if (!empty($key) && array_key_exists($key, self::$POST)) {
+    static function POST($key = null)
+    {
+
+        if (!empty($key) && array_key_exists($key, self::$POST))
+        {
             return self::$POST[$key];
-        } else {
-            if (count(self::$POST) > 0) {
+        } else
+        {
+            if (count(self::$POST) > 0)
+            {
                 return self::$POST;
-            } else {
+            } else
+            {
                 return false;
             }
         }
     }
 
-    static function launch() {
+    static function launch()
+    {
         static::start();
         static::run();
         static::end();
     }
 
-    static function start() {
+    static function start()
+    {
         
     }
 
-    static function run() {
+    static function run()
+    {
         
     }
 
-    static function end() {
+    static function end()
+    {
         DOM_notifications::insert_messases_on_DOM();
     }
 
-    static function use_tpl($tpl, $tag_id_override = null) {
+    static function use_tpl($tpl, $tag_id_override = null)
+    {
         self::$tpl = $tpl;
         DOM_notifications::set_tpl($tpl, $tag_id_override);
     }
 
-    static function tpl() {
+    static function tpl()
+    {
         return self::$tpl;
     }
 
-    public function set_tpl($tpl, $tag_id_override = null) {
+    public function set_tpl($tpl, $tag_id_override = null)
+    {
         self::$tpl = $tpl;
         DOM_notifications::set_tpl($tpl, $tag_id_override);
     }
 
-    static function link_app(app $app) {
+    static function link_app(app $app)
+    {
         self::$app = $app;
     }
 
-    static function app(): app {
+    static function app(): app
+    {
         return self::$app;
     }
-    public static function get_root_url(): string {
+
+    public static function get_root_url(): string
+    {
         return self::$root_url;
     }
 
-    public static function set_root_url(string $root_url): void {
+    public static function set_root_url(string $root_url): void
+    {
         self::$root_url = $root_url;
     }
-
-
-
-
 }
