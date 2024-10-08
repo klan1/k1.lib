@@ -5,11 +5,14 @@ namespace k1lib\html;
 /**
  * FORM
  */
-class form extends tag {
+class form
+        extends tag
+{
 
     use append_shotcuts;
 
-    function __construct($id = "k1lib-form") {
+    function __construct($id = "k1lib-form")
+    {
         parent::__construct("form", FALSE);
         $this->set_id($id);
         $this->set_attrib("name", "k1lib-form");
@@ -26,13 +29,15 @@ class form extends tag {
      * @param boolean $just_return
      * @return input
      */
-    function append_submit_button($label = "Enviar", $just_return = FALSE) {
-        $button = new input("submit", "submit-it", $label, "button success");
-        if (!$just_return) {
-            $this->append_child($button);
+    function append_submit_button($label = "Enviar", $input_name = 'submit-it', $just_return = FALSE)
+    {
+        $submit_button = new input("submit", $input_name, $label,
+                "btn icon btn-outline-success btn-sm");
+
+        if (!$just_return)
+        {
+            $this->append_child($submit_button);
         }
-        return $button;
+        return $submit_button;
     }
-
 }
-

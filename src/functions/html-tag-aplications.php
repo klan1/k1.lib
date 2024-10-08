@@ -310,6 +310,6 @@ function generate_row_2columns_layout(tag $parent, $row_data, $row_data_headers 
         } else {
             $field_label = $field;
         }
-        (new foundation\label_value_row($field_label, $value, $row))->append_to($parent);
+        (new bootstrap\label_value_row($field_label, $value, $row))->append_to($parent);
     }
 }
