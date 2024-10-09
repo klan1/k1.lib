@@ -29,7 +29,7 @@ class form
      * @param boolean $just_return
      * @return input
      */
-    function append_submit_button($label = "Enviar", $input_name = 'submit-it', $just_return = FALSE)
+    function append_submit_button($label = "Enviar", $input_name = 'submit-it', $just_return = FALSE) : input
     {
         $submit_button = new input("submit", $input_name, $label,
                 "btn icon btn-outline-success btn-sm");
