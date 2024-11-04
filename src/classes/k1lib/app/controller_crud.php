@@ -15,7 +15,9 @@ use k1lib\session\app_session;
 use k1lib\urlrewrite\url;
 use const k1app\K1APP_BASE_URL;
 
-class controller_crud extends controller {
+class controller_crud
+        extends controller
+{
 
     /**
      * CRUD REQUISITIES
@@ -25,16 +27,19 @@ class controller_crud extends controller {
     static protected div $crud_container;
     static protected cb $co;
 
-    static function on_post(): void {
+    static function on_post(): void
+    {
         self::launch();
     }
 
-    static function start_crud($controller_name, $controller_db_table): void {
+    static function start_crud($controller_name, $controller_db_table): void
+    {
         self::$controller_name = $controller_name;
         self::$controller_db_table = $controller_db_table;
     }
 
-    static function run_crud($parent_class, base|blank|sidebar_page $tpl, string $nav_id): void {
+    static function run_crud($parent_class, base|blank|sidebar_page $tpl, string $nav_id): void
+    {
 //        $tpl = new my_sidebar_page();
         self::use_tpl($tpl);
 
@@ -43,14 +48,16 @@ class controller_crud extends controller {
          */
         DOM::start(self::$tpl);
 
-        if (method_exists(self::$tpl, 'page_content')) {
+        if (method_exists(self::$tpl, 'page_content'))
+        {
             self::$tpl->page_content()->set_title(" ");
             self::$tpl->page_content()->set_subtitle(" ");
             self::$tpl->page_content()->set_content_title(" ");
             self::$tpl->page_content()->set_content(null);
         }
 
-        if (method_exists(self::$tpl, 'menu') && self::$tpl->menu()->q($nav_id)) {
+        if (method_exists(self::$tpl, 'menu') && self::$tpl->menu()->q($nav_id))
+        {
             self::$tpl->menu()->q($nav_id)->nav_is_active();
         }
 
@@ -62,7 +69,8 @@ class controller_crud extends controller {
         self::$co->set_title_tag_id('#k1app-page-title');
         self::$co->set_subtitle_tag_id('.card-title');
 
-        if (self::$co->db_table->get_state() === false) {
+        if (self::$co->db_table->get_state() === false)
+        {
             die('DB table did not found: ' . $parent_class);
         }
         self::$co->set_config_from_class('\k1app\table_config\\' . self::$controller_db_table);
@@ -81,45 +89,61 @@ class controller_crud extends controller {
         static::finish_board();
     }
 
-    static function init_board(): void {
+    static function init_board(): void
+    {
         self::$crud_container = self::$co->init_board();
     }
 
-    static function start_board(): void {
+    static function start_board(): void
+    {
         self::$co->start_board();
 
         // LIST
-        if (self::$co->on_object_list()) {
-            $read_url = url::do_url(self::$co->get_controller_root_dir() . self::$co->get_board_read_url_name() . "/--rowkeys--/", ["auth-code" => "--authcode--"]);
+        if (self::$co->on_object_list())
+        {
+            $read_url = url::do_url(self::$co->get_controller_root_dir() . self::$co->get_board_read_url_name() . "/--rowkeys--/",
+                    ["auth-code" => "--authcode--"]);
             self::$co->board_list()->list_object->apply_link_on_field_filter($read_url, ob::USE_LABEL_FIELDS);
         }
     }
 
-    static function exec_board(): void {
+    static function exec_board(): void
+    {
         self::$co->exec_board();
 
-        if (self::$co->on_object_list()) {
-            self::$co->board_list()->list_object->html_table->set_max_text_length_on_cell(100);
+        if (self::$co->on_object_list())
+        {
+            if (self::$co->board_list()->list_object->html_table)
+            {
+                self::$co->board_list()->list_object->html_table->set_max_text_length_on_cell(100);
+            }
         }
     }
 
-    static function finish_board(): void {
+    static function finish_board(): void
+    {
         self::$co->finish_board();
 
-        if (method_exists(self::$tpl, 'page_content')) {
+        if (method_exists(self::$tpl, 'page_content'))
+        {
             self::$tpl->page_content()->set_content(self::$crud_container);
-        } else {
+        } else
+        {
             self::$tpl->body()->set_value(self::$crud_container);
         }
     }
 
-    static function add_related_table($table_name, $controller_url, $related_title): void {
+    static function add_related_table($table_name, $controller_url, $related_title): void
+    {
 
-        if (self::$co->on_board_read()) {
+        if (self::$co->on_board_read())
+        {
             $page_heading = self::$tpl->q('.page-heading');
-            if (!empty($page_heading)) {
+            if (!empty($page_heading))
+            {
                 $related_div = $page_heading[0]->append_div("k1lib-crudlexs-related-data");
-            } else {
+            } else
+            {
                 $related_div = self::$tpl->body()->append_div("k1lib-crudlexs-related-data");
             }
 //        ->append_div('section k1lib-crudlexs-related-data');;
@@ -131,13 +155,9 @@ class controller_crud extends controller {
             self::$co->board_read_object->set_related_show_all_data(TRUE);
             self::$co->board_read_object->set_related_show_new(TRUE);
             $related_list = self::$co->board_read_object->create_related_list(
-                    $related_db_table,
-                    NULL,
-                    $controller_url,
-                    ('\k1app\table_config\\' . $table_name)::BOARD_CREATE_URL,
+                    $related_db_table, NULL, $controller_url, ('\k1app\table_config\\' . $table_name)::BOARD_CREATE_URL,
                     ('\k1app\table_config\\' . $table_name)::BOARD_READ_URL,
-                    ('\k1app\table_config\\' . $table_name)::BOARD_LIST_URL,
-                    FALSE
+                    ('\k1app\table_config\\' . $table_name)::BOARD_LIST_URL, FALSE
             );
 //            $related_list->append_to($related_div);
             $related_card = new \k1app\template\mazer\components\card($related_title, $related_list);
@@ -145,7 +165,8 @@ class controller_crud extends controller {
         }
     }
 
-    static function end(): void {
+    static function end(): void
+    {
         parent::end();
         echo self::$tpl->generate();
     }
