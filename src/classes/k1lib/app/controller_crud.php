@@ -78,7 +78,7 @@ class controller_crud
         /**
          * USE THIS IF THE TABLE NEED THE LOGIN_ID ON EVERY ROW FOR TRACKING
          */
-        self::$co->db_table->set_field_constants(['user_login' => app_session::get_user_login()]);
+//        self::$co->db_table->set_field_constants(['user_login' => app_session::get_user_login()]);
 
         static::init_board();
 
