@@ -139,11 +139,13 @@ class controller_crud
         if (self::$co->on_board_read())
         {
             $page_heading = self::$tpl->q('.page-heading');
-            if (!empty($page_heading))
-            {
-                $related_div = $page_heading[0]->append_div("k1lib-crudlexs-related-data");
-            } else
-            {
+            if (!empty($page_heading)) {
+                if (is_array($page_heading)) {
+                    $related_div = $page_heading[0]->append_div("k1lib-crudlexs-related-data");
+                    }else{
+                    $related_div = $page_heading->append_div("k1lib-crudlexs-related-data");
+                    }
+            } else {
                 $related_div = self::$tpl->body()->append_div("k1lib-crudlexs-related-data");
             }
 //        ->append_div('section k1lib-crudlexs-related-data');;
