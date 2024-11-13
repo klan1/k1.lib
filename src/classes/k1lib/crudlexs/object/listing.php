@@ -127,7 +127,7 @@ class listing extends base_with_data implements base_interface {
         $table_alias = db_table_aliases::encode($this->db_table->get_db_table_name());
 
         $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content table-responsive");
-        $this->div_container->set_style('margin: 0px -24px');
+//        $this->div_container->set_style('margin: 0px -24px');
         if ($this->db_table_data) {
             if ($this->do_orderby_headers) {
                 $this->do_orderby_headers();
