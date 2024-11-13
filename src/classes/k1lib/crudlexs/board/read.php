@@ -20,7 +20,10 @@ use const k1app\K1APP_URL;
 use function k1lib\html\get_link_button;
 use function k1lib\urlrewrite\get_back_url;
 
-class read extends board_base implements board_interface {
+class read
+        extends board_base
+        implements board_interface
+{
 
     /**
      *
@@ -67,9 +70,11 @@ class read extends board_base implements board_interface {
      */
     protected $related_html_table_object = NULL;
 
-    public function __construct(base2 $controller_object, array $user_levels_allowed = []) {
+    public function __construct(base2 $controller_object, array $user_levels_allowed = [])
+    {
         parent::__construct($controller_object, $user_levels_allowed);
-        if ($this->is_enabled) {
+        if ($this->is_enabled)
+        {
             $this->show_rule_to_apply = "show-read";
             $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
             $this->read_object = new reading($this->controller_object->db_table, $this->row_keys_text);
@@ -79,17 +84,22 @@ class read extends board_base implements board_interface {
     /**
      * @return div|boolean
      */
-    public function start_board() {
-        if (!parent::start_board()) {
+    public function start_board()
+    {
+        if (!parent::start_board())
+        {
             return FALSE;
         }
 
-        if (!empty($this->row_keys_text)) {
-            if ($this->read_object->get_state()) {
+        if (!empty($this->row_keys_text))
+        {
+            if ($this->read_object->get_state())
+            {
                 /**
                  * BACK
                  */
-                if ($this->back_enable && (isset($_GET['back-url']))) {
+                if ($this->back_enable && (isset($_GET['back-url'])))
+                {
                     $back_url = get_back_url();
                     $back_link = get_link_button($back_url, board_read_strings::$button_back, "btn-sm");
                     $back_link->append_to($this->button_div_tag);
@@ -97,7 +107,8 @@ class read extends board_base implements board_interface {
                 /**
                  * ALL DATA
                  */
-                if ($this->all_data_enable) {
+                if ($this->all_data_enable)
+                {
                     $all_data_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_list_url_name()}/";
                     $all_data_link = get_link_button(
                             url::do_url($all_data_url, [], TRUE, ['no-rules'])
@@ -109,42 +120,51 @@ class read extends board_base implements board_interface {
                 /**
                  * EDIT BUTTON
                  */
-                if ($this->update_enable) {
+                if ($this->update_enable)
+                {
                     $edit_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_update_url_name()}/" . urlencode($this->row_keys_text) . '/';
                     $get_vars = [
                         "auth-code" => $this->read_object->get_auth_code(),
 //                        "back-url" => $_SERVER['REQUEST_URI'],
                     ];
-                    $edit_link = get_link_button(url::do_url($edit_url, $get_vars), board_read_strings::$button_edit, "btn-sm");
+                    $edit_link = get_link_button(url::do_url($edit_url, $get_vars), board_read_strings::$button_edit,
+                            "btn-sm");
                     $edit_link->append_to($this->button_div_tag);
                 }
                 /**
                  * DELETE BUTTON
                  */
-                if ($this->delete_enable) {
+                if ($this->delete_enable)
+                {
                     $delete_url = $this->controller_object->get_controller_root_dir() . "{$this->controller_object->get_board_delete_url_name()}/" . urlencode($this->row_keys_text) . '/';
-                    if (get_back_url(TRUE)) {
+                    if (get_back_url(TRUE))
+                    {
                         $get_vars = [
                             "auth-code" => $this->read_object->get_auth_code_personal(),
                             "back-url" => get_back_url(TRUE),
                         ];
-                    } else {
+                    } else
+                    {
                         $get_vars = [
                             "auth-code" => $this->read_object->get_auth_code_personal(),
                         ];
                     }
-                    $delete_link = get_link_button(url::do_url($delete_url, $get_vars), board_read_strings::$button_delete, "btn-sm");
+                    $delete_link = get_link_button(url::do_url($delete_url, $get_vars),
+                            board_read_strings::$button_delete, "btn-sm");
                     $delete_link->append_to($this->button_div_tag);
                 }
 
                 $this->data_loaded = $this->read_object->load_db_table_data($this->show_rule_to_apply);
                 return $this->board_content_div;
-            } else {
-                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert", $this->notifications_div_id);
+            } else
+            {
+                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_not_opened, "alert",
+                        $this->notifications_div_id);
                 DOM_notification::queue_title(board_base_strings::$error_mysql);
                 return FALSE;
             }
-        } else {
+        } else
+        {
             return FALSE;
         }
     }
@@ -152,21 +172,28 @@ class read extends board_base implements board_interface {
     /**
      * @return div|boolean
      */
-    public function exec_board() {
-        if (!$this->is_enabled) {
+    public function exec_board()
+    {
+        if (!$this->is_enabled)
+        {
             return FALSE;
         }
 
-        if ($this->read_object->get_state() && !empty($this->row_keys_text)) {
-            if ($this->data_loaded) {
-                if ($this->apply_label_filter) {
+        if ($this->read_object->get_state() && !empty($this->row_keys_text))
+        {
+            if ($this->data_loaded)
+            {
+                if ($this->apply_label_filter)
+                {
                     $this->read_object->apply_label_filter();
                 }
-                if ($this->apply_field_label_filter) {
+                if ($this->apply_field_label_filter)
+                {
                     $this->read_object->apply_field_label_filter();
                 }
 //                $this->read_object->set_use_read_custom_template();
-                if (file_uploads::is_enabled()) {
+                if (file_uploads::is_enabled())
+                {
                     $this->read_object->apply_file_uploads_filter();
                 }
 
@@ -179,43 +206,53 @@ class read extends board_base implements board_interface {
                 $read_content_div->append_to($this->board_content_div);
 
                 return $this->board_content_div;
-            } else {
-                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_no_data, "alert", $this->notifications_div_id);
+            } else
+            {
+                DOM_notification::queue_mesasage(board_base_strings::$error_mysql_table_no_data, "alert",
+                        $this->notifications_div_id);
                 DOM_notification::queue_title(board_base_strings::$error_mysql);
                 $this->read_object->make_invalid();
                 $this->is_enabled = FALSE;
                 return FALSE;
             }
-        } else {
+        } else
+        {
             return FALSE;
         }
     }
 
-    public function finish_board() {
+    public function finish_board()
+    {
         // (:    
     }
 
-    public function set_related_use_rows_key_text($related_use_rows_key_text) {
+    public function set_related_use_rows_key_text($related_use_rows_key_text)
+    {
         $this->related_use_rows_key_text = $related_use_rows_key_text;
     }
 
-    public function set_related_use_show_rule($related_use_show_rule) {
+    public function set_related_use_show_rule($related_use_show_rule)
+    {
         $this->related_use_show_rule = $related_use_show_rule;
     }
 
-    public function set_related_do_clean_array_on_query_filter($related_do_clean_array_on_query_filter) {
+    public function set_related_do_clean_array_on_query_filter($related_do_clean_array_on_query_filter)
+    {
         $this->related_do_clean_array_on_query_filter = $related_do_clean_array_on_query_filter;
     }
 
-    public function get_related_do_clean_array_on_query_filter() {
+    public function get_related_do_clean_array_on_query_filter()
+    {
         return $this->related_do_clean_array_on_query_filter;
     }
 
-    public function get_related_show_new() {
+    public function get_related_show_new()
+    {
         return $this->related_show_new;
     }
 
-    public function get_related_show_all_data() {
+    public function get_related_show_all_data()
+    {
         return $this->related_show_all_data;
     }
 
@@ -230,14 +267,18 @@ class read extends board_base implements board_interface {
      * @param boolean $show_create
      * @return div|boolean
      */
-    public function create_related_list(db_table $db_table, $field_links_array, $board_root, $board_create, $board_read, $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
+    public function create_related_list(db_table $db_table, $field_links_array, $board_root, $board_create, $board_read,
+            $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL)
+    {
 
         $table_alias = db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new div();
 
-        $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url, $custom_key_array);
+        $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read,
+                $use_back_url, $clear_url, $custom_key_array);
 
-        if (!empty($this->related_list)) {
+        if (!empty($this->related_list))
+        {
             $current_row_keys_text = $this->read_object->get_row_keys_text();
             $current_row_keys_text_auth_code = md5(K1MAGIC::get_value() . $current_row_keys_text);
 
@@ -250,30 +291,41 @@ class read extends board_base implements board_interface {
                 "back-url" => urlencode($_SERVER['REQUEST_URI'])
             ];
 
-            if ($this->related_list->data_loaded) {
-                $all_data_url = url::do_url($board_root . $board_list . "/" . urlencode($current_row_keys_text) . "/", $get_vars, FALSE);
-                $this->related_html_object_show_all_data = get_link_button($all_data_url, board_read_strings::$button_all_data, "btn-sm");
-                if ($this->related_show_all_data) {
+            if ($this->related_list->data_loaded)
+            {
+                $all_data_url = url::do_url($board_root . $board_list . "/" . urlencode($current_row_keys_text) . "/",
+                        $get_vars, FALSE);
+                $this->related_html_object_show_all_data = get_link_button($all_data_url,
+                        board_read_strings::$button_all_data, "btn-sm");
+                if ($this->related_show_all_data)
+                {
                     $related_buttons->set_value($this->related_html_object_show_all_data, TRUE);
                 }
             }
-            if ($use_back_url) {
-                $create_url = url::do_url($board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/", $get_vars, TRUE);
-            } else {
+            if ($use_back_url)
+            {
+                $create_url = url::do_url(
+                        $board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/", $get_vars, TRUE
+                );
+            } else
+            {
                 $get_vars = [
                     "auth-code" => $current_row_keys_text_auth_code,
                 ];
-                $create_url = url::do_url($board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/", $get_vars, TRUE, ['back-url'], FALSE);
+                $create_url = url::do_url($board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/",
+                        $get_vars, TRUE, ['back-url'], FALSE);
             }
             $this->related_html_object_show_new = get_link_button($create_url, board_list_strings::$button_new, "btn-sm");
 
-            if ($this->related_show_new) {
+            if ($this->related_show_new)
+            {
                 $related_buttons->set_value($this->related_html_object_show_new, TRUE);
             }
 
             $this->related_list->do_html_object()->append_to($detail_div);
             $this->related_html_table_object = $this->related_list->get_html_table();
-            if ($db_table->get_total_rows() > $this->related_rows_to_show && $this->related_do_pagination) {
+            if ($db_table->get_total_rows() > $this->related_rows_to_show && $this->related_do_pagination)
+            {
                 $this->related_list->do_pagination()->append_to($detail_div);
                 $this->related_list->do_row_stats()->append_to($detail_div);
             }
@@ -293,39 +345,51 @@ class read extends board_base implements board_interface {
      * @param boolean $clear_url
      * @return \k1lib\crudlexs\listing|boolean
      */
-    public function do_related_list(db_table $db_table, $field_links_array, $board_root, $board_read, $use_back_url, $clear_url = FALSE, $custom_key_array = []) {
+    public function do_related_list(db_table $db_table, $field_links_array, $board_root, $board_read, $use_back_url,
+            $clear_url = FALSE, $custom_key_array = [])
+    {
 
         $table_alias = db_table_aliases::encode($db_table->get_db_table_name());
 
-        if ($this->is_enabled && $this->read_object->is_valid()) {
+        if ($this->is_enabled && $this->read_object->is_valid())
+        {
 
             /**
              * Clients list
              */
-            if ($db_table->get_state()) {
-                if ($this->related_use_rows_key_text) {
-                    if (empty($custom_key_array)) {
+            if ($db_table->get_state())
+            {
+                if ($this->related_use_rows_key_text)
+                {
+                    if (empty($custom_key_array))
+                    {
                         $current_row_keys_array = $this->read_object->get_row_keys_array();
                         /**
                          * lets fix the non-same key name
                          */
                         $db_table_config = $db_table->get_db_table_config();
-                        foreach ($db_table_config as $field => $field_config) {
-                            if (!empty($field_config['refereced_column_config'])) {
+                        foreach ($db_table_config as $field => $field_config)
+                        {
+                            if (!empty($field_config['refereced_column_config']))
+                            {
                                 $fk_field_name = $field_config['refereced_column_config']['field'];
-                                foreach ($current_row_keys_array as $field_current => $value) {
-                                    if ($field_current == $field) {
+                                foreach ($current_row_keys_array as $field_current => $value)
+                                {
+                                    if ($field_current == $field)
+                                    {
                                         unset($current_row_keys_array[$field_current]);
                                         $current_row_keys_array[$fk_field_name] = $value;
                                     }
                                 }
                             }
                         }
-                    } else {
+                    } else
+                    {
                         $current_row_keys_array = $custom_key_array;
                     }
                     $db_table->set_field_constants($current_row_keys_array);
-                    $db_table->set_query_filter($current_row_keys_array, TRUE, $this->related_do_clean_array_on_query_filter);
+                    $db_table->set_query_filter($current_row_keys_array, TRUE,
+                            $this->related_do_clean_array_on_query_filter);
                 }
 
                 /**
@@ -334,148 +398,184 @@ class read extends board_base implements board_interface {
                  */
                 $this->related_list = new listing($db_table, FALSE);
 
-                if (!empty($this->related_custom_field_labels)) {
+                if (!empty($this->related_custom_field_labels))
+                {
                     $this->related_list->set_custom_field_labels($this->related_custom_field_labels);
                 }
 
                 $this->related_list->set_rows_per_page($this->related_rows_to_show);
                 $this->related_list->load_db_table_data($this->related_use_show_rule);
-                if ($this->related_list->data_loaded) {
-                    if ($this->related_apply_filters) {
+                if ($this->related_list->data_loaded)
+                {
+                    if ($this->related_apply_filters)
+                    {
                         $this->related_apply_filters();
-                        $this->related_apply_link_read_field($field_links_array, $board_root, $board_read, $use_back_url, $clear_url);
+                        $this->related_apply_link_read_field($field_links_array, $board_root, $board_read,
+                                $use_back_url, $clear_url);
                     }
                 }
                 return $this->related_list;
-            } else {
+            } else
+            {
                 trigger_error("DB Table couldn't be opened : " . $db_table->get_db_table_name(), E_USER_NOTICE);
                 return FALSE;
             }
-        } else {
+        } else
+        {
             return FALSE;
         }
     }
 
-    public function related_apply_link_read_field($field_links_array, $board_root, $board_read, $use_back_url, $clear_url = FALSE) {
-        if ($this->related_list->get_db_table_data()) {
-            if ($clear_url) {
+    public function related_apply_link_read_field($field_links_array, $board_root, $board_read, $use_back_url,
+            $clear_url = FALSE)
+    {
+        if ($this->related_list->get_db_table_data())
+        {
+            if ($clear_url)
+            {
                 $get_vars = [];
-            } else {
+            } else
+            {
 
                 $get_vars = [
                     "auth-code" => "--authcode--",
                 ];
-                if ($use_back_url) {
+                if ($use_back_url)
+                {
                     $get_vars["back-url"] = urlencode($_SERVER['REQUEST_URI']);
                 }
             }
             $link_row_url = url::do_url(K1APP_URL . $board_root . "/" . $board_read . "/--rowkeys--/", $get_vars);
             $this->related_list->apply_link_on_field_filter($link_row_url, $field_links_array);
             return TRUE;
-        } else {
+        } else
+        {
             return FALSE;
         }
     }
 
-    public function related_apply_filters() {
-        if ($this->related_list->get_db_table_data()) {
+    public function related_apply_filters()
+    {
+        if ($this->related_list->get_db_table_data())
+        {
             $this->related_list->apply_label_filter();
             $this->related_list->apply_field_label_filter();
-            if (file_uploads::is_enabled()) {
+            if (file_uploads::is_enabled())
+            {
 //                    $this->related_list->set
                 $this->related_list->apply_file_uploads_filter();
             }
             return TRUE;
-        } else {
+        } else
+        {
             return FALSE;
         }
     }
 
-    public function set_related_edit_url($related_edit_url) {
+    public function set_related_edit_url($related_edit_url)
+    {
         $this->related_edit_url = $related_edit_url;
     }
 
-    public function get_related_rows_to_show() {
+    public function get_related_rows_to_show()
+    {
         return $this->related_rows_to_show;
     }
 
-    public function set_related_rows_to_show($related_rows_to_show) {
+    public function set_related_rows_to_show($related_rows_to_show)
+    {
         $this->related_rows_to_show = $related_rows_to_show;
     }
 
     /**
      * @return a
      */
-    public function get_related_html_object_show_new() {
+    public function get_related_html_object_show_new()
+    {
         return $this->related_html_object_show_new;
     }
 
     /**
      * @return a
      */
-    public function get_related_html_object_show_all_data() {
+    public function get_related_html_object_show_all_data()
+    {
         return $this->related_html_object_show_all_data;
     }
 
-    function get_back_enable() {
+    function get_back_enable()
+    {
         return $this->back_enable;
     }
 
-    function get_update_enable() {
+    function get_update_enable()
+    {
         return $this->update_enable;
     }
 
-    function get_delete_enable() {
+    function get_delete_enable()
+    {
         return $this->delete_enable;
     }
 
-    function set_all_data_enable($all_data_enable) {
+    function set_all_data_enable($all_data_enable)
+    {
         $this->all_data_enable = $all_data_enable;
     }
 
-    function set_back_enable($back_enable) {
+    function set_back_enable($back_enable)
+    {
         $this->back_enable = $back_enable;
     }
 
-    function set_update_enable($update_enable) {
+    function set_update_enable($update_enable)
+    {
         $this->update_enable = $update_enable;
     }
 
-    public function set_related_custom_field_labels($related_custom_field_labels) {
+    public function set_related_custom_field_labels($related_custom_field_labels)
+    {
         $this->related_custom_field_labels = $related_custom_field_labels;
     }
 
-    function set_delete_enable($delete_enable) {
+    function set_delete_enable($delete_enable)
+    {
         $this->delete_enable = $delete_enable;
     }
 
-    public function set_related_show_new($related_show_new) {
+    public function set_related_show_new($related_show_new)
+    {
         $this->related_show_new = $related_show_new;
     }
 
-    public function set_related_show_all_data($related_show_all_data) {
+    public function set_related_show_all_data($related_show_all_data)
+    {
         $this->related_show_all_data = $related_show_all_data;
     }
 
-    public function set_related_do_pagination($related_do_pagination) {
+    public function set_related_do_pagination($related_do_pagination)
+    {
         $this->related_do_pagination = $related_do_pagination;
     }
 
     /**
      * @return table_from_data
      */
-    public function get_related_html_table_object() {
+    public function get_related_html_table_object()
+    {
         return $this->related_html_table_object;
     }
 
-    public function set_related_apply_filters($related_apply_filters) {
+    public function set_related_apply_filters($related_apply_filters)
+    {
         $this->related_apply_filters = $related_apply_filters;
     }
 
     /**
      * @return listing
      */
-    public function get_related_list() {
+    public function get_related_list()
+    {
         return $this->related_list;
     }
 }
