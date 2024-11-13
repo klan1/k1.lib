@@ -149,7 +149,7 @@ class listing extends base_with_data implements base_interface {
     /**
      * @return table_from_data
      */
-    public function get_html_table(): table_from_data {
+    public function get_html_table(): table_from_data | null {
         return $this->html_table;
     }
 
