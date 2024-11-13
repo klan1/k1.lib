@@ -165,7 +165,11 @@ class controller_crud
             $related_list = self::$co->board_read_object->create_related_list(
                     $related_db_table, NULL, $controller_url, ('\k1app\table_config\\' . $table_name)::BOARD_CREATE_URL,
                     ('\k1app\table_config\\' . $table_name)::BOARD_READ_URL,
-                    ('\k1app\table_config\\' . $table_name)::BOARD_LIST_URL, FALSE
+                    ('\k1app\table_config\\' . $table_name)::BOARD_LIST_URL, 
+                    /**
+                     * TODO: Understand why this should be false
+                     */
+                    TRUE
             );
 //            $related_list->append_to($related_div);
             $related_card = new card($related_title, $related_list);
@@ -179,3 +183,6 @@ class controller_crud
         echo self::$tpl->generate();
     }
 }
+
+//http://localhost:8181/crud/table_uploads/crear/1--klan1/  ?auth-code=f08cb6068a1fef52d995e0b23990921d&back-url=%252Fcrud%252Ftable_related%252Fleer%252F1--klan1%252F%253Fauth-code%253Df08cb6068a1fef52d995e0b23990921d
+//http://localhost:8181/crud/table_uploads/leer/1--1--klan1/?auth-code=40f3a84bdddd39234d38a2839a5821a5&back-url=%25252Fcrud%25252Ftable_related%25252Fleer%25252F1--klan1%25252F%25253Fauth-code%25253Df08cb6068a1fef52d995e0b23990921d
