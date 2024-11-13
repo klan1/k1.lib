@@ -43,7 +43,7 @@ class board_list extends board_base implements board_interface {
      *
      * @var \k1lib\crudlexs\listing
      */
-    public $list_object;
+    public listing $list_object;
 
     public function __construct(controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
