@@ -3,6 +3,7 @@
 namespace k1lib\app;
 
 use k1app\core\template\base;
+use k1app\template\mazer\components\card;
 use k1app\template\mazer\layouts\blank;
 use k1app\template\mazer\layouts\sidebar_page;
 use k1lib\app\controller;
@@ -11,7 +12,6 @@ use k1lib\crudlexs\db_table;
 use k1lib\crudlexs\object\base as ob;
 use k1lib\html\div;
 use k1lib\html\DOM;
-use k1lib\session\app_session;
 use k1lib\urlrewrite\url;
 use const k1app\K1APP_BASE_URL;
 
@@ -101,8 +101,10 @@ class controller_crud
         // LIST
         if (self::$co->on_object_list())
         {
-            $read_url = url::do_url(self::$co->get_controller_root_dir() . self::$co->get_board_read_url_name() . "/--rowkeys--/",
-                    ["auth-code" => "--authcode--"]);
+            $read_url = url::do_url(
+                    self::$co->get_controller_root_dir() . self::$co->get_board_read_url_name() . "/--rowkeys--/",
+                    ["auth-code" => "--authcode--"]
+            );
             self::$co->board_list()->list_object->apply_link_on_field_filter($read_url, ob::USE_LABEL_FIELDS);
         }
     }
@@ -139,13 +141,17 @@ class controller_crud
         if (self::$co->on_board_read())
         {
             $page_heading = self::$tpl->q('.page-heading');
-            if (!empty($page_heading)) {
-                if (is_array($page_heading)) {
+            if (!empty($page_heading))
+            {
+                if (is_array($page_heading))
+                {
                     $related_div = $page_heading[0]->append_div("k1lib-crudlexs-related-data");
-                    }else{
+                } else
+                {
                     $related_div = $page_heading->append_div("k1lib-crudlexs-related-data");
-                    }
-            } else {
+                }
+            } else
+            {
                 $related_div = self::$tpl->body()->append_div("k1lib-crudlexs-related-data");
             }
 //        ->append_div('section k1lib-crudlexs-related-data');;
@@ -162,7 +168,7 @@ class controller_crud
                     ('\k1app\table_config\\' . $table_name)::BOARD_LIST_URL, FALSE
             );
 //            $related_list->append_to($related_div);
-            $related_card = new \k1app\template\mazer\components\card($related_title, $related_list);
+            $related_card = new card($related_title, $related_list);
             $related_card->append_to($related_div);
         }
     }
