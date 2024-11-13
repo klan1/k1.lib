@@ -293,7 +293,7 @@ class read
 
             if ($this->related_list->data_loaded)
             {
-                $all_data_url = url::do_url($board_root . $board_list . "/" . urlencode($current_row_keys_text) . "/",
+                $all_data_url = url::do_url(K1APP_URL . $board_root . $board_list . "/" . urlencode($current_row_keys_text) . "/",
                         $get_vars, FALSE);
                 $this->related_html_object_show_all_data = get_link_button($all_data_url,
                         board_read_strings::$button_all_data, "btn-sm");
@@ -305,14 +305,14 @@ class read
             if ($use_back_url)
             {
                 $create_url = url::do_url(
-                        $board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/", $get_vars, TRUE
+                        K1APP_URL . $board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/", $get_vars, TRUE
                 );
             } else
             {
                 $get_vars = [
                     "auth-code" => $current_row_keys_text_auth_code,
                 ];
-                $create_url = url::do_url($board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/",
+                $create_url = url::do_url(K1APP_URL . $board_root . $board_create . "/" . urlencode($current_row_keys_text) . "/",
                         $get_vars, TRUE, ['back-url'], FALSE);
             }
             $this->related_html_object_show_new = get_link_button($create_url, board_list_strings::$button_new, "btn-sm");
@@ -442,10 +442,10 @@ class read
                 ];
                 if ($use_back_url)
                 {
-                    $get_vars["back-url"] = urlencode($_SERVER['REQUEST_URI']);
+                    $get_vars["back-url"] = $_SERVER['REQUEST_URI'];
                 }
             }
-            $link_row_url = url::do_url(K1APP_URL . $board_root . "/" . $board_read . "/--rowkeys--/", $get_vars);
+            $link_row_url = url::do_url(K1APP_URL . $board_root . $board_read . "/--rowkeys--/", $get_vars);
             $this->related_list->apply_link_on_field_filter($link_row_url, $field_links_array);
             return TRUE;
         } else
