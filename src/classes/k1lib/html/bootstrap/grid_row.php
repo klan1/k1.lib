@@ -2,17 +2,19 @@
 
 namespace k1lib\html\bootstrap;
 
-class grid_row extends \k1lib\html\div {
+use k1lib\html\div;
+use k1lib\html\bootstrap\grid_cell;
+
+class grid_row extends div {
 
     use bootstrap_methods;
-
 
     /**
      * @var grid_cell[]
      */
-    protected $cols = [];
-    protected $num_cols;
-    
+    protected $cols;
+    protected int $num_cols;
+
     function __construct($num_cols, $grid_row = NULL, $parent = NULL) {
 
         $this->parent = $parent;
@@ -27,30 +29,37 @@ class grid_row extends \k1lib\html\div {
 //        }
 
         for ($col = 1; $col <= $num_cols; $col++) {
-            $this->num_cols[$col] = $this->append_cell($col);
+            $this->cols[$col] = $this->append_cell($col);
+        }
+    }
+
+    public function copy_clases_to_cols($from) {
+        $classes = $this->col($from)->get_attribute('class');
+        for ($col = 1; $col <= count($this->cols); $col++) {
+            $this->cols[$col]->set_class($classes);
         }
     }
 
     /**
      * @param integer $col_number
-     * @return \k1lib\html\bootstrap\grid_cell
+     * @return grid_cell
      */
-    public function col($col_number) {
+    public function col($col_number): grid_cell {
         return $this->cell($col_number);
     }
 
     /**
      * @param integer $col_number
-     * @return \k1lib\html\bootstrap\grid_cell
+     * @return grid_cell
      */
-    public function cell($col_number) {
-        if (isset($this->num_cols[$col_number])) {
-            return $this->num_cols[$col_number];
+    public function cell($col_number): grid_cell {
+        if (isset($this->cols[$col_number])) {
+            return $this->cols[$col_number];
         }
     }
 
     /**
-     * @return \k1lib\html\div
+     * @return div
      */
 //    public function expanded() {
 //        $this->set_attrib("class", "expanded", TRUE);
