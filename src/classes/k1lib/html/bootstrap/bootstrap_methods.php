@@ -153,9 +153,9 @@ trait bootstrap_methods {
         $this->xlarge = $cols;
 
         if ($clear) {
-            $this->set_attrib("class", "col-xlg-{$cols}", (!$clear));
+            $this->set_attrib("class", "col-xl-{$cols}", (!$clear));
         } else {
-            $this->replace_attribute_number("class", "col-xlg", $cols);
+            $this->replace_attribute_number("class", "col-xl", $cols);
         }
 
         return $this;
@@ -167,9 +167,9 @@ trait bootstrap_methods {
         $this->xxlarge = $cols;
 
         if ($clear) {
-            $this->set_attrib("class", "col-xxlg-{$cols}", (!$clear));
+            $this->set_attrib("class", "col-xxl-{$cols}", (!$clear));
         } else {
-            $this->replace_attribute_number("class", "col-xxlg", $cols);
+            $this->replace_attribute_number("class", "col-xxl", $cols);
         }
 
         return $this;
