@@ -48,12 +48,12 @@ class input_helper {
             $div_continer->link_value_obj($input_tag_new);
         } elseif ($case == "update") {
             $input_tag_current = new input("password", $field_encrypted . "_current", NULL, "k1lib-input-insert");
-            $input_tag_current->set_attrib("placeholder", "Current password");
+            $input_tag_current->set_attrib("placeholder", input_helper_strings::$password_current);
             $div_continer->append_div()->append_child($input_tag_current);
             $div_continer->link_value_obj($input_tag_current);
         }
-        $input_tag_new->set_attrib("placeholder", "New password");
-        $input_tag_confirm->set_attrib("placeholder", "Confirm password");
+        $input_tag_new->set_attrib("placeholder", input_helper_strings::$password_new);
+        $input_tag_confirm->set_attrib("placeholder", input_helper_strings::$password_confirm);
 
         $div_continer->append_div()->append_child($input_tag_new);
         $div_continer->append_div()->append_child($input_tag_confirm);

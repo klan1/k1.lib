@@ -66,5 +66,7 @@ class input_helper_strings {
     static $select_choose_option = "Seleccione una opcion...";
     static $input_date_placeholder = "Haga clic para seleccionar una fecha";
     static $input_fk_placeholder = "Use el ID de referencia";
-
+    static $password_current = 'Contraseña actual';
+    static $password_new = 'Nueva contraseña';
+    static $password_confirm = 'Confirma la contraseña';
 }
