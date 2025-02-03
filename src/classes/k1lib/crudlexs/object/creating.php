@@ -339,7 +339,7 @@ class creating extends base_with_data implements base_interface {
                 $div_error = new grid_row(2);
 
                 $div_input = $div_error->cell(1)->large(12);
-                $div_message = $div_error->cell(2)->large(12)->end();
+                $div_message = $div_error->cell(2)->large(12);
 
                 $span_error = $div_message->append_span("clearfix form-error is-visible");
                 $span_error->set_value($this->post_validation_errors[$field]);
