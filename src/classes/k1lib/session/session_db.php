@@ -5,7 +5,7 @@ namespace k1lib\session;
 use k1lib\crudlexs\db_table;
 use k1lib\crypt;
 use k1lib\html\notifications\on_DOM as DOM_notifications;
-use PDO;
+use k1lib\db\PDO_k1 as PDO;
 use function k1lib\common\check_magic_value;
 use function k1lib\forms\check_all_incomming_vars;
 

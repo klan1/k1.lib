@@ -31,6 +31,7 @@ class sql_defaults
         'float' => 34,
         'double' => 64,
         'enum' => NULL,
+        'point' => 9999,
     );
     static protected $mysql_default_validation            = array(
         'char' => 'mixed-symbols',
@@ -50,6 +51,7 @@ class sql_defaults
         'double' => 'decimals',
         'enum' => 'options',
         'set' => 'options',
+        'point' => 'mixed-symbols',
     );
     static protected $k1lib_field_config_options_defaults = [
         'label' => null,

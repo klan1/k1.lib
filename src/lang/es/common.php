@@ -10,7 +10,7 @@ class common_strings {
     static $info = 'Informacion';
     static $message = 'Mensaje';
     //
-    static $button_submit = 'Insertar';
+    static $button_submit = 'Crear';
     static $button_cancel = 'Cancelar';
     //
     static $yes = 'Si';

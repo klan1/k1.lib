@@ -134,7 +134,6 @@ class board_base {
             $head = DOM::html_document()->head();
             $current_html_title = $head->get_title();
             $head->set_title($current_html_title . " - " . $board_name);
-            d($this->controller_object->html_subtitle_tag->generate());
 
             $this->controller_object->html_subtitle_tag->set_value("{$board_name}", TRUE);
         }

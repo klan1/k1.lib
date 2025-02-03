@@ -67,8 +67,8 @@ class board_list extends board_base implements board_interface {
             /**
              * BACK
              */
+            $back_url = get_back_url();
             if ($this->back_enable && (isset($_GET['back-url']))) {
-                $back_url = get_back_url();
                 $back_link = get_link_button($back_url, board_read_strings::$button_back, 'btn-sm');
                 $back_link->append_to($this->button_div_tag);
             }
@@ -78,7 +78,12 @@ class board_list extends board_base implements board_interface {
             $related_url_keys_text = url::get_url_level_value_by_name("related_url_keys_text");
             if (empty($related_url_keys_text)) {
                 $related_url_keys_text = "";
-                $new_link = get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new, 'btn-sm');
+                $new_link = get_link_button(
+                        url::do_url(
+                                "../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text),
+                                ['cancel-url' => K1APP_URL . url::get_this_url()]
+                        )
+                        , board_list_strings::$button_new, 'btn-sm');
             } else {
                 $related_url_keys_text .= "/";
                 $new_link = get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new, 'btn-sm');
@@ -112,7 +117,7 @@ class board_list extends board_base implements board_interface {
                 );
                 $search_iframe->set_attrib('width', '100%');
                 $search_iframe->set_attrib('height', '1200px');
-                
+
                 $modal = new modal(board_list_strings::$button_search, $search_iframe, common_strings::$button_cancel, NULL);
 
                 DOM::html_document()->body()->append_child_tail($modal);
