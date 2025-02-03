@@ -6,12 +6,14 @@
 
 namespace k1lib\db;
 
+use k1lib\K1MAGIC;
 use k1lib\sql\local_cache;
 use k1lib\sql\profiler;
 use PDO;
 use PDOException;
 use PDOStatement;
 use const k1app\K1APP_MODE;
+use const k1app\K1APP_VERBOSE;
 use function d;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\forms\check_single_incomming_var;
@@ -1310,5 +1312,9 @@ AND table_name = '{$table}'";
         } else {
             return FALSE;
         }
+    }
+
+    function generate_auth_code($row_keys_text) {
+        return md5(K1MAGIC::get_value() . $row_keys_text);
     }
 }
