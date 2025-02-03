@@ -23,7 +23,7 @@ class object_base_strings {
 
 class creating_strings {
 
-    static $button_submit = "Insertar";
+    static $button_submit = "Crear";
     static $button_cancel = "Cancelar";
     static $error_file_upload = "File upload error : ";
     static $error_new_password_not_match = "El nuevo password y la confirmacion deben ser iguales";

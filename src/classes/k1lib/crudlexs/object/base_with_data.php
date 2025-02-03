@@ -45,6 +45,7 @@ class base_with_data extends base {
     protected $auth_code_personal = null;
     protected $link_on_field_filter_applied = false;
     protected $back_url;
+    protected $cancel_url;
     protected $row_keys_text = null;
     protected $row_keys_array = null;
 

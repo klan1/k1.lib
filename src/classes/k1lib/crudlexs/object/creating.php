@@ -466,6 +466,9 @@ class creating extends base_with_data implements base_interface {
              */
             $submit_button = new input("submit", "k1send", creating_strings::$button_submit, "btn icon btn-outline-success btn-sm");
             if ($this->show_cancel_button) {
+                if (isset($_GET['cancel-url'])) {
+                    $this->back_url = $_GET['cancel-url'];
+                }
                 $cancel_button = get_link_button($this->back_url, creating_strings::$button_cancel, 'btn-sm');
                 $buttons_div = new label_value_row(NULL, "{$cancel_button} {$submit_button}");
             } else {
