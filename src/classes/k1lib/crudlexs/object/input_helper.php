@@ -259,7 +259,10 @@ class input_helper {
 //            $search_button->set_attrib("style", "font-family:foundation-icons");
 
             $url_params = array_merge(
-                    ["back-url" => $_SERVER['REQUEST_URI']],
+                    [
+                        "back-url" => $_SERVER['REQUEST_URI'],
+                        'caller-field' => $field_encrypted
+                    ],
                     $static_values_enconded,
             );
 
