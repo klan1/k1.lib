@@ -76,6 +76,7 @@ class base_with_data extends base {
     protected $custom_field_labels = [];
     protected $fields_to_hide = [];
     protected $is_valid = FALSE;
+
     /**
      * Always to create the object you must have a valid DB Table object already 
      * @param db_table $db_table DB Table object
@@ -291,7 +292,7 @@ class base_with_data extends base {
                 }
                 if (!empty($file_upload_fields)) {
                     foreach ($file_upload_fields as $field => $file_type) {
-                        switch ($file_type) {
+                        switch (substr($file_type, 0, 5)) {
                             case "image":
                                 //                                $div_container = new \k1lib\html\div();
 
