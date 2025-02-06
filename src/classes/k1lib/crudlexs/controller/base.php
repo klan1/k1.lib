@@ -27,7 +27,9 @@ use k1lib\session\app_session;
 use k1lib\urlrewrite\url as url;
 use PDO;
 use const k1app\template\mazer\TPL_URL;
+use function d;
 use function k1lib\common\clean_array_with_guide;
+use function k1lib\common\serialize_var;
 use function k1lib\html\html_header_go;
 
 class base {
@@ -1108,5 +1110,12 @@ class base {
 
     public function set_security_no_rules_enable($security_no_rules_enable) {
         $this->security_no_rules_enable = $security_no_rules_enable;
+    }
+
+    /**
+     * FIELDS FILTER FOR select_row_keys.php
+     */
+    public function set_fk_tools_filter($targuet_table_name, $constants_array) {
+        serialize_var($constants_array, 'fk-filter-for-' . $targuet_table_name);
     }
 }

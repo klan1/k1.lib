@@ -12,6 +12,7 @@ use k1lib\html\tag;
 use k1lib\K1MAGIC;
 use k1lib\session\app_session as app_session;
 use k1lib\urlrewrite\url as url;
+use function k1lib\common\serialize_var;
 use function k1lib\urlrewrite\get_back_url;
 use function k1lib\utils\decimal_to_n36;
 use function k1lib\utils\n36_to_decimal;
@@ -75,7 +76,6 @@ class base_with_data extends base {
     protected $custom_field_labels = [];
     protected $fields_to_hide = [];
     protected $is_valid = FALSE;
-
     /**
      * Always to create the object you must have a valid DB Table object already 
      * @param db_table $db_table DB Table object
