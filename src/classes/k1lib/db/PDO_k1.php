@@ -456,7 +456,7 @@ AND table_name = '{$table}'";
                     $field_config['file-max-size'] = $file_size;
                 }
                 if (empty($field_config['file-type'])) {
-                    $field_config['file-type'] = "image";
+                    $field_config['file-type'] = "image/jpge";
                 }
             }
             // show board
