@@ -19,6 +19,4 @@ class textarea extends tag {
         $this->set_id($id);
         $this->set_attrib("rows", 10);
     }
-
 }
-

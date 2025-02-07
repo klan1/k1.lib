@@ -199,5 +199,4 @@ class session_browser_fp extends session_db {
         setcookie(self::$session_terminal_coockie_name, $cookie_value, strtotime('-365 days'), '/');
         parent::end_session($path);
     }
-
 }

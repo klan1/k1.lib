@@ -17,6 +17,4 @@ class td extends tag {
         $this->set_class($class, TRUE);
         $this->set_id($id);
     }
-
 }
-

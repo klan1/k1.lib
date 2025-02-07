@@ -12,10 +12,9 @@ namespace k1lib\db;
  *
  * @author j0hnd003
  */
-class sql_defaults
-{
+class sql_defaults {
 
-    static protected $mysql_max_length_defaults           = array(
+    static protected $mysql_max_length_defaults = array(
         'char' => 255,
         'varchar' => 255,
         'text' => (10 * 1204 * 1204), // 10485760 bytes or 110 Megabytes
@@ -33,7 +32,7 @@ class sql_defaults
         'enum' => NULL,
         'point' => 9999,
     );
-    static protected $mysql_default_validation            = array(
+    static protected $mysql_default_validation = array(
         'char' => 'mixed-symbols',
         'varchar' => 'mixed-symbols',
         'text' => 'mixed-symbols',
@@ -72,18 +71,15 @@ class sql_defaults
         'sql' => null,
     ];
 
-    public static function get_mysql_max_length_defaults()
-    {
+    public static function get_mysql_max_length_defaults() {
         return self::$mysql_max_length_defaults;
     }
 
-    public static function get_mysql_default_validation()
-    {
+    public static function get_mysql_default_validation() {
         return self::$mysql_default_validation;
     }
 
-    public static function get_k1lib_field_config_options_defaults()
-    {
+    public static function get_k1lib_field_config_options_defaults() {
         return self::$k1lib_field_config_options_defaults;
     }
 }

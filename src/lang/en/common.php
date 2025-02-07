@@ -15,7 +15,5 @@ class common_strings {
     //
     static $yes = 'Yes';
     static $no = 'No';
-    
     static $fk_tool_name = 'Select the Foreing Key';
-
 }

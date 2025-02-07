@@ -119,5 +119,4 @@ class create extends board_base implements board_interface {
             $this->create_object->post_insert_redirect($url_to_go, $do_redirect);
         }
     }
-
 }

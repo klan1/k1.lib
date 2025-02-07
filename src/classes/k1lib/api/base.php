@@ -264,5 +264,4 @@ class base {
     function set_do_send_response($send_response) {
         $this->send_response = $send_response;
     }
-
 }

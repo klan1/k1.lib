@@ -15,6 +15,4 @@ class button extends tag {
             $this->set_attrib("type", $type);
         }
     }
-
 }
-

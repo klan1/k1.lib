@@ -25,5 +25,4 @@ class K1MAGIC {
     public static function set_value($value) {
         self::$value = $value;
     }
-
 }

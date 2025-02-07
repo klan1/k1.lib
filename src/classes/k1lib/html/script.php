@@ -18,6 +18,4 @@ class script extends tag {
             $this->set_attrib("src", $src);
         }
     }
-
 }
-

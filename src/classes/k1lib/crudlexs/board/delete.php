@@ -85,5 +85,4 @@ class delete extends board_base implements board_interface {
             html_header_go($this->redirect_url);
         }
     }
-
 }

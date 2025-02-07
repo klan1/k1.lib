@@ -22,5 +22,4 @@ class db_table_aliases {
             return $encoded_table_name;
         }
     }
-
 }

@@ -18,6 +18,4 @@ class style extends tag {
             $this->set_value($style);
         }
     }
-
 }
-

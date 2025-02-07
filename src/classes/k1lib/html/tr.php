@@ -41,6 +41,4 @@ class tr extends tag {
         $this->append_child($child_object);
         return $child_object;
     }
-
 }
-

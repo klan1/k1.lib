@@ -19,6 +19,7 @@
  * App run time vars
  */
 // TODO: remove this file dependency 
+
 namespace k1lib;
 
 const IN_K1LIB = TRUE;
@@ -41,8 +42,6 @@ header("Developed-by: j0hnd03 | http://www.github.com/j0hnd03");
 const URL_REWRITE_VAR_NAME = "K1LIB_URL";
 
 //k1lib_include_files(K1LIB_BASE_PATH);
-
-
 
 namespace k1lib\html;
 

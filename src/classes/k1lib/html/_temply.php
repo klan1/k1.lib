@@ -316,5 +316,4 @@ class _temply {
             exit;
         }
     }
-
 }

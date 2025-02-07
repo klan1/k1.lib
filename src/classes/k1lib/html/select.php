@@ -43,6 +43,4 @@ class select extends tag {
             $targuet_tag[0]->set_attrib("selected", TRUE);
         }
     }
-
 }
-
