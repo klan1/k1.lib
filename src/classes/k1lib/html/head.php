@@ -56,6 +56,4 @@ class head extends tag {
         $this->append_child_tail($new);
         return $new;
     }
-
 }
-

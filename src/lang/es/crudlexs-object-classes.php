@@ -18,7 +18,6 @@ class object_base_strings {
     //
     static $error_no_row_keys_text = "The row keys can't be empty";
     static $error_no_row_keys_array = "The row keys array can't be empty";
-
 }
 
 class creating_strings {
@@ -41,14 +40,12 @@ class listing_strings {
     static $stats_default_message = "Mostrando --totalrowsfilter-- de --totalrows-- (filas: --firstrownumber-- to --lastrownumber--)";
     //
     static $no_fk_search_here = "Busquedas en otra tabla no es posible en esta seccion.";
-
 }
 
 class search_helper_strings {
 
     static $button_submit = "Buscar";
     static $button_cancel = "Salir";
-
 }
 
 class updating_strings {

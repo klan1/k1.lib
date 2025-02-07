@@ -136,5 +136,4 @@ class handler extends PDO {
 
         return $result;
     }
-
 }

@@ -379,7 +379,6 @@ function form_check_values(&$form_array, $table_array_config, PDO_k1 $db = NULL)
         $min = $table_array_config[$key]['min'];
         $max = $table_array_config[$key]['max'];
 
-
         // email | letters (solo letras) | numbers (solo números) | mixed (alfanumerico) | letters-symbols (con símbolos ej. !#()[],.) | numbers-symbols | mixed-symbols - los symbols no lo implementare aun
         // the basic error, if is required on the table definition
         if (($value !== 0) && ($value !== '0') && empty($value)) {

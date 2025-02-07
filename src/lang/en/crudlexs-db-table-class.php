@@ -13,5 +13,4 @@ class db_table_strings {
     static $error_empty_data_update = "Data to update can't be empty";
     static $error_empty_data_update_key = "Key to update can't be empty";
     static $error_empty_data_delete_key = "Key to delete can't be empty";
-
 }

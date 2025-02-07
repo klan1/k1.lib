@@ -15,6 +15,4 @@ class h1 extends tag {
         $this->set_class($class);
         $this->set_id($id);
     }
-
 }
-

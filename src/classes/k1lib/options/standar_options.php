@@ -36,4 +36,3 @@ class standar_options {
 
 //put your code here
 }
-

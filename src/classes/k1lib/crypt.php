@@ -41,5 +41,4 @@ class crypt {
         }
         return $original_plaintext;
     }
-
 }

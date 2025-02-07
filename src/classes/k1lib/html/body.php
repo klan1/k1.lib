@@ -10,13 +10,11 @@ namespace k1lib\html;
  *      <section id='k1lib-footer'></section>
  *  </body>
  */
-class body extends tag
-{
+class body extends tag {
 
     use append_shotcuts;
 
-    function __construct()
-    {
+    function __construct() {
         parent::__construct("body", FALSE);
     }
 }

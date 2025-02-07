@@ -94,5 +94,4 @@ class template {
         }
         return FALSE;
     }
-
 }

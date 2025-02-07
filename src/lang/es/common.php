@@ -15,6 +15,5 @@ class common_strings {
     //
     static $yes = 'Si';
     static $no = 'No';
-    
     static $fk_tool_name = 'Seleccione la llave foranea';
 }

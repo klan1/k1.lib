@@ -2,8 +2,7 @@
 
 namespace k1lib\html\foundation;
 
-class table_from_data extends \k1lib\html\table
-{
+class table_from_data extends \k1lib\html\table {
 
     static public $float_round_default = NULL;
 
@@ -44,8 +43,7 @@ class table_from_data extends \k1lib\html\table
      */
     protected $float_round = NULL;
 
-    function __construct($class = "", $id = "")
-    {
+    function __construct($class = "", $id = "") {
 
         //        $this->parent = $parent;
 
@@ -57,27 +55,23 @@ class table_from_data extends \k1lib\html\table
         $this->float_round = self::$float_round_default;
     }
 
-    public function set_data(array $data, $has_header = TRUE)
-    {
+    public function set_data(array $data, $has_header = TRUE) {
         $this->data = $data;
         $this->data_original = $data;
         $this->has_header = $has_header;
         return $this;
     }
 
-    public function generate($with_childs = TRUE, $n_childs = 0)
-    {
+    public function generate($with_childs = TRUE, $n_childs = 0) {
         $this->use_data();
         return parent::generate($with_childs, $n_childs);
     }
 
-    public function set_fields_to_hide($fields)
-    {
+    public function set_fields_to_hide($fields) {
         $this->fields_to_hide = $fields;
     }
 
-    public function use_data()
-    {
+    public function use_data() {
         $num_col = 0;
         $num_row = 0;
         $row = 0;
@@ -112,6 +106,7 @@ class table_from_data extends \k1lib\html\table
                                 if (is_numeric($this->max_text_length_on_cell) && strlen($col_value) > $this->max_text_length_on_cell) {
                                     $col_value = substr($col_value, 0, $this->max_text_length_on_cell) . "...";
                                 } else {
+                                    
                                 }
                             }
                         }
@@ -119,6 +114,7 @@ class table_from_data extends \k1lib\html\table
                         if (is_numeric($this->max_text_length_on_cell) && strlen($col_value->get_value()) > $this->max_text_length_on_cell) {
                             $col_value->set_value(substr($col_value->get_value(), 0, $this->max_text_length_on_cell) . "...");
                         } else {
+                            
                         }
                     }
                     $last_td = $tr->append_td($col_value);
@@ -132,18 +128,15 @@ class table_from_data extends \k1lib\html\table
         return $this;
     }
 
-    public function get_fields_for_key_array_text()
-    {
+    public function get_fields_for_key_array_text() {
         return $this->fields_for_key_array_text;
     }
 
-    public function set_fields_for_key_array_text(array $fields_for_key_array_text)
-    {
+    public function set_fields_for_key_array_text(array $fields_for_key_array_text) {
         $this->fields_for_key_array_text = $fields_for_key_array_text;
     }
 
-    public function insert_tag_on_field(\k1lib\html\tag $tag_object, array $fields_to_insert, $tag_attrib_to_use = NULL, $append = FALSE, $respect_blanks = FALSE, $just_replace_attribs = FALSE, $just_this_row = NULL)
-    {
+    public function insert_tag_on_field(\k1lib\html\tag $tag_object, array $fields_to_insert, $tag_attrib_to_use = NULL, $append = FALSE, $respect_blanks = FALSE, $just_replace_attribs = FALSE, $just_this_row = NULL) {
         $row = 0;
         //        if ($just_replace_attribs) {
         //            echo "child call - row_key:$just_this_row<br>";
@@ -225,8 +218,7 @@ class table_from_data extends \k1lib\html\table
         return $this;
     }
 
-    protected function parse_string_value($value, $row)
-    {
+    protected function parse_string_value($value, $row) {
         foreach ($this->get_fields_on_string($value) as $field) {
             if (array_key_exists($field, $this->data_original[$row])) {
                 /**
@@ -280,8 +272,7 @@ class table_from_data extends \k1lib\html\table
         return $value;
     }
 
-    protected function get_fields_on_string(null | string $value): array
-    {
+    protected function get_fields_on_string(null|string $value): array {
         if (!empty($value)) {
             $pattern = "/{{field:(\w+)}}/";
             $matches = [];
@@ -297,8 +288,7 @@ class table_from_data extends \k1lib\html\table
         }
     }
 
-    protected function get_raw_fields_on_string($value)
-    {
+    protected function get_raw_fields_on_string($value) {
         if (!empty($value)) {
 
             $pattern = "/{{field-raw:(\w+)}}/";
@@ -315,37 +305,31 @@ class table_from_data extends \k1lib\html\table
         }
     }
 
-    public function hide_fields(array $fields)
-    {
+    public function hide_fields(array $fields) {
         $this->fields_to_hide = $fields;
         return $this;
     }
 
-    public function has_header()
-    {
+    public function has_header() {
         return $this->has_header;
     }
 
-    public function get_max_text_length_on_cell()
-    {
+    public function get_max_text_length_on_cell() {
         return $this->max_text_length_on_cell;
     }
 
-    public function set_max_text_length_on_cell($max_text_length_on_cell)
-    {
+    public function set_max_text_length_on_cell($max_text_length_on_cell) {
         $this->max_text_length_on_cell = $max_text_length_on_cell;
         return $this;
     }
 
-    public function set_float_round($round_places)
-    {
+    public function set_float_round($round_places) {
         //        if (is_int($round_places)) {
         $this->float_round = $round_places;
         //        }
     }
 
-    public function get_float_round()
-    {
+    public function get_float_round() {
         return $this->float_round;
     }
 }

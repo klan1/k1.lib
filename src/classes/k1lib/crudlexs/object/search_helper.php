@@ -43,7 +43,6 @@ class search_helper extends creating {
 
         $this->set_do_table_field_name_encrypt(TRUE);
 
-
         $this->db_table->set_db_table_show_rule("show-search");
     }
 
@@ -55,14 +54,14 @@ class search_helper extends creating {
         $this->apply_label_filter();
 
         $this->insert_inputs_on_data_row();
-        
+
         $div_container = new div('container');
 
         $search_html = parent::do_html_object();
         $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $_SERVER['HTTP_REFERER'] ?? '#');
         $search_html->get_elements_by_tag("form")[0]->set_attrib("target", "_parent");
         $search_html->get_elements_by_tag("form")[0]->append_child(new input("hidden", "from-search", urlencode($this->caller_url)));
-        
+
         $search_html->append_to($div_container);
         return $div_container;
     }
@@ -83,5 +82,4 @@ class search_helper extends creating {
     public function set_search_catch_post_enable($search_catch_post_enable) {
         $this->search_catch_post_enable = $search_catch_post_enable;
     }
-
 }

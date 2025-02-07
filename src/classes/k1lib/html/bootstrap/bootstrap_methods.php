@@ -102,6 +102,7 @@ trait bootstrap_methods {
 
         return $this;
     }
+
     /**
      * @return div
      */
@@ -146,6 +147,7 @@ trait bootstrap_methods {
 
         return $this;
     }
+
     /**
      * @return div
      */
@@ -160,6 +162,7 @@ trait bootstrap_methods {
 
         return $this;
     }
+
     /**
      * @return div
      */

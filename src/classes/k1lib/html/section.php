@@ -15,6 +15,4 @@ class section extends tag {
             $this->set_attrib("class", $class);
         }
     }
-
 }
-

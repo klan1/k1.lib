@@ -28,10 +28,10 @@ class model {
     /**
      * @var db_table
      */
-    private db_table | bool | null $db_table;
+    private db_table|bool|null $db_table;
     private $errors = FALSE;
 
-    function __construct(db_table | bool | null $db_table = NULL, $data = NULL) {
+    function __construct(db_table|bool|null $db_table = NULL, $data = NULL) {
         if (!is_null($db_table)) {
             $this->db_table = $db_table;
         }
@@ -148,7 +148,7 @@ class model {
             if (property_exists($this, $field)) {
                 echo " | $field - existe - ";
 //                if (!empty($this->{$field})) {
-                    $real_data[$field] = $this->{$field};
+                $real_data[$field] = $this->{$field};
 //                }
             } else {
                 echo " | $field - NO existe - ";
@@ -160,5 +160,4 @@ class model {
     function get_errors() {
         return $this->errors;
     }
-
 }

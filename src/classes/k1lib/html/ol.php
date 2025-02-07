@@ -34,6 +34,4 @@ class ol extends tag {
         $this->append_child($new);
         return $new;
     }
-
 }
-

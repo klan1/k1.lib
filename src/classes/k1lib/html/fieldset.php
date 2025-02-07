@@ -15,6 +15,4 @@ class fieldset extends tag {
         $legend = new legend($legend);
         $this->append_child($legend);
     }
-
 }
-

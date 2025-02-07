@@ -10,6 +10,4 @@ class legend extends tag {
         parent::__construct("legend", FALSE);
         $this->set_value($value);
     }
-
 }
-

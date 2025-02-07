@@ -71,7 +71,7 @@ class common_code {
     static function set_tpl($tpl, $tag_id_override = null) {
         self::$tpl = $tpl;
         if ($tag_id_override !== null) {
-           self::$tag_id_override = $tag_id_override;
+            self::$tag_id_override = $tag_id_override;
         }
     }
 }

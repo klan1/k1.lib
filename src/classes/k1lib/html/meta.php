@@ -15,6 +15,4 @@ class meta extends tag {
             $this->set_attrib("content", $content);
         }
     }
-
 }
-

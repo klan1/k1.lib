@@ -41,4 +41,3 @@ function print_link($link, $text, $class = "", $extra = "") {
 function get_link($link, $text, $class = "", $extra = "") {
     return "<a href='$link' class='$class' $extra>$text</a>";
 }
-

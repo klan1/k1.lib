@@ -9,6 +9,4 @@ class title extends tag {
     function __construct() {
         parent::__construct("title", FALSE);
     }
-
 }
-

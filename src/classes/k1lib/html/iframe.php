@@ -17,6 +17,4 @@ class iframe extends tag {
         $this->set_attrib("src", $value);
         return $this;
     }
-
 }
-

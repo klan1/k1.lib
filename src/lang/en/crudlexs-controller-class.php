@@ -16,5 +16,4 @@ class controller_base_strings {
     static $error_board_not_inited = "The board hasn't inited yet";
     static $error_board_not_started = "The board hasn't started yet";
     static $error_board_not_executed = "The board hasn't executed yet";
-
 }

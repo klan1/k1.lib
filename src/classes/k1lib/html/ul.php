@@ -33,6 +33,4 @@ class ul extends tag {
         $this->append_child($new);
         return $new;
     }
-
 }
-

@@ -41,7 +41,7 @@ class update extends board_base implements board_interface {
          */
 //        $fk_iframe = new \k1lib\html\iframe('./', 'utility-iframe', "fk-iframe");
 //        DOM::html_document()->body()->content()->append_child_tail($fk_iframe);
-        
+
         if (!empty($this->row_keys_text)) {
 
             if ($this->update_object->get_state()) {
@@ -141,5 +141,4 @@ class update extends board_base implements board_interface {
             $this->update_object->post_update_redirect($url_to_go, $do_redirect);
         }
     }
-
 }
