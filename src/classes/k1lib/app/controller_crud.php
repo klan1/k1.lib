@@ -34,8 +34,7 @@ class controller_crud extends controller {
         self::$controller_db_table = $controller_db_table;
     }
 
-    static function run_crud($parent_class, base|blank|sidebar_page $tpl, string $nav_id, $run_as_guest = false): void {
-//        $tpl = new my_sidebar_page();
+    static function run_crud($parent_class, base|blank|sidebar_page $tpl, string $nav_id = null, $run_as_guest = false): void {
         self::use_tpl($tpl);
 
         /**
@@ -50,9 +49,7 @@ class controller_crud extends controller {
             self::$tpl->page_content()->set_content(null);
         }
 
-        if (method_exists(self::$tpl, 'menu') && self::$tpl->menu()->q($nav_id)) {
-            self::$tpl->menu()->q($nav_id)->nav_is_active();
-        }
+        self::set_nav_active($nav_id);
 
         /**
          * ONE LINE config: less codign, more party time!
@@ -161,7 +158,10 @@ class controller_crud extends controller {
         parent::end();
         echo self::$tpl->generate();
     }
-}
 
-//http://localhost:8181/crud/table_uploads/crear/1--klan1/  ?auth-code=f08cb6068a1fef52d995e0b23990921d&back-url=%252Fcrud%252Ftable_related%252Fleer%252F1--klan1%252F%253Fauth-code%253Df08cb6068a1fef52d995e0b23990921d
-//http://localhost:8181/crud/table_uploads/leer/1--1--klan1/?auth-code=40f3a84bdddd39234d38a2839a5821a5&back-url=%25252Fcrud%25252Ftable_related%25252Fleer%25252F1--klan1%25252F%25253Fauth-code%25253Df08cb6068a1fef52d995e0b23990921d
+    static function set_nav_active($nav_id) {
+        if (!empty($nav_id) && method_exists(self::$tpl, 'menu') && self::$tpl->menu()->q($nav_id)) {
+            self::$tpl->menu()->q($nav_id)->nav_is_active();
+        }
+    }
+}

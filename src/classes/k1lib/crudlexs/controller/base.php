@@ -92,49 +92,49 @@ class base {
 
     /**
      *
-     * @var \k1lib\crudlexs\board_list;
+     * @var board_list;
      */
-    public $board_list_object;
+    public board_list $board_list_object;
     protected $board_list_url_name = "list";
     protected $board_list_allowed_levels = [];
 
     /**
      *
-     * @var \k1lib\crudlexs\board_create
+     * @var create
      */
-    public $board_create_object;
+    public create $board_create_object;
     protected $board_create_url_name = "create";
     protected $board_create_allowed_levels = [];
 
     /**
      *
-     * @var \k1lib\crudlexs\board_read
+     * @var read
      */
-    public $board_read_object;
+    public read $board_read_object;
     protected $board_read_url_name = "read";
     protected $board_read_allowed_levels = [];
 
     /**
      *
-     * @var \k1lib\crudlexs\board_update
+     * @var update
      */
-    public $board_update_object;
+    public update $board_update_object;
     protected $board_update_url_name = "update";
     protected $board_update_allowed_levels = [];
 
     /**
      *
-     * @var \k1lib\crudlexs\board_delete
+     * @var delete
      */
-    public $board_delete_object;
+    public delete $board_delete_object;
     protected $board_delete_url_name = "delete";
     protected $board_delete_allowed_levels = [];
 
     /**
      *
-     * @var \k1lib\crudlexs\board_search
+     * @var search
      */
-    public $board_search_object;
+    public search $board_search_object;
     protected $board_search_url_name = "search";
     protected $board_search_allowed_levels = [];
 
