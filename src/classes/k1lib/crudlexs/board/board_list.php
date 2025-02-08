@@ -38,6 +38,7 @@ class board_list extends board_base implements board_interface {
     protected $stats_enable = TRUE;
     protected $where_to_show_stats = self::SHOW_AFTER_TABLE;
     protected $back_enable = TRUE;
+    protected $fields_to_change;
 
     /**
      *
@@ -52,6 +53,7 @@ class board_list extends board_base implements board_interface {
             $this->list_object = new listing($this->controller_object->db_table, FALSE);
             $this->list_object->set_do_table_field_name_encrypt(TRUE);
         }
+        $this->fields_to_change = base::USE_KEY_FIELDS;
     }
 
     /**
@@ -205,7 +207,7 @@ class board_list extends board_base implements board_interface {
                     "auth-code" => "--authcode--",
                     "back-url" => urlencode($_SERVER['REQUEST_URI'])
                 ];
-                $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), base::USE_KEY_FIELDS);
+                $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), $this->fields_to_change);
             }
             // Show stats BEFORE
             if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_BEFORE_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {
@@ -293,5 +295,9 @@ class board_list extends board_base implements board_interface {
 
     public function set_back_enable($back_enable) {
         $this->back_enable = $back_enable;
+    }
+
+    public function set_fields_to_change($fields_to_change): void {
+        $this->fields_to_change = $fields_to_change;
     }
 }

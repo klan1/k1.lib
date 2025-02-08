@@ -47,7 +47,7 @@ class controller_crud extends controller {
             self::$tpl->page_content()->set_subtitle(" ");
             self::$tpl->page_content()->set_content_title(" ");
             self::$tpl->page_content()->set_content(null);
-            
+
             $tpl->q('.card-header')->set_class('k1lib-board-title', true);
         }
 
@@ -142,7 +142,9 @@ class controller_crud extends controller {
             self::$co->board_read_object->set_related_show_all_data(TRUE);
             self::$co->board_read_object->set_related_show_new(TRUE);
             $related_list = self::$co->board_read_object->create_related_list(
-                    $related_db_table, NULL, $controller_url, ('\k1app\table_config\\' . $table_name)::BOARD_CREATE_URL,
+                    $related_db_table,
+                    ob::USE_LABEL_FIELDS,
+                    $controller_url, ('\k1app\table_config\\' . $table_name)::BOARD_CREATE_URL,
                     ('\k1app\table_config\\' . $table_name)::BOARD_READ_URL,
                     ('\k1app\table_config\\' . $table_name)::BOARD_LIST_URL,
                     /**
