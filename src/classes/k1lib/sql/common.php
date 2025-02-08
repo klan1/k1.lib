@@ -2,7 +2,7 @@
 
 namespace k1lib\sql;
 
-class common {
+trait common {
 
     /**
      * Enable state
