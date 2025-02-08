@@ -2,7 +2,9 @@
 
 namespace k1lib\sql;
 
-class local_cache extends common {
+class local_cache {
+
+    use common;
 
     static protected bool $use_memcached = false;
 
@@ -46,12 +48,15 @@ class local_cache extends common {
      * @return Boolean
      */
     static public function is_cached($sql_query) {
-        self::is_enabled(true);
-        return isset(self::$data[md5($sql_query)]);
+        if (self::is_enabled()) {
+            return key_exists(self::$data, md5($sql_query));
+        } else {
+            return false;
+        }
     }
 
     /**
-     * Returns a previusly STORED SQL RESULT by SQL QUERY if exist
+     * Returns a previously STORED SQL RESULT by SQL QUERY if exist
      * @param string $sql_query
      * @return Array returns FALSE if not exist
      */
