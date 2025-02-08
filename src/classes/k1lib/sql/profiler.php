@@ -2,7 +2,9 @@
 
 namespace k1lib\sql;
 
-class profiler extends common {
+class profiler {
+
+    use common;
 
     /**
      * Begin a SQL Profile with a SQL query code 
