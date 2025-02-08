@@ -58,7 +58,7 @@ class search_helper extends creating {
         $div_container = new div('container');
 
         $search_html = parent::do_html_object();
-        $search_html->get_elements_by_tag("form")[0]->set_attrib("action", $_SERVER['HTTP_REFERER'] ?? '#');
+        $search_html->get_elements_by_tag("form")[0]->set_attrib("action", unserialize_var($this->caller_url . '-url'));
         $search_html->get_elements_by_tag("form")[0]->set_attrib("target", "_parent");
         $search_html->get_elements_by_tag("form")[0]->append_child(new input("hidden", "from-search", urlencode($this->caller_url)));
 

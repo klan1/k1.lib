@@ -3,6 +3,7 @@
 namespace k1lib\crudlexs\object;
 
 use k1lib\common_strings as common_strings;
+use k1lib\crudlexs\board\board_base;
 use k1lib\crudlexs\db_table;
 use k1lib\forms\file_uploads as file_uploads;
 use k1lib\html\a;
@@ -12,13 +13,12 @@ use k1lib\html\tag;
 use k1lib\K1MAGIC;
 use k1lib\session\app_session as app_session;
 use k1lib\urlrewrite\url as url;
-use function k1lib\common\serialize_var;
 use function k1lib\urlrewrite\get_back_url;
 use function k1lib\utils\decimal_to_n36;
 use function k1lib\utils\n36_to_decimal;
 
 class base_with_data extends base {
-
+    
     /**
      *
      * @var array 

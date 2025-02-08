@@ -18,4 +18,9 @@ class link extends tag {
             $this->set_attrib("href", $href);
         }
     }
+
+    public function set_value($value, $append = FALSE) {
+        $this->set_attrib("href", $value);
+        return $this;
+    }
 }

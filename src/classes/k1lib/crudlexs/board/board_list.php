@@ -11,10 +11,10 @@ use k1lib\html\bootstrap\grid_row;
 use k1lib\html\bootstrap\modal;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
+use k1lib\html\i;
 use k1lib\html\iframe;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
-use Ramsey\Uuid\DegradedUuid;
 use const k1app\K1APP_URL;
 use function k1lib\common\serialize_var;
 use function k1lib\common\unserialize_var;
@@ -58,6 +58,12 @@ class board_list extends board_base implements board_interface {
      * @return div|boolean
      */
     public function start_board() {
+        /**
+         * URL serialization for tools use
+         */
+        $this_url = K1APP_URL . url::get_this_url();
+        serialize_var($this_url, url::get_this_controller_id() . '-url');
+
         if (!parent::start_board()) {
             return FALSE;
         }
@@ -104,7 +110,6 @@ class board_list extends board_base implements board_interface {
                     unset_serialize_var($controller_id);
                     unset($_GET['clear-search']);
                     $next_url = url::do_url(K1APP_URL . url::get_this_url(), [], TRUE, array_keys($_GET));
-                    d($next_url);
                     html_header_go($next_url);
                     exit;
                 }
@@ -153,9 +158,9 @@ class board_list extends board_base implements board_interface {
                      */
                     $clear_search_buttom = get_link_button(
                             url::do_url($_SERVER['REQUEST_URI'], ['clear-search' => 1]),
-                            board_list_strings::$button_search, 'btn-warning btn-sm', 'search-button');
+                            board_list_strings::$button_search_cancel, 'btn-warning btn-sm', 'search-button');
 
-                    $search_buttom->set_value(" " . board_list_strings::$button_search_modify);
+                    $search_buttom->set_value(( new i(null, 'bi bi-search')) . ' ' . board_list_strings::$button_search_modify);
                     $clear_search_buttom->append_to($this->button_div_tag);
                 } else {
                     $search_post = unserialize_var($controller_id);

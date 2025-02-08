@@ -230,4 +230,8 @@ class board_base {
     function set_skip_form_action($skip_form_action) {
         $this->skip_form_action = $skip_form_action;
     }
+
+    function co() {
+        return $this->controller_object;
+    }
 }

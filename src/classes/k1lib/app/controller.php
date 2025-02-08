@@ -65,16 +65,12 @@ class controller {
 
     static function use_tpl($tpl, $tag_id_override = null) {
         self::$tpl = $tpl;
+        self::$app->set_global_tpl($tpl);
         DOM_notifications::set_tpl($tpl, $tag_id_override);
     }
 
     static function tpl() {
         return self::$tpl;
-    }
-
-    public function set_tpl($tpl, $tag_id_override = null) {
-        self::$tpl = $tpl;
-        DOM_notifications::set_tpl($tpl, $tag_id_override);
     }
 
     static function link_app(app $app) {

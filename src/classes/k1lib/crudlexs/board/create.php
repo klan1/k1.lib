@@ -23,6 +23,7 @@ class create extends board_base implements board_interface {
             $this->show_rule_to_apply = "show-create";
             $this->create_object = new creating($this->controller_object->db_table, FALSE);
         }
+        $this->co()->app->tpl()->q('.section')->set_class('k1lib-board-create', true);
     }
 
     /**
