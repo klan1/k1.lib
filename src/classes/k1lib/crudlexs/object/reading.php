@@ -3,6 +3,7 @@
 namespace k1lib\crudlexs\object;
 
 use k1lib\common_strings;
+use k1lib\crudlexs\board\read;
 use k1lib\db\security\db_table_aliases;
 use k1lib\html\div;
 use k1lib\html\h3;
@@ -13,6 +14,7 @@ use k1lib\html\notifications\on_DOM as DOM_notification;
  */
 class reading extends base_with_data implements base_interface {
 
+    public read $parent_board;
     private $html_column_classes = "col-md-6 col-12";
 
     public function __construct($db_table, $row_keys_text, $custom_auth_code = "") {
@@ -44,7 +46,8 @@ class reading extends base_with_data implements base_interface {
             $data_label = $this->get_labels_from_data(1);
             if (!empty($data_label)) {
                 $this->remove_labels_from_data_filtered();
-                (new h3($data_label, "k1lib-data-group-title " . $this->css_class, "label-field-{$this->object_id}"))->append_to($data_group);
+                $this->parent_board->set_board_name($data_label);
+//                (new h3($data_label, "k1lib-data-group-title " . $this->css_class, "label-field-{$this->object_id}"))->append_to($data_group);
             }
             $labels = $this->db_table_data_filtered[0];
             $values = $this->db_table_data_filtered[1];
@@ -70,7 +73,7 @@ class reading extends base_with_data implements base_interface {
                     }
                     $form_group = $div_rows->append_div('form-group');
                     $label = $form_group->append_label($labels[$field], null, "k1lib-data-item-label");
-                    $value_div = $form_group->append_h5("k1lib-data-item-value")->set_value($value);
+                    $value_div = $form_group->append_h6("k1lib-data-item-value")->set_value($value);
                     if (!empty($field_alias)) {
                         $form_group->set_id("row-{$field_alias}");
                         $label->set_id("label-{$field_alias}");

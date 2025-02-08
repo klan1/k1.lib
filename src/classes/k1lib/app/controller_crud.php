@@ -47,6 +47,8 @@ class controller_crud extends controller {
             self::$tpl->page_content()->set_subtitle(" ");
             self::$tpl->page_content()->set_content_title(" ");
             self::$tpl->page_content()->set_content(null);
+            
+            $tpl->q('.card-header')->set_class('k1lib-board-title', true);
         }
 
         self::set_nav_active($nav_id);

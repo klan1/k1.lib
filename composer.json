@@ -3,7 +3,7 @@
     "description": "Classes and functions for comercial software development",
     "license": "Apache-2.0",
     "type": "library",
-    "version": "2.1",
+    "version": "2.5",
     "homepage": "https://github.com/klan1/k1.lib",
     "minimum-stability": "dev",
     "prefer-stable": true,

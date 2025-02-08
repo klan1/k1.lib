@@ -200,17 +200,17 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
     }
 
     $possible_strings = [
-        "export" => ["exportar", "export",],
-        "back" => ["back", "volver", "atras", "retroceder", "regresar"],
-        "go" => ["ir", "go"],
-        "ok" => ["aceptar", "si", "yes", "accept",],
-        "cancel" => ["cancelar", "cancel", "no", "not"],
-        "view" => ["ver", "mostrar", "view", "show"],
-        "new" => ["agregar", "nuev", "new", "add", "añadir", "crear", "generar"],
-        "edit" => ["edit", "editar", "cambiar", "change"],
-        "delete" => ["delete", "borrar", "eliminar", "suprimir", "quitar", "cancelar"],
-        "list" => ["lista", "list", "all data", "view data", "data", "todos"],
-        "search" => ["buscar", "search", "locate", "ubicar"],
+        'export' => ['exportar', 'export',],
+        'back' => ['back', 'volver', 'atras', 'retroceder', 'regresar'],
+        'go' => ['ir', 'go'],
+        'ok' => ['aceptar', 'si', 'yes', 'accept',],
+        'cancel' => ['cancelar', 'cancel', 'no', 'not'],
+        'view' => ['ver', 'mostrar', 'view', 'show'],
+        'new' => ['agregar', 'nuev', 'new', 'add', 'añadir', 'crear', 'generar'],
+        'edit' => ['edit', 'editar', 'cambiar', 'modificar', 'change', 'modify'],
+        'delete' => ['delete', 'borrar', 'eliminar', 'suprimir', 'quitar', 'cancelar'],
+        'list' => ['lista', 'list', 'all data', 'view data', 'data', 'todos'],
+        'search' => ['buscar', 'search', 'locate', 'ubicar', 'busqueda'],
     ];
 
     $label_low = strtolower($label);
@@ -297,10 +297,6 @@ function make_form_label_input_layout($row_data, $extra_css_clasess = "", $row_d
     }
 //    return $div_row;
     return $form_layout;
-}
-
-function make_row_2columns_layout($row_data, $extra_css_clasess = "", $row_data_headers = null) {
-    trigger_error("NOOOOOOOoooooo " . __FUNCTION__, E_USER_WARNING);
 }
 
 function generate_row_2columns_layout(tag $parent, $row_data, $row_data_headers = null) {

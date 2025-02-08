@@ -73,7 +73,9 @@ class read extends board_base implements board_interface {
             $this->show_rule_to_apply = "show-read";
             $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
             $this->read_object = new reading($this->controller_object->db_table, $this->row_keys_text);
+            $this->read_object->parent_board = $this;
         }
+        $this->co()->app->tpl()->q('.section')->set_class('k1lib-board-read', true);
     }
 
     /**

@@ -28,6 +28,7 @@ class search extends board_base implements board_interface {
             $this->search_object = new search_helper($this->controller_object->db_table);
             $this->data_loaded = $this->search_object->load_db_table_data(TRUE);
         }
+        $this->co()->app->tpl()->q('.section')->set_class('k1lib-board-search', true);
     }
 
     /**
