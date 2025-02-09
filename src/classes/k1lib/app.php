@@ -249,4 +249,10 @@ class app {
     function tpl() {
         return $this->tpl;
     }
+    
+    function end_app() {
+        /**
+         * TODO: Idea in progress
+         */
+    }
 }
