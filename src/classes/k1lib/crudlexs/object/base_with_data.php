@@ -314,7 +314,7 @@ class base_with_data extends base {
         }
     }
 
-    public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null, $custom_field_value = null, $href_target = null) {
+    public function apply_link_on_field_filter($link_to_apply, $fields_to_change = null, $custom_field_to_use_value = null, $href_target = null) {
         if ($this->get_state()) {
             $this->link_on_field_filter_applied = true;
             $a_tag = new a(url::do_url($link_to_apply), "", $href_target);
@@ -322,13 +322,13 @@ class base_with_data extends base {
             if (empty($fields_to_change)) {
                 $fields_to_change = base::USE_KEY_FIELDS;
             }
-            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change, $custom_field_value);
+            return $this->apply_html_tag_on_field_filter($a_tag, $fields_to_change, $custom_field_to_use_value);
         } else {
             return FALSE;
         }
     }
 
-    public function apply_html_tag_on_field_filter(tag $tag_object, $fields_to_change = base::USE_KEY_FIELDS, $custom_field_value = null) {
+    public function apply_html_tag_on_field_filter(tag $tag_object, $fields_to_change = base::USE_KEY_FIELDS, $custom_field_to_use_value = null) {
         if ($this->get_state()) {
             if (empty($this->db_table_data) || !is_array($this->db_table_data)) {
                 //                trigger_error(__METHOD__ . " " . object_base_strings::$error_no_table_data, E_USER_NOTICE);
@@ -364,7 +364,7 @@ class base_with_data extends base {
                                 // Let's clone the $tag_object to reuse it properly
                                 $tag_object_original = clone $tag_object;
 
-                                $custom_field_value_original = $custom_field_value;
+                                $custom_field_to_use_value_original = $custom_field_to_use_value;
 
                                 // EMPTY fields fix: 0 will be take in count
                                 if ($this->skip_blanks_on_filters && ($row_data[$field_to_change] === NULL || $row_data[$field_to_change] === '')) {
@@ -396,21 +396,21 @@ class base_with_data extends base {
                                     }
 
                                     if (!empty($this->db_table_data_keys) && !empty($tag_href)) {
-                                        if (is_array($custom_field_value)) {
-                                            foreach ($custom_field_value as $key => $field_value) {
+                                        if (is_array($custom_field_to_use_value)) {
+                                            foreach ($custom_field_to_use_value as $key => $field_value) {
                                                 if (isset($row_data[$field_value])) {
-                                                    $custom_field_value[$key] = $this->db_table_data[$index][$field_value];
+                                                    $custom_field_to_use_value[$key] = $this->db_table_data[$index][$field_value];
                                                 } else
                                                 if (isset($table_constant_fields[$field_value])) {
-                                                    $custom_field_value[$key] = $table_constant_fields[$field_value];
+                                                    $custom_field_to_use_value[$key] = $table_constant_fields[$field_value];
                                                 } else
                                                 if (isset($this->db_table_data_keys[$index][$field_value])) {
-                                                    $custom_field_value[$key] = $this->db_table_data_keys[$index][$field_value];
+                                                    $custom_field_to_use_value[$key] = $this->db_table_data_keys[$index][$field_value];
                                                 } else {
-                                                    $custom_field_value[$key] = NULL;
+                                                    $custom_field_to_use_value[$key] = NULL;
                                                 }
                                             }
-                                            $custom_field_value = implode("--", $custom_field_value);
+                                            $custom_field_to_use_value = implode("--", $custom_field_to_use_value);
                                         }
 
                                         $key_array_text = $this->db_table->db->table_keys_to_text($this->db_table_data_keys[$index], $this->db_table->get_db_table_config());
@@ -422,8 +422,8 @@ class base_with_data extends base {
                                         $tag_href = str_replace("--rowkeys--", urlencode($key_array_text), $tag_href);
                                         $tag_href = str_replace("--fieldvalue--", rawurlencode($row_data[$field_to_change]), $tag_href); // rawurlencode for images loads correctly
                                         // TODO: Why did I needed this ? WFT Line
-                                        if (!empty($custom_field_value)) {
-                                            $actual_custom_field_value = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $custom_field_value);
+                                        if (!empty($custom_field_to_use_value)) {
+                                            $actual_custom_field_value = str_replace("--fieldvalue--", urlencode($row_data[$field_to_change]), $custom_field_to_use_value);
                                             $tag_href = str_replace("--customfieldvalue--", urlencode($actual_custom_field_value), $tag_href);
                                             $tag_href = str_replace("--fieldauthcode--", md5(K1MAGIC::get_value() . (($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_href);
                                         } else {
@@ -465,7 +465,7 @@ class base_with_data extends base {
                                 unset($tag_object);
                                 // Let's clone the original to re use it
                                 $tag_object = clone $tag_object_original;
-                                $custom_field_value = $custom_field_value_original;
+                                $custom_field_to_use_value = $custom_field_to_use_value_original;
                             }
                         }
                     }

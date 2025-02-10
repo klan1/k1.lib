@@ -44,6 +44,7 @@ class base {
     public PDO_k1 $db;
     public app $app;
     public string $app_controller;
+    protected string $config_class_name;
 
     /**
      * 
@@ -256,6 +257,7 @@ class base {
     }
 
     public function set_config_from_class($class_name = NULL) {
+        $this->config_class_name = $class_name;
 //        $class_name::CONTROLLER_ALLOWED_LEVELS;
         if (!class_exists($class_name)) {
             d("Warning: $class_name do not exist");
@@ -337,6 +339,9 @@ class base {
 //        if (defined("{$class_name}::BOARD_EXPORT_ALLOWED_LEVELS")) {
 //            $this->set_board_export_allowed_levels($class_name::BOARD_EXPORT_ALLOWED_LEVELS);
 //        }
+        if (defined("{$class_name}::ENUM_CUSTOM_VALUES_BY_ROL")) {
+            $this->db_table->set_custom_enum_values_by_rol_array($class_name::ENUM_CUSTOM_VALUES_BY_ROL);
+        }
     }
 
     public function set_and_get_next_url_value() {
@@ -435,7 +440,20 @@ class base {
                 html_header_go(url::do_url($this->controller_root_dir . $this->get_board_list_url_name() . "/"));
                 return FALSE;
         }
+        /**
+         * global shortcut
+         */
         $this->current_board->get_current_object()->set_controller_id($this->controller_id);
+        /**
+         * HIDE FIELDS BY ROL
+         */
+        if (defined("{$this->config_class_name}::HIDE_FIELDS_BY_ROL")) {
+            $user_rol = app_session::get_user_level();
+            if (key_exists($user_rol, $this->config_class_name::HIDE_FIELDS_BY_ROL)) {
+                $this->current_board->set_fields_to_hide($this->config_class_name::HIDE_FIELDS_BY_ROL[$user_rol]);
+            }
+        }
+        //
         $this->board_inited = TRUE;
         return $this->board_div_content;
     }

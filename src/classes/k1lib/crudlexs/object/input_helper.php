@@ -15,11 +15,12 @@ use k1lib\html\script;
 use k1lib\html\select;
 use k1lib\html\span;
 use k1lib\html\textarea;
+use k1lib\session\app_session;
 use k1lib\urlrewrite\url as url;
-use Ramsey\Uuid\DegradedUuid;
 use const k1app\K1APP_URL;
 use const k1app\template\mazer\TPL_URL;
 use const k1lib\K1LIB_BASE_PATH;
+use function d;
 use function k1lib\urlrewrite\get_back_url;
 
 class input_helper {
@@ -71,7 +72,8 @@ class input_helper {
         /**
          * @todo Use FIELD encryption here, I tried but it doesn't work just pasting the normal lines
          */
-        $enum_data = $crudlex_obj->db_table->get_enum_options($field);
+        $user_rol = app_session::get_user_level();
+        $enum_data = $crudlex_obj->db_table->get_enum_options($field, $user_rol);
         $input_tag = new select($field);
         $input_tag->append_option("", input_helper_strings::$select_choose_option);
 
@@ -261,7 +263,7 @@ class input_helper {
             $url_params = array_merge(
                     [
                         "back-url" => $_SERVER['REQUEST_URI'],
-//                        'caller-field' => $field_encrypted
+                        'caller-field' => $field_encrypted
                     ],
                     $static_values_enconded,
             );
