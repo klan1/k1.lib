@@ -24,6 +24,8 @@ class delete extends board_base implements board_interface {
         if ($this->is_enabled) {
             $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
             $this->read_object = new reading($this->controller_object->db_table, $this->row_keys_text);
+            $this->set_current_object($this->read_object);
+            
         }
     }
 

@@ -12,6 +12,7 @@ use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\iframe;
 use k1lib\html\notifications\on_DOM as DOM_notification;
+use function k1lib\common\unserialize_var;
 
 class search extends board_base implements board_interface {
 
@@ -27,8 +28,12 @@ class search extends board_base implements board_interface {
         if ($this->is_enabled) {
             $this->search_object = new search_helper($this->controller_object->db_table);
             $this->data_loaded = $this->search_object->load_db_table_data(TRUE);
+            $this->set_current_object($this->search_object);
         }
         $this->co()->app->tpl()->q('.section')->set_class('k1lib-board-search', true);
+        if (empty($this->fields_to_hide)) {
+            $this->fields_to_hide = unserialize_var($this->controller_object->get_controller_id() . '-fields-to-hide');
+        }
     }
 
     /**

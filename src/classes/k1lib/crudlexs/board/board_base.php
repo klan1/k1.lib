@@ -3,10 +3,17 @@
 namespace k1lib\crudlexs\board;
 
 use k1lib\crudlexs\controller\base;
+use k1lib\crudlexs\object\base_with_data;
+use k1lib\crudlexs\object\creating;
+use k1lib\crudlexs\object\listing;
+use k1lib\crudlexs\object\reading;
+use k1lib\crudlexs\object\search_helper;
+use k1lib\crudlexs\object\updating;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\session\app_session;
+use function k1lib\common\serialize_var;
 use function k1lib\common\unserialize_var;
 
 class board_base {
@@ -16,6 +23,12 @@ class board_base {
      * @var base 
      */
     protected $controller_object;
+
+    /**
+     * 
+     * @var srray
+     */
+    protected $fields_to_hide = [];
 
     /**
      * @var \k1lib\html\div;
@@ -71,6 +84,12 @@ class board_base {
      * @var string
      */
     protected $notifications_div_id = "k1lib-output";
+
+    /**
+     * 
+     * @var base_with_data|listing|reading|creating|updating|search_helper
+     */
+    protected base_with_data|listing|reading|creating|updating|search_helper $current_object;
 
     /**
      * @var div
@@ -233,5 +252,30 @@ class board_base {
 
     function co() {
         return $this->controller_object;
+    }
+
+    public function get_current_object(): base_with_data|listing|reading|creating|updating|search_helper {
+        return $this->current_object;
+    }
+
+    public function set_current_object(base_with_data|listing|reading|creating|updating|search_helper $current_object): void {
+        $this->current_object = $current_object;
+    }
+
+    /**
+     * @return array
+     */
+    public function get_fields_to_hide() {
+        return $this->fields_to_hide;
+    }
+
+    /**
+     * @param array $fields_to_hide
+     */
+    public function set_fields_to_hide(array $fields_to_hide) {
+        $this->fields_to_hide = $fields_to_hide;
+        $this->current_object->set_fields_to_hide($fields_to_hide);
+        $this->co()->db_table->set_fields_to_skip($fields_to_hide);        
+        serialize_var($fields_to_hide, $this->co()->get_controller_id() . '-fields-to-hide');
     }
 }

@@ -455,6 +455,9 @@ class creating extends base_with_data implements base_interface {
 
             $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
+                if (array_key_exists($field, array_flip($this->fields_to_hide))) {
+                    continue;
+                }
                 $row_number++;
                 $row = new label_value_row($this->db_table_data_filtered[0][$field], $value, $row_number);
                 $row->append_to($form_body);

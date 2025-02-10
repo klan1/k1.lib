@@ -3,7 +3,6 @@
 namespace k1lib\crudlexs\object;
 
 use k1lib\common_strings as common_strings;
-use k1lib\crudlexs\board\board_base;
 use k1lib\crudlexs\db_table;
 use k1lib\forms\file_uploads as file_uploads;
 use k1lib\html\a;
@@ -18,7 +17,7 @@ use function k1lib\utils\decimal_to_n36;
 use function k1lib\utils\n36_to_decimal;
 
 class base_with_data extends base {
-    
+
     /**
      *
      * @var array 
@@ -395,14 +394,20 @@ class base_with_data extends base {
                                             $tag_href = NULL;
                                         }
                                     }
+
                                     if (!empty($this->db_table_data_keys) && !empty($tag_href)) {
                                         if (is_array($custom_field_value)) {
                                             foreach ($custom_field_value as $key => $field_value) {
                                                 if (isset($row_data[$field_value])) {
                                                     $custom_field_value[$key] = $this->db_table_data[$index][$field_value];
-                                                }
+                                                } else
                                                 if (isset($table_constant_fields[$field_value])) {
                                                     $custom_field_value[$key] = $table_constant_fields[$field_value];
+                                                } else
+                                                if (isset($this->db_table_data_keys[$index][$field_value])) {
+                                                    $custom_field_value[$key] = $this->db_table_data_keys[$index][$field_value];
+                                                } else {
+                                                    $custom_field_value[$key] = NULL;
                                                 }
                                             }
                                             $custom_field_value = implode("--", $custom_field_value);
