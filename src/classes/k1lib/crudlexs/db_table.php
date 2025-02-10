@@ -68,6 +68,18 @@ class db_table {
     private $skip_fields = [];
 
     /**
+     * $custom_enum_values_by_rol[$field][$rol] = ['value1','value2'];
+     * @var array
+     */
+    private $custom_enum_values_by_rol = [];
+
+    /**
+     * 
+     * @var array
+     */
+    private $original_enum_values = [];
+
+    /**
      * 
      * @param PDO_k1 $db
      * @param string $db_table_name
@@ -543,8 +555,15 @@ class db_table {
         $this->db_table_show_rule = $db_table_show_rule;
     }
 
-    public function get_enum_options($field) {
-        return $this->db->get_db_table_enum_values($this->db_table_name, $field);
+    public function get_enum_options(string $field, null|string $rol = null) {
+        $this->original_enum_values = $this->db->get_db_table_enum_values($this->db_table_name, $field);
+        if (!empty($rol) &&
+                key_exists($rol, $this->custom_enum_values_by_rol) &&
+                key_exists($field, $this->custom_enum_values_by_rol[$rol])) {
+            return $this->custom_enum_values_by_rol[$rol][$field];
+        } else {
+            return $this->original_enum_values;
+        }
     }
 
     public function do_data_validation(&$data_array_to_validate) {
@@ -645,5 +664,23 @@ class db_table {
 
     public function set_fields_to_skip(array $skip_fields): void {
         $this->skip_fields = $skip_fields;
+    }
+
+    public function get_custom_enum_values_by_rol(): array {
+        return $this->custom_enum_values_by_rol;
+    }
+
+    public function set_custom_enum_values_by_rol(string $rol, string $field, array $custom_enum_values): void {
+        // TODO: Make security validations on this
+
+        foreach ($custom_enum_values as $value) {
+            $enum_values[$value] = $value;
+        }
+        $this->custom_enum_values_by_rol[$rol][$field] = $enum_values;
+    }
+
+    public function set_custom_enum_values_by_rol_array(array $custom_enum_values_full_array): void {
+
+        $this->custom_enum_values_by_rol = $custom_enum_values_full_array;
     }
 }
