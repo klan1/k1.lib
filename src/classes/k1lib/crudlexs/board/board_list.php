@@ -52,6 +52,7 @@ class board_list extends board_base implements board_interface {
             $this->show_rule_to_apply = "show-list";
             $this->list_object = new listing($this->controller_object->db_table, FALSE);
             $this->list_object->set_do_table_field_name_encrypt(TRUE);
+            $this->set_current_object($this->list_object);
         }
         $this->fields_to_change = base::USE_KEY_FIELDS;
     }
@@ -207,7 +208,10 @@ class board_list extends board_base implements board_interface {
                     "auth-code" => "--authcode--",
                     "back-url" => urlencode($_SERVER['REQUEST_URI'])
                 ];
-                $this->list_object->apply_link_on_field_filter(url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars), $this->fields_to_change);
+                $this->list_object->apply_link_on_field_filter(
+                        url::do_url("../{$this->controller_object->get_board_read_url_name()}/--rowkeys--/", $get_vars),
+                        $this->fields_to_change
+                );
             }
             // Show stats BEFORE
             if (($this->stats_enable) && (($this->where_to_show_stats == self::SHOW_BEFORE_TABLE) || ($this->where_to_show_stats == self::SHOW_BEFORE_AND_AFTER_TABLE))) {

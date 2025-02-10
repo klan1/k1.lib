@@ -19,6 +19,12 @@ class base {
     public $db_table;
 
     /**
+     * 
+     * @var string
+     */
+    protected string $controller_id;
+
+    /**
      *
      * @var \k1lib\html\div
      */
@@ -122,5 +128,9 @@ class base {
 
     public function set_notifications_div_id($notifications_div_id) {
         $this->notifications_div_id = $notifications_div_id;
+    }
+
+    public function set_controller_id(string $controller_id): void {
+        $this->controller_id = $controller_id;
     }
 }

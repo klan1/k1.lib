@@ -261,7 +261,7 @@ class input_helper {
             $url_params = array_merge(
                     [
                         "back-url" => $_SERVER['REQUEST_URI'],
-                        'caller-field' => $field_encrypted
+//                        'caller-field' => $field_encrypted
                     ],
                     $static_values_enconded,
             );

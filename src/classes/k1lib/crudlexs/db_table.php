@@ -4,7 +4,6 @@ namespace k1lib\crudlexs;
 
 use k1app\template\mazer\components\app\sidebar\wrapper\header;
 use k1lib\db\PDO_k1;
-use PDO;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\forms\form_check_values;
 
@@ -59,9 +58,14 @@ class db_table {
     protected $custom_query_table_config = [];
 
     /**
-     * @var array Constant fields array
+     * @var array Constant fields 
      */
     private $constant_fields = [];
+
+    /**
+     * @var array skip to show on boards
+     */
+    private $skip_fields = [];
 
     /**
      * 
@@ -293,7 +297,10 @@ class db_table {
 //            $this->db_table_config = $this->custom_query_table_config;
 //        }
         foreach ($this->db_table_config as $field => $config) {
-            if (isset($this->constant_fields) && array_key_exists($field, $this->constant_fields)) {
+            if (array_key_exists($field, $this->constant_fields)) {
+                continue;
+            }
+            if (array_key_exists($field, array_flip($this->skip_fields))) {
                 continue;
             }
             if (isset($config[$rule]) && $config[$rule]) {
@@ -630,5 +637,13 @@ class db_table {
         } else {
             return FALSE;
         }
+    }
+
+    public function get_fields_to_skip(): array {
+        return $this->skip_fields;
+    }
+
+    public function set_fields_to_skip(array $skip_fields): void {
+        $this->skip_fields = $skip_fields;
     }
 }

@@ -26,6 +26,7 @@ class update extends board_base implements board_interface {
             $this->show_rule_to_apply = "show-update";
             $this->row_keys_text = url::set_url_rewrite_var(url::get_url_level_count(), 'row-keys-text', FALSE);
             $this->update_object = new updating($this->controller_object->db_table, $this->row_keys_text);
+            $this->set_current_object($this->update_object);
         }
         $this->co()->app->tpl()->q('.section')->set_class('k1lib-board-create k1lib-board-update', true);
     }

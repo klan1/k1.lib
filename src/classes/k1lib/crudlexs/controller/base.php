@@ -46,6 +46,12 @@ class base {
     public string $app_controller;
 
     /**
+     * 
+     * @var string
+     */
+    protected string $controller_id;
+
+    /**
      * Controller name for add on <html><title> and controller name tag
      * @var string    
      */
@@ -89,6 +95,12 @@ class base {
      * URL MANAGEMENT VALUES
      * 
      */
+
+    /**
+     * 
+     * @var board_list|create|update|read|delete|search
+     */
+    protected board_list|create|update|read|delete|search $current_board;
 
     /**
      *
@@ -196,6 +208,8 @@ class base {
         }
         $this->controller_root_dir = $app_base_dir . url::make_url_from_rewrite('this');
         $this->controller_url_value = url::get_url_level_value('this');
+        // This must be called before URL of especific board action
+        $this->controller_id = url::get_this_controller_id();
         $this->controller_board_url_value = $this->set_and_get_next_url_value();
         /**
          * DB Table 
@@ -351,6 +365,8 @@ class base {
                 $this->board_create_object->set_board_name($this->board_create_name);
                 $this->board_div_content = $this->board_create_object->board_content_div;
 
+                $this->set_current_board($this->board_create_object);
+
                 break;
 
             case $this->board_read_url_name:
@@ -367,6 +383,9 @@ class base {
                 if (!$this->board_delete_enabled || !$this->get_board_delete_allowed_for_current_user()) {
                     $this->board_read_object->set_delete_enable(FALSE);
                 }
+
+                $this->set_current_board($this->board_read_object);
+
                 break;
 
             case $this->board_update_url_name:
@@ -375,6 +394,8 @@ class base {
                 $this->board_update_object->set_board_name($this->board_update_name);
                 $this->board_div_content = $this->board_update_object->board_content_div;
 
+                $this->set_current_board($this->board_update_object);
+
                 break;
 
             case $this->board_delete_url_name:
@@ -382,6 +403,9 @@ class base {
                 $this->board_delete_object->set_is_enabled($this->board_delete_enabled);
                 $this->board_delete_object->set_board_name($this->board_delete_name);
                 $this->board_div_content = $this->board_delete_object->board_content_div;
+
+                $this->set_current_board($this->board_delete_object);
+
                 break;
 
             case $this->board_list_url_name:
@@ -392,12 +416,18 @@ class base {
                 if (!$this->board_create_enabled || !$this->get_board_create_allowed_for_current_user()) {
                     $this->board_list_object->set_create_enable(FALSE);
                 }
+
+                $this->set_current_board($this->board_list_object);
+
                 break;
             case $this->board_search_url_name:
                 $this->board_search_object = new search($this, $this->board_list_allowed_levels);
                 $this->board_search_object->set_is_enabled($this->board_list_enabled);
                 $this->board_search_object->set_board_name($this->board_search_url_name);
                 $this->board_div_content = $this->board_search_object->board_content_div;
+
+                $this->set_current_board($this->board_search_object);
+
                 break;
 
             default:
@@ -405,6 +435,7 @@ class base {
                 html_header_go(url::do_url($this->controller_root_dir . $this->get_board_list_url_name() . "/"));
                 return FALSE;
         }
+        $this->current_board->get_current_object()->set_controller_id($this->controller_id);
         $this->board_inited = TRUE;
         return $this->board_div_content;
     }
@@ -1117,5 +1148,17 @@ class base {
      */
     public function set_fk_tools_filter($targuet_table_name, $constants_array) {
         serialize_var($constants_array, 'fk-filter-for-' . $targuet_table_name);
+    }
+
+    public function get_current_board(): board_list|create|update|read|delete|search {
+        return $this->current_board;
+    }
+
+    public function set_current_board(board_list|create|update|read|delete|search $current_board): void {
+        $this->current_board = $current_board;
+    }
+
+    public function get_controller_id(): string {
+        return $this->controller_id;
     }
 }
