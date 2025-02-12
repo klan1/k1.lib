@@ -447,7 +447,7 @@ class base {
         /**
          * HIDE FIELDS BY ROL
          */
-        if (defined("{$this->config_class_name}::HIDE_FIELDS_BY_ROL")) {
+        if (isset($this->config_class_name) && defined("{$this->config_class_name}::HIDE_FIELDS_BY_ROL")) {
             $user_rol = app_session::get_user_level();
             if (key_exists($user_rol, $this->config_class_name::HIDE_FIELDS_BY_ROL)) {
                 $this->current_board->set_fields_to_hide($this->config_class_name::HIDE_FIELDS_BY_ROL[$user_rol]);
