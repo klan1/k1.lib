@@ -49,7 +49,7 @@ class input_helper {
         if ($case == "create") {
             $div_continer->link_value_obj($input_tag_new);
         } elseif ($case == "update") {
-            $input_tag_current = new input("password", $field_encrypted . "_current", NULL, "k1lib-input-insert");
+            $input_tag_current = new input("password", $field_encrypted . "_current", NULL, "k1lib-input-insert form-control");
             $input_tag_current->set_attrib("placeholder", input_helper_strings::$password_current);
             $div_continer->append_div()->append_child($input_tag_current);
             $div_continer->link_value_obj($input_tag_current);
