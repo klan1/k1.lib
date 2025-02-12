@@ -6,6 +6,7 @@ use k1lib\common_strings;
 use k1lib\crudlexs\db_table;
 use k1lib\db\security\db_table_aliases;
 use k1lib\html\a;
+use k1lib\html\bootstrap\input_text_with_icon;
 use k1lib\html\button;
 use k1lib\html\div;
 use k1lib\html\DOM;
@@ -297,10 +298,20 @@ class input_helper {
         } else {
             /**
              * REGULAR INPUT FOR SIMPLE FIELDS
+             * 2025: Input with icons from field config
              */
-            $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert form-control");
-            $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
-            return $input_tag;
+            $icon = $crudlex_obj->db_table->get_field_config($field, 'icon');
+            if (empty($icon)) {
+                $input_tag = new input("text", $field_encrypted, NULL, "k1lib-input-insert form-control");
+                $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
+                return $input_tag;
+            } else {
+                $input_icon = new input_text_with_icon($field_encrypted, NULL, $icon);
+                $input_tag = $input_icon->input();
+//                $input_tag->set_class('k1lib-input-insert', true);
+                $input_tag->set_attrib("placeholder", $crudlex_obj->db_table->get_field_config($field, 'placeholder'));
+                return $input_icon;
+            }
         }
     }
 
