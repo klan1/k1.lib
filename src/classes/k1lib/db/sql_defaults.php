@@ -57,6 +57,7 @@ class sql_defaults {
         'alias' => null,
         'validation' => null,
         'placeholder' => null,
+        'icon' => null,
         'show-create' => TRUE,
         'show-read' => TRUE,
         'show-update' => TRUE,

@@ -6,6 +6,7 @@
 
 namespace k1lib\db;
 
+use k1lib\crudlexs\field_config_json;
 use k1lib\K1MAGIC;
 use k1lib\sql\local_cache;
 use k1lib\sql\profiler;
@@ -319,6 +320,7 @@ AND table_name = '{$table}'";
             foreach ($field_config as $key => $value) {
                 // LOWER the $key and $value to AVOID problems
                 $key_original = $key;
+                $value_original = $value;
                 $key = (!empty($key)) ? strtolower($key) : $key;
                 $value = (!empty($value)) ? strtolower($value) : $value;
                 // create a new pair of data but lowered
@@ -330,14 +332,29 @@ AND table_name = '{$table}'";
                  * parameter1:value1,...,parameterN:valueN
                  */
                 if ($key == "comment") {
-                    if (!empty($value) && (strstr($value, ":") !== FALSE)) {
-                        $parameters = explode(",", $field_config['Comment']);
-                        if (count($parameters) != 0) {
-                            foreach ($parameters as $parameter_value) {
-                                list($attrib, $attrib_value) = explode(":",
-                                        $parameter_value);
-                                $field_config[$attrib] = trim($attrib_value);
-                                $key = trim($attrib);
+                    if (!empty($value)) {
+                        /**
+                         * 2025: JSON field config
+                         */
+                        $json_data = json_decode($value_original, TRUE);
+                        if (!empty($json_data)) {
+                            if (
+                                    ((float) $json_data['schema-version'] >= field_config_json::SCHEMA_VERSION) &&
+                                    ($json_data['schema-title'] == field_config_json::SCHEMA_TITLE)
+                            ) {
+                                $field_config = array_merge($field_config, $json_data['config']);
+                            }
+                        } else {
+                            if ((strstr($value, ":") !== FALSE)) {
+                                $parameters = explode(",", $field_config['Comment']);
+                                if (count($parameters) != 0) {
+                                    foreach ($parameters as $parameter_value) {
+                                        list($attrib, $attrib_value) = explode(":",
+                                                $parameter_value);
+                                        $key = trim($attrib);
+                                        $field_config[$attrib] = trim($attrib_value);
+                                    }
+                                }
                             }
                         }
                     }
@@ -428,6 +445,10 @@ AND table_name = '{$table}'";
             // NEW 2016: PLACEHOLDER
             if (!isset($field_config['placeholder'])) {
                 $field_config['placeholder'] = NULL;
+            }
+            // NEW 2025: ICON
+            if (!isset($field_config['icon'])) {
+                $field_config['icon'] = NULL;
             }
             // NEW 2016: FILE TYPE
             if (!isset($field_config['file-type'])) {
