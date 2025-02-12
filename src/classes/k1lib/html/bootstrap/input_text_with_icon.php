@@ -18,6 +18,7 @@ class input_text_with_icon extends div {
         $this->input->append_to($this);
 
         $this->append_div('form-control-icon')->append_i(NULL, $icon);
+        $this->link_value_obj($this->input);
     }
 
     public function input(): input_tag {
