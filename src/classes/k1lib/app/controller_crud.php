@@ -43,12 +43,26 @@ class controller_crud extends controller {
         DOM::start(self::$tpl);
 
         if (method_exists(self::$tpl, 'page_content')) {
-            self::$tpl->page_content()->set_title(" ");
-            self::$tpl->page_content()->set_subtitle(" ");
-            self::$tpl->page_content()->set_content_title(" ");
-            self::$tpl->page_content()->set_content(null);
+            $page_content_obj = self::$tpl->page_content();
+            if (method_exists($page_content_obj, 'set_title')) {
 
-            $tpl->q('.card-header')->set_class('k1lib-board-title', true);
+                $page_content_obj->set_title(" ");
+            }
+            if (method_exists($page_content_obj, 'set_subtitle')) {
+
+                $page_content_obj->set_subtitle(" ");
+            }
+            if (method_exists($page_content_obj, 'set_content_title')) {
+
+                $page_content_obj->set_content_title(" ");
+            }
+            if (method_exists($page_content_obj, 'set_content')) {
+
+                $page_content_obj->set_content(null);
+            }
+            if ($tpl->q('.card-header')) {
+                $tpl->q('.card-header')->set_class('k1lib-board-title', true);
+            }
         }
 
         self::set_nav_active($nav_id);
