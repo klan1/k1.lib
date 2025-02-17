@@ -158,8 +158,8 @@ class base {
      */
     protected string $title_tag_id = '#k1app-page-title';
     protected string $subtitle_tag_id = '#k1app-page-subtitle';
-    public tag $html_title_tag;
-    public tag $html_subtitle_tag;
+    public tag|null $html_title_tag;
+    public tag|null $html_subtitle_tag;
 
     /**
      * Template name set for HTML-TITLE on the header.php
