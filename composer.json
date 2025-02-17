@@ -18,7 +18,8 @@
         "endyjasmi/cuid": "dev-master",
         "ralouphie/getallheaders": "2.0.5",
         "whichbrowser/parser": "dev-master",
-        "ramsey/uuid": "^4"
+        "ramsey/uuid": "^4",
+        "smarty/smarty": "^5.4"
     },
     "autoload": {
         "psr-4": {

@@ -800,7 +800,7 @@ class tag {
                 }
             }
         } else {
-            return NULL;
+            return null;
         }
     }
 
@@ -822,8 +822,10 @@ class tag {
                 $tags = $this->get_elements_by_class($term);
                 if (count($tags) > 1) {
                     return $tags;
-                } else {
+                } else if (count($tags) == 1) {
                     return $tags[0];
+                } else {
+                    return null;
                 }
 
             default:
@@ -872,7 +874,12 @@ class tag {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return " . count($tags) . " '$tag_name' tags");
         }
-        return $tags;
+
+        if (is_array($tags) || count($tags > 0)) {
+            return $tags;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -925,7 +932,11 @@ class tag {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return " . count($tags) . " '$attribute_name' attribute");
         }
-        return $tags;
+        if (is_array($tags) || count($tags > 0)) {
+            return $tags;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1001,7 +1012,11 @@ class tag {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return " . count($tags) . " '$attribute_name' attribute");
         }
-        return $tags;
+        if (is_array($tags) || count($tags > 0)) {
+            return $tags;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1046,7 +1061,12 @@ class tag {
         if (html_document::get_use_log()) {
             tag_log::log("[{$this->get_tag_name()}] ID:{$this->tag_id} will return " . count($classes) . " tags with CLASS='$class_name'");
         }
-        return $classes;
+
+        if (is_array($classes) || count($classes > 0)) {
+            return $classes;
+        } else {
+            return null;
+        }
     }
 
     /**
