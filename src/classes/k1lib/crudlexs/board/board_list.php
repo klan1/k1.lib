@@ -41,6 +41,12 @@ class board_list extends board_base implements board_interface {
     protected $fields_to_change;
 
     /**
+     * Smarty template PATH to use with each data row
+     * @var string
+     */
+    protected string $data_row_template;
+
+    /**
      *
      * @var \k1lib\crudlexs\listing
      */
@@ -61,6 +67,14 @@ class board_list extends board_base implements board_interface {
      * @return div|boolean
      */
     public function start_board() {
+        /**
+         * Individual TPL for data rows
+         * Listing object will handle it
+         */
+        if (!empty($this->data_row_template)) {
+            $this->list_object->set_data_row_template($this->data_row_template);
+        }
+
         /**
          * URL serialization for tools use
          */
@@ -303,5 +317,14 @@ class board_list extends board_base implements board_interface {
 
     public function set_fields_to_change($fields_to_change): void {
         $this->fields_to_change = $fields_to_change;
+    }
+
+    /**
+     * Set the Smarty template PATH to use with each data row
+     * @param string $data_row_template
+     * @return void
+     */
+    public function set_data_row_template(string $data_row_template): void {
+        $this->data_row_template = $data_row_template;
     }
 }

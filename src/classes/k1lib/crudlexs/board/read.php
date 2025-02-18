@@ -76,7 +76,13 @@ class read extends board_base implements board_interface {
             $this->read_object->parent_board = $this;
             $this->set_current_object($this->read_object);
         }
-        $this->co()->app->tpl()->q('.section')->set_class('k1lib-board-read', true);
+        /**
+         * @var div
+         */
+        $section = $this->co()->app->tpl()->q('.section');
+        $section->set_class('k1lib-board-read', true);
+//        $parent = $section->get_parent();
+//        $parent->append_div('k1lib-board-read-details');
     }
 
     /**
@@ -495,5 +501,9 @@ class read extends board_base implements board_interface {
      */
     public function get_related_list() {
         return $this->related_list;
+    }
+
+    public function get_row_keys_text() {
+        return $this->row_keys_text;
     }
 }

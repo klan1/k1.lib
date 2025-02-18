@@ -24,6 +24,10 @@ class img extends tag {
         return $this;
     }
 
+    function get_src() {
+        return $this->get_attribute("src");
+    }
+
     function set_alt(string $alt_text, $append = FALSE) {
         $this->set_attrib("alt", $alt_text, $append);
         return $this;

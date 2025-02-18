@@ -100,6 +100,7 @@ class app {
         define('k1app\K1APP_CONTROLLERS_PATH', K1APP_ROOT . '/src/classes/k1app/controllers/'); // 2.0
         define('k1app\K1APP_CLASSES_PATH', K1APP_ROOT . '/src/classes/'); // 2.0
         define('k1app\K1APP_ASSETS_PATH', K1APP_ROOT . '/assets/'); // 2.0
+        define('k1app\K1APP_ASSETS_TEMPLATES_PATH', K1APP_ASSETS_PATH . '/templates/'); // 2.0
         define('k1app\K1APP_ASSETS_IMAGES_PATH', K1APP_ASSETS_PATH . 'static/img/'); // 2.0
         define('k1app\K1APP_ASSETS_CSS_PATH', K1APP_ASSETS_PATH . 'static/css/'); // 2.0
         define('k1app\K1APP_ASSETS_JS_PATH', K1APP_ASSETS_PATH . 'static/js/'); // 2.0
@@ -140,7 +141,7 @@ class app {
             define('k1app\K1APP_ASSETS_JS_URL', K1APP_ASSETS_URL . 'static/js/'); // 2.0
 
             define('k1app\K1APP_UPLOADS_URL', K1APP_ASSETS_URL . 'uploads/');
-            define('k1app\K1APP_TEMPLATES_URL', K1APP_ASSETS_URL . 'templates/');
+            define('k1app\K1APP_ASSETS_TEMPLATES_URL', K1APP_ASSETS_URL . 'templates/');
             //    define('k1app\K1APP_TEMPLATE_IMAGES_URL', \k1app\K1APP_TEMPLATE_URL . 'img/');
 
             /**
