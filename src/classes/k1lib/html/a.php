@@ -20,4 +20,13 @@ class a extends tag {
         $this->set_class($class, TRUE);
         $this->set_id($id);
     }
+
+    function set_href(string $href) {
+        $this->set_attrib("href", $href);
+        return $this;
+    }
+
+    function get_href() {
+        return $this->get_attribute("href");
+    }
 }

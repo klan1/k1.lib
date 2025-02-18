@@ -13,6 +13,8 @@ use k1lib\html\select;
 use k1lib\html\ul;
 use k1lib\urlrewrite\url as url;
 use k1lib\urlrewrite\url as url2;
+use Smarty\Smarty;
+use const k1app\K1APP_TEMPLATES_PATH;
 use const k1app\K1APP_URL;
 
 /**
@@ -111,6 +113,12 @@ class listing extends base_with_data implements base_interface {
      */
     protected $do_orderby_headers = TRUE;
 
+    /**
+     * Smarty template PATH to use with each data row
+     * @var string
+     */
+    protected string $data_row_template;
+
     public function __construct($db_table, $row_keys_text) {
         parent::__construct($db_table, $row_keys_text);
 
@@ -126,22 +134,39 @@ class listing extends base_with_data implements base_interface {
     public function do_html_object(): div {
         $table_alias = db_table_aliases::encode($this->db_table->get_db_table_name());
 
-        $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content table-responsive");
+        if (empty($this->data_row_template)) {
+
+            $this->div_container->set_attrib("class", "k1lib-crudlexs-list-content table-responsive");
 //        $this->div_container->set_style('margin: 0px -24px');
-        if ($this->db_table_data) {
-            if ($this->do_orderby_headers) {
-                $this->do_orderby_headers();
+            if ($this->db_table_data) {
+                if ($this->do_orderby_headers) {
+                    $this->do_orderby_headers();
+                }
+                /**
+                 * Create the HTML table from DATA lodaed 
+                 */
+                $this->html_table = new table_from_data("k1lib-crudlexs-list table table-striped table-hover mb-0 {$table_alias}");
+                $this->html_table->append_to($this->div_container);
+                $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
+                $this->html_table->set_data($this->db_table_data_filtered);
+            } else {
+                $div_message = new p(board_list_strings::$no_table_data, "callout primary");
+                $div_message->append_to($this->div_container);
             }
-            /**
-             * Create the HTML table from DATA lodaed 
-             */
-            $this->html_table = new table_from_data("k1lib-crudlexs-list table table-striped table-hover mb-0 {$table_alias}");
-            $this->html_table->append_to($this->div_container);
-            $this->html_table->set_max_text_length_on_cell(self::$characters_limit_on_cell);
-            $this->html_table->set_data($this->db_table_data_filtered);
         } else {
-            $div_message = new p(board_list_strings::$no_table_data, "callout primary");
-            $div_message->append_to($this->div_container);
+            $smarty = new Smarty();
+            $smarty->setTemplateDir(\k1app\K1APP_ASSETS_TEMPLATES_PATH);
+            
+            unset($this->db_table_data[0]);
+            unset($this->db_table_data_filtered[0]);
+            
+//            $smarty->assign('default_img', \k1app\K1APP_ASSETS_IMAGES_URL . 'default-person.jpg');
+            $smarty->assign('tc', $this->db_table->get_db_table_config());
+            $smarty->assign('rows', $this->db_table_data);
+            $smarty->assign('rows_filtered', $this->db_table_data_filtered);
+
+            $html = $smarty->fetch($this->data_row_template);
+            $this->div_container->set_value($html);
         }
         return $this->div_container;
     }
@@ -439,5 +464,14 @@ class listing extends base_with_data implements base_interface {
 
     public function set_do_orderby_headers($do_orderby_headers): void {
         $this->do_orderby_headers = $do_orderby_headers;
+    }
+
+    /**
+     * Set the Smarty template PATH to use with each data row
+     * @param string $data_row_template
+     * @return void
+     */
+    public function set_data_row_template(string $data_row_template): void {
+        $this->data_row_template = $data_row_template;
     }
 }

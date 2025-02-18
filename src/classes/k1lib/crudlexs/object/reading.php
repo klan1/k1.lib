@@ -73,7 +73,7 @@ class reading extends base_with_data implements base_interface {
                     }
                     $form_group = $div_rows->append_div('form-group');
                     $label = $form_group->append_label($labels[$field], null, "k1lib-data-item-label");
-                    $value_div = $form_group->append_h6("k1lib-data-item-value")->set_value($value);
+                    $value_div = $form_group->append_h6($value, "k1lib-data-item-value");
                     if (!empty($field_alias)) {
                         $form_group->set_id("row-{$field_alias}");
                         $label->set_id("label-{$field_alias}");
