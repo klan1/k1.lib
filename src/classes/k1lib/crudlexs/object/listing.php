@@ -14,7 +14,9 @@ use k1lib\html\ul;
 use k1lib\urlrewrite\url as url;
 use k1lib\urlrewrite\url as url2;
 use Smarty\Smarty;
-use const k1app\K1APP_TEMPLATES_PATH;
+use const k1app\K1APP_ASSETS_IMAGES_URL;
+use const k1app\K1APP_ASSETS_TEMPLATES_PATH;
+use const k1app\K1APP_UPLOADS_URL;
 use const k1app\K1APP_URL;
 
 /**
@@ -155,12 +157,14 @@ class listing extends base_with_data implements base_interface {
             }
         } else {
             $smarty = new Smarty();
-            $smarty->setTemplateDir(\k1app\K1APP_ASSETS_TEMPLATES_PATH);
+            $smarty->setTemplateDir(K1APP_ASSETS_TEMPLATES_PATH);
             
             unset($this->db_table_data[0]);
             unset($this->db_table_data_filtered[0]);
             
 //            $smarty->assign('default_img', \k1app\K1APP_ASSETS_IMAGES_URL . 'default-person.jpg');
+            $smarty->assign('uploads_url', K1APP_UPLOADS_URL);
+            $smarty->assign('assets_img_url', K1APP_ASSETS_IMAGES_URL);
             $smarty->assign('tc', $this->db_table->get_db_table_config());
             $smarty->assign('rows', $this->db_table_data);
             $smarty->assign('rows_filtered', $this->db_table_data_filtered);
