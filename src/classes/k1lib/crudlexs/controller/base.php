@@ -564,7 +564,7 @@ class base {
             if (!empty($related_url_keys_text)) {
                 $related_table = $db_table_name;
                 $related_db_table = new db_table($this->db_table->db, $related_table);
-                $related_url_keys_array = table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
+                $related_url_keys_array = $this->db->table_url_text_to_keys($related_url_keys_text, $related_db_table->get_db_table_config());
                 /**
                  * lets fix the non-same key name
                  */
@@ -1164,8 +1164,8 @@ class base {
     /**
      * FIELDS FILTER FOR select_row_keys.php
      */
-    public function set_fk_tools_filter($targuet_table_name, $constants_array) {
-        serialize_var($constants_array, 'fk-filter-for-' . $targuet_table_name);
+    public function set_fk_tools_filter($targuet_table_name, $constants_array, $from) {
+        serialize_var($constants_array, 'fk-filter-for-' . $targuet_table_name . '-from-' . $from);
     }
 
     public function get_current_board(): board_list|create|update|read|delete|search {

@@ -922,14 +922,14 @@ AND table_name = '{$table}'";
 //        }
 //    }
 
-    function get_db_table_keys($db_table_config) {
+    function get_db_table_keys($db_table_config, $key_mode = 'pri') {
         if (!is_array($db_table_config)) {
             die(__FUNCTION__ . ": need an array to work on \$db_table_config");
         }
         $keys = array();
         foreach ($db_table_config as $field => $config) {
-            if ($config['key'] == 'pri') {
-                $keys[$field] = 'pri';
+            if ($config['key'] == $key_mode) {
+                $keys[$field] = $key_mode;
             }
         }
         if (empty($keys)) {
@@ -939,14 +939,14 @@ AND table_name = '{$table}'";
         }
     }
 
-    function get_db_table_keys_array($db_table_config) {
+    function get_db_table_keys_array($db_table_config, $key_mode = 'pri') {
         if (!is_array($db_table_config)) {
             trigger_error(__FUNCTION__ . ": need an array to work on \$db_table_config",
                     E_USER_ERROR);
         }
         $keys = array();
         foreach ($db_table_config as $field => $config) {
-            if ($config['key'] == 'pri') {
+            if ($config['key'] == $key_mode) {
                 $keys[] = $field;
             }
         }
@@ -1036,8 +1036,7 @@ AND table_name = '{$table}'";
         return $array;
     }
 
-    function get_fk_field_label($fk_table_name, array $url_key_array = [],
-            $source_table_config = []) {
+    function get_fk_field_label($fk_table_name, array $url_key_array = [], $source_table_config = [], $key_mode = 'pri') {
         foreach ($url_key_array as $url_key_index => $url_key_value) {
             
         }
@@ -1053,8 +1052,7 @@ AND table_name = '{$table}'";
         if (!empty($fk_table_label_fields)) {
             $fk_table_label_fields_text = implode(",",
                     $this->make_name_fields_sql_safe($fk_table_label_fields));
-            $fk_where_condition = $this->table_keys_to_where_condition($url_key_array,
-                    $fk_table_config);
+            $fk_where_condition = $this->table_keys_to_where_condition($url_key_array, $fk_table_config, $key_mode);
             if (!empty($fk_where_condition)) {
                 $fk_sql_query = "SELECT {$fk_table_label_fields_text} FROM `$fk_table_name` WHERE $fk_where_condition";
                 $sql_result = $this->sql_query($fk_sql_query, FALSE);
@@ -1092,11 +1090,11 @@ AND table_name = '{$table}'";
      * @param array $db_table_config
      * @return Array FALSE on error
      */
-    public function table_keys_to_text($row_data, $db_table_config) {
+    public function table_keys_to_text($row_data, $db_table_config, $key_mode = 'pri') {
         if (!is_array($db_table_config)) {
             die(__FUNCTION__ . ": need an array to work on \$db_table_config");
         }
-        $table_keys_array = $this->get_db_table_keys($db_table_config);
+        $table_keys_array = $this->get_db_table_keys($db_table_config, $key_mode);
         $table_keys_values = array();
         foreach ($row_data as $column_name => $value) {
             if (isset($table_keys_array[$column_name]) && (!empty($table_keys_array[$column_name]))) {
@@ -1107,8 +1105,8 @@ AND table_name = '{$table}'";
         return $table_keys_text;
     }
 
-    function get_keys_array_from_row_data($row_data, $db_table_config) {
-        $key_fields_array = $this->get_db_table_keys($db_table_config);
+    function get_keys_array_from_row_data($row_data, $db_table_config, $key_mode = 'pri') {
+        $key_fields_array = $this->get_db_table_keys($db_table_config, $key_mode);
         $keys_array = clean_array_with_guide($row_data, $key_fields_array);
         if (!empty($keys_array)) {
             return $keys_array;
@@ -1150,13 +1148,12 @@ AND table_name = '{$table}'";
         return $key_data;
     }
 
-    function table_keys_to_where_condition(&$row_data, $db_table_config,
-            $use_table_name = FALSE) {
+    function table_keys_to_where_condition(&$row_data, $db_table_config, $key_mode = 'pri', $use_table_name = null) {
         if (!is_array($db_table_config)) {
             die(__FUNCTION__ . ": need an array to work on \$db_table_config");
         }
 
-        $table_keys_array = $this->get_db_table_keys($db_table_config);
+        $table_keys_array = $this->get_db_table_keys($db_table_config, $key_mode);
         if (empty($table_keys_array)) {
             die(__FUNCTION__ . ": The is no PRI on the \$db_table_config");
         }

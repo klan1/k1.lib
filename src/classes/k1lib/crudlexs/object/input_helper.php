@@ -218,9 +218,16 @@ class input_helper {
             $fk_table = $refereced_column_config['table'];
             $fk_table_alias = db_table_aliases::encode($fk_table);
 
+            $fk_db_table = new db_table($crudlex_obj->db_table->db, $fk_table);
+            $fk_db_table_config = $fk_db_table->get_db_table_config();
+
 //            $crudlex_obj->set_do_table_field_name_encrypt();
             $static_values = $crudlex_obj->db_table->get_constant_fields();
-            $static_values_enconded = $crudlex_obj->encrypt_field_names($static_values);
+ 
+            $static_values_filtered = \k1lib\common\clean_array_with_guide($static_values, $fk_db_table_config);
+
+
+            $static_values_enconded = $crudlex_obj->encrypt_field_names($static_values_filtered);
             /**
              * FK JS INPUT TOOL
              */
@@ -263,11 +270,15 @@ class input_helper {
 
             $url_params = array_merge(
                     [
-                        "back-url" => $_SERVER['REQUEST_URI'],
-                        'caller-field' => $field_encrypted
+                        "back-url" => $_SERVER['REQUEST_URI']
                     ],
                     $static_values_enconded,
             );
+            if (
+                    $crudlex_obj->db_table->get_field_config($field, 'key') == 'uni' ||
+                    ($crudlex_obj->db_table->get_field_config($field, 'key') == 'mul')) {
+                $url_params['caller-field'] = $field_encrypted;
+            }
 
             $url_to_search_fk_data = url::do_url(self::$url_to_search_fk_data . "{$fk_table_alias}/list/$this_table_alias/", $url_params);
             $search_button->set_attrib("onclick", "javascript:use_select_row_keys(this.form,'{$url_to_search_fk_data}')");
