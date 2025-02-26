@@ -17,7 +17,7 @@ class label_value_row extends div {
 
         if (is_object($value) && is_subclass_of($value, 'k1lib\html\tag')) {
             $input_name = $this->get_name_attribute($value);
-            $label_tag = new \k1lib\html\label($label, $input_name, "k1lib-label-object");
+            $label_tag = new \k1lib\html\label($label, $input_name, "k1lib-label-object k1lib-data-item-label");
             if ($value->get_tag_name() != 'div') {
                 /**
                  * this line is Boostrap specific for the future changes

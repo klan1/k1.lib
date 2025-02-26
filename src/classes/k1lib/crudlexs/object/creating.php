@@ -435,7 +435,7 @@ class creating extends base_with_data implements base_interface {
 //                $html_form->set_attrib("data-abide", TRUE);
 //            }
 
-            $form_header = $html_form->append_div("k1lib-form-header");
+            $form_header = $html_form->append_div("k1lib-form-header mb-1");
             $form_body = $html_form->append_div("k1lib-form-body row");
 //            $form_grid = new grid(1, 1, $form_body);
 ////            $form_grid->row(1)->align_center();
@@ -453,6 +453,38 @@ class creating extends base_with_data implements base_interface {
             // FORM LAYOUT
             // <div class="grid-x">
 
+            /**
+             * TEXT LABEL-FIELDS to guide process
+             */
+            $db_table = $this->db_table;
+            $constant_fk_fields = $db_table->get_constant_fields();
+            if (!empty($constant_fk_fields)) {
+
+                $row = $form_header->append_div("row");
+
+                foreach ($constant_fk_fields as $field => $field_value) {
+                    $field_config = $db_table->get_db_table_field_config($field);
+                    while (!empty($field_config['refereced_column_config'])) {
+                        $field_config = $field_config['refereced_column_config'];
+                    }
+                    $table_name = $field_config['table'];
+                    $label_value = $db_table->db->get_fk_field_label($table_name, $constant_fk_fields, $db_table->get_db_table_config());
+
+                    if (($label_value !== 0) && ($label_value !== NULL)) {
+                        /**
+                         * ALL the TEXT field types are sendend to the last position to show nicely the HTML on it.
+                         */
+                        $div_rows = $row->append_div("col-md-6 col-12 k1lib-data-item");
+
+                        $form_group = $div_rows->append_div('form-group');
+                        $form_group->append_label($field_config['label'], null, "k1lib-data-item-label");
+                        $form_group->append_h6($label_value, "k1lib-data-item-value");
+                    }
+                }
+            }
+            /**
+             * END
+             */
             $row_number = 0;
             foreach ($this->db_table_data_filtered[1] as $field => $value) {
                 if (array_key_exists($field, array_flip($this->fields_to_hide))) {
