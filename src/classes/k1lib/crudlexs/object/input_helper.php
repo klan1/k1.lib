@@ -223,9 +223,8 @@ class input_helper {
 
 //            $crudlex_obj->set_do_table_field_name_encrypt();
             $static_values = $crudlex_obj->db_table->get_constant_fields();
- 
-            $static_values_filtered = \k1lib\common\clean_array_with_guide($static_values, $fk_db_table_config);
 
+            $static_values_filtered = \k1lib\common\clean_array_with_guide($static_values, $fk_db_table_config);
 
             $static_values_enconded = $crudlex_obj->encrypt_field_names($static_values_filtered);
             /**
@@ -275,8 +274,9 @@ class input_helper {
                     $static_values_enconded,
             );
             if (
-                    $crudlex_obj->db_table->get_field_config($field, 'key') == 'uni' ||
-                    ($crudlex_obj->db_table->get_field_config($field, 'key') == 'mul')) {
+                    ($crudlex_obj->db_table->get_field_config($field, 'key') == 'uni')
+//                    || ($crudlex_obj->db_table->get_field_config($field, 'key') == 'mul')
+            ) {
                 $url_params['caller-field'] = $field_encrypted;
             }
 
