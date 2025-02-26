@@ -273,11 +273,14 @@ class input_helper {
                     ],
                     $static_values_enconded,
             );
+            $field_config = $crudlex_obj->db_table->get_field_config($field, 'key');
+            $field_config_fk = $crudlex_obj->db_table->get_field_config($field, 'refereced_column_config');
             if (
-                    ($crudlex_obj->db_table->get_field_config($field, 'key') == 'uni')
-//                    || ($crudlex_obj->db_table->get_field_config($field, 'key') == 'mul')
+                    ($field_config == 'uni') || ($field_config == 'mul')
             ) {
-                $url_params['caller-field'] = $field_encrypted;
+                if ($field_config_fk['key'] == 'uni') {
+                    $url_params['caller-field'] = $field_encrypted;
+                }
             }
 
             $url_to_search_fk_data = url::do_url(self::$url_to_search_fk_data . "{$fk_table_alias}/list/$this_table_alias/", $url_params);
