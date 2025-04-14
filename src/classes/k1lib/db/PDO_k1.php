@@ -207,8 +207,7 @@ class PDO_k1 extends PDO {
      * @return Array NULL on empty result and FALSE on failure.
      * TODO: Fix the NON optional cache isue !!
      */
-    public function sql_query($sql, $return_all = TRUE, $do_fields = FALSE,
-            $use_cache = TRUE, &$error_data = null): bool|array {
+    public function sql_query($sql, $return_all = TRUE, $do_fields = FALSE, $use_cache = TRUE, &$error_data = null): bool|array {
         //$query_result = new PDOStatement();
         if (profiler::is_enabled()) {
             $sql_profile_id = profiler::add($sql);
@@ -643,11 +642,10 @@ AND table_name = '{$table}'";
         }
     }
 
-    public function sql_insert($table, $data, &$error_data = null,
-            &$sql_query = null) {
+    public function sql_insert($table, $data, &$error_data = null, &$sql_query = null) {
         if ($this->is_enabled()) {
             if (is_array($data)) {
-                if (!is_array($data[0])) {
+                if (!isset($data[0]) || !is_array($data[0])) {
                     $data_string = $this->array_to_sql_set($data);
                     if ($data_string === false) {
                         \trigger_error("\$data array is invalid", E_USER_WARNING);
@@ -668,7 +666,6 @@ AND table_name = '{$table}'";
                     }
                     $insert_sql = "INSERT INTO $table $data_string;";
                 }
-                //            ($insert_sql);
                 $sql_query = $insert_sql;
                 $insert = $this->exec($insert_sql);
 
@@ -691,8 +688,11 @@ AND table_name = '{$table}'";
                 }
                 if ($insert) {
                     $last_insert_sql = "SELECT LAST_INSERT_ID() as 'LAST_ID'";
-                    $last_insert_result = $this->sql_query($last_insert_sql,
-                            FALSE);
+                    
+                    // I had to set the SQL QUERY with a NO CACHE mode here to avoid an logical
+                    // Error on the intented way to work
+                    $last_insert_result = $this->sql_query($last_insert_sql, FALSE, FALSE, FALSE);
+                    
                     if (isset($last_insert_result['LAST_ID']) && (!empty($last_insert_result['LAST_ID']))) {
                         return $last_insert_result['LAST_ID'];
                     } else {
@@ -922,6 +922,12 @@ AND table_name = '{$table}'";
 //        }
 //    }
 
+    /**
+     * Return the keys as [ field1 => key1 mode, ... ]
+     * @param type $db_table_config
+     * @param type $key_mode
+     * @return bool
+     */
     function get_db_table_keys($db_table_config, $key_mode = 'pri') {
         if (!is_array($db_table_config)) {
             die(__FUNCTION__ . ": need an array to work on \$db_table_config");
@@ -939,6 +945,12 @@ AND table_name = '{$table}'";
         }
     }
 
+    /**
+     * Return an array of keys [ key1, key2... ]
+     * @param type $db_table_config
+     * @param type $key_mode
+     * @return bool
+     */
     function get_db_table_keys_array($db_table_config, $key_mode = 'pri') {
         if (!is_array($db_table_config)) {
             trigger_error(__FUNCTION__ . ": need an array to work on \$db_table_config",
@@ -1195,11 +1207,11 @@ AND table_name = '{$table}'";
         }
     }
 
-    function sql_check_id($table, $key_name, $key_value, $use_cache = FALSE) {
+    function sql_check_id(string $table, string $key_name, string $key_value, $use_cache = FALSE): bool {
 
         $sql = "SELECT COUNT(*) AS num_keys FROM `$table` WHERE `$key_name` = " . (is_numeric($key_value) ? $key_value : "'$key_value'") . " ";
         if ($use_cache) {
-            $sql_count = sql_query_cached($db, $sql, FALSE);
+            $sql_count = $this->sql_query_cached($db, $sql, FALSE);
         } else {
             $sql_count = $this->sql_query($sql, FALSE);
         }
@@ -1207,6 +1219,29 @@ AND table_name = '{$table}'";
             return TRUE;
         } else {
             return FALSE;
+        }
+    }
+
+    function sql_check_exist(string $table, array $fields_value_array, $use_cache = FALSE): bool|array {
+        $table_config = $this->get_db_table_config($table);
+        if ($table_config) {
+            $table_keys = $this->get_db_table_keys_array($table_config);
+            if ($table_keys) {
+                $key_fields = implode(',', $table_keys);
+
+                $fields_code = $this->array_to_sql_set($fields_value_array, TRUE, TRUE);
+                $sql = "SELECT $key_fields FROM `$table` WHERE {$fields_code};";
+                if ($use_cache) {
+                    $sql_result = $this->sql_query_cached($db, $sql, FALSE);
+                } else {
+                    $sql_result = $this->sql_query($sql, FALSE);
+                }
+                if ($sql_result) {
+                    return $sql_result;
+                } else {
+                    return FALSE;
+                }
+            }
         }
     }
 

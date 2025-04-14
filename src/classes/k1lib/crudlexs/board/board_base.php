@@ -219,7 +219,7 @@ class board_base {
     /**
      * @return div
      */
-    public function button_div_tag() {
+    public function button_div_tag(): div {
         return $this->button_div_tag;
     }
 
@@ -230,7 +230,7 @@ class board_base {
     /**
      * @return div
      */
-    public function board_content_div() {
+    public function board_content_div(): div {
         return $this->board_content_div;
     }
 
@@ -275,7 +275,7 @@ class board_base {
     public function set_fields_to_hide(array $fields_to_hide) {
         $this->fields_to_hide = $fields_to_hide;
         $this->current_object->set_fields_to_hide($fields_to_hide);
-        $this->co()->db_table->set_fields_to_skip($fields_to_hide);        
+        $this->co()->db_table->set_fields_to_skip($fields_to_hide);
         serialize_var($fields_to_hide, $this->co()->get_controller_id() . '-fields-to-hide');
     }
 }
