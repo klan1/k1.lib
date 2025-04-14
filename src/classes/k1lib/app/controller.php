@@ -4,9 +4,10 @@ namespace k1lib\app;
 
 use k1app\core\config\general;
 use k1app\template\mazer\layouts\blank;
-use k1app\template\mazer\layouts\sidebar_blank;
+use k1app\template\mazer\layouts\sidebar_page;
 use k1app\template\mazer\layouts\single_page;
 use k1lib\app;
+use k1lib\crudlexs\object\base;
 use k1lib\html\notifications\on_DOM as DOM_notifications;
 use k1lib\session\app_session;
 use const k1app\K1APP_URL;
@@ -15,7 +16,7 @@ use function k1lib\forms\check_all_incomming_vars;
 class controller {
 
     static protected string $root_url;
-    static protected blank|sidebar_blank|single_page $tpl;
+    static protected base|blank|single_page|sidebar_page $tpl;
     static protected app $app;
     static array $POST = [];
     static $need_session = false;
@@ -63,13 +64,13 @@ class controller {
         DOM_notifications::insert_messases_on_DOM();
     }
 
-    static function use_tpl($tpl, $tag_id_override = null) {
+    static function use_tpl(base|blank|single_page|sidebar_page $tpl, $tag_id_override = null) {
         self::$tpl = $tpl;
         self::$app->set_global_tpl($tpl);
         DOM_notifications::set_tpl($tpl, $tag_id_override);
     }
 
-    static function tpl() {
+    static function tpl(): base|blank|single_page|sidebar_page {
         return self::$tpl;
     }
 

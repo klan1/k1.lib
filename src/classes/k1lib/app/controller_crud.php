@@ -3,6 +3,7 @@
 namespace k1lib\app;
 
 use k1app\core\template\base;
+use k1app\template\mazer\components\app\main\page_heading\section;
 use k1app\template\mazer\components\card;
 use k1app\template\mazer\layouts\blank;
 use k1app\template\mazer\layouts\sidebar_page;
@@ -23,8 +24,11 @@ class controller_crud extends controller {
     static protected $controller_name = "CRUDLEXS Controller";
     static protected $controller_db_table = "";
     static protected div $crud_container;
+    static protected section $page_container;
     static protected cb $co;
 
+  
+    
     static function on_post(): void {
         self::launch();
     }
@@ -37,6 +41,8 @@ class controller_crud extends controller {
     static function run_crud($parent_class, base|blank|sidebar_page $tpl, string $nav_id = null, $run_as_guest = false): void {
         self::use_tpl($tpl);
 
+        self::$page_container = self::tpl()->page_content()->section();
+        
         /**
          *  LEGACY machete 
          */
@@ -134,18 +140,20 @@ class controller_crud extends controller {
         }
     }
 
-    static function add_related_table($table_name, $controller_url, $related_title): void {
+    static function add_related_table($table_name, $controller_url, $related_title, $return_card_only = false): div|card|bool {
 
         if (self::$co->on_board_read()) {
             $page_heading = self::$tpl->q('.page-heading');
-            if (!empty($page_heading)) {
-                if (is_array($page_heading)) {
-                    $related_div = $page_heading[0]->append_div("k1lib-crudlexs-related-data");
+            if (!$return_card_only) {
+                if (!empty($page_heading)) {
+                    if (is_array($page_heading)) {
+                        $related_div = $page_heading[0]->append_div("k1lib-crudlexs-related-data");
+                    } else {
+                        $related_div = $page_heading->append_div("k1lib-crudlexs-related-data");
+                    }
                 } else {
-                    $related_div = $page_heading->append_div("k1lib-crudlexs-related-data");
+                    $related_div = self::$tpl->body()->append_div("k1lib-crudlexs-related-data");
                 }
-            } else {
-                $related_div = self::$tpl->body()->append_div("k1lib-crudlexs-related-data");
             }
 //        ->append_div('section k1lib-crudlexs-related-data');;
 //            $related_div = self::$crud_container->append_div("k1lib-crudlexs-related-data");
@@ -168,8 +176,13 @@ class controller_crud extends controller {
             );
 //            $related_list->append_to($related_div);
             $related_card = new card($related_title, $related_list);
+            if ($return_card_only) {
+                return $related_card;
+            }
             $related_card->append_to($related_div);
+            return $related_div;
         }
+        return false;
     }
 
     static function end(): void {
