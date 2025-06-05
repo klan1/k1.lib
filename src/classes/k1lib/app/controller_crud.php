@@ -27,8 +27,6 @@ class controller_crud extends controller {
     static protected section $page_container;
     static protected cb $co;
 
-  
-    
     static function on_post(): void {
         self::launch();
     }
@@ -42,7 +40,7 @@ class controller_crud extends controller {
         self::use_tpl($tpl);
 
         self::$page_container = self::tpl()->page_content()->section();
-        
+
         /**
          *  LEGACY machete 
          */
@@ -140,7 +138,7 @@ class controller_crud extends controller {
         }
     }
 
-    static function add_related_table($table_name, $controller_url, $related_title, $return_card_only = false): div|card|bool {
+    static function add_related_table($table_name, $controller_url, $related_title, $return_card_only = false, $set_related_show_all_data = true, $set_related_show_new = true): div|card|bool {
 
         if (self::$co->on_board_read()) {
             $page_heading = self::$tpl->q('.page-heading');
@@ -161,8 +159,8 @@ class controller_crud extends controller {
              * Related list
              */
             $related_db_table = new db_table(self::$app->db(), $table_name);
-            self::$co->board_read_object->set_related_show_all_data(TRUE);
-            self::$co->board_read_object->set_related_show_new(TRUE);
+            self::$co->board_read_object->set_related_show_all_data($set_related_show_all_data);
+            self::$co->board_read_object->set_related_show_new($set_related_show_new);
             $related_list = self::$co->board_read_object->create_related_list(
                     $related_db_table,
                     ob::USE_LABEL_FIELDS,
