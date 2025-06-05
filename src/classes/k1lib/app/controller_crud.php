@@ -36,7 +36,7 @@ class controller_crud extends controller {
         self::$controller_db_table = $controller_db_table;
     }
 
-    static function run_crud($parent_class, base|blank|sidebar_page $tpl, string $nav_id = null, $run_as_guest = false): void {
+    static function run_crud($parent_class, base|blank|sidebar_page $tpl, string|null $nav_id = null, $run_as_guest = false): void {
         self::use_tpl($tpl);
 
         self::$page_container = self::tpl()->page_content()->section();
@@ -138,7 +138,7 @@ class controller_crud extends controller {
         }
     }
 
-    static function add_related_table($table_name, $controller_url, $related_title, $return_card_only = false, $set_related_show_all_data = true, $set_related_show_new = true): div|card|bool {
+    static function add_related_table($table_name, $controller_url, $related_title, $return_card_only = false, $set_related_show_all_data = true, $set_related_show_new = true, $no_links = false): div|card|bool {
 
         if (self::$co->on_board_read()) {
             $page_heading = self::$tpl->q('.page-heading');
@@ -164,13 +164,17 @@ class controller_crud extends controller {
             $related_list = self::$co->board_read_object->create_related_list(
                     $related_db_table,
                     ob::USE_LABEL_FIELDS,
-                    $controller_url, ('\k1app\table_config\\' . $table_name)::BOARD_CREATE_URL,
+                    $controller_url,
+                    ('\k1app\table_config\\' . $table_name)::BOARD_CREATE_URL,
                     ('\k1app\table_config\\' . $table_name)::BOARD_READ_URL,
                     ('\k1app\table_config\\' . $table_name)::BOARD_LIST_URL,
                     /**
                      * TODO: Understand why this should be false
                      */
-                    TRUE
+                    TRUE,
+                    FALSE,
+                    NULL,
+                    $no_links // nolinks
             );
 //            $related_list->append_to($related_div);
             $related_card = new card($related_title, $related_list);
