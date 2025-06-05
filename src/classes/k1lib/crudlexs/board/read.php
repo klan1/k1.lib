@@ -244,13 +244,13 @@ class read extends board_base implements board_interface {
      * @return div|boolean
      */
     public function create_related_list(db_table $db_table, $field_links_array, $board_root, $board_create, $board_read,
-            $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL) {
+            $board_list, $use_back_url = FALSE, $clear_url = FALSE, $custom_key_array = NULL, $no_links = false) {
 
         $table_alias = db_table_aliases::encode($db_table->get_db_table_name());
         $detail_div = new div();
 
         $this->related_list = $this->do_related_list($db_table, $field_links_array, $board_root, $board_read,
-                $use_back_url, $clear_url, $custom_key_array);
+                $use_back_url, $clear_url, $custom_key_array, $no_links);
 
         if (!empty($this->related_list)) {
             $current_row_keys_text = $this->read_object->get_row_keys_text();
@@ -314,7 +314,7 @@ class read extends board_base implements board_interface {
      * @return \k1lib\crudlexs\listing|boolean
      */
     public function do_related_list(db_table $db_table, $field_links_array, $board_root, $board_read, $use_back_url,
-            $clear_url = FALSE, $custom_key_array = []) {
+            $clear_url = FALSE, $custom_key_array = [], $no_links = false) {
 
         $table_alias = db_table_aliases::encode($db_table->get_db_table_name());
 
@@ -365,8 +365,10 @@ class read extends board_base implements board_interface {
                 if ($this->related_list->data_loaded) {
                     if ($this->related_apply_filters) {
                         $this->related_apply_filters();
-                        $this->related_apply_link_read_field($field_links_array, $board_root, $board_read,
-                                $use_back_url, $clear_url);
+                        if (!$no_links) {
+                            $this->related_apply_link_read_field($field_links_array, $board_root, $board_read,
+                                    $use_back_url, $clear_url);
+                        }
                     }
                 }
                 return $this->related_list;
