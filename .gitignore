@@ -2,3 +2,4 @@
 /vendor/
 /.vscode/
 .DS_Store
+/nbproject/
