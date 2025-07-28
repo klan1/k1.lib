@@ -15,7 +15,7 @@ use k1lib\urlrewrite\url as url;
 use k1lib\urlrewrite\url as url2;
 use Smarty\Smarty;
 use const k1app\K1APP_ASSETS_IMAGES_URL;
-use const k1app\K1APP_ASSETS_TEMPLATES_PATH;
+use const k1app\K1APP_ASSETS_SMARTY_PATH;
 use const k1app\K1APP_UPLOADS_URL;
 use const k1app\K1APP_URL;
 
@@ -157,7 +157,7 @@ class listing extends base_with_data implements base_interface {
             }
         } else {
             $smarty = new Smarty();
-            $smarty->setTemplateDir(K1APP_ASSETS_TEMPLATES_PATH);
+            $smarty->setTemplateDir(K1APP_ASSETS_SMARTY_PATH);
             
             unset($this->db_table_data[0]);
             unset($this->db_table_data_filtered[0]);
