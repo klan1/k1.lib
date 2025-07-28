@@ -359,7 +359,7 @@ class tag {
         $this->post_value = $post_value;
     }
 
-    function load_file($file_path, $position = INSERT_ON_VALUE, $include_file = TRUE) {
+    function load_file($file_path, $position = INSERT_ON_VALUE, $include_file = TRUE, $append = TRUE) {
         if (file_exists($file_path)) {
             if ($include_file) {
                 ob_start();
@@ -383,7 +383,7 @@ class tag {
                         if (substr($file_content, -1) != "\n") {
                             $file_content = $file_content . "\n";
                         }
-                        $this->set_value($file_content, TRUE);
+                        $this->set_value($file_content, $append);
                         break;
                     case INSERT_ON_BEFORE_TAG_CLOSE:
                         $this->post_value($this->post_value . $file_content);
