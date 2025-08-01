@@ -393,7 +393,7 @@ AND table_name = '{$table}'";
 
             // TYPE VALIDATION
             $mysql_default_validation = sql_defaults::get_mysql_default_validation();
-            if (!isset($field_config['validation'])) {
+            if (!isset($field_config['validation']) && key_exists($field_config['type'], $mysql_default_validation)) {
                 $field_config['validation'] = $mysql_default_validation[$field_config['type']];
             }
 
@@ -688,11 +688,11 @@ AND table_name = '{$table}'";
                 }
                 if ($insert) {
                     $last_insert_sql = "SELECT LAST_INSERT_ID() as 'LAST_ID'";
-                    
+
                     // I had to set the SQL QUERY with a NO CACHE mode here to avoid an logical
                     // Error on the intented way to work
                     $last_insert_result = $this->sql_query($last_insert_sql, FALSE, FALSE, FALSE);
-                    
+
                     if (isset($last_insert_result['LAST_ID']) && (!empty($last_insert_result['LAST_ID']))) {
                         return $last_insert_result['LAST_ID'];
                     } else {
