@@ -97,21 +97,21 @@ class app {
         define('k1app\K1APP_DIR', basename(K1APP_ROOT) . '/');
         define('k1app\K1APP_DOMAIN', $_SERVER['HTTP_HOST']);
 
-        define('k1app\K1APP_SRC_PATH', K1APP_ROOT . '/src/'); // 2.0
-        define('k1app\K1APP_CONTROLLERS_PATH', K1APP_SRC_PATH . '/classes/k1app/controllers/'); // 2.0
-        define('k1app\K1APP_CLASSES_PATH', K1APP_SRC_PATH . '/classes/'); // 2.0
-        define('k1app\K1APP_FUNCTIONS_PATH', K1APP_SRC_PATH . '/functions/'); // 2.0
-        define('k1app\K1APP_ASSETS_PATH', K1APP_ROOT . '/assets/'); // 2.0
-        define('k1app\K1APP_ASSETS_TEMPLATES_PATH', K1APP_ASSETS_PATH . '/templates/'); // 2.0
-        define('k1app\K1APP_ASSETS_SMARTY_PATH', K1APP_ASSETS_PATH . '/templates/smarty_tmp'); // 2.0
+        define('k1app\K1APP_SRC_PATH', K1APP_ROOT . 'src/'); // 2.0
+        define('k1app\K1APP_CONTROLLERS_PATH', K1APP_SRC_PATH . 'classes/k1app/controllers/'); // 2.0
+        define('k1app\K1APP_CLASSES_PATH', K1APP_SRC_PATH . 'classes/'); // 2.0
+        define('k1app\K1APP_FUNCTIONS_PATH', K1APP_SRC_PATH . 'functions/'); // 2.0
+        define('k1app\K1APP_ASSETS_PATH', K1APP_ROOT . 'assets/'); // 2.0
+        define('k1app\K1APP_ASSETS_TEMPLATES_PATH', K1APP_ASSETS_PATH . 'templates/'); // 2.0
+        define('k1app\K1APP_ASSETS_SMARTY_PATH', K1APP_ASSETS_PATH . 'templates/smarty_tmp'); // 2.0
         define('k1app\K1APP_ASSETS_IMAGES_PATH', K1APP_ASSETS_PATH . 'static/img/'); // 2.0
         define('k1app\K1APP_ASSETS_CSS_PATH', K1APP_ASSETS_PATH . 'static/css/'); // 2.0
         define('k1app\K1APP_ASSETS_JS_PATH', K1APP_ASSETS_PATH . 'static/js/'); // 2.0
         // define('k1app\K1APP_VIEWS_PATH', \k1app\K1APP_ROOT . '/views/');
         // define('k1app\K1APP_VIEWS_CRUD_PATH', \k1app\K1APP_VIEWS_PATH . '/k1lib.crud/');
-        define('k1app\K1APP_SETTINGS_PATH', K1APP_ROOT . '/settings/');
+        define('k1app\K1APP_SETTINGS_PATH', K1APP_ROOT . 'settings/');
         define('k1app\K1APP_UPLOADS_PATH', K1APP_ASSETS_PATH . 'uploads/');
-        define('k1app\K1APP_SHELL_SCRIPTS_PATH', K1APP_ASSETS_PATH . '/shell-scripts/');
+        define('k1app\K1APP_SHELL_SCRIPTS_PATH', K1APP_ASSETS_PATH . 'shell-scripts/');
         // define('k1app\K1APP_TEMPLATES_PATH', \k1app\K1APP_RESOURCES_PATH . '/templates/');
         define('k1app\K1APP_FONTS_PATH', K1APP_ASSETS_PATH . 'fonts/');
 
