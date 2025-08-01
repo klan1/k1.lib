@@ -93,7 +93,7 @@ class app {
          * Genral config about paths
          */
         // AUTO CONFIGURATED PATHS
-        define('k1app\K1APP_ROOT', str_replace('\\', '/', dirname($this->script_path)));
+        define('k1app\K1APP_ROOT', str_replace('\\', '/', dirname($this->script_path) . '/'));
         define('k1app\K1APP_DIR', basename(K1APP_ROOT) . '/');
         define('k1app\K1APP_DOMAIN', $_SERVER['HTTP_HOST']);
 
@@ -103,7 +103,7 @@ class app {
         define('k1app\K1APP_FUNCTIONS_PATH', K1APP_SRC_PATH . 'functions/'); // 2.0
         define('k1app\K1APP_ASSETS_PATH', K1APP_ROOT . 'assets/'); // 2.0
         define('k1app\K1APP_ASSETS_TEMPLATES_PATH', K1APP_ASSETS_PATH . 'templates/'); // 2.0
-        define('k1app\K1APP_ASSETS_SMARTY_PATH', K1APP_ASSETS_PATH . 'templates/smarty_tmp'); // 2.0
+        define('k1app\K1APP_ASSETS_SMARTY_PATH', K1APP_ASSETS_PATH . 'templates/smarty_tmp/'); // 2.0
         define('k1app\K1APP_ASSETS_IMAGES_PATH', K1APP_ASSETS_PATH . 'static/img/'); // 2.0
         define('k1app\K1APP_ASSETS_CSS_PATH', K1APP_ASSETS_PATH . 'static/css/'); // 2.0
         define('k1app\K1APP_ASSETS_JS_PATH', K1APP_ASSETS_PATH . 'static/js/'); // 2.0
