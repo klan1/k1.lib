@@ -74,7 +74,7 @@ class base {
         /**
          * OUT PUT BUFFER START
          */
-        if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+        if (key_exists('HTTP_ACCEPT_ENCODING', $_SERVER) && substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
             ob_start('ob_gzhandler');
         } else {
             ob_start();
