@@ -65,7 +65,7 @@ class base_with_data extends base {
      *
      * @var bool
      */
-    protected $do_table_field_name_encrypt = FALSE;
+    protected $do_table_field_name_encrypt = TRUE;
 
     /**
      * If TRUE all file uploads will be represented as links, if OFF images will be images. PDF and others by now allways will be links.
@@ -506,6 +506,7 @@ class base_with_data extends base {
     }
 
     public function encrypt_field_name($field_name) {
+            return $field_name;
         // first, we need to know in what position is the field on the table design.
         if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
             $rnd = $_SESSION['CRUDLEXS-RND'];
@@ -514,7 +515,6 @@ class base_with_data extends base {
             $_SESSION['CRUDLEXS-RND'] = $rnd;
         }
         if (!$this->do_table_field_name_encrypt) {
-            return $field_name;
         } else {
             $field_pos = 0;
             if (key_exists($field_name, $this->db_table->get_db_table_config())) {
@@ -550,6 +550,8 @@ class base_with_data extends base {
             if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
                 $rnd = $_SESSION['CRUDLEXS-RND'];
             } else {
+                        d($_SESSION);
+
                 trigger_error(__METHOD__ . ' ' . object_base_strings::$error_no_session_random, E_USER_ERROR);
             }
             $field_position = n36_to_decimal($n36_number) - $rnd;
