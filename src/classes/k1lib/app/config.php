@@ -10,8 +10,8 @@ class config {
     protected string $set_name;
     protected array $options = [];
 
-    function __construct(string $set_name) {
-        $this->set_name = $set_name;
+    function __construct() {
+//        $this->set_name = $set_name;
     }
 
     function add_option(string $key, string|array|config|null $value): self {
