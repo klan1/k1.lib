@@ -532,8 +532,9 @@ class creating extends base_with_data implements base_interface {
      */
     public function do_insert() {
         $error_data = NULL;
+        $sql_query = NULL;
         $this->post_incoming_array = check_all_incomming_vars($this->post_incoming_array);
-        $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array, $error_data);
+        $this->inserted_result = $this->db_table->insert_data($this->post_incoming_array, $error_data, $sql_query);
         if ($this->inserted_result !== FALSE) {
             DOM_notification::queue_mesasage(creating_strings::$data_inserted, "success", $this->notifications_div_id);
             $this->inserted = TRUE;
@@ -544,6 +545,7 @@ class creating extends base_with_data implements base_interface {
             }
             DOM_notification::queue_mesasage(creating_strings::$data_not_inserted, "warning", $this->notifications_div_id);
             DOM_notification::queue_mesasage(print_r($error_data, TRUE), 'alert', $this->notifications_div_id);
+//            DOM_notification::queue_mesasage(print_r($sql_query, TRUE), 'alert', $this->notifications_div_id);
             $this->inserted = FALSE;
             return FALSE;
         }
