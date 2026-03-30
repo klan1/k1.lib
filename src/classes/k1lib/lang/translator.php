@@ -11,7 +11,7 @@ class translator {
     private static $instance = null;
     private $translator;
     private $currentLocale;
-    private $availableLocales = ['en_US', 'es_ES'];
+    private $availableLocales = ['en_US', 'es_CO'];
 
     private function __construct() {
         $this->translator = new GettextTranslator();
@@ -20,7 +20,7 @@ class translator {
         TranslatorFunctions::register($this->translator);
 
         // Set default locale
-        $this->setLocale('es_ES');
+        $this->setLocale('es_CO');
     }
 
     public static function getInstance() {
