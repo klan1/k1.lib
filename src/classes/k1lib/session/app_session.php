@@ -236,7 +236,12 @@ class app_session {
     }
 
     static public function is_logged($redirect = FALSE, $where_redirect_to = "") {
-        if ((self::is_enabled(true)) && (self::$has_started) && (isset(self::$user_hash))) {
+        if (
+                (self::is_enabled(true)) &&
+                (self::$has_started) &&
+                (self::$user_login != -1) &&
+                (isset(self::$user_hash))
+        ) {
             if (self::$user_hash == self::get_user_hash(self::$user_login)) {
                 return TRUE;
             } else {

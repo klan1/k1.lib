@@ -138,13 +138,13 @@ class creating extends base_with_data implements base_interface {
             $actual_password_field = strstr($field, "_password_", TRUE);
             if ($actual_password_field !== FALSE) {
                 if (strstr($field, "_password_current") !== FALSE) {
-                    $password_fields[$actual_password_field]['current'] = (empty($value)) ? NULL : md5($value);
+                    $password_fields[$actual_password_field]['current'] = (empty($value)) ? NULL : hash('sha256', $value);
                 }
                 if (strstr($field, "_password_new") !== FALSE) {
-                    $password_fields[$actual_password_field]['new'] = (empty($value)) ? NULL : md5($value);
+                    $password_fields[$actual_password_field]['new'] = (empty($value)) ? NULL : hash('sha256', $value);
                 }
                 if (strstr($field, "_password_confirm") !== FALSE) {
-                    $password_fields[$actual_password_field]['confirm'] = (empty($value)) ? NULL : md5($value);
+                    $password_fields[$actual_password_field]['confirm'] = (empty($value)) ? NULL : hash('sha256', $value);
                 }
                 unset($_POST[$field]);
                 if ($this->do_table_field_name_encrypt) {

@@ -1,5 +1,9 @@
 <?php
 
+use k1lib\html\DOM;
+use k1lib\html\notifications\on_DOM;
+use k1lib\html\pre;
+
 /**
  * Global functions, K1.lib.
  * 
@@ -21,14 +25,14 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
         trigger_error($msg, E_USER_NOTICE);
     }
     if (class_exists('\k1lib\html\DOM')) {
-        if (\k1lib\html\DOM::is_started()) {
-            $pre = new \k1lib\html\pre($msg);
-            echo $pre->generate();
-            // if (!empty(\k1lib\html\DOM::html_document()->body()->get_element_by_id("k1lib-output"))) {
-            //     \k1lib\html\notifications\on_DOM::queue_title('Message from K1.lib', 'warning');
-            //     \k1lib\html\notifications\on_DOM::queue_mesasage($pre->generate(), 'warning');
-            // } else {
-            // }
+        $pre = new pre($msg);
+        if (DOM::is_started()) {
+            if (!empty(DOM::html_document()->body()->get_element_by_id("k1lib-output"))) {
+                on_DOM::queue_title('Message from K1.lib', 'warning');
+                on_DOM::queue_mesasage($pre->generate(), 'warning');
+            } else {
+                echo $pre->generate();
+            }
         } else {
             echo $msg . "\n";
         }

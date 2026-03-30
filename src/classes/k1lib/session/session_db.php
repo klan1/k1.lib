@@ -67,6 +67,11 @@ class session_db {
     static $user_password_use_md5 = TRUE;
 
     /**
+     * @var bool
+     */
+    static $user_password_use_sha2 = TRUE;
+
+    /**
      * @var string
      */
     static protected $user_level_field = NULL;
@@ -132,7 +137,7 @@ class session_db {
                 if (isset($form_values[self::$user_login_input_name]) && isset($form_values[self::$user_password_input_name])) {
 
                     self::$user_login_input_value = $form_values[self::$user_login_input_name];
-                    self::$user_password_input_value = (self::$user_password_use_md5) ? md5($form_values[self::$user_password_input_name]) : $form_values[self::$user_password_input_name];
+                    self::$user_password_input_value = (self::$user_password_use_sha2) ? hash('sha256', $form_values[self::$user_password_input_name]) : $form_values[self::$user_password_input_name];
 
                     if (isset($form_values[self::$user_remember_me_input])) {
                         self::$user_remember_me_value = $form_values[self::$user_remember_me_input];
