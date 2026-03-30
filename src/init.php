@@ -12,7 +12,7 @@
  * @author          Alejandro Trujillo J. <alejo@klan1.com>
  * @copyright       2015-2023 Klan1 Network SAS
  * @license         Apache 2.0
- * @version         2.1
+ * @version         2.6
  * @since           File available since Release 0.1
  */
 /*
@@ -22,8 +22,10 @@
 
 namespace k1lib;
 
+use k1lib\lang\translator;
+
 const IN_K1LIB = TRUE;
-const VERSION = "2.1";
+const VERSION = "2.6";
 
 // Peace for user, info for the developer with ZendZerver and Z-Ray Live!
 error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
@@ -40,6 +42,8 @@ header("Developed-by: j0hnd03 | http://www.github.com/j0hnd03");
  * This MUST to be reflected on the .htaccess, IF NOT rewriting WONT work!
  */
 const URL_REWRITE_VAR_NAME = "K1LIB_URL";
+
+$translator = translator::getInstance();
 
 //k1lib_include_files(K1LIB_BASE_PATH);
 

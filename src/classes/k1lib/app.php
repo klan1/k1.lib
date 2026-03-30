@@ -71,7 +71,7 @@ class app {
                 trigger_error('You can\'t start an API app with shell', E_USER_ERROR);
             }
             $this->is_shell = true;
-            define('k1app\K1APP_MODE', 'shel');
+            define('k1app\K1APP_MODE', 'shell');
         }
         if (array_key_exists('HTTP_HOST', $_SERVER)) {
             if (!$this->is_api) {
@@ -204,7 +204,6 @@ class app {
         app_session::set_use_ip_in_userhash($this->config->get_option('app_session_use_ip_in_userhash'));
         app_session::set_app_user_levels($this->config->get_option('app_session_levels'));
         // TODO: manage non DB session
-        ini_set('session.use_strict_mode', 1);
         app_session::start_session();
         if (isset($_COOKIE[app_session::get_session_name() . '-store'])) {
             session_db::init(self::db());

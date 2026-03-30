@@ -12,6 +12,7 @@ use k1lib\html\tag;
 use k1lib\K1MAGIC;
 use k1lib\session\app_session as app_session;
 use k1lib\urlrewrite\url as url;
+use function d;
 use function k1lib\urlrewrite\get_back_url;
 use function k1lib\utils\decimal_to_n36;
 use function k1lib\utils\n36_to_decimal;
@@ -506,7 +507,6 @@ class base_with_data extends base {
     }
 
     public function encrypt_field_name($field_name) {
-            return $field_name;
         // first, we need to know in what position is the field on the table design.
         if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
             $rnd = $_SESSION['CRUDLEXS-RND'];
@@ -514,8 +514,7 @@ class base_with_data extends base {
             $rnd = rand(5000, 10000);
             $_SESSION['CRUDLEXS-RND'] = $rnd;
         }
-        if (!$this->do_table_field_name_encrypt) {
-        } else {
+        if ($this->do_table_field_name_encrypt) {
             $field_pos = 0;
             if (key_exists($field_name, $this->db_table->get_db_table_config())) {
                 foreach ($this->db_table->get_db_table_config() as $field => $config) {
@@ -527,12 +526,14 @@ class base_with_data extends base {
                     }
                     $field_pos++;
                 }
-                //            $new_field_name = "k1_" . \k1lib\utils\decimal_to_n36($field_pos);
+//                $new_field_name = "k1_" . decimal_to_n36($field_pos);
                 $new_field_name = "k1_" . decimal_to_n36($field_pos + $rnd);
                 return $new_field_name;
             } else {
                 return $field_name;
             }
+        } else {
+            return $field_name;
         }
     }
 
@@ -550,7 +551,7 @@ class base_with_data extends base {
             if (isset($_SESSION['CRUDLEXS-RND']) && !empty($_SESSION['CRUDLEXS-RND'])) {
                 $rnd = $_SESSION['CRUDLEXS-RND'];
             } else {
-                        d($_SESSION);
+                d($_SESSION);
 
                 trigger_error(__METHOD__ . ' ' . object_base_strings::$error_no_session_random, E_USER_ERROR);
             }

@@ -443,7 +443,9 @@ class base {
         /**
          * global shortcut
          */
-        $this->current_board->get_current_object()->set_controller_id($this->controller_id);
+        if ($this->current_board->get_is_enabled()) {
+            $this->current_board->get_current_object()->set_controller_id($this->controller_id);
+        }
         /**
          * HIDE FIELDS BY ROL
          */
