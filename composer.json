@@ -20,7 +20,7 @@
         "whichbrowser/parser": "dev-master",
         "ramsey/uuid": "^4",
         "smarty/smarty": "^5.4",
-        "gettext/translator": "v1.2.1"
+        "gettext/translator": "dev-master"
     },
     "autoload": {
         "psr-4": {
