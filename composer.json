@@ -3,7 +3,7 @@
     "description": "Classes and functions for comercial software development",
     "license": "Apache-2.0",
     "type": "library",
-    "version": "2.6",
+    "version": "2.6.1",
     "homepage": "https://github.com/klan1/k1.lib",
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -16,12 +16,21 @@
     "require": {
         "php": "^8.2",
         "endyjasmi/cuid": "dev-master",
-        "ralouphie/getallheaders": "2.0.5",
+        "ralouphie/getallheaders": "^3.0",
         "whichbrowser/parser": "dev-master",
         "ramsey/uuid": "^4",
         "smarty/smarty": "^5.4",
-        "gettext/translator": "dev-master"
+        "gettext/translator": "v1.2.1"
     },
+    "require-dev": {
+        "endyjasmi/cuid": "dev-master",
+        "ralouphie/getallheaders": "^3.0",
+        "whichbrowser/parser": "dev-master",
+        "ramsey/uuid": "^4",
+        "smarty/smarty": "^5.4",
+        "gettext/translator": "v1.2.1"
+    },
+
     "autoload": {
         "psr-4": {
             "k1lib\\": "src/classes/k1lib/"
@@ -29,7 +38,6 @@
         "files": [
             "src/functions/common.php",
             "src/init.php",
-            "src/lang/init-lang.php",
             "src/functions/global.php",
             "src/functions/forms.php",
             "src/functions/urlrewrite.php",
