@@ -91,15 +91,8 @@ class t {
             $translationFile = rtrim($customPath, '/') . "/{$locale}/{$domain}.php";
         } else {
             // Default framework path: __DIR__/../locales/{locale}/{domain}.php
-            $translationFile = __DIR__ . "/../../locales/{$locale}/{$domain}.php";
+            $translationFile = \k1lib\K1LIB_ROOT . "/../locales/{$locale}/{$domain}.php";
 
-            // Try alternative app path if not found
-            if (!file_exists($translationFile)) {
-                $altPath = __DIR__ . "/../../{$domain}/locales/{$locale}/{$domain}.php";
-                if (file_exists($altPath)) {
-                    $translationFile = $altPath;
-                }
-            }
         }
 
         // Check if file exists
@@ -110,9 +103,6 @@ class t {
                 throw new Exception("Translation file not found for domain '$domain' in locale '$locale' : $translationFile");
             }
         }
-
-        // Load translations from file
-        $translations = require $translationFile;
 
         // Create a new t instance or use existing
         $domainTranslator = null;
@@ -126,24 +116,7 @@ class t {
             $existingTranslations = [];
         }
 
-        // Flatten translations if they have the nested structure
-        $flatTranslations = [];
-        if (isset($translations['messages'])) {
-            foreach ($translations['messages'] as $context => $contextMessages) {
-                foreach ($contextMessages as $original => $translated) {
-                    $flatTranslations[$original] = $translated;
-                }
-            }
-        } else {
-            $flatTranslations = $translations;
-        }
-
-        // Merge with existing if needed
-        if ($mergeWithExisting) {
-            $flatTranslations = array_merge($existingTranslations, $flatTranslations);
-        }
-
-        $domainTranslator->loadTranslations($flatTranslations);
+        $domainTranslator->loadTranslations($translationFile);
 
         // Store for later use
         $this->domains[$cacheKey] = $domainTranslator;
