@@ -22,10 +22,12 @@
 
 namespace k1lib;
 
-use k1lib\lang\t;
+use k1lib\lang\translator;
 
 const IN_K1LIB = TRUE;
 const VERSION = "2.6";
+const K1LIB_ROOT = __DIR__;
+
 /*
  * PATH AUTO CONFIG
  */
@@ -49,5 +51,5 @@ header("Developed-by: j0hnd03 | http://www.github.com/j0hnd03");
  * internationalization 
  */
 
-$translator = t::getInstance();
+$translator = translator::getInstance();
 

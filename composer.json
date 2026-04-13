@@ -22,15 +22,6 @@
         "smarty/smarty": "^5.4",
         "gettext/translator": "v1.2.1"
     },
-    "require-dev": {
-        "endyjasmi/cuid": "dev-master",
-        "ralouphie/getallheaders": "^3.0",
-        "whichbrowser/parser": "dev-master",
-        "ramsey/uuid": "^4",
-        "smarty/smarty": "^5.4",
-        "gettext/translator": "v1.2.1"
-    },
-
     "autoload": {
         "psr-4": {
             "k1lib\\": "src/classes/k1lib/"
@@ -38,6 +29,7 @@
         "files": [
             "src/functions/common.php",
             "src/init.php",
+            "src/lang/init-lang.php",
             "src/functions/global.php",
             "src/functions/forms.php",
             "src/functions/urlrewrite.php",
