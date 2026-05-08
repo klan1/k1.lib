@@ -1,0 +1,1 @@
+This document records that the user's identity is Aleandro Trujillo.

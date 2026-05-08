@@ -1,0 +1,3 @@
+- [Project Structure](.claude/memory/project_structure.md) — Overview of the project's file structure and architecture.
+- [Src Detailed Map](.claude/memory/src_detailed_map.md) — Exhaustive file-by-file breakdown of the src/ directory and its sub-modules.
+- [API Model Details](.claude/memory/api_model_details.md) — Detailed analysis of the k1lib\api\model class.

@@ -3,8 +3,8 @@
 namespace k1lib\crudlexs\object;
 
 use k1lib\crudlexs\db_table;
-use k1lib\html\div;
-use k1lib\html\input;
+use k1html\html\div;
+use k1html\html\input;
 use function k1lib\common\unserialize_var;
 
 class search_helper extends creating {

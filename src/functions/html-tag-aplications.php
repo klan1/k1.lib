@@ -6,9 +6,9 @@
  * HTML Related funcions that uses the HTML Classes
  */
 
-namespace k1lib\html;
+namespace k1html\html;
 
-use k1lib\html as html_classes;
+use k1html\html as html_classes;
 
 /**
  * Loads files and get contents from templates directory from k1.lib no from the app template directory.
@@ -35,7 +35,7 @@ function load_html_template($function_name) {
  */
 function label_input_text_combo($field_name, $value, $label, $required = FALSE, $error_msg = "", $label_link = null) {
 
-//    function \k1lib\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
+//    function \k1html\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
     if ($required) {
         $required_class = "";
     } else {
@@ -74,7 +74,7 @@ function label_input_text_combo($field_name, $value, $label, $required = FALSE, 
  */
 function label_text_combo($label, $value) {
 
-//    function \k1lib\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
+//    function \k1html\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
 //    $label_object = new html_classes\label($label, "", "right inline");
 
     $html_template = load_html_template("label-input-combo");
@@ -95,7 +95,7 @@ function label_text_combo($label, $value) {
  */
 function label_text_combo_2columns($label, $value) {
 
-//    function \k1lib\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
+//    function \k1html\html\input_label_combo(&$field_name, &$value, &$table_config_array, &$error_msg = "") {
 //    $label_object = new html_classes\label($label, "", "right inline");
 
     $html_template = load_html_template("row-2-columns");
@@ -190,7 +190,7 @@ function table_from_array(&$data_array, $has_header = TRUE, $class = "", $id = "
  * @param bool $mini
  * @param bool $inline
  * @param bool $keep_get_vars
- * @return \k1lib\html\a_tag
+ * @return \k1html\html\a_tag
  */
 function get_link_button($linkTo, $label, $class = "", $id = "") {
     if ($linkTo == NULL) {
@@ -276,9 +276,9 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
             $theme = "btn-outline-secondary";
             break;
     }
-    $icon = new \k1lib\html\i(NULL, $button_icon);
+    $icon = new \k1html\html\i(NULL, $button_icon);
 
-    $button_object = new \k1lib\html\a($linkTo, "$icon " . $label, "_self", "btn icon {$theme} {$class}", $id);
+    $button_object = new \k1html\html\a($linkTo, "$icon " . $label, "_self", "btn icon {$theme} {$class}", $id);
 //    $button_object->set_attrib("class", "$button_icon", TRUE);
 //    $button_object->set_attrib("class", "btn icon $theme", TRUE);
     if ($js_confirm_dialog) {

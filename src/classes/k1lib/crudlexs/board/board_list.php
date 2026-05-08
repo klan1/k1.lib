@@ -7,21 +7,21 @@ use k1lib\crudlexs\controller\base as controller_base;
 use k1lib\crudlexs\object\base;
 use k1lib\crudlexs\object\listing;
 use k1lib\forms\file_uploads;
-use k1lib\html\bootstrap\grid_row;
-use k1lib\html\bootstrap\modal;
-use k1lib\html\div;
-use k1lib\html\DOM as DOM;
-use k1lib\html\i;
-use k1lib\html\iframe;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1html\html\bootstrap\grid_row;
+use k1html\html\bootstrap\modal;
+use k1html\html\div;
+use k1html\html\DOM as DOM;
+use k1html\html\i;
+use k1html\html\iframe;
+use k1html\html\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
 use const k1app\K1APP_URL;
 use function k1lib\common\serialize_var;
 use function k1lib\common\unserialize_var;
 use function k1lib\common\unset_serialize_var;
 use function k1lib\forms\check_all_incomming_vars;
-use function k1lib\html\get_link_button;
-use function k1lib\html\html_header_go;
+use function k1html\html\get_link_button;
+use function k1html\html\html_header_go;
 use function k1lib\urlrewrite\get_back_url;
 
 class board_list extends board_base implements board_interface {
@@ -112,8 +112,8 @@ class board_list extends board_base implements board_interface {
                 $new_link = get_link_button(url::do_url("../../{$this->controller_object->get_board_create_url_name()}/" . urlencode($related_url_keys_text)), board_list_strings::$button_new, 'btn-sm');
             }
             if ($this->create_enable) {
-//                $new_link = \k1lib\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
-//                $new_link = \k1lib\html\get_link_button("../{$this->controller_object->get_board_create_url_name()}/?back-url={$this_url}", board_list_strings::$button_new);
+//                $new_link = \k1html\html\get_link_button(url::do_url("../{$this->controller_object->get_board_create_url_name()}/" . $related_url_keys_text), board_list_strings::$button_new);
+//                $new_link = \k1html\html\get_link_button("../{$this->controller_object->get_board_create_url_name()}/?back-url={$this_url}", board_list_strings::$button_new);
                 $new_link->append_to($this->button_div_tag);
             }
 

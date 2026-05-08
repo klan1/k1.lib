@@ -11,7 +11,7 @@
 
 namespace k1lib\controllers;
 
-use k1lib\html\DOM as DOM;
+use k1html\html\DOM as DOM;
 
 /**
  * Return the controller PATH for include it, we cant do it from the function by the var scope, so we do here some esential checks before the include

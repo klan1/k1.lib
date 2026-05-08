@@ -15,6 +15,7 @@
     ],
     "require": {
         "php": "^8.2",
+        "klan1/k1lib.html": "dev-master",
         "endyjasmi/cuid": "dev-master",
         "ralouphie/getallheaders": "^3.0",
         "whichbrowser/parser": "dev-master",

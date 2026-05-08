@@ -5,7 +5,7 @@ namespace k1lib;
 use k1lib\app\config;
 use k1lib\db\PDO_k1;
 use k1lib\forms\file_uploads;
-use k1lib\html\notifications\on_DOM;
+use k1html\html\notifications\on_DOM;
 use k1lib\session\app_session;
 use k1lib\session\session_db;
 use k1lib\urlrewrite\url;
@@ -98,6 +98,7 @@ class app {
         define('k1app\K1APP_DOMAIN', $_SERVER['HTTP_HOST']);
 
         define('k1app\K1APP_SRC_PATH', K1APP_ROOT . 'src/'); // 2.0
+        define('k1app\K1APP_LOCALES_PATH', K1APP_SRC_PATH . 'locales/'); // 2.0
         define('k1app\K1APP_CONTROLLERS_PATH', K1APP_SRC_PATH . 'classes/k1app/controllers/'); // 2.0
         define('k1app\K1APP_CLASSES_PATH', K1APP_SRC_PATH . 'classes/'); // 2.0
         define('k1app\K1APP_FUNCTIONS_PATH', K1APP_SRC_PATH . 'functions/'); // 2.0

@@ -4,8 +4,8 @@ namespace k1lib\crudlexs\board;
 
 use k1lib\crudlexs\controller\base;
 use k1lib\crudlexs\object\creating;
-use k1lib\html\div;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1html\html\div;
+use k1html\html\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
 use function k1lib\urlrewrite\get_back_url;
 
@@ -38,7 +38,7 @@ class create extends board_base implements board_interface {
         /**
          * IFRAME for KF tool
          */
-//        $fk_iframe = new \k1lib\html\iframe('', 'utility-iframe', "fk-iframe");
+//        $fk_iframe = new \k1html\html\iframe('', 'utility-iframe', "fk-iframe");
 //        DOM::html_document()->body()->content()->append_child_tail($fk_iframe);
 
         $this->create_object->enable_foundation_form_check();

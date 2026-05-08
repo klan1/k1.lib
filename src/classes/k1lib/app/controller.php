@@ -8,7 +8,7 @@ use k1app\template\mazer\layouts\sidebar_page;
 use k1app\template\mazer\layouts\single_page;
 use k1lib\app;
 use k1lib\crudlexs\object\base;
-use k1lib\html\notifications\on_DOM as DOM_notifications;
+use k1html\html\notifications\on_DOM as DOM_notifications;
 use k1lib\session\app_session;
 use const k1app\K1APP_URL;
 use function k1lib\forms\check_all_incomming_vars;

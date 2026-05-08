@@ -4,11 +4,11 @@ namespace k1lib\crudlexs\board;
 
 use k1lib\crudlexs\controller\base;
 use k1lib\crudlexs\object\updating;
-use k1lib\html\div;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1html\html\div;
+use k1html\html\notifications\on_DOM as DOM_notification;
 use k1lib\session\app_session as app_session;
 use k1lib\urlrewrite\url as url;
-use function k1lib\html\get_link_button;
+use function k1html\html\get_link_button;
 use function k1lib\urlrewrite\get_back_url;
 
 class update extends board_base implements board_interface {
@@ -41,7 +41,7 @@ class update extends board_base implements board_interface {
         /**
          * IFRAME for KF tool
          */
-//        $fk_iframe = new \k1lib\html\iframe('./', 'utility-iframe', "fk-iframe");
+//        $fk_iframe = new \k1html\html\iframe('./', 'utility-iframe', "fk-iframe");
 //        DOM::html_document()->body()->content()->append_child_tail($fk_iframe);
 
         if (!empty($this->row_keys_text)) {

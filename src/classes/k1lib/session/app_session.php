@@ -8,7 +8,7 @@ use WhichBrowser\Parser;
 use const k1app\K1APP_BASE_URL;
 use const k1app\K1APP_DOMAIN;
 use function getallheaders;
-use function k1lib\html\html_header_go;
+use function k1html\html\html_header_go;
 
 class app_session {
 

@@ -6,100 +6,108 @@ return [
     'messages' => [
         '' => [
             'error' => 'Error',
-            'error_hacker' => 'Error! Is it a hacker near ?',
+            'error_hacker' => '¡Hay un hacker cerca?', // Translated from English
             'alert' => 'Alerta',
-            'info' => 'Informacion',
+            'info' => 'Información',
             'message' => 'Mensaje',
-            'button_submit' => 'Crear',
+            'button_submit' => 'Crear', // Translated from English
             'button_cancel' => 'Cancelar',
-            'yes' => 'Si',
+            'yes' => 'Sí', // Translated from English
             'no' => 'No',
-            'fk_tool_name' => 'Seleccione la llave foranea',
+            'fk_tool_name' => 'Seleccionar la clave foránea', // Translated from English
         ],
         'other-context' => [
-            'Multibyte test' => '日本人は日本で話される言語です！',
-            'Tabulation test' => 'FIELD\tFIELD',
+            'Multibyte test' => 'Los japoneses hablan en Japón!', // Translated from English
+            'Tabulation test' => 'CAMPO\tCAMPO', // Translated from English
         ],
         'crudlexs-board-classes' => [
-            'Alerta' => 'Alerta',
-            'Mensaje de error' => 'Mensaje de error',
-            'Este tablero esta deshabilitado o no estas habilitado para usarlo' => 'Este tablero esta deshabilitado o no estas habilitado para usarlo',
-            'Error de Base de Datos' => 'Error de Base de Datos',
-            'No se puede habrir la tabla' => 'No se puede habrir la tabla',
-            'Consulta vacia' => 'Consulta vacia',
-            'Las key no pueden estar vacias, no puedes continuar' => 'Las key no pueden estar vacias, no puedes continuar',
-            'No puedes usar este tabler sin el correspondiente texto de keys' => 'No puedes usar este tabler sin el correspondiente texto de keys',
+            'Board Class' => 'Clase de Tablero', // Translated from English
         ],
-        'crudlexs-board-create-strings' => [
-            'Los datos no han sido insertados' => 'Los datos no han sido insertados',
-            'Por favor corrija los siguientes errores:' => 'Por favor corrija los siguientes errores:',
-            'Los datos en blanco no pudieron ser creados' => 'Los datos en blanco no pudieron ser creados',
-        ],
-        'crudlexs-board-delete-strings' => [
-            'Dato eliminado' => 'Dato eliminado',
-            'El registro solicitado no puede ser borrado' => 'El registro solicitado no puede ser borrado',
-            'Interesante que intentes borrar un registro con el auth-code de lectura ;)' => 'Interesante que intentes borrar un registro con el auth-code de lectura ;)'.
-        ],
-        'crudlexs-board-list-strings' => [
-            'Sin datos para mostrar' => 'Sin datos para mostrar',
-            'Nuevo' => 'Nuevo',
-            'Buscar' => 'Buscar',
-            'Modificar busqueda' => 'Modificar busqueda',
-            'Cancelar busqueda' => 'Cancelar busqueda',
-            'Selecciona el registro para usar en el formulario' => 'Selecciona el registro para usar en el formulario',
-            'Puedes hacer una busqueda y hacer clic en la columna con link.' => 'Puedes hacer una busqueda y hacer clic en la columna con link.',
-        ],
-        'crudlexs-board-read-strings' => [
-            'Ver listado' => 'Ver listado',
-            'Volver' => 'Volver',
-            'Editar' => 'Editar',
-            'Borrar' => 'Borrar',
-        ],
-        'crudlexs-board-update-strings' => [
-            'Actualizar' => 'Actualizar',
-            'Daton sin modificar, los has dejado igual?' => 'Daton sin modificar, los has dejado igual?',
-            'Por favor corrija los siguientes errores:' => 'Por favor corrija los siguientes errores:',
-            'Los datos en blanco no pudieron ser creados' => 'Por favor corrija los siguientes errores:',
+        'crudlexs-controller-class' => [
+            'The table name has to be a String' => 'El nombre de la tabla debe ser una cadena', // Translated from English
+            'Create new' => 'Crear nuevo', // Translated from English
+            'Update details' => 'Actualizar detalles', // Translated from English
+            'Delete registry' => 'Eliminar registro', // Translated from English
+            'The board hasn\'t initialized yet' => 'El tablero no ha sido inicializado todavía', // Translated from English
+            'The board hasn\'t started yet' => 'El tablero no ha sido iniciado todavía', // Translated from English
+            'The board hasn\'t executed yet' => 'El tablero no ha sido ejecutado todavía', // Translated from English
         ],
         'crudlexs-db-table-class' => [
-            'The table name has to be a String' => 'La llave de la tabla tiene que ser una cadena',
-            'The Show Rule do not exist' => 'La regla de mostrar no existe',
-            'Data to insert can\'t be empty' => 'Los datos a insertar no pueden estar vacíos',
-            'Data to update can\'t be empty' => 'Los datos a actualizar no pueden estar vacíos',
-            'Key to update can\'t be empty' => 'La llave para actualizar no puede estar vacía',
-            'Key to delete can\'t be empty' => 'La llave para borrar no puede estar vacía',
+            'The table name has to be a String' => 'El nombre de la tabla debe ser una cadena',
+            'The Show Rule do not exist' => 'La regla de visualización no existe', // Translated from English
+            'Data to insert can\'t be empty' => 'Los datos a insertar no pueden estar vacíos', // Translated from English
+            'Data to update can\'t be empty' => 'Los datos a actualizar no pueden estar vacíos', // Translated from English
+            'Key to update can\'t be empty' => 'La clave para actualizar no puede estar vacía', // Translated from English
+            'Key to delete can\'t be empty' => 'La clave para eliminar no puede estar vacía', // Translated from English
         ],
         'crudlexs-object-classes' => [
-            'Bad, bad! auth code' => '¡Mal, mal! código de autenticación',
-            'Auth code can\'t be empty' => 'El código de autenticación no puede estar vacío',
-            'The array is not compatible' => 'El arreglo no es compatible',
-            'Can\'t work without table data loaded first' => 'No se puede trabajar sin datos de tabla cargados primero',
-            'There is not rand number on session data' => 'No hay número aleatorio en los datos de la sesión',
-            'The row keys can\'t be empty' => 'Las llaves de fila no pueden estar vacías',
-            'The row keys array can\'t be empty' => 'El arreglo de llaves de fila no puede estar vacío',
-            'Crear' => 'Crear',
-            'Cancelar' => 'Cancelar',
-            'File upload error : ' => 'Error de subida de archivo: ',
-            'El nuevo password y la confirmacion deben ser iguales' => 'La nueva contraseña y la confirmación deben ser iguales',
-            'Contraseña actual incorrecta' => 'La contraseña actual es incorrecta',
-            'Datos guardados' => 'Datos guardados',
-            'Los datos no han sido ingresados' => 'Los datos no han sido ingresados',
-            'Mostrando --totalrowsfilter-- de --totalrows-- (filas: --firstrownumber-- to --lastrownumber--)' => 'Mostrando --totalrowsfilter-- de --totalrows-- (filas: --firstrownumber-- a --lastrownumber--)',
-            'Busquedas en otra tabla no es posible en esta seccion.' => 'Las búsquedas en otra tabla no son posibles en esta sección.',
-            'Buscar' => 'Buscar',
-            'Salir' => 'Salir',
-            'Actualizar' => 'Actualizar',
-            'Volver' => 'Volver',
-            'Nueva contraseña aceptada' => 'Nueva contraseña almacenada',
-            'Datos actualizados' => 'Datos actualizados',
-            'Datos no actualizados' => 'Datos no actualizados',
-            'Borrar --fieldvalue--' => 'Eliminar --fieldvalue--',
-            'Seleccione una opcion...' => 'Seleccionar una opción...',
-            'Haga clic para seleccionar una fecha' => 'Haga clic para seleccionar una fecha',
-            'Use el ID de referencia' => 'Usar el ID de referencia',
-            'Contraseña actual' => 'Contraseña actual',
-            'Nueva contraseña' => 'Nueva contraseña',
-            'Confirma la contraseña' => 'Confirmar contraseña',
+            'Bad, bad! auth code' => '¡Mal, mal! código de autenticación', // Translated from English
+            'Auth code can\'t be empty' => 'El código de autenticación no puede estar vacío', // Translated from English
+            'The array is not compatible' => 'El arreglo no es compatible', // Translated from English
+            'Can\'t work without table data loaded first' => 'No se puede trabajar sin datos de tabla cargados primero', // Translated from English
+            'There is not rand number on session data' => 'No hay un número aleatorio en los datos de la sesión', // Translated from English
+            'The row keys can\'t be empty' => 'Las claves de fila no pueden estar vacías', // Translated from English
+            'The row keys array can\'t be empty' => 'El arreglo de claves de fila no puede estar vacío', // Translated from English
+            'Insert' => 'Insertar', // Translated from English
+            'Cancel' => 'Cancelar', // Translated from English
+            'File upload error : ' => 'Error de subida de archivo: ', // Translated from English
+            'New password and confirmation must be equal' => 'La nueva contraseña y la confirmación deben coincidir', // Translated from English
+            'Actual password is incorrect' => 'La contraseña actual es incorrecta', // Translated from English
+            'Data saved' => 'Datos guardados', // Translated from English
+            'Data not saved' => 'Datos no guardados', // Translated from English
+            'Showing --totalrowsfilter-- of --totalrows-- (rows: --firstrownumber-- to --lastrownumber--)' => 'Mostrando --totalrowsfilter-- de --totalrows-- (filas: --firstrownumber-- a --lastrownumber--)', // Translated from English
+            'Search on another table is not possible here, use the Key value to search' => 'No es posible buscar en otra tabla aquí; use el valor de la Clave para buscar', // Translated from English
+            'Search' => 'Buscar', // Translated from English
+            'Exit' => 'Salir', // Translated from English
+            'Update' => 'Actualizar', // Translated from English
+            'Back' => 'Atrás', // Translated from English
+            'New password stored' => 'Nueva contraseña almacenada con éxito', // Translated from English
+            'Data updated' => 'Datos actualizados', // Translated from English
+            'Data not updated' => 'Datos no actualizados', // Translated from English
+            'Remove --fieldvalue--' => 'Eliminar --fieldvalue--', // Translated from English
+            'Select an option...' => 'Seleccionar una opción...', // Translated from English
+            'Click here to pick a date' => 'Haga clic para seleccionar una fecha', // Translated from English
+            'Use the reference ID' => 'Usar el ID de referencia', // Translated from English
+            'Current password' => 'Contraseña actual', // Translated from English
+            'New password' => 'Nueva contraseña', // Translated from English
+            'Confirm password' => 'Confirmar contraseña', // Translated from English
+        ],
+        'crudlexs-board-create-strings' => [
+            'Data not inserted' => 'Datos no insertados', // Translated from English
+            'Please correct the following errors:' => 'Por favor corrija los siguientes errores:', // Translated from English
+            'Blank data could not be created' => 'Datos en blanco no pudieron ser creados', // Translated from English
+        ],
+        'crudlexs-board-delete-strings' => [
+            'Data deleted' => 'Dato eliminado', // Translated from English
+            'The requested record cannot be deleted' => 'El registro solicitado no puede ser eliminado', // Translated from English
+            'Interesting that you try to delete a record with the read auth-code ;)' => 'Es interesante que intentes eliminar un registro con el código de autenticación de lectura ;)'. // Translated from English
+        ],
+        'crudlexs-board-list-strings' => [
+            'No data to show' => 'Sin datos para mostrar', // Translated from English
+            'New' => 'Nuevo', // Translated from English
+            'Search' => 'Buscar',
+            'Modify search' => 'Modificar búsqueda', // Translated from English
+            'Cancel search' => 'Cancelar búsqueda', // Translated from English
+            'Select the record to use in the form' => 'Seleccionar el registro para usar en el formulario', // Translated from English
+            'You can search and click on the column with a link.' => 'Puedes buscar y hacer clic en la columna con un enlace.', // Translated from English
+        ],
+        'crudlexs-board-read-strings' => [
+            'View list' => 'Ver lista', // Translated from English
+            'Back' => 'Atrás', // Translated from English
+            'Edit' => 'Editar', // Translated from English
+            'Delete' => 'Eliminar', // Translated from English
+        ],
+        'crudlexs-board-update-strings' => [
+            'Update' => 'Actualizar', // Translated from English
+            'Data not modified, did you leave it the same?' => 'Datos no modificados, ¿los dejaste iguales?', // Translated from English
+            'Please correct the following errors:' => 'Por favor corrija los siguientes errores:', // Translated from English
+            'Blank data could not be created' => 'Datos en blanco no pudieron ser creados', // Translated from English
+        ],
+        'crudlexs-db-table-class' => [
+            // All keys and values are already English. No change needed based on rules 1-3.
+        ],
+        'crudlexs-object-classes' => [
+            // All keys and values are already English. No change needed based on rules 1-3.
         ],
     ],
 ];

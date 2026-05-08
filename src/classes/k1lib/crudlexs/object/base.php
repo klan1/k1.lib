@@ -26,7 +26,7 @@ class base {
 
     /**
      *
-     * @var \k1lib\html\div
+     * @var \k1html\html\div
      */
     protected $div_container;
 
@@ -63,7 +63,7 @@ class base {
 
     public function __construct(\k1lib\crudlexs\db_table $db_table) {
         $this->db_table = $db_table;
-        $this->div_container = new \k1lib\html\div();
+        $this->div_container = new \k1html\html\div();
         $this->is_valid = TRUE;
     }
 
