@@ -1,8 +1,8 @@
 <?php
 
-use k1html\html\DOM;
-use k1html\html\notifications\on_DOM;
-use k1html\html\pre;
+use k1lib\html\DOM;
+use k1lib\html\notifications\on_DOM;
+use k1lib\html\pre;
 
 /**
  * Global functions, K1.lib.
@@ -24,7 +24,7 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
     if ($trigger_notice) {
         trigger_error($msg, E_USER_NOTICE);
     }
-    if (class_exists('\k1html\html\DOM')) {
+    if (class_exists('\k1lib\html\DOM')) {
         $pre = new pre($msg);
         if (DOM::is_started()) {
             if (!empty(DOM::html_document()->body()->get_element_by_id("k1lib-output"))) {

@@ -5,10 +5,10 @@ namespace k1lib\crudlexs\object;
 use k1lib\common_strings;
 use k1lib\crudlexs\db_table;
 use k1lib\forms\file_uploads;
-use k1html\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
 use function k1lib\forms\check_all_incomming_vars;
-use function k1html\html\html_header_go;
+use function k1lib\html\html_header_go;
 use function k1lib\urlrewrite\get_back_url;
 
 class updating extends creating {

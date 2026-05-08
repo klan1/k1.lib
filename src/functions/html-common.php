@@ -1,6 +1,6 @@
 <?php
 
-namespace k1html\html;
+namespace k1lib\html;
 
 function js_back() {
     die("<body><script type='text/javascript''>history.back();</script>");

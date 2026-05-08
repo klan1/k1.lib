@@ -4,7 +4,7 @@ namespace k1lib\urlrewrite;
 
 use k1app\template\mazer\components\app\sidebar\wrapper\header;
 use k1lib\api\base as api_base;
-use k1html\html\html_document;
+use k1lib\html\html_document;
 use const k1lib\URL_REWRITE_VAR_NAME;
 use function k1lib\common\explode_with_2_delimiters;
 use function k1lib\controllers\load_controller;

@@ -5,12 +5,12 @@ namespace k1lib\session;
 use k1lib\crudlexs\db_table as db_table;
 use k1lib\crudlexs\db_table as db_table2;
 use k1lib\crypt;
-use k1html\html\notifications\on_DOM as DOM_notifications;
+use k1lib\html\notifications\on_DOM as DOM_notifications;
 use k1lib\urlrewrite\url;
 use PDO;
 use Ramsey\Uuid\Uuid;
 use function k1lib\forms\check_all_incomming_vars;
-use function k1html\html\html_header_go;
+use function k1lib\html\html_header_go;
 
 class session_browser_fp extends session_db {
 

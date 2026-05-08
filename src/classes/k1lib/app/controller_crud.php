@@ -11,8 +11,8 @@ use k1lib\app\controller;
 use k1lib\crudlexs\controller\base as cb;
 use k1lib\crudlexs\db_table;
 use k1lib\crudlexs\object\base as ob;
-use k1html\html\div;
-use k1html\html\DOM;
+use k1lib\html\div;
+use k1lib\html\DOM;
 use k1lib\urlrewrite\url;
 use const k1app\K1APP_BASE_URL;
 

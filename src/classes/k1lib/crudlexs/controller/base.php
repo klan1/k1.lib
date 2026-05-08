@@ -17,11 +17,11 @@ use k1lib\crudlexs\object\listing;
 use k1lib\crudlexs\object\reading;
 use k1lib\crudlexs\object\updating;
 use k1lib\db\PDO_k1;
-use k1html\html\div;
-use k1html\html\DOM as DOM;
-use k1html\html\notifications\on_DOM as DOM_notification;
-use k1html\html\script;
-use k1html\html\tag;
+use k1lib\html\div;
+use k1lib\html\DOM as DOM;
+use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\script;
+use k1lib\html\tag;
 use k1lib\K1MAGIC;
 use k1lib\session\app_session;
 use k1lib\urlrewrite\url as url;
@@ -30,7 +30,7 @@ use const k1app\template\mazer\TPL_URL;
 use function d;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\common\serialize_var;
-use function k1html\html\html_header_go;
+use function k1lib\html\html_header_go;
 
 class base {
 

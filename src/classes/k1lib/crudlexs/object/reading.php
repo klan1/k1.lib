@@ -5,9 +5,9 @@ namespace k1lib\crudlexs\object;
 use k1lib\common_strings;
 use k1lib\crudlexs\board\read;
 use k1lib\db\security\db_table_aliases;
-use k1html\html\div;
-use k1html\html\h3;
-use k1html\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\div;
+use k1lib\html\h3;
+use k1lib\html\notifications\on_DOM as DOM_notification;
 
 /**
  * 

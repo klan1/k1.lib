@@ -5,10 +5,10 @@ namespace k1lib\crudlexs\object;
 use k1lib\common_strings as common_strings;
 use k1lib\crudlexs\db_table;
 use k1lib\forms\file_uploads as file_uploads;
-use k1html\html\a;
-use k1html\html\img;
-use k1html\html\notifications\on_DOM as DOM_notification;
-use k1html\html\tag;
+use k1lib\html\a;
+use k1lib\html\img;
+use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\tag;
 use k1lib\K1MAGIC;
 use k1lib\session\app_session as app_session;
 use k1lib\urlrewrite\url as url;
@@ -294,7 +294,7 @@ class base_with_data extends base {
                     foreach ($file_upload_fields as $field => $file_type) {
                         switch (substr($file_type, 0, 5)) {
                             case "image":
-                                //                                $div_container = new \k1html\html\div();
+                                //                                $div_container = new \k1lib\html\div();
 
                                 $img_tag = new img(file_uploads::get_uploads_url($options['table']) . "--fieldvalue--");
                                 $img_tag->set_attrib("onClick", "window.open(this.getAttribute('src'),'imgWindow', 'height=1024,width=768,toolbar=0,location=0,menubar=0');", TRUE);
@@ -377,10 +377,10 @@ class base_with_data extends base {
                                 if (is_object($tag_object)) {
                                     $a_tags = [];
                                     $tag_value = null;
-                                    if (get_class($tag_object) == "k1html\html\a") {
+                                    if (get_class($tag_object) == "k1lib\html\a") {
                                         $tag_href = $tag_object->get_attribute("href");
                                         $tag_value = $tag_object->get_value();
-                                    } elseif (get_class($tag_object) == "k1html\html\img") {
+                                    } elseif (get_class($tag_object) == "k1lib\html\img") {
                                         $tag_href = $tag_object->get_attribute("src");
                                         $tag_value = $tag_object->get_attribute("alt");
                                     } else {
@@ -443,11 +443,11 @@ class base_with_data extends base {
                                             }
                                             $tag_value = str_replace("--fieldauthcode--", md5(K1MAGIC::get_value() . (!empty($actual_custom_field_value) ? $actual_custom_field_value : $row_data[$field_to_change])), $tag_value);
                                         }
-                                        if (get_class($tag_object) == "k1html\html\a") {
+                                        if (get_class($tag_object) == "k1lib\html\a") {
                                             $tag_object->set_attrib("href", $tag_href);
                                             $tag_object->set_value($tag_value);
                                         }
-                                        if (get_class($tag_object) == "k1html\html\img") {
+                                        if (get_class($tag_object) == "k1lib\html\img") {
                                             $tag_object->set_attrib("src", $tag_href);
                                             $tag_object->set_style("max-height:150px; max-width:150px"); // inline styles, yes
                                         }

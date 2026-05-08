@@ -9,9 +9,9 @@ use k1lib\crudlexs\object\listing;
 use k1lib\crudlexs\object\reading;
 use k1lib\crudlexs\object\search_helper;
 use k1lib\crudlexs\object\updating;
-use k1html\html\div;
-use k1html\html\DOM as DOM;
-use k1html\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\div;
+use k1lib\html\DOM as DOM;
+use k1lib\html\notifications\on_DOM as DOM_notification;
 use k1lib\session\app_session;
 use function k1lib\common\serialize_var;
 use function k1lib\common\unserialize_var;
@@ -31,7 +31,7 @@ class board_base {
     protected $fields_to_hide = [];
 
     /**
-     * @var \k1html\html\div;
+     * @var \k1lib\html\div;
      */
     public $board_content_div;
 

@@ -9,15 +9,15 @@ use k1lib\crudlexs\object\listing;
 use k1lib\crudlexs\object\reading;
 use k1lib\db\security\db_table_aliases;
 use k1lib\forms\file_uploads;
-use k1html\html\a;
-use k1html\html\bootstrap\table_from_data;
-use k1html\html\div;
-use k1html\html\notifications\on_DOM as DOM_notification;
-use k1html\html\span;
+use k1lib\html\a;
+use k1lib\html\bootstrap\table_from_data;
+use k1lib\html\div;
+use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\span;
 use k1lib\K1MAGIC;
 use k1lib\urlrewrite\url as url;
 use const k1app\K1APP_URL;
-use function k1html\html\get_link_button;
+use function k1lib\html\get_link_button;
 use function k1lib\urlrewrite\get_back_url;
 
 class read extends board_base implements board_interface {

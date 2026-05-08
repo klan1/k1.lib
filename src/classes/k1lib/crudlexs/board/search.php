@@ -7,11 +7,11 @@ use k1lib\common_strings;
 use k1lib\crudlexs\controller\base;
 use k1lib\crudlexs\object\search_helper;
 use k1lib\db\security\db_table_aliases;
-use k1html\html\bootstrap\modal;
-use k1html\html\div;
-use k1html\html\DOM as DOM;
-use k1html\html\iframe;
-use k1html\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\bootstrap\modal;
+use k1lib\html\div;
+use k1lib\html\DOM as DOM;
+use k1lib\html\iframe;
+use k1lib\html\notifications\on_DOM as DOM_notification;
 use function k1lib\common\unserialize_var;
 
 class search extends board_base implements board_interface {

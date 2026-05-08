@@ -2,19 +2,19 @@
 
 namespace k1lib\crudlexs\object;
 
-use k1html\html\bootstrap\grid_row;
-use k1html\html\bootstrap\label_value_row;
-use k1html\html\div;
-use k1html\html\form;
-use k1html\html\input;
-use k1html\html\label;
-use k1html\html\notifications\on_DOM as DOM_notification;
+use k1lib\html\bootstrap\grid_row;
+use k1lib\html\bootstrap\label_value_row;
+use k1lib\html\div;
+use k1lib\html\form;
+use k1lib\html\input;
+use k1lib\html\label;
+use k1lib\html\notifications\on_DOM as DOM_notification;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\common\unserialize_var;
 use function k1lib\common\unset_serialize_var;
 use function k1lib\forms\check_all_incomming_vars;
-use function k1html\html\get_link_button;
-use function k1html\html\html_header_go;
+use function k1lib\html\get_link_button;
+use function k1lib\html\html_header_go;
 
 /**
  * 
