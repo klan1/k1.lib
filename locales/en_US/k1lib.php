@@ -80,7 +80,7 @@ return [
         'crudlexs-board-delete-strings' => [
             'Data deleted' => 'Data deleted', // Key is now English, value is English
             'The requested record cannot be deleted' => 'The requested record cannot be deleted', // Key is now English, value is English
-            'Interesting that you try to delete a record with the read auth-code ;)' => 'It is interesting that you are trying to delete a record with the read auth-code ;)'. // Grammar fix
+            'Interesting that you try to delete a record with the read auth-code ;)' => 'It is interesting that you are trying to delete a record with the read auth-code ;)', // Grammar fix
         ],
         'crudlexs-board-list-strings' => [
             'No data to show' => 'No data to show', // Key is now English, value is English

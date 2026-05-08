@@ -80,7 +80,7 @@ return [
         'crudlexs-board-delete-strings' => [
             'Data deleted' => 'Dato eliminado', // Translated from English
             'The requested record cannot be deleted' => 'El registro solicitado no puede ser eliminado', // Translated from English
-            'Interesting that you try to delete a record with the read auth-code ;)' => 'Es interesante que intentes eliminar un registro con el código de autenticación de lectura ;)'. // Translated from English
+            'Interesting that you try to delete a record with the read auth-code ;)' => 'Es interesante que intentes eliminar un registro con el código de autenticación de lectura ;)', // Translated from English
         ],
         'crudlexs-board-list-strings' => [
             'No data to show' => 'Sin datos para mostrar', // Translated from English
