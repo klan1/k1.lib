@@ -16,6 +16,9 @@ return [
             'no' => 'No',
             'fk_tool_name' => 'Seleccionar la clave foránea', // Translated from English
         ],
+        'crudlexs' => [
+            'Welcome 1' => 'Bienvenido 1',// Translated from English
+        ],
         'other-context' => [
             'Multibyte test' => 'Los japoneses hablan en Japón!', // Translated from English
             'Tabulation test' => 'CAMPO\tCAMPO', // Translated from English

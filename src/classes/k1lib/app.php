@@ -98,7 +98,7 @@ class app {
         define('k1app\K1APP_DOMAIN', $_SERVER['HTTP_HOST']);
 
         define('k1app\K1APP_SRC_PATH', K1APP_ROOT . 'src/'); // 2.0
-        define('k1app\K1APP_LOCALES_PATH', K1APP_SRC_PATH . 'locales/'); // 2.0
+        define('k1app\K1APP_LOCALES_PATH', K1APP_SRC_PATH . 'src/locales/'); // 2.0
         define('k1app\K1APP_CONTROLLERS_PATH', K1APP_SRC_PATH . 'classes/k1app/controllers/'); // 2.0
         define('k1app\K1APP_CLASSES_PATH', K1APP_SRC_PATH . 'classes/'); // 2.0
         define('k1app\K1APP_FUNCTIONS_PATH', K1APP_SRC_PATH . 'functions/'); // 2.0

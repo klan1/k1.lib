@@ -55,7 +55,7 @@ class translator {
 
         if (!empty($domainLocalesPath) && file_exists($domainLocalesPath)) {
             $this->domain = $domain;
-            $translationFile = $domainLocalesPath . "/{$locale}/{$domain}.php";
+            $translationFile = $domainLocalesPath . "/src/{$locale}/{$domain}.php";
 
             if (file_exists($translationFile)) {
 //            $translations = require $translationFile;
