@@ -1,5 +1,14 @@
-/nbproject/private/
-/vendor/
-/.vscode/
-.DS_Store
 /nbproject/
+.nbproject/
+.nbproject/private/
+.DS_Store
+/vendor/
+
+# Development
+.config/
+.opencode/
+.understand-anything/
+
+# Graphify
+graphify-out/
+src/graphify-out/

@@ -19,6 +19,7 @@ class translator {
     private $currentLocale;
     private $availableLocales = ['en_US', 'es_CO'];
     private $domain = 'k1lib';
+    private $context = '';
 
     private function __construct($locale) {
         $this->translator = new GettextTranslator();
@@ -55,7 +56,7 @@ class translator {
 
         if (!empty($domainLocalesPath) && file_exists($domainLocalesPath)) {
             $this->domain = $domain;
-            $translationFile = $domainLocalesPath . "/src/{$locale}/{$domain}.php";
+            $translationFile = $domainLocalesPath . "/{$locale}/{$domain}.php";
 
             if (file_exists($translationFile)) {
 //            $translations = require $translationFile;
@@ -66,7 +67,7 @@ class translator {
             }
         } else {
             // Load the translation file for this locale
-            $translationFile = K1LIB_ROOT . "/../locales/{$locale}/{$this->domain}.php";
+            $translationFile = K1LIB_ROOT . "/../src/locales/{$locale}/{$this->domain}.php";
 
             if (file_exists($translationFile)) {
 //            $translations = require $translationFile;

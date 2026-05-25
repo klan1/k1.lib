@@ -21,7 +21,8 @@
         "whichbrowser/parser": "dev-master",
         "ramsey/uuid": "^4",
         "smarty/smarty": "^5.4",
-        "gettext/translator": "v1.2.1"
+        "gettext/translator": "v1.2.1",
+        "klan1/k1.lib-bootstrap": "dev-main"
     },
     "autoload": {
         "psr-4": {
