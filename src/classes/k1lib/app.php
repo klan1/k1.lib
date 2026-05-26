@@ -127,7 +127,7 @@ class app {
              * If this error is trigger you should set by hand the CONST: k1app\K1APP_BASE_URL
              * with your personal configuration.
              */
-            $app_base_url = dirname(substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']))) . '/';
+            $app_base_url = dirname(dirname(substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT'])))) . '/';
             if ($app_base_url == '//' || $app_base_url == '\/') {
                 $app_base_url = '/';
             }
