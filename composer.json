@@ -22,7 +22,7 @@
         "smarty/smarty": "^5.4",
         "gettext/translator": "v1.2.1",
         "klan1/k1.lib-html": "dev-master",
-        "klan1/k1.lib-bootstrap": "dev-master"
+        "klan1/k1.lib-bootstrap": "dev-main"
     },
     "autoload": {
         "psr-4": {
