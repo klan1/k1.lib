@@ -93,7 +93,7 @@ class app {
          * Genral config about paths
          */
         // AUTO CONFIGURATED PATHS
-        define('k1app\K1APP_ROOT', str_replace('\\', '/', dirname($this->script_path) . '/'));
+        define('k1app\K1APP_ROOT', str_replace('\\', '/', dirname(basename($this->script_path)) . '/'));
         define('k1app\K1APP_DIR', basename(K1APP_ROOT) . '/');
         define('k1app\K1APP_DOMAIN', $_SERVER['HTTP_HOST']);
 
