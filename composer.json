@@ -21,8 +21,8 @@
         "ramsey/uuid": "^4",
         "smarty/smarty": "^5.4",
         "gettext/translator": "v1.2.1",
-        "klan1/k1.lib-html": "v2,x",
-        "klan1/k1.lib-bootstrap": "v2.x"
+        "klan1/k1.lib-html": "v2.x",
+        "klan1/k1.lib-bootstrap": "v1.x"
     },
     "autoload": {
         "psr-4": {
