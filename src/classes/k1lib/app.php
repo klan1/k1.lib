@@ -93,7 +93,7 @@ class app {
          * Genral config about paths
          */
         // AUTO CONFIGURATED PATHS
-        define('k1app\K1APP_ROOT', str_replace('\\', '/', dirname(basename($this->script_path)) . '/'));
+        define('k1app\K1APP_ROOT', str_replace('\\', '/', dirname(dirname($this->script_path)) . '/'));
         define('k1app\K1APP_DIR', basename(K1APP_ROOT) . '/');
         define('k1app\K1APP_DOMAIN', $_SERVER['HTTP_HOST']);
 
@@ -102,7 +102,7 @@ class app {
         define('k1app\K1APP_CONTROLLERS_PATH', K1APP_SRC_PATH . 'classes/k1app/controllers/'); // 2.0
         define('k1app\K1APP_CLASSES_PATH', K1APP_SRC_PATH . 'classes/'); // 2.0
         define('k1app\K1APP_FUNCTIONS_PATH', K1APP_SRC_PATH . 'functions/'); // 2.0
-        define('k1app\K1APP_ASSETS_PATH', K1APP_ROOT . 'assets/'); // 2.0
+        define('k1app\K1APP_ASSETS_PATH', K1APP_ROOT . 'public/assets/'); // 2.0
         define('k1app\K1APP_ASSETS_TEMPLATES_PATH', K1APP_ASSETS_PATH . 'templates/'); // 2.0
         define('k1app\K1APP_ASSETS_SMARTY_PATH', K1APP_ASSETS_PATH . 'templates/smarty_tmp/'); // 2.0
         define('k1app\K1APP_ASSETS_IMAGES_PATH', K1APP_ASSETS_PATH . 'static/img/'); // 2.0
