@@ -39,7 +39,7 @@ class controller_crud extends controller {
     static function run_crud($parent_class, base|blank|sidebar_page $tpl, string|null $nav_id = null, $run_as_guest = false): void {
         self::use_tpl($tpl);
 
-        self::$page_container = self::tpl()->page_content()->section();
+        self::$page_container = self::tpl()->page()->section();
 
         /**
          *  LEGACY machete 
@@ -47,7 +47,7 @@ class controller_crud extends controller {
         DOM::start(self::$tpl);
 
         if (method_exists(self::$tpl, 'page_content')) {
-            $page_content_obj = self::$tpl->page_content();
+            $page_content_obj = self::$tpl->page();
             if (method_exists($page_content_obj, 'set_title')) {
 
                 $page_content_obj->set_title(" ");
@@ -132,7 +132,7 @@ class controller_crud extends controller {
         self::$co->finish_board();
 
         if (method_exists(self::$tpl, 'page_content')) {
-            self::$tpl->page_content()->set_content(self::$crud_container);
+            self::$tpl->page()->set_content(self::$crud_container);
         } else {
             self::$tpl->body()->set_value(self::$crud_container);
         }

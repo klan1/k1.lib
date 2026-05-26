@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "858d82f162d3cd77369cb143117e15e4",
+    "content-hash": "d2a5b4653a1d1ef5af882def0ca56551",
     "packages": [
         {
             "name": "brick/math",
@@ -202,12 +202,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/klan1/k1.lib-bootstrap.git",
-                "reference": "c1fb6c3d5506e1b0d3fbf2a5c878bfd422e532a8"
+                "reference": "e49dcf119980d5be8e808f445b3e0ef441156352"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/klan1/k1.lib-bootstrap/zipball/c1fb6c3d5506e1b0d3fbf2a5c878bfd422e532a8",
-                "reference": "c1fb6c3d5506e1b0d3fbf2a5c878bfd422e532a8",
+                "url": "https://api.github.com/repos/klan1/k1.lib-bootstrap/zipball/e49dcf119980d5be8e808f445b3e0ef441156352",
+                "reference": "e49dcf119980d5be8e808f445b3e0ef441156352",
                 "shasum": ""
             },
             "require": {
@@ -236,29 +236,60 @@
             "homepage": "https://github.com/klan1/k1lib-bootstrap",
             "support": {
                 "issues": "https://github.com/klan1/k1.lib-bootstrap/issues",
-                "source": "https://github.com/klan1/k1.lib-bootstrap/tree/main"
+                "source": "https://github.com/klan1/k1.lib-bootstrap/tree/v1.0.0"
             },
-            "time": "2026-05-24T21:51:28+00:00"
+            "time": "2026-05-26T03:50:16+00:00"
+        },
+        {
+            "name": "klan1/k1.lib-html",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/klan1/k1.lib-html.git",
+                "reference": "67dc296d4b155940c036c780735a6da01d77c39f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/klan1/k1.lib-html/zipball/67dc296d4b155940c036c780735a6da01d77c39f",
+                "reference": "67dc296d4b155940c036c780735a6da01d77c39f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "k1lib\\html\\": "src/klan1/html/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "HTML components for k1lib",
+            "support": {
+                "issues": "https://github.com/klan1/k1.lib-html/issues",
+                "source": "https://github.com/klan1/k1.lib-html/tree/v1.0.0"
+            },
+            "time": "2026-05-26T03:08:04+00:00"
         },
         {
             "name": "klan1/k1lib.html",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/klan1/k1lib.html.git",
-                "reference": "c8e7a51b422c04c60827ed89fe4b0026b29a9eb4"
+                "url": "https://github.com/klan1/k1.lib-html.git",
+                "reference": "c823cde8b1d38fb054c72563dff21a59e377d65b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/klan1/k1lib.html/zipball/c8e7a51b422c04c60827ed89fe4b0026b29a9eb4",
-                "reference": "c8e7a51b422c04c60827ed89fe4b0026b29a9eb4",
+                "url": "https://api.github.com/repos/klan1/k1.lib-html/zipball/c823cde8b1d38fb054c72563dff21a59e377d65b",
+                "reference": "c823cde8b1d38fb054c72563dff21a59e377d65b",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.2"
-            },
-            "require-dev": {
-                "klan1/k1app-template-mazer": "dev-main"
             },
             "default-branch": true,
             "type": "library",
@@ -273,10 +304,10 @@
             ],
             "description": "HTML components for k1lib",
             "support": {
-                "issues": "https://github.com/klan1/k1lib.html/issues",
-                "source": "https://github.com/klan1/k1lib.html/tree/master"
+                "issues": "https://github.com/klan1/k1.lib-html/issues",
+                "source": "https://github.com/klan1/k1.lib-html/tree/master"
             },
-            "time": "2026-05-25T14:50:30+00:00"
+            "time": "2026-05-26T03:50:15+00:00"
         },
         {
             "name": "psr/cache",
@@ -603,16 +634,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.37.0",
+            "version": "v1.38.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "6a21eb99c6973357967f6ce3708cd55a6bec6315"
+                "reference": "6b177d03d2eb04a6c9d01bab9818fb93a30ce7fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6a21eb99c6973357967f6ce3708cd55a6bec6315",
-                "reference": "6a21eb99c6973357967f6ce3708cd55a6bec6315",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6b177d03d2eb04a6c9d01bab9818fb93a30ce7fd",
+                "reference": "6b177d03d2eb04a6c9d01bab9818fb93a30ce7fd",
                 "shasum": ""
             },
             "require": {
@@ -664,7 +695,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.37.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.38.0"
             },
             "funding": [
                 {
@@ -684,7 +715,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T17:25:58+00:00"
+            "time": "2026-05-25T14:08:27+00:00"
         },
         {
             "name": "whichbrowser/parser",
@@ -755,7 +786,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "klan1/k1lib.html": 20,
         "endyjasmi/cuid": 20,
         "whichbrowser/parser": 20,
         "klan1/k1.lib-bootstrap": 20
