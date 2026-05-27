@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c2120fce9c0296f99ae37a1f6f1cbe4a",
+    "content-hash": "b297f1658633bdde48c5b62fc2a9ad70",
     "packages": [
         {
             "name": "brick/math",
@@ -198,16 +198,16 @@
         },
         {
             "name": "klan1/k1.lib-bootstrap",
-            "version": "dev-main",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/klan1/k1.lib-bootstrap.git",
-                "reference": "ffc08ab7bb47a1fb3d33beda7410f66c53d54ab0"
+                "url": "https://github.com/klan1/master.git",
+                "reference": "bfebb153b7e495e57a978e0a4b7ca579c0913ff8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/klan1/k1.lib-bootstrap/zipball/ffc08ab7bb47a1fb3d33beda7410f66c53d54ab0",
-                "reference": "ffc08ab7bb47a1fb3d33beda7410f66c53d54ab0",
+                "url": "https://api.github.com/repos/klan1/master/zipball/bfebb153b7e495e57a978e0a4b7ca579c0913ff8",
+                "reference": "bfebb153b7e495e57a978e0a4b7ca579c0913ff8",
                 "shasum": ""
             },
             "require": {
@@ -235,10 +235,52 @@
             "description": "Bootstrap 5 components built on k1lib.html",
             "homepage": "https://github.com/klan1/k1lib-bootstrap",
             "support": {
-                "issues": "https://github.com/klan1/k1.lib-bootstrap/issues",
-                "source": "https://github.com/klan1/k1.lib-bootstrap/tree/main"
+                "issues": "https://github.com/klan1/master/issues",
+                "source": "https://github.com/klan1/master/tree/master"
             },
-            "time": "2026-05-26T14:54:20+00:00"
+            "time": "2026-05-27T15:25:51+00:00"
+        },
+        {
+            "name": "klan1/k1.lib-crudlexs",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/klan1/k1.lib-crudlexs.git",
+                "reference": "1f7d0a9036e9a210c6bd36bb626f0ef986fa1641"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/klan1/k1.lib-crudlexs/zipball/1f7d0a9036e9a210c6bd36bb626f0ef986fa1641",
+                "reference": "1f7d0a9036e9a210c6bd36bb626f0ef986fa1641",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "k1lib\\crudlexs\\": "src/klan1/crudlexs/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alejandro Trujillo J. (J0hnd03)",
+                    "homepage": "https://github.com/j0hnd03"
+                }
+            ],
+            "description": "CRUD framework for k1lib with board/object pattern",
+            "homepage": "https://github.com/klan1/k1.lib-crudlexs",
+            "support": {
+                "issues": "https://github.com/klan1/k1.lib-crudlexs/issues",
+                "source": "https://github.com/klan1/k1.lib-crudlexs/tree/main"
+            },
+            "time": "2026-05-27T16:42:02+00:00"
         },
         {
             "name": "klan1/k1.lib-html",
