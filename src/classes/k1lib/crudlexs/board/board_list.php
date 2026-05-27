@@ -140,8 +140,10 @@ class board_list extends board_base implements board_interface {
                 $search_iframe->set_attrib('width', '100%');
                 $search_iframe->set_attrib('height', '1200px');
 
-                $modal = new modal(board_list_strings::$button_search, $search_iframe, common_strings::$button_cancel, NULL);
-
+                $modal = new modal(board_list_strings::$button_search, $search_iframe, [
+                    'btn_cancel' => common_strings::$button_cancel,
+                ]);
+                
                 DOM::html()->body()->append_child_tail($modal);
 
                 $search_buttom = get_link_button('#', board_list_strings::$button_search, 'btn-sm', 'search-button');
@@ -177,7 +179,7 @@ class board_list extends board_base implements board_interface {
                             url::do_url($_SERVER['REQUEST_URI'], ['clear-search' => 1]),
                             board_list_strings::$button_search_cancel, 'btn-warning btn-sm', 'search-button');
 
-                    $search_buttom->set_value(( new i(null, 'bi bi-search')) . ' ' . board_list_strings::$button_search_modify);
+                    $search_buttom->set_value((new i(null, 'bi bi-search')) . ' ' . board_list_strings::$button_search_modify);
                     $clear_search_buttom->append_to($this->button_div_tag);
                 } else {
                     $search_post = unserialize_var($controller_id);
