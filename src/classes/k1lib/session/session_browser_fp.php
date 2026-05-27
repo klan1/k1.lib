@@ -5,7 +5,7 @@ namespace k1lib\session;
 use k1lib\crudlexs\db_table as db_table;
 use k1lib\crudlexs\db_table as db_table2;
 use k1lib\crypt;
-use k1lib\html\notifications\on_DOM as DOM_notifications;
+use k1lib\notifications\on_DOM as DOM_notifications;
 use k1lib\urlrewrite\url;
 use PDO;
 use Ramsey\Uuid\Uuid;

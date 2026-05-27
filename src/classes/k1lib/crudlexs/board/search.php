@@ -11,7 +11,7 @@ use k1lib\html\bootstrap\modal;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\iframe;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\notifications\on_DOM as DOM_notification;
 use function k1lib\common\unserialize_var;
 
 class search extends board_base implements board_interface {

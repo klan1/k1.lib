@@ -7,7 +7,7 @@ use k1lib\crudlexs\db_table;
 use k1lib\forms\file_uploads as file_uploads;
 use k1lib\html\a;
 use k1lib\html\img;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\notifications\on_DOM as DOM_notification;
 use k1lib\html\tag;
 use k1lib\K1MAGIC;
 use k1lib\session\app_session as app_session;

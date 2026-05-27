@@ -11,7 +11,7 @@ use k1lib\crudlexs\object\search_helper;
 use k1lib\crudlexs\object\updating;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\notifications\on_DOM as DOM_notification;
 use k1lib\session\app_session;
 use function k1lib\common\serialize_var;
 use function k1lib\common\unserialize_var;

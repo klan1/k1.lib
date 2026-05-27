@@ -19,7 +19,7 @@ use k1lib\crudlexs\object\updating;
 use k1lib\db\PDO_k1;
 use k1lib\html\div;
 use k1lib\html\DOM as DOM;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\notifications\on_DOM as DOM_notification;
 use k1lib\html\script;
 use k1lib\html\tag;
 use k1lib\K1MAGIC;

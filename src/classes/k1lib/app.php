@@ -5,7 +5,7 @@ namespace k1lib;
 use k1lib\app\config;
 use k1lib\db\PDO_k1;
 use k1lib\forms\file_uploads;
-use k1lib\html\notifications\on_DOM;
+use k1lib\notifications\on_DOM;
 use k1lib\session\app_session;
 use k1lib\session\session_db;
 use k1lib\urlrewrite\url;

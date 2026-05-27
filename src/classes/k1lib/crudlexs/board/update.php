@@ -5,7 +5,7 @@ namespace k1lib\crudlexs\board;
 use k1lib\crudlexs\controller\base;
 use k1lib\crudlexs\object\updating;
 use k1lib\html\div;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\notifications\on_DOM as DOM_notification;
 use k1lib\session\app_session as app_session;
 use k1lib\urlrewrite\url as url;
 use function k1lib\html\get_link_button;

@@ -13,7 +13,7 @@ use k1lib\html\div;
 use k1lib\html\DOM as DOM;
 use k1lib\html\i;
 use k1lib\html\iframe;
-use k1lib\html\notifications\on_DOM as DOM_notification;
+use k1lib\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
 use const k1app\K1APP_URL;
 use function k1lib\common\serialize_var;

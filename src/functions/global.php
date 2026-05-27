@@ -1,7 +1,7 @@
 <?php
 
 use k1lib\html\DOM;
-use k1lib\html\notifications\on_DOM;
+use k1lib\notifications\on_DOM;
 use k1lib\html\pre;
 
 /**
