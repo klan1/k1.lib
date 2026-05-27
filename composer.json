@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.0",
         "endyjasmi/cuid": "dev-master",
         "ralouphie/getallheaders": "^3.0",
         "whichbrowser/parser": "dev-master",
