@@ -141,14 +141,16 @@ class board_list extends board_base implements board_interface {
                 $search_iframe->set_attrib('height', '1200px');
 
                 $modal = new modal(board_list_strings::$button_search, $search_iframe, [
+                    'id' => 'listSearch',
                     'btn_cancel' => common_strings::$button_cancel,
+                    'btn_ok' => NULL,
                 ]);
-                
-                DOM::html()->body()->append_child_tail($modal);
+
+                $this->board_content_div->append_child_tail($modal);
 
                 $search_buttom = get_link_button('#', board_list_strings::$button_search, 'btn-sm', 'search-button');
                 $search_buttom->set_attrib('data-bs-toggle', 'modal');
-                $search_buttom->set_attrib('data-bs-target', '#staticBackdrop"');
+                $search_buttom->set_attrib('data-bs-target', '#listSearch"');
                 $search_buttom->append_to($this->button_div_tag);
 
                 /**
