@@ -24,7 +24,7 @@ class controller_crud extends controller {
     static protected $controller_name = "CRUDLEXS Controller";
     static protected $controller_db_table = "";
     static protected div $crud_container;
-    static protected section $page_container;
+//    static protected section|div $page_container;
     static protected cb $co;
 
     static function on_post(): void {
@@ -39,14 +39,14 @@ class controller_crud extends controller {
     static function run_crud($parent_class, base|blank|sidebar_page $tpl, string|null $nav_id = null, $run_as_guest = false): void {
         self::use_tpl($tpl);
 
-        self::$page_container = self::tpl()->page()->section();
+//        self::$page_container = self::tpl()->page()->section();
 
         /**
          *  LEGACY machete 
          */
         DOM::start(self::$tpl);
 
-        if (method_exists(self::$tpl, 'page_content')) {
+        if (method_exists(self::$tpl, 'content')) {
             $page_content_obj = self::$tpl->page();
             if (method_exists($page_content_obj, 'set_title')) {
 
@@ -131,7 +131,7 @@ class controller_crud extends controller {
     static function finish_board(): void {
         self::$co->finish_board();
 
-        if (method_exists(self::$tpl, 'page_content')) {
+        if (method_exists(self::$tpl, 'content')) {
             self::$tpl->page()->set_content(self::$crud_container);
         } else {
             self::$tpl->body()->set_value(self::$crud_container);
