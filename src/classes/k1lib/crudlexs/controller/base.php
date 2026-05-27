@@ -605,7 +605,7 @@ class base {
 
     public function start_board($specific_board_to_start = NULL) {
 
-        DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/extensions/jquery/jquery.min.js"));
+        DOM::html()->body()->append_child_head(new script(TPL_URL . "assets/extensions/jquery/jquery.min.js"));
 
         $this->board_started = TRUE;
         if ($this->board_inited) {

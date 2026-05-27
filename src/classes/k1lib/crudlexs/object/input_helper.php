@@ -109,8 +109,8 @@ class input_helper {
         $input_tag = new textarea($field_encrypted);
         $input_tag->set_attrib("rows", 5);
 
-        DOM::html_document()->body()->append_child_tail(new script(TPL_URL . "assets/extensions/tinymce/tinymce.min.js"));
-        DOM::html_document()->body()->append_child_tail(new script(TPL_URL . "assets/static/js/pages/tinymce.js"));
+        DOM::html()->body()->append_child_tail(new script(TPL_URL . "assets/extensions/tinymce/tinymce.min.js"));
+        DOM::html()->body()->append_child_tail(new script(TPL_URL . "assets/static/js/pages/tinymce.js"));
 
         if ($load_tinymce) {
             $html_script = "document.addEventListener('DOMContentLoaded', () => {"
@@ -294,9 +294,9 @@ class input_helper {
             /**
              * DATE TIME CALENDAR TOOL
              */
-            DOM::html_document()->head()->link_css(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.css");
-            DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.js"));
-            DOM::html_document()->body()->append_child_head(new script(TPL_URL . "assets/static/js/pages/date-picker.js"));
+            DOM::html()->head()->link_css(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.css");
+            DOM::html()->body()->append_child_head(new script(TPL_URL . "assets/extensions/flatpickr/flatpickr.min.js"));
+            DOM::html()->body()->append_child_head(new script(TPL_URL . "assets/static/js/pages/date-picker.js"));
 
             $div_input_group = new div("input-group");
             $span_icon = $div_input_group->append_span('input-group-text');

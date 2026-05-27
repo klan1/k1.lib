@@ -54,7 +54,7 @@ class search extends board_base implements board_interface {
 //        $fk_iframe->set_style($style)
 
         $modal = new modal(common_strings::$fk_tool_name, $fk_iframe);
-        DOM::html_document()->body()->append_child_tail($modal);
+        DOM::html()->body()->append_child_tail($modal);
 
         if ($this->search_object->get_state()) {
 

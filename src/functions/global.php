@@ -27,7 +27,7 @@ function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
     if (class_exists('\k1lib\html\DOM')) {
         $pre = new pre($msg);
         if (DOM::is_started()) {
-            if (!empty(DOM::html_document()->body()->get_element_by_id("k1lib-output"))) {
+            if (!empty(DOM::html()->body()->get_element_by_id("k1lib-output"))) {
                 on_DOM::queue_title('Message from K1.lib', 'warning');
                 on_DOM::queue_mesasage($pre->generate(), 'warning');
             } else {

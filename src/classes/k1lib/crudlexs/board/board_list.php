@@ -142,7 +142,7 @@ class board_list extends board_base implements board_interface {
 
                 $modal = new modal(board_list_strings::$button_search, $search_iframe, common_strings::$button_cancel, NULL);
 
-                DOM::html_document()->body()->append_child_tail($modal);
+                DOM::html()->body()->append_child_tail($modal);
 
                 $search_buttom = get_link_button('#', board_list_strings::$button_search, 'btn-sm', 'search-button');
                 $search_buttom->set_attrib('data-bs-toggle', 'modal');
