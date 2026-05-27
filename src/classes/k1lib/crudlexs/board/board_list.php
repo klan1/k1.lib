@@ -2,7 +2,6 @@
 
 namespace k1lib\crudlexs\board;
 
-use k1lib\common_strings;
 use k1lib\crudlexs\controller\base as controller_base;
 use k1lib\crudlexs\object\base;
 use k1lib\crudlexs\object\listing;
@@ -10,7 +9,6 @@ use k1lib\forms\file_uploads;
 use k1lib\html\bootstrap\grid_row;
 use k1lib\html\bootstrap\modal;
 use k1lib\html\div;
-use k1lib\html\DOM as DOM;
 use k1lib\html\i;
 use k1lib\html\iframe;
 use k1lib\notifications\on_DOM as DOM_notification;
@@ -142,7 +140,7 @@ class board_list extends board_base implements board_interface {
 
                 $modal = new modal(board_list_strings::$button_search, $search_iframe, [
                     'id' => 'listSearch',
-                    'btn_cancel' => common_strings::$button_cancel,
+                    'btn_cancel' => NULL,
                     'btn_ok' => NULL,
                 ]);
 
