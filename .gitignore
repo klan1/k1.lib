@@ -1,14 +1,38 @@
-/nbproject/
-.nbproject/
-.nbproject/private/
-.DS_Store
+# Dependencies
 /vendor/
+/composer.lock
 
-# Development
+# IDE and OS
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*.swo
+*~
+Icon
+Thumbs.db
+._*
+
+# IDEs
+.idea/
+.vscode/
+.nbproject/
+nbproject/
+nb-configuration.xml
+
+# Development tools
 .config/
 .opencode/
 .understand-anything/
 
 # Graphify
 graphify-out/
-src/graphify-out/
+
+# App-specific (uncomment if needed for app projects)
+# /docker/db_data/
+# /docker/.env
+# /settings/db-connection-1.php
+# .env
+# bower_components/
+# /docker/xdebug-logs/
+# /public/assets/templates/smarty_tmp/*
