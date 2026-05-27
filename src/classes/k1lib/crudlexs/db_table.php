@@ -2,7 +2,6 @@
 
 namespace k1lib\crudlexs;
 
-use k1app\template\mazer\components\app\sidebar\wrapper\header;
 use k1lib\db\PDO_k1;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\forms\form_check_values;
