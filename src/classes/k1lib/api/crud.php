@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage api
+ * CRUD API implementation providing RESTful endpoints for database table operations.
+ */
+
 namespace k1lib\api;
 
 use k1lib\api\model;
@@ -7,34 +14,98 @@ use k1lib\crudlexs\db_table;
 use k1lib\urlrewrite\url;
 use function k1lib\forms\check_single_incomming_var;
 
+/**
+ * CRUD API controller.
+ * Handles GET, POST, PUT, DELETE operations for database tables.
+ *
+ * @package k1lib\api
+ */
 class crud extends api {
 
     /**
+     * The data model for table operations.
      * @var model
      */
     private $table_model;
 
     /**
-     *
+     * Database table object.
      * @var db_table
      */
     public $db_table;
+
+    /**
+     * Database table name.
+     * @var string
+     */
     private $db_table_name;
+
+    /**
+     * Key fields for table operations.
+     * @var array
+     */
     private $db_table_keys_fields;
+
+    /**
+     * Data key for single record operations.
+     * @var string|null
+     */
     private $data_key = NULL;
+
+    /**
+     * Array of data key values.
+     * @var array
+     */
     private $data_keys_array = [];
+
+    /**
+     * Key field data as associative array.
+     * @var array
+     */
     private $keyfield_data_array = [];
+
+    /**
+     * Controller action (get-one, get-all, etc).
+     * @var string|null
+     */
     private $controler_action = NULL;
+
+    /**
+     * Current page number for listing.
+     * @var int
+     */
     private $get_list_page = 1;
+
+    /**
+     * Page size for listing.
+     * @var int
+     */
     private $get_list_page_size = 20;
+
+    /**
+     * Query filter for listing.
+     * @var array
+     */
     private $get_query_filter = [];
+
+    /**
+     * Order by configuration.
+     * @var array
+     */
     private $orderby = [];
 
     /**
+     * Registered response data.
      * @var array
      */
     private $register_response_data = [];
 
+    /**
+     * Creates a CRUD API instance.
+     *
+     * @param bool $use_token Whether to use token authentication
+     * @param bool $use_magic_header Whether to use magic header authentication
+     */
     function __construct($use_token = FALSE, $use_magic_header = FALSE) {
         parent::__construct($use_token, $use_magic_header);
 
@@ -78,81 +149,8 @@ class crud extends api {
         }
     }
 
-    function assing_keyfields_data() {
-        $this->data_keys_array = explode('-', $this->data_key);
-        $this->keyfield_data_array = [];
-        echo (count($this->data_keys_array) . '===' . count($this->db_table_keys_fields));
-        if (count($this->data_keys_array) === count($this->db_table_keys_fields)) {
-            if (!empty($this->data_keys_array)) {
-                foreach ($this->data_keys_array as $key => $value) {
-                    if (!empty($value)) {
-                        $this->keyfield_data_array[$this->db_table_keys_fields[$key]] = $value;
-                    }
-                }
-            }
-        } else {
-            $this->send_response(500, $this->input_data, ['message' => 'Keys-Values mismatch', 'mode' => 'get', 'token' => $this->token, 'magic_header' => $this->magic_header]);
-        }
-    }
-
-    function get() {
-        parent::get();
-        $this->assing_keyfields_data();
-        switch ($this->controler_action) {
-            case 'get-one':
-                $table_data = $this->table_model->get_data($this->keyfield_data_array);
-                $extra_data = ['data-type' => 'single', $this->keyfield_data_array];
-                if ($this->do_send_response) {
-                    $this->send_response(200, $table_data, $extra_data);
-                } else {
-                    return ['data' => $table_data, 'extra' => $extra_data];
-                }
-                break;
-            case 'get-all':
-                if (($this->get_list_page - 1) > 1) {
-                    $previuos_page_num = $this->get_list_page - 1;
-                    $previuos_page = url::do_url(url::get_this_url(), ['page' => $previuos_page_num, 'page_size' => $this->get_list_page_size]);
-                } else {
-                    $previuos_page_num = NULL;
-                    $previuos_page = NULL;
-                }
-                $next_page_num = $this->get_list_page + 1;
-                $next_page = url::do_url(url::get_this_url(), ['page' => $next_page_num, 'page_size' => $this->get_list_page_size]);
-                $query_filter = array_merge($this->keyfield_data_array, $this->get_query_filter);
-                $table_data = $this->table_model->get_all_data($this->get_list_page, $this->get_list_page_size, $query_filter, $this->orderby);
-                $extra_data = [
-                    'data-type' => 'multiple',
-                    'pagination_url' => ['previos' => $previuos_page, 'next' => $next_page],
-                    'pagination_data' => ['previos_page' => $previuos_page_num, 'next_page' => $next_page_num, 'page_size' => $this->get_list_page_size],
-                    'keyfield_data_array' => $this->keyfield_data_array,
-                    'order-by' => $this->orderby,
-                ];
-                if ($this->do_send_response) {
-                    $this->send_response(200, $table_data, $extra_data);
-                } else {
-                    return ['data' => $table_data, 'extra' => $extra_data];
-                }
-            default :
-                $this->send_response(500, ['message' => 'Action not implemented'], $this->controler_action);
-                break;
-        }
-    }
-
-    function set_db_table_keys_fields($db_table_keys_fields) {
-        if (!empty($db_table_keys_fields)) {
-            if (!array_key_exists('keys-fields', $_GET)) {
-                $this->db_table_keys_fields = $db_table_keys_fields;
-            }
-        }
-    }
-
     /**
-     * {
-     *  'device': {},
-     *  'phonenumber': $phone,
-     *  'persona': {},
-     *  'password': $password
-     * }
+     * Handles POST requests for updating existing records.
      */
     function post() {
         parent::post();
@@ -168,6 +166,9 @@ class crud extends api {
         }
     }
 
+    /**
+     * Handles PUT requests for creating new records.
+     */
     function put() {
         parent::put();
         $this->assing_keyfields_data();
@@ -184,6 +185,9 @@ class crud extends api {
         }
     }
 
+    /**
+     * Handles DELETE requests for removing records.
+     */
     function delete() {
         parent::delete();
         $this->assing_keyfields_data();
@@ -200,6 +204,11 @@ class crud extends api {
         }
     }
 
+    /**
+     * Sets the database table name and initializes the model.
+     *
+     * @param string $db_table_name The table name
+     */
     function set_db_table_name($db_table_name) {
         $this->db_table_name = $db_table_name;
         $this->db_table = new db_table($this->db, $this->db_table_name);
@@ -208,6 +217,12 @@ class crud extends api {
         $this->table_model = new model($this->db_table);
     }
 
+    /**
+     * Executes the API request.
+     *
+     * @param bool $send_response Whether to send response or return data
+     * @return mixed
+     */
     function exec($send_response = TRUE) {
         return parent::exec($send_response);
     }

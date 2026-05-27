@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\board
+ * Board Read - Displays a single database record with related data support.
+ */
+
 namespace k1lib\crudlexs\board;
 
 use k1lib\crudlexs\controller\base as base2;
@@ -20,6 +27,29 @@ use const k1app\K1APP_URL;
 use function k1lib\html\get_link_button;
 use function k1lib\urlrewrite\get_back_url;
 
+/**
+ * Read Board for CRUDLEXS.
+ * 
+ * Handles display of a single database record with edit/delete buttons,
+ * back navigation, and support for displaying related data from other tables.
+ * 
+ * @property reading $read_object The reading object for this record
+ * @property string $row_keys_text URL-encoded row keys
+ * @property bool $back_enable Show/hide back button
+ * @property bool $all_data_enable Show/hide all data button
+ * @property bool $update_enable Show/hide update button
+ * @property bool $delete_enable Show/hide delete button
+ * @property bool $related_do_clean_array_on_query_filter Clean array on related query
+ * @property bool $related_use_rows_key_text Use row keys text for related
+ * @property string $related_use_show_rule Show rule for related data
+ * @property listing $related_list Related data listing
+ * @property bool $related_show_new Show new button on related
+ * @property bool $related_show_all_data Show all data button on related
+ * @property int $related_rows_to_show Number of related rows to display
+ * @property a $related_html_object_show_new New button HTML object
+ * @property a $related_html_object_show_all_data All data button HTML object
+ * @property table_from_data $related_html_table_object Related table HTML object
+ */
 class read extends board_base implements board_interface {
 
     /**
@@ -86,7 +116,12 @@ class read extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * Initialize the read board and render buttons.
+     * 
+     * Sets up back, all data, edit, and delete buttons based on configuration.
+     * Loads the record data using the row keys from URL.
+     * 
+     * @return div|boolean Returns board content div on success, FALSE if not enabled or no keys
      */
     public function start_board() {
         if (!parent::start_board()) {
@@ -162,7 +197,12 @@ class read extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * Execute the read board and render record data.
+     * 
+     * Applies label filters, field label filters, and file upload filters.
+     * Renders the record display and related data if configured.
+     * 
+     * @return div|boolean Returns board content div on success, FALSE if not enabled or no data
      */
     public function exec_board() {
         if (!$this->is_enabled) {

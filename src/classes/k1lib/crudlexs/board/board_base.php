@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\board
+ * Board Base - Abstract base class for CRUDLEXS board implementations.
+ */
+
 namespace k1lib\crudlexs\board;
 
 use k1lib\crudlexs\controller\base;
@@ -16,6 +23,23 @@ use k1lib\session\app_session;
 use function k1lib\common\serialize_var;
 use function k1lib\common\unserialize_var;
 
+/**
+ * Board Base Class.
+ * 
+ * Abstract base class providing common functionality for all CRUDLEXS boards.
+ * Handles user level permissions, data loading states, button containers,
+ * and notification display areas.
+ * 
+ * @property base $controller_object Reference to the parent controller
+ * @property array $fields_to_hide Fields to hide based on user role
+ * @property div $board_content_div Main content container for the board
+ * @property bool $data_loaded Whether data has been loaded from database
+ * @property bool $is_enabled Whether this board is enabled for the current user
+ * @property string $user_levels_allowed Allowed user levels for access
+ * @property mixed $sql_action_result Result of INSERT/UPDATE/DELETE operations
+ * @property string $show_rule_to_apply Database show rule to apply (show-list, show-read, etc.)
+ * @property base_with_data|listing|reading|creating|updating|search_helper $current_object Current data object
+ */
 class board_base {
 
     /**

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\object
+ * List/grid display functionality with pagination, sorting, and Smarty template support.
+ */
+
 namespace k1lib\crudlexs\object;
 
 use k1lib\crudlexs\board\board_list_strings;
@@ -21,7 +28,10 @@ use const k1app\K1APP_UPLOADS_URL;
 use const k1app\K1APP_URL;
 
 /**
- * 
+ * Listing object for displaying paginated database records.
+ * Provides table rendering, pagination controls, and row statistics.
+ *
+ * @package k1lib\crudlexs\object
  */
 class listing extends base_with_data implements base_interface {
 

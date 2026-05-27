@@ -1,15 +1,26 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage html
+ * 
+ * Common HTML utility functions for navigation, redirects, and array formatting.
+ */
+
 namespace k1lib\html;
 
+/**
+ * Redirects browser using JavaScript history.back().
+ */
 function js_back() {
     die("<body><script type='text/javascript''>history.back();</script>");
 }
 
 /**
- * Send HTML HEAD command to redirect the browser
- * @param string $url
- * @param bolean $app_format 
+ * Redirects browser using HTML Location header.
+ *
+ * @param string $url Target URL for redirect
  */
 function html_header_go($url) {
     ob_clean();
@@ -19,22 +30,33 @@ function html_header_go($url) {
 }
 
 /**
- * Send JS code to redirect the browser
- * @param string $url
- * @param string $root The DOM object to redirect
- * @param bolean $app_format 
+ * Redirects browser using JavaScript.
+ *
+ * @param string $url Target URL for redirect
+ * @param string $root DOM object to use for redirect (default: window)
  */
 function js_go($url, $root = "window") {
     ob_clean();
     die("<script type='text/javascript'>{$root}.location.href = '{$url}';</script>");
 }
 
+/**
+ * Displays a JavaScript alert dialog.
+ *
+ * @param string $msg Message to display in alert
+ */
 function js_alert($msg) {
     if (is_string($msg)) {
         echo "\n<script type=\"text/javascript\">\nalert(\"$msg\");</script>";
     }
 }
 
+/**
+ * Converts an array to an unordered HTML list.
+ *
+ * @param array $array Array to convert
+ * @return string HTML unordered list
+ */
 function array_to_ul($array) {
     if (!is_array($array)) {
         die(__FUNCTION__ . " need an array to work on \$array");

@@ -1,12 +1,10 @@
 <?php
 
 /**
- * Notification renderer that outputs messages directly into the DOM.
- * Extends common_code to provide methods for queuing and displaying
- * notifications as visual alerts within a web page.
- *
- * @author Alejandro Trujillo J. <https://github.com/j0hnd03>
- * @package notifications
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage notifications
+ * Notifications On DOM - Renders notification messages into the HTML DOM.
  */
 
 namespace k1lib\notifications;

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage app
+ * CRUDLEXS Controller - Provides CRUD functionality for database tables with board management.
+ */
+
 namespace k1lib\app;
 
 use k1app\core\template\base;
@@ -16,6 +23,17 @@ use k1lib\html\DOM;
 use k1lib\urlrewrite\url;
 use const k1app\K1APP_BASE_URL;
 
+/**
+ * CRUD Controller providing CRUDLEXS board functionality.
+ * 
+ * Extends the base controller to provide integrated CRUD operations including
+ * list, create, read, update, and delete boards with template support.
+ * 
+ * @property static string $controller_name Name identifier for this CRUD controller
+ * @property static string $controller_db_table Database table name for CRUD operations
+ * @property static div $crud_container The main container div for CRUD output
+ * @property static cb $co The CRUDLEXS controller base object
+ */
 class controller_crud extends controller {
 
     /**
@@ -27,15 +45,36 @@ class controller_crud extends controller {
 //    static protected section|div $page_container;
     static protected cb $co;
 
+    /**
+     * Handle POST requests for CRUD operations.
+     * 
+     * @return void
+     */
     static function on_post(): void {
         self::launch();
     }
 
+    /**
+     * Initialize CRUD settings with controller name and database table.
+     * 
+     * @param string $controller_name Name identifier for the controller
+     * @param string $controller_db_table Database table name for CRUD operations
+     * @return void
+     */
     static function start_crud($controller_name, $controller_db_table): void {
         self::$controller_name = $controller_name;
         self::$controller_db_table = $controller_db_table;
     }
 
+    /**
+     * Execute the CRUD workflow with template and configuration.
+     * 
+     * @param string $parent_class The parent class name for configuration lookup
+     * @param base|blank|sidebar_page $tpl Template object for rendering
+     * @param string|null $nav_id Navigation element ID to mark as active
+     * @param bool $run_as_guest If TRUE, use guest configuration class
+     * @return void
+     */
     static function run_crud($parent_class, base|blank|sidebar_page $tpl, string|null $nav_id = null, $run_as_guest = false): void {
         self::use_tpl($tpl);
 
@@ -101,10 +140,20 @@ class controller_crud extends controller {
         static::finish_board();
     }
 
+    /**
+     * Initialize the CRUD board and return the container.
+     * 
+     * @return void
+     */
     static function init_board(): void {
         self::$crud_container = self::$co->init_board();
     }
 
+    /**
+     * Start the board and apply URL filters for list view.
+     * 
+     * @return void
+     */
     static function start_board(): void {
         self::$co->start_board();
 
@@ -118,6 +167,11 @@ class controller_crud extends controller {
         }
     }
 
+    /**
+     * Execute the board and apply final formatting.
+     * 
+     * @return void
+     */
     static function exec_board(): void {
         self::$co->exec_board();
 
@@ -128,6 +182,11 @@ class controller_crud extends controller {
         }
     }
 
+    /**
+     * Finish the board and render the final output.
+     * 
+     * @return void
+     */
     static function finish_board(): void {
         self::$co->finish_board();
 
@@ -138,6 +197,21 @@ class controller_crud extends controller {
         }
     }
 
+    /**
+     * Add a related table display to the current board.
+     * 
+     * Creates a related data list from a specified table, displaying related rows
+     * with options for showing new items and all data.
+     * 
+     * @param string $table_name Name of the related database table
+     * @param string $controller_url URL path for the related controller
+     * @param string $related_title Title to display on the related data card
+     * @param bool $return_card_only If TRUE, return only the card object without adding to DOM
+     * @param bool $set_related_show_all_data Enable showing all related data
+     * @param bool $set_related_show_new Enable showing new button for related items
+     * @param bool $no_links If TRUE, disable clickable links on related items
+     * @return div|card|bool Returns the related div container, card object, or FALSE if not on read board
+     */
     static function add_related_table($table_name, $controller_url, $related_title, $return_card_only = false, $set_related_show_all_data = true, $set_related_show_new = true, $no_links = false): div|card|bool {
 
         if (self::$co->on_board_read()) {
@@ -187,11 +261,22 @@ class controller_crud extends controller {
         return false;
     }
 
+    /**
+     * Finalize the controller and render the template.
+     * 
+     * @return void
+     */
     static function end(): void {
         parent::end();
         echo self::$tpl->generate();
     }
 
+    /**
+     * Set the active navigation element.
+     * 
+     * @param string $nav_id CSS selector for the navigation element to mark as active
+     * @return void
+     */
     static function set_nav_active($nav_id) {
         if (!empty($nav_id) && method_exists(self::$tpl, 'menu') && self::$tpl->menu()->q($nav_id)) {
             self::$tpl->menu()->q($nav_id)->nav_is_active();

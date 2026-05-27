@@ -1,19 +1,93 @@
 <?php
 
+/**
+ * English CRUDLexs controller class strings
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ */
+
 namespace k1lib\crudlexs\controller;
 
-class controller_base_strings {
+class controller_class_strings {
 
     /**
-     * __construct()
+     * @var string
      */
-    static $error_table_name = "The table name has to be a String";
-    static $board_list_name = "";
-    static $board_create_name = "Create new";
-    static $board_read_name = "";
-    static $board_update_name = "Update details";
-    static $board_delete_name = "Delete registry";
-    static $error_board_not_inited = "The board hasn't inited yet";
-    static $error_board_not_started = "The board hasn't started yet";
-    static $error_board_not_executed = "The board hasn't executed yet";
+    static $form_title_new = "New";
+
+    /**
+     * @var string
+     */
+    static $form_title_update = "Update";
+
+    /**
+     * @var string
+     */
+    static $form_title_read = "View";
+
+    /**
+     * @var string
+     */
+    static $form_title_delete = "Delete this record";
+
+    /**
+     * @var string
+     */
+    static $label_button_create = "Save";
+
+    /**
+     * @var string
+     */
+    static $label_button_update = "Update";
+
+    /**
+     * @var string
+     */
+    static $label_button_delete = "Delete";
+
+    /**
+     * @var string
+     */
+    static $label_button_cancel = "Cancel";
+
+    /**
+     * @var string
+     */
+    static $label_button_back = "Back";
+
+    /**
+     * @var string
+     */
+    static $label_button_all_data = "All data";
+
+    /**
+     * @var string
+     */
+    static $alert_no_data = "No data to show";
+
+    /**
+     * @var string
+     */
+    static $alert_data_created = "Data was created";
+
+    /**
+     * @var string
+     */
+    static $alert_data_updated = "Data was updated";
+
+    /**
+     * @var string
+     */
+    static $alert_data_deleted = "Data was deleted";
+
+    /**
+     * @var string
+     */
+    static $error_no_data = "Error: No data";
+
+    /**
+     * @var string
+     */
+    static $error_no_form = "Form configuration error";
 }

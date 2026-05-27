@@ -1,85 +1,103 @@
 <?php
 
+/**
+ * Database table abstraction for CRUDLexs
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ */
+
 namespace k1lib\crudlexs;
 
 use k1lib\db\PDO_k1;
 use function k1lib\common\clean_array_with_guide;
 use function k1lib\forms\form_check_values;
 
+/**
+ * Database table abstraction with query building and CRUD operations
+ *
+ * @package k1lib\crudlexs
+ */
 class db_table {
 
     /**
-     *
-     * @var PDO_k1
+     * @var PDO_k1 Database connection
      */
     public PDO_k1 $db;
+    /** @var string|false */
     private $db_table_name = FALSE;
+    /** @var array|false */
     public $db_table_config = FALSE;
+    /** @var array|false */
     private $db_table_label_field = FALSE;
+    /** @var string|null */
     private $db_table_show_rule = NULL;
 
     /**
      * SQL Values
+     * @var int
      */
     private $query_offset = 0;
+    /** @var int|null */
     private $query_row_count_limit = NULL;
+    /** @var string|null */
     private $query_where_pairs = NULL;
+    /** @var string|null */
     private $query_where_custom = NULL;
+    /** @var string|null */
     private $query_sql = NULL;
+    /** @var string|null */
     private $query_sql_total_rows = NULL;
+    /** @var string|null */
     private $query_sql_keys = NULL;
+    /** @var int|null */
     private $total_rows_filtered_result;
+    /** @var int|null */
     private $total_rows_result;
 
     /**
      * GROUP BY
-     */
-
-    /**
      * @var array
      */
     private $query_group_by_fields_array = [];
 
     /**
      * ORDER BY
-     */
-
-    /**
      * @var array
      */
     private $query_order_by_order_arry = [];
+    /** @var array */
     private $query_order_by_fields_array = [];
 
     /**
      * CUSTOM SQL QUERY
+     * @var string|null
      */
     protected $custom_sql_query_code = NULL;
+    /** @var array */
     protected $custom_query_table_config = [];
 
     /**
-     * @var array Constant fields 
+     * @var array Constant fields
      */
     private $constant_fields = [];
 
     /**
-     * @var array skip to show on boards
+     * @var array Skip to show on boards
      */
     private $skip_fields = [];
 
     /**
-     * $custom_enum_values_by_rol[$field][$rol] = ['value1','value2'];
-     * @var array
+     * @var array $custom_enum_values_by_rol[$field][$rol] = ['value1','value2'];
      */
     private $custom_enum_values_by_rol = [];
 
     /**
-     * 
      * @var array
      */
     private $original_enum_values = [];
 
     /**
-     * 
      * @param PDO_k1 $db
      * @param string $db_table_name
      */
@@ -100,6 +118,9 @@ class db_table {
         }
     }
 
+    /**
+     * @return string
+     */
     public function __toString() {
         if ($this->get_state()) {
             return "1";
@@ -108,6 +129,9 @@ class db_table {
         }
     }
 
+    /**
+     * @return bool
+     */
     public function get_state() {
         if ($this->db_table_config) {
             return TRUE;
@@ -116,6 +140,11 @@ class db_table {
         }
     }
 
+    /**
+     * @param string $sql_query
+     * @param bool $override_db_table_config
+     * @return void
+     */
     public function set_custom_sql_query($sql_query, $override_db_table_config = FALSE) {
         $this->custom_sql_query_code = $sql_query;
         if ($override_db_table_config) {
@@ -124,14 +153,24 @@ class db_table {
 //        return $this->db_table_config;
     }
 
+    /**
+     * @return string|false
+     */
     function get_db_table_name() {
         return $this->db_table_name;
     }
 
+    /**
+     * @return array|false
+     */
     public function get_db_table_label_fields() {
         return $this->db_table_label_field;
     }
 
+    /**
+     * @param bool $reload
+     * @return array|false
+     */
     public function get_db_table_config($reload = FALSE) {
         if ($reload && !empty($this->db_table_config)) {
             $this->db_table_config = $this->_get_db_table_config($this->db_table_name, TRUE, !$reload);
@@ -139,14 +178,26 @@ class db_table {
         return $this->db_table_config;
     }
 
+    /**
+     * @return array|false
+     */
     public function get_db_table_keys_array() {
         return $this->_get_db_table_keys_array($this->get_db_table_config());
     }
 
+    /**
+     * @param string $field
+     * @return array
+     */
     public function get_db_table_field_config($field) {
         return $this->db_table_config[$field];
     }
 
+    /**
+     * @param string $field
+     * @param string $config_name
+     * @return mixed
+     */
     public function get_field_config($field, $config_name) {
         return $this->db_table_config[$field][$config_name];
     }
@@ -164,10 +215,16 @@ class db_table {
         $this->query_row_count_limit = $row_count;
     }
 
+    /**
+     * @return int
+     */
     function get_query_offset() {
         return $this->query_offset;
     }
 
+    /**
+     * @return int|null
+     */
     function get_query_row_count_limit() {
         return $this->query_row_count_limit;
     }
@@ -293,6 +350,9 @@ class db_table {
         }
     }
 
+    /**
+     * @return array
+     */
     function get_constant_fields() {
         return $this->constant_fields;
     }
@@ -454,6 +514,9 @@ class db_table {
         return $this->generate_sql_query('keys');
     }
 
+    /**
+     * @return string
+     */
     function get_query_sql() {
         if (empty($this->query_sql)) {
             $this->generate_sql_query();
@@ -529,10 +592,16 @@ class db_table {
         }
     }
 
+    /**
+     * @return int|null
+     */
     function get_total_data_rows() {
         return $this->total_rows_filtered_result;
     }
 
+    /**
+     * @return int|null
+     */
     function get_total_rows() {
         if ($this->generate_sql_query()) {
             $this->total_rows_result = $this->db->sql_query($this->query_sql_total_rows, FALSE, FALSE);

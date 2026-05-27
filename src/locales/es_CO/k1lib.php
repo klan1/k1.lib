@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage locales
+ * 
+ * Spanish (Colombia) locale translations for k1lib.
+ * Contains translation strings for UI elements and messages.
+ */
+
 return [
     'domain' => 'k1lib',
     'plural-forms' => 'nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);',

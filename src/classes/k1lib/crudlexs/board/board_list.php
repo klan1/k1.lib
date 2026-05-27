@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\board
+ * CRUDLEXS List Board - Displays a paginated list of database rows with search, create, and export capabilities.
+ */
+
 namespace k1lib\crudlexs\board;
 
 use k1lib\crudlexs\controller\base as controller_base;
@@ -22,6 +29,22 @@ use function k1lib\html\get_link_button;
 use function k1lib\html\html_header_go;
 use function k1lib\urlrewrite\get_back_url;
 
+/**
+ * List Board for CRUDLEXS operations.
+ * 
+ * Handles the display of database table rows in a paginated list format with
+ * integrated search functionality, create buttons, and row statistics.
+ * 
+ * @property bool $search_enable Enable/disable search functionality
+ * @property bool $create_enable Enable/disable create button
+ * @property bool $export_enable Enable/disable export functionality
+ * @property bool $pagination_enable Enable/disable pagination
+ * @property bool $stats_enable Enable/disable row statistics
+ * @property int $where_to_show_stats Position to display stats (before/after table)
+ * @property bool $back_enable Enable/disable back button
+ * @property string $data_row_template Smarty template path for data rows
+ * @property listing $list_object The listing object managing row data
+ */
 class board_list extends board_base implements board_interface {
 
     const SHOW_BEFORE_TABLE = 1;
@@ -50,6 +73,12 @@ class board_list extends board_base implements board_interface {
      */
     public listing $list_object;
 
+    /**
+     * Construct the list board.
+     * 
+     * @param controller_base $controller_object The parent controller object managing this board
+     * @param array $user_levels_allowed Array of user levels permitted to access this board
+     */
     public function __construct(controller_base $controller_object, array $user_levels_allowed = []) {
         parent::__construct($controller_object, $user_levels_allowed);
         if ($this->is_enabled) {
@@ -62,7 +91,12 @@ class board_list extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * Initialize and start the board content.
+     * 
+     * Sets up the list view including search modal, create button, back button,
+     * and loads the database table data for display.
+     * 
+     * @return div|boolean Returns the board content div on success, FALSE if board is disabled or data failed to load
      */
     public function start_board() {
         /**
@@ -199,7 +233,13 @@ class board_list extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * Execute and render the board content.
+     * 
+     * Applies filters to the loaded data (label filters, field label filters, file upload filters),
+     * applies link filters on key fields, renders the HTML table, and displays statistics
+     * and pagination controls.
+     * 
+     * @return div|boolean Returns the rendered board content div on success, FALSE if board is disabled or no data loaded
      */
     public function exec_board() {
         if (!$this->is_enabled) {
@@ -261,58 +301,140 @@ class board_list extends board_base implements board_interface {
         }
     }
 
+    /**
+     * Cleanup operations after board execution completes.
+     * 
+     * Called after exec_board() to perform any necessary cleanup or finalization.
+     * 
+     * @return void
+     */
     public function finish_board() {
         
     }
 
+    /**
+     * Enable or disable search POST data capture.
+     * 
+     * When enabled, search criteria will be captured from POST data and stored in session.
+     * 
+     * @param bool $search_catch_post_enable TRUE to enable search POST capture, FALSE to disable
+     * @return void
+     */
     public function set_search_catch_post_enable($search_catch_post_enable) {
         $this->search_catch_post_enable = $search_catch_post_enable;
     }
 
+    /**
+     * Set the position where statistics should be displayed.
+     * 
+     * @param int $where_to_show_stats Use constants: SHOW_BEFORE_TABLE, SHOW_AFTER_TABLE, or SHOW_BEFORE_AND_AFTER_TABLE
+     * @return void
+     */
     function set_where_to_show_stats($where_to_show_stats) {
         $this->where_to_show_stats = $where_to_show_stats;
     }
 
+    /**
+     * Check if search functionality is enabled.
+     * 
+     * @return bool TRUE if search is enabled, FALSE otherwise
+     */
     function get_search_enable() {
         return $this->search_enable;
     }
 
+    /**
+     * Check if create functionality is enabled.
+     * 
+     * @return bool TRUE if create is enabled, FALSE otherwise
+     */
     function get_create_enable() {
         return $this->create_enable;
     }
 
+    /**
+     * Check if export functionality is enabled.
+     * 
+     * @return bool TRUE if export is enabled, FALSE otherwise
+     */
     function get_export_enable() {
         return $this->export_enable;
     }
 
+    /**
+     * Check if pagination is enabled.
+     * 
+     * @return bool TRUE if pagination is enabled, FALSE otherwise
+     */
     function get_pagination_enable() {
         return $this->pagination_enable;
     }
 
+    /**
+     * Check if statistics display is enabled.
+     * 
+     * @return bool TRUE if stats are enabled, FALSE otherwise
+     */
     function get_stats_enable() {
         return $this->stats_enable;
     }
 
+    /**
+     * Enable or disable search functionality.
+     * 
+     * @param bool $search_enable TRUE to enable search, FALSE to disable
+     * @return void
+     */
     function set_search_enable($search_enable) {
         $this->search_enable = $search_enable;
     }
 
+    /**
+     * Enable or disable create functionality.
+     * 
+     * @param bool $create_enable TRUE to enable create, FALSE to disable
+     * @return void
+     */
     function set_create_enable($create_enable) {
         $this->create_enable = $create_enable;
     }
 
+    /**
+     * Enable or disable export functionality.
+     * 
+     * @param bool $export_enable TRUE to enable export, FALSE to disable
+     * @return void
+     */
     function set_export_enable($export_enable) {
         $this->export_enable = $export_enable;
     }
 
+    /**
+     * Enable or disable pagination.
+     * 
+     * @param bool $pagination_enable TRUE to enable pagination, FALSE to disable
+     * @return void
+     */
     function set_pagination_enable($pagination_enable) {
         $this->pagination_enable = $pagination_enable;
     }
 
+    /**
+     * Enable or disable statistics display.
+     * 
+     * @param bool $stats_enable TRUE to enable stats, FALSE to disable
+     * @return void
+     */
     function set_stats_enable($stats_enable) {
         $this->stats_enable = $stats_enable;
     }
 
+    /**
+     * Enable or disable the back button.
+     * 
+     * @param bool $back_enable TRUE to enable back button, FALSE to disable
+     * @return void
+     */
     public function set_back_enable($back_enable) {
         $this->back_enable = $back_enable;
     }

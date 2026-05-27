@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\object
+ * Creating - Handles creation of new database records with form validation.
+ */
+
 namespace k1lib\crudlexs\object;
 
 use k1lib\html\bootstrap\grid_row;
@@ -17,7 +24,22 @@ use function k1lib\html\get_link_button;
 use function k1lib\html\html_header_go;
 
 /**
+ * Creating Object.
  * 
+ * Manages the creation of new database records including form rendering,
+ * POST data handling, validation, and insertion operations.
+ * 
+ * @property array $post_incoming_array Sanitized POST data for insertion
+ * @property bool $post_data_catched Whether POST data has been captured
+ * @property array $post_validation_errors Validation error messages by field
+ * @property array $post_password_fields Fields containing password data
+ * @property string $object_state Current state ("create" or "update")
+ * @property bool $enable_foundation_form_check Enable HTML5 form validation
+ * @property bool $show_cancel_button Show cancel button on form
+ * @property mixed $inserted_result Result from insert operation
+ * @property bool $inserted Whether insertion was successful
+ * @property string $html_form_column_classes CSS classes for form column
+ * @property string $html_column_classes CSS classes for input columns
  */
 class creating extends base_with_data implements base_interface {
 

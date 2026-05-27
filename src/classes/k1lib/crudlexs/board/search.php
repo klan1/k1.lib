@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\board
+ * Board Search - Modal search interface for filtering list results.
+ */
+
 namespace k1lib\crudlexs\board;
 
 use k1app\core\template\base as blank_tpl;
@@ -14,6 +21,15 @@ use k1lib\html\iframe;
 use k1lib\notifications\on_DOM as DOM_notification;
 use function k1lib\common\unserialize_var;
 
+/**
+ * Search Board for CRUDLEXS.
+ * 
+ * Provides a modal interface for searching/filtering list results
+ * using field-specific search criteria stored in session.
+ * 
+ * @property search_helper $search_object The search helper object
+ * @property bool $search_catch_post_enable Whether to capture search POST data
+ */
 class search extends board_base implements board_interface {
 
     /**
@@ -37,7 +53,12 @@ class search extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * Initialize the search board and render search form.
+     * 
+     * Sets up a modal interface with an iframe for search criteria input
+     * and initializes the search helper object.
+     * 
+     * @return div|boolean Returns board content div on success, FALSE on failure
      */
     public function start_board() {
         if (!parent::start_board()) {
@@ -73,7 +94,9 @@ class search extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * Execute the search board (placeholder for completion).
+     * 
+     * @return div|boolean Returns board content div on success, FALSE if no data loaded
      */
     public function exec_board() {
         if (!$this->is_enabled) {

@@ -1,36 +1,39 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
- * K1 API model - fast api for all
+ * K1 API model - fast API for all
  *
- * PHP version 7.1 - 7.2
+ * @license Apache-2.0
+ * @package k1lib
  *
- * LICENSE:  
- *
- * @author          Alejandro Trujillo J. <alejo@klan1.com>
- * @copyright       2015-2023 Klan1 Network SAS
- * @license         Apache 2.0
- * @version         1.0
- * @since           File available since Release 0.8
- */
-/*
- * App run time vars
+ * @author      Alejandro Trujillo J. <alejo@klan1.com>
+ * @copyright   2015-2023 Klan1 Network SAS
+ * @version     1.0
+ * @since       File available since Release 0.8
  */
 
 namespace k1lib\api;
 
 use k1lib\crudlexs\db_table;
 
+/**
+ * API model class for handling data operations with db_table integration
+ *
+ * @package k1lib\api
+ */
 class model {
 
     /**
-     * @var db_table
+     * @var db_table|null Database table instance
      */
     private db_table|bool|null $db_table;
-    private $errors = FALSE;
+    /** @var mixed */
+    private mixed $errors = FALSE;
 
+    /**
+     * @param db_table|bool|null $db_table
+     * @param mixed $data
+     */
     function __construct(db_table|bool|null $db_table = NULL, $data = NULL) {
         if (!is_null($db_table)) {
             $this->db_table = $db_table;
@@ -38,6 +41,11 @@ class model {
         $this->assing_data_to_properties($data);
     }
 
+    /**
+     * @param mixed $data
+     * @param bool $create_model_properties
+     * @return void
+     */
     function assing_data_to_properties($data, $create_model_properties = FALSE) {
         if (!empty($data)) {
             if ($create_model_properties) {
@@ -67,6 +75,10 @@ class model {
         }
     }
 
+    /**
+     * @param array $custom_key_array
+     * @return array
+     */
     function get_data(array $custom_key_array = []) {
         if (empty($custom_key_array)) {
             $data_array = $this->get_data_from_params();
@@ -80,6 +92,13 @@ class model {
         return $data;
     }
 
+    /**
+     * @param int $page
+     * @param int $page_size
+     * @param array $query_filter
+     * @param array $orderby
+     * @return array
+     */
     function get_all_data($page = 1, $page_size = 20, $query_filter = [], $orderby = []) {
 
         $offset = ($page - 1) * $page_size;
@@ -103,6 +122,9 @@ class model {
         return $data;
     }
 
+    /**
+     * @return mixed
+     */
     function insert_data() {
         $data_to_insert = $this->get_data_from_params();
         $sql_query = null;
@@ -115,6 +137,10 @@ class model {
         return $result;
     }
 
+    /**
+     * @param mixed $keyfields
+     * @return mixed
+     */
     function update_data($keyfields) {
         $data_to_update = $this->get_data_from_params();
         echo "data to update " . print_r($data_to_update, TRUE);
@@ -130,6 +156,10 @@ class model {
         return $result;
     }
 
+    /**
+     * @param mixed $keyfields
+     * @return mixed
+     */
     function delete_data($keyfields) {
         echo "Data to delete :" . print_r($keyfields, TRUE);
         $sql_query = null;
@@ -140,6 +170,9 @@ class model {
         return $result;
     }
 
+    /**
+     * @return array
+     */
     function get_data_from_params() {
 //        print_r($this->db_table->get_db_table_name());
         $table_config = $this->db_table->get_db_table_config();
@@ -157,6 +190,9 @@ class model {
         return $real_data;
     }
 
+    /**
+     * @return mixed
+     */
     function get_errors() {
         return $this->errors;
     }

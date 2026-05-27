@@ -1,12 +1,11 @@
 <?php
 
 /**
- * API Class, K1.lib.
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage api
  * 
- * Class for define API REST
- * @author J0hnD03 <alejandro.trujillo@klan1.com>
- * @version 0.1
- * @package api
+ * Base API class providing RESTful request handling, authentication, and response formatting.
  */
 
 namespace k1lib\api;
@@ -22,51 +21,110 @@ const K1LIB_API_DISABLE_MAGIC_HEADER = FALSE;
 const K1LIB_API_USE_TOKEN = TRUE;
 const K1LIB_API_DISABLE_TOKEN = FALSE;
 
+/**
+ * Base API controller class.
+ * Handles HTTP methods, authentication, and response formatting.
+ *
+ * @package k1lib\api
+ */
 class base {
 
+    /**
+     * Allowed HTTP methods for API requests.
+     * @var string
+     */
     protected $allow_methods = 'POST,GET,PUT,DELETE';
-    //execution time measurement
-    protected float $start_time;
-    protected float $end_time;
-
-    // DB conection object
 
     /**
+     * API request start time for execution time measurement.
+     * @var float
+     */
+    protected float $start_time;
+
+    /**
+     * API request end time for execution time measurement.
+     * @var float
+     */
+    protected float $end_time;
+
+    /**
+     * Database connection object.
      * @var PDO_k1
      */
     protected $db = NULL;
+
+    /**
+     * Debug mode flag.
+     * @var bool
+     */
     protected $do_debug = FALSE;
 
     /**
-     *
+     * Debug table for logging API requests.
      * @var db_table
      */
     protected $debug_table = FALSE;
-    // MAGIC HEADER
-    protected $magic_header = NULL;
-    protected $use_magic_header = FALSE;
-    // TOKEN
-    protected $token = NULL;
-    protected $use_token = TRUE;
-    // INPUT
-    protected $request_method = NULL;
-    protected $input_data = NULL;
-    // OUTPUT
 
     /**
+     * Magic header value for authentication.
+     * @var string|null
+     */
+    protected $magic_header = NULL;
+
+    /**
+     * Whether to use magic header authentication.
+     * @var bool
+     */
+    protected $use_magic_header = FALSE;
+
+    /**
+     * API token for authentication.
+     * @var string|null
+     */
+    protected $token = NULL;
+
+    /**
+     * Whether to use token authentication.
+     * @var bool
+     */
+    protected $use_token = TRUE;
+
+    /**
+     * HTTP request method of the current request.
+     * @var string|null
+     */
+    protected $request_method = NULL;
+
+    /**
+     * Parsed input data from request body.
+     * @var mixed
+     */
+    protected $input_data = NULL;
+
+    /**
+     * Whether to send JSON response.
      * @var bool
      */
     protected $do_send_response = TRUE;
 
     /**
+     * Whether read_input returns array instead of object.
      * @var bool
      */
     protected $read_input_return_array = TRUE;
-    /*
+
+    /**
+     * Additional response data to merge.
      * @var array
      */
     protected $reponse_data = [];
 
+    /**
+     * Creates a new API base instance.
+     *
+     * @param bool $use_token Whether to use token authentication
+     * @param bool $use_magic_header Whether to use magic header authentication
+     */
     public function __construct($use_token = FALSE, $use_magic_header = FALSE) {
         // Start clock time in seconds
         $this->start_time = microtime(true);
@@ -92,6 +150,12 @@ class base {
         $this->request_method = $_SERVER['REQUEST_METHOD'];
     }
 
+    /**
+     * Executes the API request based on HTTP method.
+     *
+     * @param bool $send_response Whether to send response or return data
+     * @return mixed
+     */
     public function exec($send_response = TRUE) {
         $this->do_send_response = $send_response;
         // Clear all possible previous output buffer
@@ -107,6 +171,12 @@ class base {
         }
     }
 
+    /**
+     * Reads and parses input from the request body.
+     * Handles authentication headers and JSON input parsing.
+     *
+     * @return bool FALSE on authentication failure, void otherwise
+     */
     protected function read_input() {
         $http_headers = getallheaders();
         /**
@@ -155,10 +225,22 @@ class base {
         }
     }
 
+    /**
+     * Gets the parsed input data from the request.
+     *
+     * @return mixed The input data
+     */
     public function get_input() {
         return $this->input_data;
     }
 
+    /**
+     * Sends a JSON response with the specified HTTP status code.
+     *
+     * @param int $code HTTP status code
+     * @param mixed $data Response data
+     * @param mixed $extra Additional data to include in response
+     */
     public function send_response($code, $data, $extra = null) {
         http_response_code($code);
         /**
@@ -226,34 +308,67 @@ class base {
         }
     }
 
+    /**
+     * Handles GET requests.
+     */
     public function get() {
         $this->read_input();
     }
 
+    /**
+     * Handles POST requests.
+     */
     public function post() {
         $this->read_input();
     }
 
+    /**
+     * Handles PUT requests.
+     */
     public function put() {
         $this->read_input();
     }
 
+    /**
+     * Handles DELETE requests.
+     */
     public function delete() {
         $this->read_input();
     }
 
+    /**
+     * Validates input array against expected structure.
+     *
+     * @param array $array_to_check Array to validate
+     * @return array The validated array
+     */
     protected function check_input($array_to_check) {
         return $array_to_check;
     }
 
+    /**
+     * Sets the database connection for API operations.
+     *
+     * @param PDO_k1 $db Database connection object
+     */
     function set_db(PDO_k1 $db) {
         $this->db = $db;
     }
 
+    /**
+     * Gets the URL value for the current level.
+     *
+     * @return string The URL value
+     */
     protected function get_url_value() {
         return url::set_url_rewrite_var(url::get_url_level_count(), 'level_' . url::get_url_level_count());
     }
 
+    /**
+     * Enables debug mode with optional debug table.
+     *
+     * @param string $table_name Debug log table name
+     */
     public function do_debug($table_name = 'debug_log') {
         if ($this->db) {
             $this->do_debug = true;
@@ -261,6 +376,11 @@ class base {
         }
     }
 
+    /**
+     * Sets whether to send JSON response or return data.
+     *
+     * @param bool $send_response TRUE to send response, FALSE to return
+     */
     function set_do_send_response($send_response) {
         $this->send_response = $send_response;
     }

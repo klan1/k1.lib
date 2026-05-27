@@ -1,48 +1,55 @@
 <?php
 
 /**
- * Forms related functions, K1.lib.
- * 
- * Common needed actions on forms and special ideas implemented with this lib.
- * @author J0hnD03 <alejandro.trujillo@klan1.com>
- * @version 1.0
- * @package forms
+ * File uploads handling for forms
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ *
+ * @author      J0hnD03 <alejandro.trujillo@klan1.com>
+ * @version     1.0
  */
 
 namespace k1lib\forms;
 
+/**
+ * File upload management class
+ *
+ * @package k1lib\forms
+ */
 class file_uploads {
 
     const ERROR_FILE_ALREADY_EXIST = -1;
     const ERROR_FILE_NOT_MOVED_TO_UPLOAD_PATH = -2;
 
     /**
-     * Enable state
-     * @var bool 
+     * @var bool Enable state
      */
     static private $enabled = FALSE;
+    /** @var bool */
     static private $overwrite_existent = TRUE;
 
     /**
-     * Uploads path to store files 
-     * @var char
+     * @var string Uploads path to store files
      */
     static private $path_to_uploads;
 
     /**
-     * Uploads URL to where the files are
-     * @var char
+     * @var string Uploads URL to where the files are
      */
     static private $uploads_url;
 
     /**
-     *
-     * @var string
+     * @var string|null
      */
     static private $last_error = NULL;
 
     /**
-     * Enable the engenie
+     * Enable the file upload engine
+     *
+     * @param string $path_to_upload Path to upload directory
+     * @param string $uploads_url URL to uploads directory
+     * @return void
      */
     static public function enable($path_to_upload, $uploads_url) {
         self::$enabled = TRUE;
@@ -56,7 +63,9 @@ class file_uploads {
 
     /**
      * Query the enabled state
-     * @return Boolean
+     *
+     * @param bool $show_error Show error if not enabled
+     * @return bool
      */
     static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {
@@ -65,6 +74,14 @@ class file_uploads {
         return self::$enabled;
     }
 
+    /**
+     * Place an uploaded file in the uploads directory
+     *
+     * @param string $tmp_file Temporary file path
+     * @param string $file_name Target file name
+     * @param string|null $directory Subdirectory
+     * @return string|false
+     */
     static function place_upload_file($tmp_file, $file_name, $directory = NULL) {
 //        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         if (!empty($directory)) {
@@ -96,6 +113,13 @@ class file_uploads {
         }
     }
 
+    /**
+     * Get the filesystem path of an uploaded file
+     *
+     * @param string $file_name
+     * @param string|null $directory
+     * @return string|false
+     */
     static function get_uploaded_file_path($file_name, $directory = NULL) {
         if (!empty($directory)) {
 //        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
@@ -114,6 +138,13 @@ class file_uploads {
         }
     }
 
+    /**
+     * Get the URL of an uploaded file
+     *
+     * @param string $file_name
+     * @param string|null $directory
+     * @return string|false
+     */
     static function get_uploaded_file_url($file_name, $directory = NULL) {
 //        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         d('uploaded: ' . $file_name);
@@ -129,6 +160,13 @@ class file_uploads {
         return $file_name_to_get;
     }
 
+    /**
+     * Delete an uploaded file
+     *
+     * @param string $file_name
+     * @param string|null $directory
+     * @return bool
+     */
     static function unlink_uploaded_file($file_name, $directory = NULL) {
 //        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
@@ -144,6 +182,10 @@ class file_uploads {
         }
     }
 
+    /**
+     * @param string|null $directory
+     * @return string
+     */
     static function get_uploads_url($directory = NULL) {
         if (!empty($directory)) {
             return self::$uploads_url . $directory . '/';
@@ -152,14 +194,24 @@ class file_uploads {
         }
     }
 
+    /**
+     * @return bool
+     */
     static function get_overwrite_existent() {
         return self::$overwrite_existent;
     }
 
+    /**
+     * @param bool $overwrite_existent
+     * @return void
+     */
     static function set_overwrite_existent($overwrite_existent) {
         self::$overwrite_existent = $overwrite_existent;
     }
 
+    /**
+     * @return string|null
+     */
     static function get_last_error() {
         return self::$last_error;
     }

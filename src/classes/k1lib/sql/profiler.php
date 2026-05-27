@@ -1,15 +1,29 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage sql
+ * SQL query profiling and performance monitoring functionality.
+ */
+
 namespace k1lib\sql;
 
+/**
+ * SQL query profiler.
+ * Tracks SQL execution time, caching, and provides profiling data retrieval.
+ *
+ * @package k1lib\sql
+ */
 class profiler {
 
     use common;
 
     /**
-     * Begin a SQL Profile with a SQL query code 
-     * @param string $sql_query
-     * @return Int Profile ID
+     * Adds a SQL query to the profiler and returns a profile ID.
+     *
+     * @param string $sql_query The SQL query to profile
+     * @return int Profile ID for later time tracking
      */
     static public function add(string $sql_query): int {
         self::is_enabled(true);
@@ -21,8 +35,9 @@ class profiler {
     }
 
     /**
-     * Begin the time count
-     * @param int $profile_id Profile ID
+     * Starts the execution time counter for a profile.
+     *
+     * @param int $profile_id The profile ID from add()
      */
     static public function start_time_count(int $profile_id): void {
         self::is_enabled(true);
@@ -40,9 +55,10 @@ class profiler {
     }
 
     /**
-     * Keep record of cache use of the current query
-     * @param int $sql_md5 Profile ID
-     * @param bool $is_cached 
+     * Records whether a query result was served from cache.
+     *
+     * @param int $profile_id The profile ID
+     * @param bool $is_cached TRUE if cached, FALSE otherwise
      */
     static public function set_is_cached(int $profile_id, bool $is_cached): void {
         self::is_enabled(true);
@@ -52,9 +68,10 @@ class profiler {
     }
 
     /**
-     * Filter the data by MD5
-     * @param string $md5
-     * @return Array
+     * Retrieves profile data filtered by MD5 hash.
+     *
+     * @param string $md5 The MD5 hash to filter by
+     * @return array Array of profile data matching the MD5
      */
     static public function get_by_md5($md5): array {
         self::is_enabled(true);
@@ -68,8 +85,9 @@ class profiler {
     }
 
     /**
-     * Return the total execution time
-     * @return float
+     * Calculates and returns the total execution time of all profiled queries.
+     *
+     * @return float Total time in seconds
      */
     static public function get_total_time() {
         $total_time = 0;

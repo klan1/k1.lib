@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\board
+ * Board Delete - Handles deletion of database records with confirmation.
+ */
+
 namespace k1lib\crudlexs\board;
 
 use k1lib\common_strings;
@@ -11,6 +18,17 @@ use k1lib\urlrewrite\url as url;
 use function k1lib\html\html_header_go;
 use function k1lib\urlrewrite\get_back_url;
 
+/**
+ * Delete Board for CRUDLEXS.
+ * 
+ * Handles deletion of database records after verifying auth code
+ * and user permissions. Performs the delete operation and redirects.
+ * 
+ * @property string $redirect_url URL to redirect after successful deletion
+ * @property string $row_keys_text URL-encoded row keys for the record to delete
+ * @property array $row_keys_text_array Decoded row keys as associative array
+ * @property reading $read_object Reading object for data access
+ */
 class delete extends board_base implements board_interface {
 
     protected $redirect_url = null;

@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * k1.lib Application Bootstrap
+ *
+ * Core application class responsible for initializing the application environment,
+ * managing database connections, handling web/shell/API modes, and coordinating
+ * controller execution.
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ */
+
 namespace k1lib;
 
 use k1lib\app\config;
@@ -22,33 +33,60 @@ use const k1app\K1APP_UPLOADS_PATH;
 use const k1app\K1APP_UPLOADS_URL;
 use const k1app\K1APP_URL;
 
+/**
+ * Main application bootstrap class.
+ *
+ * Handles application initialization, environment detection (web/shell/API),
+ * database connection management, path/url configuration, and controller routing.
+ *
+ * @property config $config Application configuration object
+ * @property bool $is_web Whether the application is running in web mode
+ * @property bool $is_shell Whether the application is running in shell mode
+ * @property bool $is_api Whether the application is running in API mode
+ * @property string $script_path Path to the application entry script
+ * @property mixed $tpl Global template object
+ * @property static $base_path Application base path
+ * @property static $base_url Application base URL
+ */
 class app {
 
+    /** @var config Application configuration instance */
     protected config $config;
+
+    /** @var bool True if running in web environment */
     public bool $is_web = false;
+
+    /** @var bool True if running in shell environment */
     public bool $is_shell = false;
+
+    /** @var bool True if running in API mode */
     public bool $is_api = false;
+
+    /** @var string Path to the entry script */
     protected string $script_path;
+
+    /** @var string Application base path */
     static string $base_path;
+
+    /** @var string Application base URL */
     static string $base_url;
-    /**
-     * 
-     * @var k1app\controllers\layout\sidebar_page
-     */
+
+    /** @var object|null Global template instance */
     protected $tpl;
 
     /**
-     * DB
-     */
-
-    /**
+     * Database connections indexed by connection index.
+     *
      * @var PDO_k1[]
      */
     protected array $db_connections = [];
 
     /**
-     * @param config $app_config
-     * @param bool $api_mode
+     * Constructor for the application bootstrap.
+     *
+     * @param config $app_config Application configuration instance
+     * @param string $script_path Path to the application entry script
+     * @param bool $api_mode Whether to run in API mode
      */
     function __construct(config $app_config, string $script_path, $api_mode = false) {
         $this->config = $app_config;
@@ -60,6 +98,11 @@ class app {
     }
 
     /**
+     * Bootstrap the application and detect environment mode.
+     *
+     * Determines whether the application runs in web, shell, or API mode
+     * based on server variables and sets appropriate mode constants.
+     *
      * @return void
      */
     function bootstrap(): void {
@@ -86,6 +129,11 @@ class app {
     }
 
     /**
+     * Automatically configure application paths and URLs.
+     *
+     * Defines constants for all application paths (root, src, classes, functions,
+     * assets, uploads, settings) and URLs based on the server environment.
+     *
      * @return void
      */
     function auto_config(): void {
@@ -156,6 +204,11 @@ class app {
     }
 
     /**
+     * Initialize and execute the appropriate controller based on URL routing.
+     *
+     * Enables file upload handling, URL rewriting, loads the controller from the URL
+     * path, and dispatches to the appropriate method based on request type (GET/POST/PUT/DELETE).
+     *
      * @return void
      */
     function run_controllers(): void {
@@ -195,10 +248,23 @@ class app {
         }
     }
 
+    /**
+     * Get the application configuration object.
+     *
+     * @return config The application configuration instance
+     */
     public function config(): config {
         return $this->config;
     }
 
+    /**
+     * Start the application session with configured options.
+     *
+     * Enables app sessions, applies configuration settings (session name, IP hashing,
+     * user levels), and initializes database-backed session storage if cookies exist.
+     *
+     * @return void
+     */
     function start_app_session() {
         app_session::enable();
         app_session::set_session_name($this->config->get_option('app_session_name'));
@@ -212,11 +278,28 @@ class app {
         }
     }
 
+    /**
+     * End the application session and display a goodbye message.
+     *
+     * Terminates the database session and queues a success notification.
+     *
+     * @return void
+     */
     function end_app_session() {
         session_db::end_session(K1APP_BASE_URL);
         on_DOM::queue_mesasage("Bye!", "success");
     }
 
+    /**
+     * Get a database connection by index.
+     *
+     * Creates and returns a PDO connection using configuration settings
+     * for database name, user, password, host, port, and type. Connections
+     * are cached and reused.
+     *
+     * @param int $index Connection index identifier (default: 1)
+     * @return PDO_k1 The database connection instance
+     */
     function db($index = 1): PDO_k1 {
         if ($index === 1) {
             if (empty($this->db_connections[1])) {
@@ -243,20 +326,29 @@ class app {
         return $this->db_connections[$index];
     }
 
+    /**
+     * Set the global template object.
+     *
+     * @param object $tpl Template instance to use globally
+     * @return void
+     */
     function set_global_tpl($tpl) {
         $this->tpl = $tpl;
     }
     /**
-     * 
-     * @return k1app\controllers\layout\sidebar_page
+     * Get the global template object.
+     *
+     * @return object|null The global template instance
      */
     function tpl() {
         return $this->tpl;
     }
     
+    /**
+     * End the application and perform cleanup operations.
+     *
+     * @return void
+     */
     function end_app() {
-        /**
-         * TODO: Idea in progress
-         */
     }
 }

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\object
+ * Input Helper - Factory for creating form input elements based on database field types.
+ */
+
 namespace k1lib\crudlexs\object;
 
 use k1lib\common_strings;
@@ -24,6 +31,22 @@ use const k1lib\K1LIB_BASE_PATH;
 use function d;
 use function k1lib\urlrewrite\get_back_url;
 
+/**
+ * Input Helper Factory for CRUDLEXS Forms.
+ * 
+ * Generates appropriate HTML input elements based on database field configurations.
+ * Supports various field types including passwords, enums, text areas, file uploads,
+ * boolean radio buttons, and foreign key search tools.
+ * 
+ * @property static bool $do_fk_search_tool Enable/disable foreign key search functionality
+ * @property static bool $fk_search_tool_js_loaded Track if FK search JS has been loaded
+ * @property static string $url_to_search_fk_data URL for FK search tool
+ * @property static string $url_to_send_row_keys_fk_data URL for sending FK row keys
+ * @property static string $main_css CSS file path for TinyMCE editor
+ * @property static array $fk_fields_to_skip Fields to skip in FK search
+ * @property static string|null $boolean_true Label for true/yes boolean values
+ * @property static string|null $boolean_false Label for false/no boolean values
+ */
 class input_helper {
 
     static $do_fk_search_tool = TRUE;
@@ -35,6 +58,17 @@ class input_helper {
     static public $boolean_true = NULL;
     static public $boolean_false = NULL;
 
+    /**
+     * Generate a password input group with new and confirm fields.
+     * 
+     * Creates a container with password inputs for new password and confirmation,
+     * and optionally a current password field for updates.
+     * 
+     * @param creating $crudlex_obj The CRUDLEXS object instance
+     * @param string $field Field name for the password
+     * @param string $case Either "create" for new password only or "update" for include current
+     * @return div Container div with password input fields
+     */
     static function password_type(creating $crudlex_obj, $field, $case = "create") {
         // First we have the CLEAR the password data, we do not need it!
         $field_encrypted = $crudlex_obj->encrypt_field_name($field) . "_password";
@@ -64,10 +98,14 @@ class input_helper {
     }
 
     /**
-     * *
-     * @param db_table $db_table
-     * @param array $db_table_row_data
-     * @return select
+     * Generate a select dropdown for MySQL ENUM field values.
+     * 
+     * Creates a select element populated with ENUM options from the database,
+     * respecting user role restrictions if configured.
+     * 
+     * @param creating $crudlex_obj The CRUDLEXS object instance
+     * @param string $field Field name for the ENUM
+     * @return select HTML select element with ENUM options
      */
     static function enum_type(creating $crudlex_obj, $field) {
         /**
@@ -91,11 +129,15 @@ class input_helper {
     }
 
     /**
+     * Generate a textarea input for text or HTML content.
      * 
-     * @param \k1lib\crudlexs\creating $crudlex_obj
-     * @param int $row_to_apply
-     * @param string $field
-     * @return textarea
+     * Creates a textarea with optional TinyMCE rich text editor integration
+     * based on the field validation configuration.
+     * 
+     * @param creating $crudlex_obj The CRUDLEXS object instance
+     * @param string $field Field name for the text content
+     * @param bool $load_tinymce If TRUE, initialize TinyMCE editor
+     * @return textarea HTML textarea element, optionally with TinyMCE
      */
     static function text_type(creating $crudlex_obj, $field, $load_tinymce = TRUE) {
         // Row to apply is constant coz this is CREATE or EDIT and there is allways just 1 set of data to manipulate.
@@ -138,6 +180,16 @@ class input_helper {
         return $input_tag;
     }
 
+    /**
+     * Generate a file upload input field.
+     * 
+     * Creates an input element with type "file" and includes a delete link
+     * if a file is already uploaded for this field.
+     * 
+     * @param creating $crudlex_obj The CRUDLEXS object instance
+     * @param string $field Field name for the file upload
+     * @return input|div Either a simple file input or container with input and delete link
+     */
     static function file_upload(creating $crudlex_obj, $field) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
 
@@ -155,6 +207,16 @@ class input_helper {
         }
     }
 
+    /**
+     * Generate radio buttons for boolean field values.
+     * 
+     * Creates a div containing two radio buttons for yes/no or true/false
+     * selection based on the field value.
+     * 
+     * @param creating $crudlex_obj The CRUDLEXS object instance
+     * @param string $field Field name for the boolean
+     * @return div Container div with yes/no radio buttons
+     */
     static function boolean_type(creating $crudlex_obj, $field) {
         /*
           <div class="switch tiny">
@@ -202,6 +264,18 @@ class input_helper {
         return $input_div;
     }
 
+    /**
+     * Generate the default input based on field configuration.
+     * 
+     * Creates appropriate input elements based on field type:
+     * - Foreign key fields: Input with search button for FK selection tool
+     * - Date fields: Input with date picker calendar
+     * - Regular fields: Standard text input, optionally with icon
+     * 
+     * @param creating $crudlex_obj The CRUDLEXS object instance
+     * @param string $field Field name to generate input for
+     * @return input|input_text_with_icon|div HTML input element appropriate for the field type
+     */
     static function default_type(creating $crudlex_obj, $field) {
         $field_encrypted = $crudlex_obj->encrypt_field_name($field);
         if ((!empty($crudlex_obj->db_table->get_field_config($field, 'refereced_table_name')) && self::$do_fk_search_tool) && (array_search($field, self::$fk_fields_to_skip) === FALSE)) {
@@ -329,18 +403,40 @@ class input_helper {
         }
     }
 
+    /**
+     * Check if FK search tool is enabled.
+     * 
+     * @return bool TRUE if FK search tool is enabled, FALSE otherwise
+     */
     public static function get_do_fk_search_tool() {
         return self::$do_fk_search_tool;
     }
 
+    /**
+     * Get the list of fields to skip in FK search.
+     * 
+     * @return array Array of field names to skip
+     */
     public static function get_fk_fields_to_skip() {
         return self::$fk_fields_to_skip;
     }
 
+    /**
+     * Enable or disable the FK search tool.
+     * 
+     * @param bool $do_fk_search_tool TRUE to enable FK search, FALSE to disable
+     * @return void
+     */
     public static function set_do_fk_search_tool($do_fk_search_tool) {
         self::$do_fk_search_tool = $do_fk_search_tool;
     }
 
+    /**
+     * Set the list of fields to skip in FK search.
+     * 
+     * @param array $fk_fields_to_skip Array of field names to skip
+     * @return void
+     */
     public static function set_fk_fields_to_skip(array $fk_fields_to_skip) {
         self::$fk_fields_to_skip = $fk_fields_to_skip;
     }

@@ -1,24 +1,14 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
- * K1 Lib loader
+ * k1.lib Bootstrap and Initialization
  *
- * PHP version 8.2
+ * Core loader that initializes constants, configuration, error handling,
+ * internationalization, and sets up the k1lib environment.
  *
- * LICENSE:  
- *
- * @author          Alejandro Trujillo J. <alejo@klan1.com>
- * @copyright       2015-2023 Klan1 Network SAS
- * @license         Apache 2.0
- * @version         2.6
- * @since           File available since Release 0.1
+ * @license Apache-2.0
+ * @package k1lib
  */
-/*
- * App run time vars
- */
-// TODO: remove this file dependency 
 
 namespace k1lib;
 

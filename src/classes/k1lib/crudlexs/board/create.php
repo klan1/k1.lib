@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\board
+ * Board Create - Handles creation of new database records.
+ */
+
 namespace k1lib\crudlexs\board;
 
 use k1lib\crudlexs\controller\base;
@@ -9,6 +16,14 @@ use k1lib\notifications\on_DOM as DOM_notification;
 use k1lib\urlrewrite\url as url;
 use function k1lib\urlrewrite\get_back_url;
 
+/**
+ * Create Board for CRUDLEXS.
+ * 
+ * Handles creation of new database records with form inputs
+ * for all creatable fields, validation, and redirect handling.
+ * 
+ * @property creating $create_object The creating object managing form and data
+ */
 class create extends board_base implements board_interface {
 
     /**

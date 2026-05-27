@@ -1,16 +1,43 @@
 <?php
 
-namespace k1lib\crudlexs;
+/**
+ * English CRUDLexs DB table class strings
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ */
 
-class db_table_strings {
+namespace k1lib\crudlexs\db_table;
+
+class db_table_class_strings {
 
     /**
-     * __construct()
+     * @var string
      */
-    static $error_table_name = "The table name has to be a String";
-    static $error_no_show_rule = "The Show Rule do not exist";
-    static $error_empty_data_insert = "Data to insert can't be empty";
-    static $error_empty_data_update = "Data to update can't be empty";
-    static $error_empty_data_update_key = "Key to update can't be empty";
-    static $error_empty_data_delete_key = "Key to delete can't be empty";
+    static $board_title_list = "Data List";
+
+    /**
+     * @var string
+     */
+    static $board_title_create = "New Record";
+
+    /**
+     * @var string
+     */
+    static $board_title_read = "View Record";
+
+    /**
+     * @var string
+     */
+    static $board_title_update = "Update Record";
+
+    /**
+     * @var string
+     */
+    static $board_title_delete = "Delete Record";
+
+    /**
+     * @var string
+     */
+    static $board_title_search = "Search";
 }

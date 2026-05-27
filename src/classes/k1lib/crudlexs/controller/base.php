@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\controller
+ * CRUDLEXS Controller Base - Main controller class for CRUD operations on database tables.
+ */
+
 namespace k1lib\crudlexs\controller;
 
 use k1lib\app;
@@ -32,6 +39,26 @@ use function k1lib\common\clean_array_with_guide;
 use function k1lib\common\serialize_var;
 use function k1lib\html\html_header_go;
 
+/**
+ * CRUDLEXS Controller Base.
+ * 
+ * Manages CRUD operations (List, Create, Read, Update, Delete, Search) for a database table.
+ * Provides URL routing, user level permissions, and board coordination.
+ * 
+ * @property db_table $db_table The database table object
+ * @property PDO_k1 $db Database connection
+ * @property app $app Application instance
+ * @property string $controller_id Unique identifier for this controller
+ * @property string $controller_name Display name for HTML title
+ * @property string $controller_root_dir URL root path for this controller
+ * @property board_list|create|update|read|delete|search $current_board The active board instance
+ * @property board_list $board_list_object List board instance
+ * @property create $board_create_object Create board instance
+ * @property read $board_read_object Read board instance
+ * @property update $board_update_object Update board instance
+ * @property delete $board_delete_object Delete board instance
+ * @property search $board_search_object Search board instance
+ */
 class base {
 
     protected $security_no_rules_enable = FALSE;
@@ -199,6 +226,17 @@ class base {
      * @param string $template_place_name_html_title 
      * @param string $template_place_name_controller_name 
      */
+    /**
+     * Construct the CRUDLEXS controller.
+     * 
+     * Initializes URL routing, database connection, and sets up the controller
+     * with the specified table and name.
+     * 
+     * @param string $app_base_dir Application base URL (use \k1app\APP_BASE_URL)
+     * @param string $app_controller Application controller class name
+     * @param string $db_table_name Database table name to manage
+     * @param string $controller_name Display name for HTML title and page heading
+     */
     public function __construct($app_base_dir, string $app_controller, $db_table_name, $controller_name) {
         /**
          * URL Management
@@ -246,16 +284,37 @@ class base {
         $this->board_delete_name = controller_base_strings::$board_delete_name;
     }
 
+    /**
+     * Set the CSS selector for the HTML title tag.
+     * 
+     * @param string $title_tag_id CSS selector (e.g., '#k1app-page-title')
+     * @return void
+     */
     public function set_title_tag_id($title_tag_id): void {
         $this->html_title_tag = DOM::html()->body()->q($this->title_tag_id);
         $this->title_tag_id = $title_tag_id;
     }
 
+    /**
+     * Set the CSS selector for the HTML subtitle tag.
+     * 
+     * @param string $subtitle_tag_id CSS selector (e.g., '.card-title')
+     * @return void
+     */
     public function set_subtitle_tag_id($subtitle_tag_id): void {
         $this->subtitle_tag_id = $subtitle_tag_id;
         $this->html_subtitle_tag = DOM::html()->body()->q($this->subtitle_tag_id);
     }
 
+    /**
+     * Load configuration from a configuration class.
+     * 
+     * Reads constants from the specified class to set board URLs, names,
+     * enabled states, and user level permissions.
+     * 
+     * @param string|null $class_name Configuration class name (e.g., '\k1app\table_config\TABLE_NAME')
+     * @return void
+     */
     public function set_config_from_class($class_name = NULL) {
         $this->config_class_name = $class_name;
 //        $class_name::CONTROLLER_ALLOWED_LEVELS;

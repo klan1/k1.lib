@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\board
+ * Board Update - Handles editing of existing database records.
+ */
+
 namespace k1lib\crudlexs\board;
 
 use k1lib\crudlexs\controller\base;
@@ -11,6 +18,15 @@ use k1lib\urlrewrite\url as url;
 use function k1lib\html\get_link_button;
 use function k1lib\urlrewrite\get_back_url;
 
+/**
+ * Update Board for CRUDLEXS.
+ * 
+ * Handles the editing of existing database records with form inputs
+ * for all updateable fields, validation, and redirect handling.
+ * 
+ * @property updating $update_object The updating object managing form and data
+ * @property string $row_keys_text URL-encoded row keys for the record being updated
+ */
 class update extends board_base implements board_interface {
 
     /**
@@ -32,7 +48,12 @@ class update extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * Initialize the update board and start rendering.
+     * 
+     * Sets up form inputs for the record being edited, loads existing data,
+     * and initializes the content container.
+     * 
+     * @return div|boolean Returns board content div on success, FALSE on failure
      */
     public function start_board() {
         if (!parent::start_board()) {
@@ -66,7 +87,12 @@ class update extends board_base implements board_interface {
     }
 
     /**
-     * @return div|boolean
+     * Execute the update board and render the form.
+     * 
+     * Processes POST data if submitted, validates input, performs the update
+     * operation, and renders the edit form with delete button.
+     * 
+     * @return div|boolean Returns board content div on success, FALSE on failure
      */
     public function exec_board() {
         if (!$this->is_enabled) {

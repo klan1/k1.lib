@@ -1,19 +1,26 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
+/**
+ * SQL defaults for k1lib database operations
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ *
+ * @author      j0hnd003
  */
 
 namespace k1lib\db;
 
 /**
- * Description of sql_defaults
+ * SQL default values and validation rules
  *
- * @author j0hnd003
+ * @package k1lib\db
  */
 class sql_defaults {
 
+    /**
+     * @var array MySQL max length defaults by type
+     */
     static protected $mysql_max_length_defaults = array(
         'char' => 255,
         'varchar' => 255,
@@ -32,6 +39,9 @@ class sql_defaults {
         'enum' => NULL,
         'point' => 9999,
     );
+    /**
+     * @var array MySQL default validation rules by type
+     */
     static protected $mysql_default_validation = array(
         'char' => 'mixed-symbols',
         'varchar' => 'mixed-symbols',
@@ -52,6 +62,9 @@ class sql_defaults {
         'set' => 'options',
         'point' => 'mixed-symbols',
     );
+    /**
+     * @var array k1lib field config options defaults
+     */
     static protected $k1lib_field_config_options_defaults = [
         'label' => null,
         'alias' => null,
@@ -72,14 +85,23 @@ class sql_defaults {
         'sql' => null,
     ];
 
+    /**
+     * @return array
+     */
     public static function get_mysql_max_length_defaults() {
         return self::$mysql_max_length_defaults;
     }
 
+    /**
+     * @return array
+     */
     public static function get_mysql_default_validation() {
         return self::$mysql_default_validation;
     }
 
+    /**
+     * @return array
+     */
     public static function get_k1lib_field_config_options_defaults() {
         return self::$k1lib_field_config_options_defaults;
     }

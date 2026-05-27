@@ -1,7 +1,22 @@
 <?php
 
+/**
+ * XML generation functions for k1lib
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ */
+
 namespace k1lib\xml;
 
+/**
+ * Generate XML/Excel spreadsheet from array data.
+ *
+ * @param array $data_array Array of data with headers in first row
+ * @param bool $do_download If TRUE, force download; if FALSE, return XML string
+ * @param string|null $file_name Download filename
+ * @return string|null Returns XML string if $do_download is FALSE, otherwise dies
+ */
 function do_xml($data_array, $do_download = false, $file_name = null) {
     $headersCode = "";
     $rowsCode = "";
@@ -52,7 +67,7 @@ function do_xml($data_array, $do_download = false, $file_name = null) {
           %Headers%
           %DataRows%
         </Table>
-        <WorksheetOptions 
+        <WorksheetOptions
           xmlns="urn:schemas-microsoft-com:office:excel">
           <Print>
               <ValidPrinterInfo/>
@@ -110,10 +125,7 @@ HTML;
         header('Content-Description: XML document download');
         header('Cache-Control: public');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
-//        header("Content-type: text/plain; charset=utf-8\r\n");
-//        header("Content-Transfer-Encoding: 8bit");
         header('Content-Disposition: attachment; filename=' . (empty($file_name) ? 'xml_report.xml' : $file_name));
-//        header('Content-Length: ' . mb_strlen($xmlTemplate, '8bit'));
         flush();
         echo $xmlTemplate;
         die();

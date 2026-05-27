@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\object
+ * Base With Data - Base class for CRUDLEXS objects with database record data.
+ */
+
 namespace k1lib\crudlexs\object;
 
 use k1lib\common_strings as common_strings;
@@ -17,6 +24,30 @@ use function k1lib\urlrewrite\get_back_url;
 use function k1lib\utils\decimal_to_n36;
 use function k1lib\utils\n36_to_decimal;
 
+/**
+ * Base With Data Class.
+ * 
+ * Provides common functionality for CRUDLEXS objects that work with database records.
+ * Handles authentication codes, data loading, filtering, field encryption/decryption,
+ * and row key management.
+ * 
+ * @property array $db_table_data Array with [0] => headers, [1..n] => data rows
+ * @property array|bool $db_table_data_keys Row keys for each data row
+ * @property array|bool $db_table_data_filtered Filtered data with labels applied
+ * @property string $auth_code Authentication code for URL verification
+ * @property string $auth_code_personal User-specific auth code
+ * @property bool $link_on_field_filter_applied Whether link filter was applied
+ * @property string $back_url URL to return to after cancel
+ * @property string $row_keys_text URL-encoded row keys
+ * @property array $row_keys_array Decoded row keys as associative array
+ * @property bool $skip_auto_code_verification Skip auth code verification
+ * @property bool $skip_blanks_on_filters Skip blank values in filters
+ * @property bool $do_table_field_name_encrypt Encrypt field names in forms
+ * @property bool $force_file_uploads_as_links Force file uploads as links
+ * @property array $custom_field_labels Custom label mappings
+ * @property array $fields_to_hide Fields to hide from display
+ * @property bool $is_valid Whether object has valid data loaded
+ */
 class base_with_data extends base {
 
     /**

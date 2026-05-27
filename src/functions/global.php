@@ -1,22 +1,26 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage global
+ * Global Functions - Common utility functions for debugging and output.
+ */
+
 use k1lib\html\DOM;
 use k1lib\notifications\on_DOM;
 use k1lib\html\pre;
 
 /**
- * Global functions, K1.lib.
+ * Debug function for displaying variables on screen.
  * 
- * Common functions needed on the main \ namespace.
- * @author J0hnD03 <alejandro.trujillo@klan1.com>
- * @version 1.0
- * @package global
- */
-
-/**
- * Function for debug on screen any kind of data
- * @param mixed $var
- * @param boolean $var_dump
+ * Outputs the given variable in a formatted style for debugging purposes.
+ * Uses pre tags when DOM is available, otherwise outputs plain text.
+ * 
+ * @param mixed $var Variable to debug - can be any type
+ * @param bool $var_dump If TRUE, uses var_export() instead of print_r()
+ * @param bool $trigger_notice If TRUE, triggers a user notice with the debug output
+ * @return void
  */
 function d($var, $var_dump = FALSE, $trigger_notice = TRUE) {
     //    trigger_error(__FILE__, E_USER_ERROR);

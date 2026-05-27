@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage session
+ * Session management functionality for user authentication, login tracking, and browser fingerprinting.
+ */
+
 namespace k1lib\session;
 
 use EndyJasmi\Cuid;
@@ -10,76 +17,82 @@ use const k1app\K1APP_DOMAIN;
 use function getallheaders;
 use function k1lib\html\html_header_go;
 
+/**
+ * Application session management class.
+ * Handles user authentication, session state, and terminal identification.
+ *
+ * @package k1lib\session
+ */
 class app_session {
 
     /**
-     * Enable state
-     * @var bool 
+     * Enable state.
+     * @var bool
      */
     static protected $enabled = FALSE;
 
     /**
-     * If TRUE on IP change the session will be invalidated
+     * If TRUE on IP change the session will be invalidated.
      * @var bool
      */
     static public $use_ip_in_userhash = TRUE;
 
     /**
-     * Logged state
+     * Logged state.
      * @var bool
      */
     static protected $has_started;
 
     /**
-     * Keeps the logged state
+     * Keeps the logged state.
      * @var bool
      */
     static protected $is_logged;
 
     /**
-     *
-     * @var string 
+     * Current user login identifier.
+     * @var int|string
      */
     static protected int|string $user_login = -1;
 
     /**
-     *
-     * @var string 
+     * User hash for session validation.
+     * @var string|bool
      */
     static protected bool|string $user_hash = false;
 
     /**
-     *
-     * @var string 
+     * User access level (default: 'guest').
+     * @var string|bool
      */
     static protected bool|string $user_level = 'guest';
 
     /**
-     * the user levels ['user', 'guest'] are defautls
+     * User levels configuration.
      * @var array
      */
     static protected $app_user_levels = ['user', 'guest'];
 
     /**
-     * Session name for the PHP session handler
-     * @var string 
+     * Session name for the PHP session handler.
+     * @var string
      */
     static protected $session_name;
 
     /**
-     * User session data
+     * User session data.
      * @var array
      */
     static public array $session_data = [];
 
     /**
-     * URL for default login redirection
+     * URL for default login redirection.
      * @var string
      */
     static protected $log_form_url;
 
     /**
-     * Enable the engenie
+     * Enables the session engine.
      */
     static public function enable() {
         self::$enabled = TRUE;
@@ -88,8 +101,10 @@ class app_session {
     }
 
     /**
-     * Query the enabled state
-     * @return Boolean
+     * Queries the enabled state of the session system.
+     *
+     * @param bool $show_error If TRUE, triggers an error when not enabled
+     * @return bool TRUE if enabled, FALSE otherwise
      */
     static public function is_enabled($show_error = false) {
         if ($show_error && (!self::$enabled)) {
@@ -98,16 +113,29 @@ class app_session {
         return self::$enabled;
     }
 
+    /**
+     * Gets the PHP session name.
+     *
+     * @return string The session name
+     */
     static public function get_session_name() {
         self::is_enabled(true);
         return session_name();
     }
 
+    /**
+     * Sets the PHP session name.
+     *
+     * @param string $session_name The session name to set
+     */
     static public function set_session_name($session_name) {
         self::is_enabled(true);
         self::$session_name = $session_name;
     }
 
+    /**
+     * Resets all session data to default values.
+     */
     static public function reset_session_data() {
         self::$user_login = -1;
         self::$user_hash = false;

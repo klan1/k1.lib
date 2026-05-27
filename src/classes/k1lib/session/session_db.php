@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage session
+ * Session Database - Database-backed session management for user authentication.
+ */
+
 namespace k1lib\session;
 
 use k1lib\crudlexs\db_table;
@@ -9,6 +16,22 @@ use k1lib\db\PDO_k1 as PDO;
 use function k1lib\common\check_magic_value;
 use function k1lib\forms\check_all_incomming_vars;
 
+/**
+ * Database Session Handler.
+ * 
+ * Manages user authentication and session persistence using database storage
+ * with optional cookie-based remember-me functionality.
+ * 
+ * @property static db_table $db_table Login database table
+ * @property static PDO $db_object Database connection
+ * @property static array $user_data Currently logged-in user data
+ * @property static string $user_login_db_table Table name for user login
+ * @property static string $user_login_field Field name for login username
+ * @property static string $user_password_field Field name for password
+ * @property static string $user_level_field Field name for user level/role
+ * @property static bool $user_password_use_md5 Whether to use MD5 for passwords
+ * @property static bool $user_password_use_sha2 Whether to use SHA256 for passwords
+ */
 class session_db {
 
     /**
@@ -96,6 +119,12 @@ class session_db {
      */
     static protected $coockie_data = NULL;
 
+    /**
+     * Initialize the session database handler.
+     * 
+     * @param PDO $db Database connection
+     * @return void
+     */
     static function init(PDO $db) {
         self::$db_object = $db;
         self::$save_cookie_name = app_session::get_session_name() . "-store";

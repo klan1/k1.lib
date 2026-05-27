@@ -1,9 +1,12 @@
 <?php
 
-//
-
 /**
- * HTML Related funcions that uses the HTML Classes
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage html
+ * 
+ * HTML tag application functions providing UI component generation using k1lib HTML classes.
+ * Functions for creating form elements, tables, links, and layouts.
  */
 
 namespace k1lib\html;
@@ -11,10 +14,10 @@ namespace k1lib\html;
 use k1lib\html as html_classes;
 
 /**
- * Loads files and get contents from templates directory from k1.lib no from the app template directory.
- * Returns FALSE on load error.
- * @param string $function_name
- * @return String
+ * Loads HTML template files from k1.lib templates directory.
+ *
+ * @param string $function_name Template function name
+ * @return string|false Template content or FALSE on error
  */
 function load_html_template($function_name) {
     $function_name_fixed = \str_replace("\\", "/", $function_name);
@@ -63,14 +66,11 @@ function label_input_text_combo($field_name, $value, $label, $required = FALSE, 
 }
 
 /**
- * Using a HTML Template makes the couple of label-inpunt
- * @param string $field_name
- * @param string $value
- * @param string $label
- * @param bool $required
- * @param string $error_msg
- * @param string $label_link 
- * @return String
+ * Creates a label-text combo using HTML template.
+ *
+ * @param string $label Label text
+ * @param string $value Value text
+ * @return string HTML combo markup
  */
 function label_text_combo($label, $value) {
 

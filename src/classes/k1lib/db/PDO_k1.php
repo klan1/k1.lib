@@ -1,7 +1,10 @@
 <?php
 
 /**
- * New DB class to make easier multiple DB connections
+ * PDO database connection class for k1lib
+ *
+ * @license Apache-2.0
+ * @package k1lib
  */
 
 namespace k1lib\db;
@@ -21,31 +24,39 @@ use function k1lib\forms\check_single_incomming_var;
 use function k1lib\forms\form_check_values;
 
 /**
- * 
+ * PDO connection class with SQL query builders and table config utilities
+ *
+ * @package k1lib\db
  */
 class PDO_k1 extends PDO {
 
     /**
-     * Enable state
-     * @var bool 
+     * @var bool Enable state
      */
     protected $enabled = FALSE;
+    /** @var string */
     protected $db_dsn;
+    /** @var string */
     protected $db_name;
+    /** @var string */
     protected $db_user;
+    /** @var string */
     protected $db_password;
+    /** @var string */
     protected $db_host;
+    /** @var int */
     protected $db_port;
 
     /**
-     *  Verbose level for error output
-     * @var type 
+     * @var int Verbose level for error output
      */
     protected $verbose_level = 0;
 
     /**
      * Query the enabled state
-     * @return Boolean
+     *
+     * @param bool $show_error Show error if not enabled
+     * @return bool
      */
     public function is_enabled($show_error = false) {
         if ($show_error && (!$this->enabled)) {
@@ -55,13 +66,15 @@ class PDO_k1 extends PDO {
     }
 
     /**
-     * Start the engenie
-     * @param string $db_name
-     * @param string $db_user
-     * @param string $db_password
-     * @param string $db_host
-     * @param integer $db_port
-     * @param string $db_type
+     * Start the database engine
+     *
+     * @param string $db_name Database name
+     * @param string $db_user Database user
+     * @param string $db_password Database password
+     * @param string $db_host Database host (default: localhost)
+     * @param int $db_port Database port (default: 3306)
+     * @param string $db_type Database type (default: mysql)
+     * @param bool $pdo_string_altern Use alternate PDO string format
      */
     public function __construct($db_name, $db_user, $db_password,
             $db_host = "localhost", $db_port = 3306, $db_type = "mysql",
@@ -82,11 +95,18 @@ class PDO_k1 extends PDO {
         parent::__construct($this->db_dsn, $this->db_user, $this->db_password);
     }
 
+    /**
+     * @return int
+     */
     function get_verbose_level() {
         $this->is_enabled(true);
         return $this->verbose_level;
     }
 
+    /**
+     * @param int $verbose_level
+     * @return void
+     */
     function set_verbose_level($verbose_level) {
         $this->is_enabled(true);
         $this->verbose_level = $verbose_level;

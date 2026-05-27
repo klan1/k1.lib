@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\object
+ * 
+ * Provides read-only display functionality for database records with formatted HTML output.
+ */
+
 namespace k1lib\crudlexs\object;
 
 use k1lib\common_strings;
@@ -10,13 +18,32 @@ use k1lib\html\h3;
 use k1lib\notifications\on_DOM as DOM_notification;
 
 /**
- * 
+ * Reading object for displaying record data in a formatted view.
+ * Renders database table data as read-only HTML with labels and values.
+ *
+ * @package k1lib\crudlexs\object
  */
 class reading extends base_with_data implements base_interface {
 
-    public read $parent_board;
+    /**
+     * Parent board instance for coordination.
+     * @var read
+     */
+    public $parent_board;
+
+    /**
+     * CSS classes for HTML column layout.
+     * @var string
+     */
     private $html_column_classes = "col-md-6 col-12";
 
+    /**
+     * Creates a reading object for displaying record data.
+     *
+     * @param string $db_table Database table name
+     * @param string $row_keys_text Row key identifier string
+     * @param string $custom_auth_code Optional authentication code
+     */
     public function __construct($db_table, $row_keys_text, $custom_auth_code = "") {
         if (!empty($row_keys_text)) {
             parent::__construct($db_table, $row_keys_text, $custom_auth_code);
@@ -30,6 +57,12 @@ class reading extends base_with_data implements base_interface {
         $this->skip_blanks_on_filters = TRUE;
     }
 
+    /**
+     * Generates the HTML representation of the reading object.
+     * Displays database record data as read-only HTML with field labels and values.
+     *
+     * @return div|false Returns div container with formatted data or FALSE if no data
+     */
     public function do_html_object() {
         if ($this->db_table_data) {
             $this->div_container->set_attrib("class", "row k1lib-crudlexs-" . $this->css_class);
@@ -93,10 +126,21 @@ class reading extends base_with_data implements base_interface {
         }
     }
 
+    /**
+     * Gets the HTML column classes for layout configuration.
+     *
+     * @return string CSS column classes
+     */
     public function get_html_column_classes() {
         return $this->html_column_classes;
     }
 
+    /**
+     * Sets the HTML column classes for layout configuration.
+     *
+     * @param string $html_column_classes CSS column classes
+     * @return void
+     */
     public function set_html_column_classes($html_column_classes) {
         $this->html_column_classes = $html_column_classes;
     }

@@ -1,8 +1,20 @@
 <?php
 
+/**
+ * Utility functions for k1lib
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ */
+
 namespace k1lib\utils;
 
-// recibe 69 y retorna 1Z
+/**
+ * Convert a decimal number to base-36 string.
+ *
+ * @param int|float $number_to_convert
+ * @return string
+ */
 function decimal_to_n36($number_to_convert) {
     $num_numbers = strlen((string) $number_to_convert);
     $number_to_convert = (float) $number_to_convert;
@@ -23,6 +35,12 @@ function decimal_to_n36($number_to_convert) {
     return strrev($result);
 }
 
+/**
+ * Convert a decimal number to base-63 string.
+ *
+ * @param int|float $number_to_convert
+ * @return string
+ */
 function decimal_to_n63($number_to_convert) {
     $num_numbers = strlen((string) $number_to_convert);
     $number_to_convert = (float) $number_to_convert;
@@ -46,7 +64,12 @@ function decimal_to_n63($number_to_convert) {
     return strrev($result);
 }
 
-// recibe 1Z y retorna 69
+/**
+ * Convert a base-36 string to decimal number.
+ *
+ * @param string $number_to_convert
+ * @return int
+ */
 function n36_to_decimal($number_to_convert) {
 
     $number_to_convert = strtoupper($number_to_convert);
@@ -95,13 +118,17 @@ function n36_to_decimal($number_to_convert) {
         $digit_to_convert = substr($number_to_convert, $i, 1);
         $digit_value = $dig[$digit_to_convert];
         $decimal_number = $decimal_number + (($digit_value * (pow(36, (strlen($number_to_convert) - 1) - $i))));
-//        \d('$digit_to_convert : (($digit_value * (pow(35, (strlen($number_to_convert) - 1)-$i)))) = ' . (($digit_value * (pow(36, (strlen($number_to_convert) - 1)-$i)))));
     }
 
     return $decimal_number;
 }
 
-// recibe 1Z y retorna 69
+/**
+ * Convert a base-63 string to decimal number.
+ *
+ * @param string $number_to_convert
+ * @return int
+ */
 function n63_to_decimal($number_to_convert) {
 
     $number_to_convert = $number_to_convert;
@@ -177,7 +204,6 @@ function n63_to_decimal($number_to_convert) {
         $digit_to_convert = substr($number_to_convert, $i, 1);
         $digit_value = $dig[$digit_to_convert];
         $decimal_number = $decimal_number + (($digit_value * (pow(63, (strlen($number_to_convert) - 1) - $i))));
-//        \d('$digit_to_convert : (($digit_value * (pow(35, (strlen($number_to_convert) - 1)-$i)))) = ' . (($digit_value * (pow(36, (strlen($number_to_convert) - 1)-$i)))));
     }
 
     return $decimal_number;

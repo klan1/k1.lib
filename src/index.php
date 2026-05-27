@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * k1.lib Initialization
+ *
+ * Main entry point for k1lib library. Initializes memory tracking,
+ * loads language files, includes all functions, and displays diagnostic
+ * information when accessed directly.
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ */
+
 namespace k1lib;
 
 $mem_usage['init'] = memory_get_usage() / 1024;
@@ -11,17 +22,14 @@ include_once 'init.php';
 error_reporting(E_ALL);
 
 /**
- * Includes ALL files on a directory.
- */
-init_k1lib_include_files(K1LIB_BASE_PATH . "/lang/en");
-init_k1lib_include_files(K1LIB_BASE_PATH . '/functions');
-// init_k1lib_include_files(K1LIB_BASE_PATH . '/classes');
-
-/**
- * Use this function to inlude ONLY CLASSES and functions, if there are normal 
- * variables they will be on the function scope and you NEVER will reach them.
- * @param string $path_to_explore
- * @param array $prefix_to_exclude
+ * Initialize k1lib include files.
+ *
+ * Recursively includes all PHP files from the specified directory,
+ * excluding hidden files, index.php, and files prefixed with underscores.
+ *
+ * @param string $path_to_explore Directory path to scan for PHP files
+ * @param array $prefix_to_exclude Array of prefixes to exclude (default: ['.', '..', '__'])
+ * @return void
  */
 function init_k1lib_include_files($path_to_explore, array $prefix_to_exclude = ['.', '..', '__']) {
     $files_list = scandir($path_to_explore);

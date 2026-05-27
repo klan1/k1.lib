@@ -1,25 +1,29 @@
 <?php
 
 /**
- * Controller related functions, K1.lib.
- * 
- * This are my controller use propose.
- * @author J0hnD03 <alejandro.trujillo@klan1.com>
- * @version 1.0
- * @package controllers
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage controllers
+ * Controller Functions - Utility functions for loading and managing controllers.
  */
 
 namespace k1lib\controllers;
 
-use k1lib\html\DOM as DOM;
+use k1lib\html\DOM;
 
 /**
- * Return the controller PATH for include it, we cant do it from the function by the var scope, so we do here some esential checks before the include
- * @global array $url_data url_rewrite data variable from K1FW
- * @param string $controller_name Just the file name 
- * @return string correct path to include the file name recived on $controller_name
+ * Load a controller file and return the path for inclusion.
+ * 
+ * Attempts to load a controller using two strategies: first as a direct file,
+ * then as a directory with index.php. Returns the path on success or NULL
+ * if return_error is TRUE and the controller cannot be found.
+ * 
+ * @param string $controller_name The controller file name to load (without extension)
+ * @param string $controllers_path Base directory path where controllers are located
+ * @param bool $return_error If TRUE, return NULL on error instead of triggering error
+ * @param bool $api_mode If TRUE, send JSON 400 response on error instead of HTML
+ * @return string|null Path to the controller file, or NULL if not found and return_error is TRUE
  */
-//function load_controller($controller_name, $query_auto_load = TRUE) {
 function load_controller($controller_name, $controllers_path, $return_error = FALSE, $api_mode = FALSE) {
 //    d($controllers_path);
 //    $controller_query_file = FALSE;
@@ -57,6 +61,15 @@ function load_controller($controller_name, $controllers_path, $return_error = FA
     }
 }
 
+/**
+ * Display a 404 error page and terminate execution.
+ * 
+ * Outputs an HTTP 404 response with an HTML page indicating the requested
+ * controller was not found, then exits the script.
+ * 
+ * @param string $non_found_name Name of the controller that was not found
+ * @return void
+ */
 function error_404($non_found_name) {
     http_response_code(404);
     header("Access-Control-Allow-Origin: *");
@@ -68,6 +81,16 @@ function error_404($non_found_name) {
     exit;
 }
 
+/**
+ * Load a template file and return its path.
+ * 
+ * Searches for the template file in the specified directory using the subfolder
+ * scheme (templates/NAME.php). Triggers an error if the template is not found.
+ * 
+ * @param string $template_name Name of the template to load
+ * @param string $path_to_use Base directory path where templates are located
+ * @return string|false Path to the template file, or FALSE on error (triggers error)
+ */
 function load_template($template_name, $path_to_use) {
     if (is_string($template_name)) {
         if ($template_to_load = template_exist($template_name, $path_to_use)) {
@@ -80,6 +103,16 @@ function load_template($template_name, $path_to_use) {
     }
 }
 
+/**
+ * Check if a template file exists and return its path.
+ * 
+ * Uses the subfolder scheme to locate templates (path/NAME.php).
+ * Triggers an error if the template file does not exist.
+ * 
+ * @param string $template_name Name of the template to check
+ * @param string $path_to_use Base directory path where templates are located
+ * @return string|false Path to the template file, or FALSE if not found
+ */
 function template_exist($template_name, $path_to_use) {
     if (is_string($template_name)) {
         // Try with subfolder scheme

@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage urlrewrite
+ * 
+ * URL rewriting and routing functionality for clean URL management and controller loading.
+ */
+
 namespace k1lib\urlrewrite;
 
 use k1app\template\mazer\components\app\sidebar\wrapper\header;
@@ -11,45 +19,63 @@ use function k1lib\controllers\load_controller;
 use function k1lib\forms\check_all_incomming_vars;
 use function k1lib\forms\check_single_incomming_var;
 
+/**
+ * URL rewrite manager for clean URL routing.
+ * Handles URL parsing, level management, and controller resolution.
+ *
+ * @package k1lib\urlrewrite
+ */
 class url {
 
     /**
-     * Enable state
-     * @var bool 
+     * Enable state.
+     * @var bool
      */
     static private $enabled = FALSE;
 
     /**
-     * Actual URL level 
+     * Actual URL level count.
      * @var int
      */
     static private $levels_count;
 
     /**
-     * URL data array
+     * URL data array with level information.
      * @var array
      */
     static private $url_data;
 
     /**
-     * Enable the engenie
+     * API mode flag.
+     * @var bool
      */
     static private $api_mode = FALSE;
 
     /**
-     * 
+     * Raw URL rewrite data string.
      * @var string
      */
     static private string $url_rewrite_data;
 
+    /**
+     * Enables API mode for URL processing.
+     */
     static function set_api_mode() {
         self::$api_mode = TRUE;
     }
 
+    /**
+     * Gets the API mode status.
+     *
+     * @return bool TRUE if in API mode
+     */
     static function get_api_mode() {
         return self::$api_mode;
     }
 
+    /**
+     * Enables the URL rewrite system.
+     */
     static public function enable() {
         self::$enabled = TRUE;
         self::$levels_count = null;

@@ -1,12 +1,13 @@
 <?php
 
 /**
- * Forms related functions, K1.lib.
- * 
- * Common needed actions on forms and special ideas implemented with this lib.
- * @author J0hnD03 <alejandro.trujillo@klan1.com>
- * @version 1.0
- * @package forms
+ * Form handling functions for k1lib
+ *
+ * @license Apache-2.0
+ * @package k1lib
+ *
+ * @author      J0hnD03 <alejandro.trujillo@klan1.com>
+ * @version     1.0
  */
 
 namespace k1lib\forms;
@@ -15,11 +16,12 @@ use k1lib\db\PDO_k1;
 use function k1lib\common\serialize_var;
 
 /**
- * This SHOULD be used always to receive any kind of value from _GET _POST _REQUEST if it will be used on SQL staments.
- * @param string $var Value to check.
- * @param bool $request FALSE to check $var as is. Use TRUE if $var become an index as: $_REQUEST[$var]
- * @param bool $url_decode TRUE if the data should be URL decoded.
- * @return String Rerturn NULL on error This could be that $var IS NOT String, Number or IS Array.
+ * Check and sanitize a single incoming variable for SQL injection prevention.
+ *
+ * @param mixed $var Value to check
+ * @param bool $request FALSE to check $var as is. Use TRUE if $var is an index like: $_REQUEST[$var]
+ * @param bool $url_decode TRUE if the data should be URL decoded
+ * @return mixed Returns NULL on error (if $var is not String, Number or is Array)
  */
 function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE) {
     if ((is_string($var) || is_numeric($var)) && !is_array($var)) {
@@ -55,10 +57,11 @@ function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE)
 }
 
 /**
- * Prevents SQL injection from any ARRAY, at the same time serialize the var into save_name. This uses check_single_incomming_var() on each array item. Is recursive.
- * @param array $request_array
- * @param string $save_name
- * @return array checked values ready to work
+ * Recursively sanitize an array of incoming variables for SQL injection prevention.
+ *
+ * @param array $request_array Array of values to check
+ * @param string|null $save_name Optional session key to serialize the form data
+ * @return array Checked values ready to work
  */
 function check_all_incomming_vars($request_array, $save_name = null) {
 //checks all the incomming vars
@@ -85,10 +88,12 @@ function check_all_incomming_vars($request_array, $save_name = null) {
 }
 
 /**
- * Get a single value from a serialized var if is an array, this one do not echo erros only return FALSE is there is not stored
- * @param string $form_name
- * @param string $field_name
- * @param string $default
+ * Retrieve a single field value from a serialized form stored in session.
+ *
+ * @param string $form_name Form/session identifier
+ * @param string $field_name Field name to retrieve
+ * @param mixed $default Default value if field not found
+ * @param string $compare Comparison value (returns TRUE if field equals this)
  * @return mixed
  */
 function get_form_field_from_serialized($form_name, $field_name, $default = "", $compare = "--FALSE--") {
@@ -131,12 +136,13 @@ function get_form_field_from_serialized($form_name, $field_name, $default = "", 
 }
 
 /**
- * Checks with this function if a received value matchs with a item on a ENUM field on a table
- * @param string $value Value to check
- * @param string  $table_name SQL table name
+ * Validate a value against ENUM field options in a database table.
+ *
+ * @param string $received_value Value to check
+ * @param string $table_name SQL table name
  * @param string $table_field SQL table field to check
- * @param PDO_k1 $db DB connection object
- * @return string
+ * @param PDO_k1 $db Database connection object
+ * @return string|false Error type message or FALSE if valid
  */
 function check_enum_value_type($received_value, $table_name, $table_field, PDO_k1 $db) {
     $options = $db->get_db_table_enum_values($table_name, $table_field);
@@ -151,6 +157,13 @@ function check_enum_value_type($received_value, $table_name, $table_field, PDO_k
     return $error_type;
 }
 
+/**
+ * Validate a value against a specific type format.
+ *
+ * @param mixed $value Value to check
+ * @param string $type Validation type (email, date, numbers, etc.)
+ * @return string Error message or empty string if valid
+ */
 function check_value_type($value, $type) {
 
     //dates for use
@@ -320,6 +333,14 @@ function check_value_type($value, $type) {
     return $error_type;
 }
 
+/**
+ * Handle file upload from form data.
+ *
+ * @param array $file_data File data array from form
+ * @param array $field_config Field configuration with file-max-size and file-type
+ * @param string|null $table_name Optional table name for subdirectory
+ * @return mixed TRUE on success, error string on failure
+ */
 function form_file_upload_handle($file_data, $field_config, $table_name = null) {
     /**
      * File validations with DB Table Config directives
@@ -344,6 +365,14 @@ function form_file_upload_handle($file_data, $field_config, $table_name = null) 
 //    $file_location_url = file_uploads::get_uploaded_file_url($file_data['name']);
 }
 
+/**
+ * Validate form array values against table configuration.
+ *
+ * @param array $form_array Form data to validate
+ * @param array $table_array_config Table field configurations
+ * @param PDO_k1|null $db Database connection
+ * @return array|false Array of errors or FALSE if valid
+ */
 function form_check_values(&$form_array, $table_array_config, PDO_k1 $db = NULL) {
     if (!is_array($form_array)) {
         die(__FUNCTION__ . " need an array to work on \$form_array");

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage crudlexs\object
+ * Updating - Handles updating of existing database records.
+ */
+
 namespace k1lib\crudlexs\object;
 
 use k1lib\common_strings;
@@ -11,6 +18,16 @@ use function k1lib\forms\check_all_incomming_vars;
 use function k1lib\html\html_header_go;
 use function k1lib\urlrewrite\get_back_url;
 
+/**
+ * Updating Object.
+ * 
+ * Extends creating to handle updating of existing database records.
+ * Manages file unlinking, update operations, and redirect handling.
+ * 
+ * @property bool $update_perfomed Whether an update was successfully performed
+ * @property bool $do_redirect Whether to perform redirect after update
+ * @property bool $updated Whether the update succeeded
+ */
 class updating extends creating {
 
     protected $update_perfomed = FALSE;

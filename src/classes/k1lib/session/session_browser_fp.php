@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @license Apache-2.0
+ * @package k1lib
+ * @subpackage session
+ * Session Browser Fingerprint - Browser fingerprinting for enhanced session security.
+ */
+
 namespace k1lib\session;
 
 use k1lib\crudlexs\db_table as db_table;
@@ -12,6 +19,23 @@ use Ramsey\Uuid\Uuid;
 use function k1lib\forms\check_all_incomming_vars;
 use function k1lib\html\html_header_go;
 
+/**
+ * Browser Fingerprint Session Handler.
+ * 
+ * Extends session_db to add browser fingerprinting for enhanced security.
+ * Tracks terminals and validates browser characteristics against stored fingerprints.
+ * 
+ * @property static string $terminals_table_name Table for terminal storage
+ * @property static string $mobile_numbers_table_name Table for mobile numbers
+ * @property static string $terminals_unique_table_name Table for unique terminal-number pairs
+ * @property static string $session_terminal_coockie_name Cookie name for terminal session
+ * @property static db_table2 $terminals_table Terminals database table
+ * @property static db_table2 $mobile_nombers_table Mobile numbers database table
+ * @property static db_table2 $terminals_unique_table Unique terminal-number database table
+ * @property static string $current_terminal_uuid Current terminal UUID
+ * @property static string $current_browser_fp Current browser fingerprint
+ * @property static array $current_browser_fp_data Current browser fingerprint data
+ */
 class session_browser_fp extends session_db {
 
     /**
