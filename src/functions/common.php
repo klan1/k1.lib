@@ -48,7 +48,7 @@ function k1lib_include_files($path_to_explore, array $prefix_to_exclude = ['.', 
  * Base functions for typical development projects and other k1lib packages.
  * Includes array manipulation, data serialization, validation, and web utilities.
  *
- * @author Alejandro Trujillo J. (J0hnd03)
+ * @author Alejandro Trujillo J. <https://github.com/j0hnd03>
  * @license Apache-2.0
  * @package k1lib\common
  */

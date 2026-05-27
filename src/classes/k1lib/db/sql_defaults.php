@@ -6,7 +6,7 @@
  * @license Apache-2.0
  * @package k1lib
  *
- * @author      j0hnd003
+ * @author Alejandro Trujillo J. <https://github.com/j0hnd03>
  */
 
 namespace k1lib\db;

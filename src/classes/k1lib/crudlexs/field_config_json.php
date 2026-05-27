@@ -9,7 +9,7 @@ namespace k1lib\crudlexs;
 /**
  * Description of table_config_json
  *
- * @author j0hnd003
+ * @author Alejandro Trujillo J. <https://github.com/j0hnd03>
  */
 class field_config_json {
 

@@ -6,7 +6,7 @@
  * @license Apache-2.0
  * @package k1lib
  *
- * @author      Alejandro Trujillo J. <alejo@klan1.com>
+ * @author Alejandro Trujillo J. <https://github.com/j0hnd03>
  * @copyright   2015-2023 Klan1 Network SAS
  * @version     1.0
  * @since       File available since Release 0.8
