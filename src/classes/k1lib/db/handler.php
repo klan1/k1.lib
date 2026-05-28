@@ -83,9 +83,9 @@ class handler extends PDO {
         }
     }
 
-    function query($statement) {
+    function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): \PDOStatement|false {
         try {
-            $result = parent::query($statement);
+            $result = parent::query($query, $fetchMode, ...$fetchModeArgs);
         } catch (PDOException $exc) {
             switch (self::$verbose_level) {
                 case 0:
@@ -95,10 +95,10 @@ class handler extends PDO {
                     trigger_error($exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 2:
-                    trigger_error($statement . " | " . $exc->getMessage(), E_USER_NOTICE);
+                    trigger_error($query . " | " . $exc->getMessage(), E_USER_NOTICE);
                     break;
                 case 3:
-                    trigger_error($statement . " | " . $exc->getMessage(), E_USER_NOTICE);
+                    trigger_error($query . " | " . $exc->getMessage(), E_USER_NOTICE);
                     d($exc->getTraceAsString());
                     break;
                 default:
@@ -110,7 +110,7 @@ class handler extends PDO {
         return $result;
     }
 
-    function exec($statement) {
+    function exec(string $statement): int|false {
         try {
             $result = parent::exec($statement);
         } catch (PDOException $exc) {

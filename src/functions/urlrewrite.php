@@ -15,7 +15,7 @@ namespace k1lib\urlrewrite;
  * @param bool $get_only If TRUE, only check GET parameter
  * @return string|false
  */
-function get_back_url($get_only = FALSE) {
+function get_back_url($get_only = FALSE): string|false {
     if (isset($_GET['back-url'])) {
         $back_url = urldecode($_GET['back-url']);
     } elseif (!$get_only && isset($_SERVER['HTTP_REFERER']) && (!empty($_SERVER['HTTP_REFERER']))) {
@@ -39,7 +39,7 @@ function get_back_url($get_only = FALSE) {
  * @param string $extra Extra attributes
  * @return void
  */
-function print_link($link, $text, $class = "", $extra = "") {
+function print_link($link, $text, $class = "", $extra = ""): void {
     echo "<a href='$link' class='$class' $extra>$text</a>";
 }
 

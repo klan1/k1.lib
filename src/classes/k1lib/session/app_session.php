@@ -329,7 +329,7 @@ class app_session {
      * @param array Levels to check the current user, use ['leve1','level2','levelN'] to fastest code ;)
      * @return boolean
      */
-    static public function check_user_level(array $levels_to_check) {
+    static public function check_user_level(array $levels_to_check): bool {
         self::is_enabled(true);
         $has_access = FALSE;
         foreach ($levels_to_check as $level) {

@@ -152,7 +152,7 @@ class crud extends api {
     /**
      * Handles POST requests for updating existing records.
      */
-    function post() {
+    function post(): void {
         parent::post();
         $this->assing_keyfields_data();
         $this->table_model->assing_data_to_properties($this->input_data, TRUE);
@@ -169,7 +169,7 @@ class crud extends api {
     /**
      * Handles PUT requests for creating new records.
      */
-    function put() {
+    function put(): void {
         parent::put();
         $this->assing_keyfields_data();
         $this->table_model->assing_data_to_properties($this->input_data, TRUE);
@@ -188,7 +188,7 @@ class crud extends api {
     /**
      * Handles DELETE requests for removing records.
      */
-    function delete() {
+    function delete(): void {
         parent::delete();
         $this->assing_keyfields_data();
         $this->table_model->assing_data_to_properties($this->input_data, TRUE);

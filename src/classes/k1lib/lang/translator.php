@@ -136,7 +136,7 @@ class translator {
      *
      * @return string The current locale
      */
-    public function getCurrentLocale() {
+    public function getCurrentLocale(): string {
         return $this->currentLocale;
     }
 

@@ -15,7 +15,7 @@ namespace k1lib\utils;
  * @param int|float $number_to_convert
  * @return string
  */
-function decimal_to_n36($number_to_convert) {
+function decimal_to_n36($number_to_convert): string {
     $num_numbers = strlen((string) $number_to_convert);
     $number_to_convert = (float) $number_to_convert;
     $hexChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -41,7 +41,7 @@ function decimal_to_n36($number_to_convert) {
  * @param int|float $number_to_convert
  * @return string
  */
-function decimal_to_n63($number_to_convert) {
+function decimal_to_n63($number_to_convert): string {
     $num_numbers = strlen((string) $number_to_convert);
     $number_to_convert = (float) $number_to_convert;
     $hexChars = '0123456789'
@@ -70,7 +70,7 @@ function decimal_to_n63($number_to_convert) {
  * @param string $number_to_convert
  * @return int
  */
-function n36_to_decimal($number_to_convert) {
+function n36_to_decimal($number_to_convert): int {
 
     $number_to_convert = strtoupper($number_to_convert);
 
@@ -129,7 +129,7 @@ function n36_to_decimal($number_to_convert) {
  * @param string $number_to_convert
  * @return int
  */
-function n63_to_decimal($number_to_convert) {
+function n63_to_decimal($number_to_convert): int {
 
     $number_to_convert = $number_to_convert;
 

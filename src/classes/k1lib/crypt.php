@@ -33,7 +33,7 @@ class crypt {
      * @param mixed $value Value to encrypt (arrays will be JSON encoded)
      * @return string Encrypted value as hex string
      */
-    static function encrypt($value) {
+    static function encrypt($value): string {
         if (is_array($value)) {
             $value = json_encode($value);
         }

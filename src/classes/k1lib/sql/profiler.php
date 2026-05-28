@@ -89,7 +89,7 @@ class profiler {
      *
      * @return float Total time in seconds
      */
-    static public function get_total_time() {
+    static public function get_total_time(): float {
         $total_time = 0;
         foreach (self::$data as $profile_data) {
             $total_time += $profile_data['total_time'];

@@ -46,7 +46,7 @@ class model {
      * @param bool $create_model_properties
      * @return void
      */
-    function assing_data_to_properties($data, $create_model_properties = FALSE) {
+    function assing_data_to_properties($data, $create_model_properties = FALSE): void {
         if (!empty($data)) {
             if ($create_model_properties) {
                 foreach ($data as $key => $value) {
@@ -79,7 +79,7 @@ class model {
      * @param array $custom_key_array
      * @return array
      */
-    function get_data(array $custom_key_array = []) {
+    function get_data(array $custom_key_array = []): array {
         if (empty($custom_key_array)) {
             $data_array = $this->get_data_from_params();
             $data_keys = $this->db_table->db->get_keys_array_from_row_data($data_array, $this->db_table->get_db_table_config());
@@ -99,7 +99,7 @@ class model {
      * @param array $orderby
      * @return array
      */
-    function get_all_data($page = 1, $page_size = 20, $query_filter = [], $orderby = []) {
+    function get_all_data($page = 1, $page_size = 20, $query_filter = [], $orderby = []): array {
 
         $offset = ($page - 1) * $page_size;
         $this->db_table->set_query_limit($offset, $page_size);
@@ -173,7 +173,7 @@ class model {
     /**
      * @return array
      */
-    function get_data_from_params() {
+    function get_data_from_params(): array {
 //        print_r($this->db_table->get_db_table_name());
         $table_config = $this->db_table->get_db_table_config();
         $real_data = [];
@@ -193,7 +193,7 @@ class model {
     /**
      * @return mixed
      */
-    function get_errors() {
+    function get_errors(): mixed {
         return $this->errors;
     }
 }

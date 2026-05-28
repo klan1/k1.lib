@@ -230,7 +230,7 @@ class base {
      *
      * @return mixed The input data
      */
-    public function get_input() {
+    public function get_input(): mixed {
         return $this->input_data;
     }
 

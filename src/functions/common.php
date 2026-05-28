@@ -78,7 +78,7 @@ function check_on_k1lib() {
  * @param array $data_array Array to convert to guide array
  * @return array Guide array with keys as values
  */
-function make_guide_array($data_array) {
+function make_guide_array($data_array): array {
     $guide_array = array();
     foreach ($data_array as $key => $value) {
         if (!is_array($value)) {
@@ -100,7 +100,7 @@ function make_guide_array($data_array) {
  * @param array $guide_array Array whose keys define which keys to keep
  * @return array Filtered array
  */
-function clean_array_with_guide($array_to_clean, $guide_array) {
+function clean_array_with_guide($array_to_clean, $guide_array): array {
     $new_array = [];
     if (!empty($guide_array)) {
         foreach ($guide_array as $guide_key => $guide_value) {
@@ -130,7 +130,7 @@ function clean_array_with_guide($array_to_clean, $guide_array) {
  * @param array $guide_array Array whose keys define the desired key order
  * @return array Reorganized array
  */
-function organize_array_with_guide($array_to_organize, $guide_array) {
+function organize_array_with_guide($array_to_organize, $guide_array): array {
     $new_array = [];
     foreach ($guide_array as $guide_key => $no_use) {
         if (isset($array_to_organize[$guide_key])) {
@@ -152,7 +152,7 @@ function organize_array_with_guide($array_to_organize, $guide_array) {
  * @param string $upper_name Parent key name for nested arrays (internal use)
  * @return string URL-encoded query string
  */
-function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = FALSE, $upper_name = "") {
+function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = FALSE, $upper_name = ""): string {
     $url_parameters = "";
     if (!is_array($guide_array)) {
         $guide_array = make_guide_array($data_array);
@@ -193,7 +193,7 @@ function array_to_url_parameters($data_array, $guide_array = FALSE, $use_json = 
  * @param string $new_key_name New name for the key
  * @return bool True on success, false if key doesn't exist
  */
-function array_rename_key(&$array, $key_to_rename, $new_key_name) {
+function array_rename_key(&$array, $key_to_rename, $new_key_name): bool {
     if (array_key_exists($key_to_rename, $array)) {
         $array[$new_key_name] = $array[$key_to_rename];
         unset($array[$key_to_rename]);
@@ -211,7 +211,7 @@ function array_rename_key(&$array, $key_to_rename, $new_key_name) {
  * @param string $false_value Text to return when false (default: "No")
  * @return string The appropriate text value based on boolean input
  */
-function bolean_to_string($bolean, $true_value = "Si", $false_value = "No") {
+function bolean_to_string($bolean, $true_value = "Si", $false_value = "No"): string {
     if ($bolean) {
         return $true_value;
     } else {
@@ -229,7 +229,7 @@ function bolean_to_string($bolean, $true_value = "Si", $false_value = "No") {
  * @return string Qualified magic name (format: magic_{name}_secret)
  * @throws \Error If session is not enabled
  */
-function get_magic_name($name) {
+function get_magic_name($name): string {
     if (app_session::on_session()) {
         return "magic_{$name}_secret";
     } else {
@@ -247,7 +247,7 @@ function get_magic_name($name) {
  * @return string Magic value to include in forms
  * @throws \Error If session is not enabled
  */
-function set_magic_value($name) {
+function set_magic_value($name): string {
     if (app_session::on_session()) {
         $secret = md5($name . microtime(TRUE));
         $_SESSION[get_magic_name($name)] = $secret;
@@ -269,7 +269,7 @@ function set_magic_value($name) {
  * @return string|false The validated magic value on success, false on failure
  * @throws \Error If session is not enabled
  */
-function check_magic_value($name, $value_to_check) {
+function check_magic_value($name, $value_to_check): string|false {
     if (app_session::on_session()) {
         if ($value_to_check == "") {
             die("The magic value never can be empty!");
@@ -359,7 +359,7 @@ function unset_serialize_var($saved_name, $method = "session") {
  * @param string $email Email address to validate
  * @return bool True if valid email format, false otherwise
  */
-function check_email_address($email) {
+function check_email_address($email): bool {
 // First, we check that there's one @ symbol, 
 // and that the lengths are right.
     $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
@@ -378,7 +378,7 @@ function check_email_address($email) {
  * @param string $append Optional string to append to the XML before conversion
  * @return string JSON-encoded string representation of the XML
  */
-function XmlToJson($xml, $append = "") {
+function XmlToJson($xml, $append = ""): string {
     $fileContents = $xml;
     $fileContents = str_replace(array("\n", "\r", "\t"), '', $fileContents);
     $fileContents = trim(str_replace('"', "'", $fileContents));
@@ -396,7 +396,7 @@ function XmlToJson($xml, $append = "") {
  * @return string|false File extension without the dot, or false if no extension found
  * @throws \Error If file_name is not a string
  */
-function get_file_extension($file_name, $to_lower = FALSE) {
+function get_file_extension($file_name, $to_lower = FALSE): string|false {
     if (!is_string($file_name)) {
         \trigger_error("The file name to check only can be a string ", E_USER_ERROR);
     }
@@ -464,7 +464,7 @@ function explode_with_2_delimiters($delimiter1, $delimiter2, $string, $offset = 
  *
  * @return string Either "http" or "https"
  */
-function get_http_protocol() {
+function get_http_protocol(): string {
     $isSecure = false;
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
         $isSecure = true;
@@ -480,7 +480,7 @@ function get_http_protocol() {
  *
  * @return array Array with two elements: [0] => start date (Y-m-d), [1] => end date (Y-m-d)
  */
-function get_last_week_date_range() {
+function get_last_week_date_range(): array {
     $previous_week = strtotime("-1 week +1 day");
 
     $start_week = strtotime("last sunday midnight", $previous_week);
@@ -497,7 +497,7 @@ function get_last_week_date_range() {
  *
  * @return array Array with two elements: [0] => start date (Y-m-d), [1] => end date (Y-m-d)
  */
-function get_current_week_date_range() {
+function get_current_week_date_range(): array {
     $d = strtotime("today");
     $start_week = strtotime("last sunday midnight", $d);
     $end_week = strtotime("next saturday", $d);
@@ -513,7 +513,7 @@ function get_current_week_date_range() {
  *
  * @return array Array with two elements: [0] => start date (Y-m-d), [1] => end date (Y-m-d)
  */
-function get_next_week_date_range() {
+function get_next_week_date_range(): array {
     $d = strtotime("+1 week -1 day");
     $start_week = strtotime("last sunday midnight", $d);
     $end_week = strtotime("next saturday", $d);

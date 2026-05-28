@@ -99,7 +99,7 @@ class url {
         return self::$enabled;
     }
 
-    static public function get_data() {
+    static function get_data(): array {
         return self::$url_data;
     }
 

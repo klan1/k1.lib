@@ -35,7 +35,7 @@ class standar_options {
      * @param mixed $option_value
      * @return void
      */
-    public function add_option($option_name, $option_value) {
+    public function add_option($option_name, $option_value): void {
         $this->options[$option_name] = $option_value;
     }
 

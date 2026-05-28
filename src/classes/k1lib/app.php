@@ -265,7 +265,7 @@ class app {
      *
      * @return void
      */
-    function start_app_session() {
+    function start_app_session(): void {
         app_session::enable();
         app_session::set_session_name($this->config->get_option('app_session_name'));
         app_session::set_use_ip_in_userhash($this->config->get_option('app_session_use_ip_in_userhash'));
@@ -285,7 +285,7 @@ class app {
      *
      * @return void
      */
-    function end_app_session() {
+    function end_app_session(): void {
         session_db::end_session(K1APP_BASE_URL);
         on_DOM::queue_mesasage("Bye!", "success");
     }
@@ -332,7 +332,7 @@ class app {
      * @param object $tpl Template instance to use globally
      * @return void
      */
-    function set_global_tpl($tpl) {
+    function set_global_tpl($tpl): void {
         $this->tpl = $tpl;
     }
     /**

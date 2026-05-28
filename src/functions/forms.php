@@ -23,7 +23,7 @@ use function k1lib\common\serialize_var;
  * @param bool $url_decode TRUE if the data should be URL decoded
  * @return mixed Returns NULL on error (if $var is not String, Number or is Array)
  */
-function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE) {
+function check_single_incomming_var($var, $request = FALSE, $url_decode = FALSE): mixed {
     if ((is_string($var) || is_numeric($var)) && !is_array($var)) {
         if (($request == TRUE) && isset($_REQUEST[$var])) {
             $value = $_REQUEST[$var];
