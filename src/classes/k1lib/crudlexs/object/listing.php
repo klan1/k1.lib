@@ -12,7 +12,7 @@ namespace k1lib\crudlexs\object;
 use k1lib\crudlexs\board\board_list_strings;
 use k1lib\db\security\db_table_aliases;
 use k1lib\html\a;
-use k1lib\html\bootstrap\table_from_data;
+use k1lib\html\bootstrap\components\table_from_data;
 use k1lib\html\div;
 use k1lib\html\nav;
 use k1lib\html\p;

@@ -9,8 +9,8 @@
 
 namespace k1lib\crudlexs\object;
 
-use k1lib\html\bootstrap\grid_row;
-use k1lib\html\bootstrap\label_value_row;
+use k1lib\html\bootstrap\components\grid_row;
+use k1lib\html\bootstrap\components\label_value_row;
 use k1lib\html\div;
 use k1lib\html\form;
 use k1lib\html\input;

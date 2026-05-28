@@ -13,7 +13,7 @@ use k1lib\common_strings;
 use k1lib\crudlexs\db_table;
 use k1lib\db\security\db_table_aliases;
 use k1lib\html\a;
-use k1lib\html\bootstrap\input_text_with_icon;
+use k1lib\html\bootstrap\components\input_text_with_icon;
 use k1lib\html\button;
 use k1lib\html\div;
 use k1lib\html\DOM;
