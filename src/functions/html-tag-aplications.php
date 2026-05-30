@@ -12,6 +12,7 @@
 namespace k1lib\html;
 
 use k1lib\html as html_classes;
+use k1lib\html\bootstrap\components\label_value_row;
 
 /**
  * Loads HTML template files from k1.lib templates directory.
@@ -276,9 +277,9 @@ function get_link_button($linkTo, $label, $class = "", $id = "") {
             $theme = "btn-outline-secondary";
             break;
     }
-    $icon = new \k1lib\html\i(NULL, $button_icon);
+    $icon = new i(NULL, $button_icon);
 
-    $button_object = new \k1lib\html\a($linkTo, "$icon " . $label, "_self", "btn icon {$theme} {$class}", $id);
+    $button_object = new a($linkTo, "$icon " . $label, "_self", "btn icon {$theme} {$class}", $id);
 //    $button_object->set_attrib("class", "$button_icon", TRUE);
 //    $button_object->set_attrib("class", "btn icon $theme", TRUE);
     if ($js_confirm_dialog) {
@@ -308,6 +309,6 @@ function generate_row_2columns_layout(tag $parent, $row_data, $row_data_headers 
         } else {
             $field_label = $field;
         }
-        (new bootstrap\label_value_row($field_label, $value, $row))->append_to($parent);
+        (new label_value_row($field_label, $value, $row))->append_to($parent);
     }
 }
